@@ -1,0 +1,12 @@
+.window{
+    width: 700px;
+    background-color:lightblue;
+    padding: 30px;
+    border-style: solid;
+    border-color: darkblue;
+}
+
+.title{
+    color: darkblue;
+    text-align: center;
+}
