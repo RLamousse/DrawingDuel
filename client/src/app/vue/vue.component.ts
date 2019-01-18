@@ -11,6 +11,7 @@ export class VueComponent implements OnInit {
   message : string;
   username: string = 'inconnu';
   errorMessage: string = '';
+  userNameList: string[] = [];
 
   constructor() { }
 
@@ -26,7 +27,14 @@ export class VueComponent implements OnInit {
   isAlphanumeric(testString : string){
     return testString.match(/^[a-zA-Z0-9]+$/i) !== null;
   }
-  
+
+  isAvailable(username: string): boolean {
+    for (let name of this.userNameList)
+      if (name == username)
+        return false;
+    this.userNameList.push(username);
+    return true;
+  }
   validateName(name : string){
     if (name.length < 4) {
       this.message = 'Ton identifiant est trop court!';
@@ -36,10 +44,16 @@ export class VueComponent implements OnInit {
       this.message = 'Ton nom est trop long!';
       return false;
     }
+    if (!this.isAlphanumeric(name)) {
+      this.message = 'Tu dois utiliser seulement des caractères alphanumériques!';
+      return false;
+    }
     else {
-      if (!this.isAlphanumeric(name))
-        this.message= 'Tu dois utiliser seulement des caractères alphanumériques!'
-      return (this.isAlphanumeric(name));   
+      if (!this.isAvailable(name)) {
+        this.message = 'Ce nom est deja pris! Essai un nouveau nom';
+        return false;
+      }
+      return (true);   
     }
   }
 }
