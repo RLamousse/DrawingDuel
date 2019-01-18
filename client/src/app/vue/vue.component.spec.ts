@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { VueComponent } from './vue.component';
+import * as assert from 'assert';
 
  
 describe('VueComponent', () => {
@@ -25,8 +26,9 @@ describe('VueComponent', () => {
   });
   
   // test isAlphanumeric()
-  it('check if numbers and letters are alphanumeric', function(){
-    expect(component.isAlphanumeric('AA55ss')).toBe(true);
+  it('check if numbers and letters are alphanumeric', ()=>{
+    //expect(component.isAlphanumeric('AA55ss')).toBe(true);
+    assert.equal(true, component.isAlphanumeric('AA55ss'));
   });
 
   it('checks if an non-alphanumeric chain makes it return false', function(){
