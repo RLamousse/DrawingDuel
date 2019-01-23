@@ -34,6 +34,9 @@ export class Application {
 
     public bindRoutes(): void {
         // Notre application utilise le routeur de notre API `Index`
+        this.app.use('/', this.indexController.router);
+        this.app.use('/about', this.indexController.router);
+        this.app.use('/createGame', this.indexController.router);
         this.app.use('/api/index', this.indexController.router);
         this.app.use('/api/date', this.dateController.router);
         this.errorHandeling();
