@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
 
 import { Observable, of } from "rxjs";
-import { UNList } from '../../../common/communication/message';
 import { catchError} from 'rxjs/operators';
 @Injectable({
   providedIn: 'root'
@@ -13,9 +12,9 @@ export class UNListService {
   private readonly BASE_URL: string = "http://localhost:3000/";
   public constructor(private http: HttpClient) { }
 
-  public getUserList(): Observable<UNList> {
-    return this.http.get<UNList>(this.BASE_URL)
-      .pipe(catchError(this.handleError<UNList>("getUserList")));
+  public sendUserRequest(name: string): Observable<boolean> {
+    return this.http.post<boolean>(this.BASE_URL, name)
+      .pipe(catchError(this.handleError<boolean>("sendUserRequest")));
   };
 
   private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {
