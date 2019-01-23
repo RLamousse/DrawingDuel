@@ -25,6 +25,12 @@ export class IndexController {
                 res.json(this.indexService.about());
             });
 
+        router.get("/createGame", // change the url to something more legitimate
+            async (req: Request, res: Response, next: NextFunction) => {
+                const answer: object = await this.indexService.createGame(req);
+                res.json(answer);
+            });
+
         return router;
     }
 }
