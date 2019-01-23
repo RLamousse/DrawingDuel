@@ -2,7 +2,7 @@ import { BrowserModule } from "@angular/platform-browser";
 import { NgModule } from "@angular/core";
 
 import { AppComponent } from "./app.component";
-import { BasicService } from "./basic.service";
+import { IndexService } from "./index.service";
 import { HttpClientModule } from "@angular/common/http";
 
 @NgModule({
@@ -13,7 +13,7 @@ import { HttpClientModule } from "@angular/common/http";
     BrowserModule,
     HttpClientModule
   ],
-  providers: [BasicService],
+  providers: [IndexService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
