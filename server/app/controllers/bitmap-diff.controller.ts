@@ -1,4 +1,4 @@
-import {NextFunction, Request, Response, Router} from "express";
+import {Request, Response, Router} from "express";
 import {inject, injectable} from "inversify";
 import multer = require("multer");
 import {Bitmap} from "../../../common/image/Bitmap";
@@ -9,7 +9,7 @@ import Types from "../types";
 export class BitmapDiffController {
 
     private readonly _storage: multer.StorageEngine;
-    private _multer: multer.Instance;
+    private readonly _multer: multer.Instance;
 
     public constructor(@inject(Types.BitmapDiffService) private bitmapDiffService: BitmapDiffService) {
         this._storage = multer.memoryStorage();
@@ -30,7 +30,7 @@ export class BitmapDiffController {
                                             {name: "originalImage", maxCount: 1},
                                             {name: "modifiedImage", maxCount: 1},
                                         ]),
-                    (req: Request, res: Response, next: NextFunction) => {
+                    (req: Request, res: Response) => {
                         const originalImageFile: Express.Multer.File = req.files["originalImage"][0];
                         const source: Bitmap = new Bitmap(originalImageFile.originalname, originalImageFile.buffer);
 
