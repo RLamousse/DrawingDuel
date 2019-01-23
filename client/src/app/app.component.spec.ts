@@ -2,7 +2,7 @@
 // tslint:disable:no-floating-promises pour le before each
 import { TestBed, async, ComponentFixture } from "@angular/core/testing";
 import { AppComponent } from "./app.component";
-import { BasicService } from "./basic.service";
+import { IndexService } from "./index.service";
 import { HttpClientModule } from "@angular/common/http";
 import { VueComponent } from './vue/vue.component';
 import { FormsModule } from '@angular/forms'
@@ -13,8 +13,13 @@ describe("AppComponent", () => {
         AppComponent,
         VueComponent
       ],
+<<<<<<< HEAD
       imports: [HttpClientModule, FormsModule],
       providers: [BasicService]
+=======
+      imports: [HttpClientModule],
+      providers: [IndexService]
+>>>>>>> dev
     }).compileComponents();
   }));
   it("should create the app", async(() => {

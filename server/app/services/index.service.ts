@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //import { Request } from "express";
+=======
+import { Request } from "express";
+>>>>>>> dev
 import { Message } from "../../../common/communication/message";
 import "reflect-metadata";
 import { injectable } from "inversify";
