@@ -1,6 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { UNListService } from '../unlist.service';
-import { UNList } from '../../../../common/communication/message';
 
 @Component({
   selector: 'app-vue',
@@ -33,7 +32,7 @@ export class VueComponent implements OnInit {
   }
 
   isAvailable(username: string): boolean {
-    if (!this.userService.sendUserRequest()) {
+    if (!this.userService.sendUserRequest(username)) {
         this.message = 'Cette identifiant est deja pris! Essaie un nouvel identifiant'
         return false;
       }
