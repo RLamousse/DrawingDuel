@@ -3,6 +3,8 @@ export default  {
         Application: Symbol("Application"),
         IndexController: Symbol("IndexController"),
         DateController: Symbol("DateController"),
+        BitmapDiffController: Symbol("BitmapDiffController"),
         IndexService: Symbol("IndexService"),
-        DateService: Symbol("DateService")
+        DateService: Symbol("DateService"),
+        BitmapDiffService: Symbol("BitmapDiffService"),
 };

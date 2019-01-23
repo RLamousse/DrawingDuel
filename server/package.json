@@ -5,7 +5,9 @@
   "private": true,
   "scripts": {
     "start": "tsc && concurrently --kill-others \"tsc -w \" \"nodemon out/server/app/www.js\" ",
+    "debug": "tsc && concurrently --kill-others \"tsc -w \" \"nodemon --inspect out/server/app/www.js\" ",
     "lint": "tslint --project tsconfig.json \"./app/**/*.ts\" --format stylish",
+    "fix-lint": "tslint --project tsconfig.json \"./app/**/*.ts\" --format stylish --fix",
     "test": "mocha",
     "coverage": "nyc mocha",
     "tsc": "tsc",
