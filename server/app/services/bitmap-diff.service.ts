@@ -5,7 +5,7 @@ import {Bitmap} from "../../../common/image/Bitmap";
 export class BitmapDiffService {
 
     public getDiff(sourceImage: Bitmap, modifiedImage: Bitmap): Bitmap {
-        return new Bitmap();
+        return sourceImage;
     }
 
 }
