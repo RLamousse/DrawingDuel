@@ -3,8 +3,8 @@
   <h1 class = "title">Jeu des 7 différences</h1>
   <h1>Bienvenue {{username}} !</h1>
   <h2>Met à jour ton identifiant:</h2>
-  <input type ="text" style = "width:100px" [(ngModel)]="newUsername">
+  <input type ="text" style = "width:100px" placeholder="DarkPenguin98" [(ngModel)]="newUsername">
   <h3 style='color:red'>{{errorMessage}}</h3>
-  <button type ="button" (click)="updateUsername()"> Mettre à jour </button>
+  <button type ="button" class="button" (click)="updateUsername()"> Mettre à jour </button>
 </div>
 

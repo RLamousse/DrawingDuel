@@ -8,11 +8,10 @@ import { IndexService } from "./index.service";
   styleUrls: ["./app.component.css"]
 })
 export class AppComponent implements OnInit {
-<<<<<<< HEAD
-  public constructor(private basicService: BasicService) { }
-=======
+
+
     public constructor(private basicService: IndexService) { }
->>>>>>> dev
+
 
   public readonly title: string = "LOG2990";
   public message: string;
