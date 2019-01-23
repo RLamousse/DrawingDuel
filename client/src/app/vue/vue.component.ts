@@ -1,4 +1,6 @@
-import { Component, OnInit, Input} from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
+import { UNListService } from '../unlist.service';
+import { UNList } from '../../../../common/communication/message';
 
 @Component({
   selector: 'app-vue',
@@ -11,11 +13,14 @@ export class VueComponent implements OnInit {
   message : string;
   username: string = 'inconnu';
   errorMessage: string = '';
-  userNameList: string[] = [];
+  userNameList: UNList;
 
-  constructor() { }
+  constructor(
+    private userService: UNListService
+  ) { }
 
   ngOnInit() {
+    this.userService.getUserList().subscribe((unList: UNList) => this.userNameList = unList);
   }
   
   updateUsername(){
@@ -29,10 +34,13 @@ export class VueComponent implements OnInit {
   }
 
   isAvailable(username: string): boolean {
-    for (let name of this.userNameList)
-      if (name == username)
+    for (let name of this.userNameList.usernameList)
+      if (name == username) {
+        //this.message = 'Cette identifiant est deja pris! Essaie un nouvel identifiant'
         return false;
-    this.userNameList.push(username);
+      }
+    this.userNameList.usernameList.push(username);
+    this.message = 'Ton identifiant est valide!!!'
     return true;
   }
   validateName(name : string){

@@ -8,12 +8,13 @@ import { BasicService } from "./basic.service";
   styleUrls: ["./app.component.css"]
 })
 export class AppComponent implements OnInit {
-    public constructor(private basicService: BasicService) { }
+  public constructor(private basicService: BasicService) { }
 
-    public readonly title: string = "LOG2990";
-    public message: string;
+  public readonly title: string = "LOG2990";
+  public message: string;
+  public userNameList: string[];
 
     public ngOnInit(): void {
-        this.basicService.basicGet().subscribe((message: Message) => this.message = message.title + message.body);
+      this.basicService.basicGet().subscribe((message: Message) => this.message = message.title + message.body);
     }
 }

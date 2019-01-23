@@ -16,4 +16,18 @@ export module Route {
             res.send(JSON.stringify(message));
         }
     }
+
+    export class UserIndex {
+        private activeUserList: string[] = [];
+        public getActiveUser(req: Request, res: Response, next: NextFunction): string[] {
+            return this.activeUserList;
+        }
+        public addUser(str: string): void {
+            this.activeUserList.push(str);
+               
+        }
+        public removeUser(str: string): void {
+            this.activeUserList.splice(this.activeUserList.indexOf(str));
+        }
+    }
 }

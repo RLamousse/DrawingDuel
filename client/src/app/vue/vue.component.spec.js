@@ -73,5 +73,10 @@ describe('VueComponent', function () {
         expect(component.isAvailable('patate')).toBe(false);
         expect(component.isAvailable('patate')).toBe(false);
     });
+    it('multiple username with different alphanumeric should pass', function () {
+        expect(component.isAvailable('boi48')).toBe(true);
+        expect(component.isAvailable('boi49')).toBe(true);
+        expect(component.isAvailable('48boi')).toBe(true);
+    });
 });
 //# sourceMappingURL=vue.component.spec.js.map
