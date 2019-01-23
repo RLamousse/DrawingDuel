@@ -8,8 +8,8 @@ import { Route } from "./routes/index";
 export class Routes {
 
     public constructor(
-        @inject(Types.Index) private index: Route.Index,
-        @inject(Types.Index) private uList: Route.UserIndex
+        @inject(Types.IndexService) private index: Route.Index,
+        @inject(Types.IndexService) private uList: Route.UserIndex
     ) { }
 
     public get routes(): Router {

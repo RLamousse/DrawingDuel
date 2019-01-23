@@ -27,6 +27,7 @@ export module Route {
                
         }
         public removeUser(str: string): void {
+            //not finished
             this.activeUserList.splice(this.activeUserList.indexOf(str));
         }
     }
