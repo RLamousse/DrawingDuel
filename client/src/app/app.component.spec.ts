@@ -2,7 +2,7 @@
 // tslint:disable:no-floating-promises pour le before each
 import { TestBed, async, ComponentFixture } from "@angular/core/testing";
 import { AppComponent } from "./app.component";
-import { BasicService } from "./basic.service";
+import { IndexService } from "./index.service";
 import { HttpClientModule } from "@angular/common/http";
 describe("AppComponent", () => {
   beforeEach(async(() => {
@@ -11,7 +11,7 @@ describe("AppComponent", () => {
         AppComponent
       ],
       imports: [HttpClientModule],
-      providers: [BasicService]
+      providers: [IndexService]
     }).compileComponents();
   }));
   it("should create the app", async(() => {
