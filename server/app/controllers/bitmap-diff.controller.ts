@@ -1,5 +1,5 @@
-import { NextFunction, Request, Response, Router } from "express";
-import { inject, injectable } from "inversify";
+import {NextFunction, Request, Response, Router} from "express";
+import {inject, injectable} from "inversify";
 import multer = require("multer");
 import {Bitmap} from "../../../common/image/Bitmap";
 import {BitmapDiffService} from "../services/bitmap-diff.service";
@@ -20,16 +20,16 @@ export class BitmapDiffController {
                                                cb: (error: Error | null, acceptFile: boolean) => void) => {
                                       cb(null, file.mimetype === "image/bmp");
                                   },
-        });
+                              });
     }
 
     public get router(): Router {
         const router: Router = Router();
         router.post("/",
                     this._multer.fields([
-                        {name: "originalImage", maxCount: 1},
-                        {name: "modifiedImage", maxCount: 1},
-                    ]),
+                                            {name: "originalImage", maxCount: 1},
+                                            {name: "modifiedImage", maxCount: 1},
+                                        ]),
                     (req: Request, res: Response, next: NextFunction) => {
                         const originalImageFile: Express.Multer.File = req.files["originalImage"][0];
                         const source: Bitmap = new Bitmap(originalImageFile.originalname, originalImageFile.buffer);
@@ -38,7 +38,7 @@ export class BitmapDiffController {
                         const modified: Bitmap = new Bitmap(modifiedImageFile.originalname, modifiedImageFile.buffer);
 
                         res.json(this.bitmapDiffService.getDiff(source, modified).toString());
-            });
+                    });
 
         return router;
     }
