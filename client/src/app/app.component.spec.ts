@@ -4,14 +4,22 @@ import { TestBed, async, ComponentFixture } from "@angular/core/testing";
 import { AppComponent } from "./app.component";
 import { IndexService } from "./index.service";
 import { HttpClientModule } from "@angular/common/http";
+import { VueComponent } from './vue/vue.component';
+import { FormsModule } from '@angular/forms'
 describe("AppComponent", () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
-        AppComponent
+        AppComponent,
+        VueComponent
       ],
+<<<<<<< HEAD
+      imports: [HttpClientModule, FormsModule],
+      providers: [BasicService]
+=======
       imports: [HttpClientModule],
       providers: [IndexService]
+>>>>>>> dev
     }).compileComponents();
   }));
   it("should create the app", async(() => {
