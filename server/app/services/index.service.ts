@@ -1,8 +1,9 @@
-import { Request } from "express";
+// import { Request } from "express";
 import { Message } from "../../../common/communication/message";
 import "reflect-metadata";
 import { injectable } from "inversify";
 import Axios from "axios";
+import {Request} from "express";
 
 @injectable()
 export class IndexService {
