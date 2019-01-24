@@ -37,6 +37,9 @@ export class BitmapDiffController {
                         const modifiedImageFile: Express.Multer.File = req.files["modifiedImage"][0];
                         const modified: Bitmap = new Bitmap(modifiedImageFile.originalname, modifiedImageFile.buffer);
 
+                        let success: Boolean = this.bitmapDiffService.getDiff(source, modified);
+                        // TODO: Set a place to put server answer constants (e.g success=200)
+                        res.status((success ? 200 : 500))
                         res.json(this.bitmapDiffService.getDiff(source, modified).toString());
                     });
 
