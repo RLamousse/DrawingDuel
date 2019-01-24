@@ -13,13 +13,8 @@ describe("AppComponent", () => {
         AppComponent,
         VueComponent
       ],
-<<<<<<< HEAD
       imports: [HttpClientModule, FormsModule],
-      providers: [BasicService]
-=======
-      imports: [HttpClientModule],
       providers: [IndexService]
->>>>>>> dev
     }).compileComponents();
   }));
   it("should create the app", async(() => {

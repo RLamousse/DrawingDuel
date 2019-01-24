@@ -6,6 +6,8 @@ import { IndexService } from "./index.service";
 import { HttpClientModule } from "@angular/common/http";
 import { VueComponent } from './vue/vue.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
+import { UNListService } from "./unlist.service";
  
 @NgModule({
   declarations: [
@@ -18,7 +20,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     FormsModule,
     ReactiveFormsModule
   ],
-  providers: [IndexService],
+  providers: [IndexService, UNListService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

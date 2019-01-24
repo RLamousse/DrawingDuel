@@ -12,13 +12,14 @@ export class VueComponent implements OnInit {
   message : string;
   username: string = 'inconnu';
   errorMessage: string = '';
+  available: boolean;
 
   constructor(
     private userService: UNListService
   ) { }
 
   ngOnInit() {
-    //this.userService.sendUserRequest().subscribe((unList: boolean) => this.userNameBool = unList);
+    this.userService.sendUserRequest(this.newUsername).subscribe((avail: boolean) => this.available = avail);
   }
   
   updateUsername(){
@@ -32,7 +33,8 @@ export class VueComponent implements OnInit {
   }
 
   isAvailable(username: string): boolean {
-    if (!this.userService.sendUserRequest(username)) {
+    this.userService.sendUserRequest(this.newUsername).subscribe((avail: boolean) => this.available = avail);
+    if (!this.available) {
         this.message = 'Cette identifiant est deja pris! Essaie un nouvel identifiant'
         return false;
       }

@@ -6,6 +6,8 @@ import { IndexController } from "./controllers/index.controller";
 import { IndexService } from "./services/index.service";
 import { DateController } from "./controllers/date.controller";
 import { DateService } from "./services/date.service";
+import { UserNameService } from "./services/UserName.service";
+import { UserController } from "./controllers/user.controller";
 
 const container: Container = new Container();
 
@@ -17,5 +19,7 @@ container.bind(Types.IndexService).to(IndexService);
 container.bind(Types.DateController).to(DateController);
 container.bind(Types.DateService).to(DateService);
 
+container.bind(Types.UserNameService).to(UserNameService);
+container.bind(Types.UserNameController).to(UserController);
 
 export { container };
