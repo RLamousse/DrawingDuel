@@ -19,7 +19,7 @@ export class VueComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.userService.sendUserRequest(this.newUsername).subscribe((avail: boolean) => this.available = avail);
+
   }
   
   updateUsername(){

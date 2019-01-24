@@ -14,6 +14,9 @@ export class UserController {
 
         router.post("/",
             async (req: Request, res: Response, next: NextFunction) => {
+                if (req.method === "POST")
+                    console.log("POST REQUEST");
+                console.log(req.method);
                 // Send the request to the service and send the response
                 let available: boolean = await this.userService.checkAvailability(req.body);
                 res.json(available);

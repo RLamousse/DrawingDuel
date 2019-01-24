@@ -13,8 +13,7 @@ export class UNListService {
   public constructor(private http: HttpClient) { }
 
   public sendUserRequest(name: string): Observable<boolean> {
-    console.log(this.http.post<boolean>(this.BASE_URL,name));
-    return this.http.post<boolean>(this.BASE_URL, name)
+    return this.http.post<boolean>(this.BASE_URL + "usernames", { name })
       .pipe(catchError(this.handleError<boolean>("sendUserRequest")));
   };
 
