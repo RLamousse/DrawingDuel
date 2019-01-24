@@ -51,4 +51,16 @@ export class Bitmap {
             }
         }
     }
+
+    get width(): number {
+        return this._width;
+    }
+
+    get height(): number {
+        return this._height;
+    }
+
+    get pixels(): number[][] {
+        return this._pixels;
+    }
 }
