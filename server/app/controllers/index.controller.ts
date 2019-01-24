@@ -1,8 +1,11 @@
 import { injectable, inject } from "inversify";
 import { Router, Request, Response, NextFunction } from "express";
-
+import * as multer from "multer";
 import Types from "../types";
 import { IndexService } from "../services/index.service";
+
+const UPLOAD_PATH = 'testUploads';
+const upload = multer({ dest: `${UPLOAD_PATH}/`});
 
 @injectable()
 export class IndexController {
@@ -26,7 +29,8 @@ export class IndexController {
             });
 
         router.get("/createGame", // change the url to something more legitimate
-            async (req: Request, res: Response, next: NextFunction) => {
+                   upload.single("testFile"),
+                   async (req: Request, res: Response, next: NextFunction) => {
                 const answer: object = await this.indexService.createGame(req);
                 res.json(answer);
             });
