@@ -28,4 +28,11 @@ export class IndexService {
             };
         })
     }
+
+    public async createGame(req: Request): Promise<Message> {
+        return {
+            title: "NEW GAME CREATED",
+            body: "game0001",
+        };
+    }
 }
