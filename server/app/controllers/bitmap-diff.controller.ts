@@ -16,8 +16,8 @@ export class BitmapDiffController {
         this._multer = multer({
             storage: this._storage,
             fileFilter: (req: Express.Request,
-                file: Express.Multer.File,
-                cb: (error: Error | null, acceptFile: boolean) => void) => {
+                         file: Express.Multer.File,
+                         cb: (error: Error | null, acceptFile: boolean) => void) => {
                 cb(null, file.mimetype === "image/bmp");
             },
         });
@@ -26,24 +26,24 @@ export class BitmapDiffController {
     public get router(): Router {
         const router: Router = Router();
         router.post("/",
-            this._multer.fields([
+                    this._multer.fields([
                 {
-                    name: "originalImage", 
-                    maxCount: 1 
+                    name: "originalImage",
+                    maxCount: 1,
                 },
                 {
                     name: "modifiedImage",
-                    maxCount: 1
+                    maxCount: 1,
                 },
             ]),
-            (req: Request, res: Response) => {
+                    (req: Request, res: Response) => {
                 const originalImageFile: Express.Multer.File = req.files["originalImage"][0];
                 const source: Bitmap = new Bitmap(originalImageFile.originalname, originalImageFile.buffer);
 
                 const modifiedImageFile: Express.Multer.File = req.files["modifiedImage"][1];
                 const modified: Bitmap = new Bitmap(modifiedImageFile.originalname, modifiedImageFile.buffer);
 
-                let success: Boolean = this.bitmapDiffService.getDiff(source, modified);
+                const success: Boolean = this.bitmapDiffService.getDiff(source, modified);
                 // TODO: Set a place to put server answer constants (e.g success=200)
                 res.status((success ? 200 : 500));
                 res.json(this.bitmapDiffService.getDiff(source, modified).toString());

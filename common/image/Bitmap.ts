@@ -45,7 +45,7 @@ export class Bitmap {
             this._pixels[i] = [];
             for (let j = 0; j < this._width; j++) {
                 this._pixels[i][j] = imageData.readUIntLE(
-                    this._rawBitmapDataOffset + (i * this._bitsPerRow + j) * this._colorDepth,
+                    this._rawBitmapDataOffset + (i * this._bitsPerRow) + (j * this._colorDepth),
                     this._colorDepth
                 );
             }
