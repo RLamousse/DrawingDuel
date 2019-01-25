@@ -30,9 +30,11 @@ export class IndexService {
     }
 
     public async createGame(req: Request): Promise<Message> {
+
         return {
-            title: "NEW GAME CREATED",
-            body: "game0001",
+            title: "fileRecived!",
+            body: "file " + req.file.originalname + " receved!",
         };
     }
+
 }

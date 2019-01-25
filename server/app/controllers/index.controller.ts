@@ -3,9 +3,13 @@ import { Router, Request, Response, NextFunction } from "express";
 import * as multer from "multer";
 import Types from "../types";
 import { IndexService } from "../services/index.service";
+import {Message} from "../../../common/communication/message";
 
+//TODO change place of those and create constants to respect the requirements
 const UPLOAD_PATH = 'testUploads';
-const upload = multer({ dest: `${UPLOAD_PATH}/`});
+const upload = multer({ dest: `${UPLOAD_PATH}/`, fileFilter: (req: Request, file: Express.Multer.File, cb: any) => {
+    cb(null, file.mimetype === "text/plain");
+}});
 
 @injectable()
 export class IndexController {
@@ -28,11 +32,11 @@ export class IndexController {
                 res.json(this.indexService.about());
             });
 
-        router.get("/createGame", // change the url to something more legitimate
-                   upload.single("testFile"),
-                   async (req: Request, res: Response, next: NextFunction) => {
-                const answer: object = await this.indexService.createGame(req);
-                res.json(answer);
+        router.post("/createGame",
+                    upload.single("testFile"),
+                    async (req: Request, res: Response, next: NextFunction) => {
+            const answer: Message = await this.indexService.createGame(req);
+            res.json(answer);
             });
 
         return router;
