@@ -20,6 +20,13 @@ describe("A service generating the difference between two bitmaps", () => {
         const diff: Bitmap = bitmapDiffService.getDiff(smallSolidWhiteBitmap, smallSolidBlackBitmap);
         expect(diff.pixels).to.be.equal(smallSolidBlackBitmap.pixels);
     });
+    it("should draw the difference mask", () => {
+        const expectedDiff: Bitmap = new Bitmap("centerMask10x10.bmp", fs.readFileSync("test/test_bitmaps/centerMask10x10.bmp"));
+        const modified: Bitmap = new Bitmap("centerBlack10x10.bmp", fs.readFileSync("test/test_bitmaps/centerBlack10x10.bmp"));
+        const actualDiff: Bitmap = bitmapDiffService.getDiff(smallSolidWhiteBitmap, modified);
+
+        expect(actualDiff.pixels).to.be.equal(expectedDiff.pixels);
+    });
     it("should return a valid diff for two related images (pikachu)", () => {
         const expectedDiff: Bitmap = new Bitmap("pika.diff.bmp", fs.readFileSync("test/test_bitmaps/pika.diff.bmp"));
         const original: Bitmap = new Bitmap("pika.o.bmp", fs.readFileSync("test/test_bitmaps/pika.o.bmp"));
