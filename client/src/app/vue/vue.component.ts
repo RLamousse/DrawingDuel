@@ -13,6 +13,7 @@ export class VueComponent implements OnInit {
   username: string = 'inconnu';
   errorMessage: string = '';
   available: boolean;
+  
 
   constructor(
     private userService: UNListService

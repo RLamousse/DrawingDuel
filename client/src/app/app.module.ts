@@ -6,6 +6,9 @@ import { IndexService } from "./index.service";
 import { HttpClientModule } from "@angular/common/http";
 import { VueComponent } from './vue/vue.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule, MatFormFieldModule, MatSelectModule, MatInputModule } from '@angular/material';
+import { MatIconModule } from '@angular/material';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { UNListService } from "./unlist.service";
  
@@ -18,7 +21,13 @@ import { UNListService } from "./unlist.service";
     BrowserModule,
     HttpClientModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatButtonModule,
+    MatSelectModule,
+    MatIconModule,
+    MatInputModule,
+    MatFormFieldModule,
+    BrowserAnimationsModule
   ],
   providers: [IndexService, UNListService],
   bootstrap: [AppComponent]
