@@ -24,8 +24,8 @@ export class VueComponent implements OnInit {
 
   }
   
-  updateUsername(){
-    if (this.validateName(this.newUsername)) {
+  async updateUsername() {
+    if (await this.validateName(this.newUsername)) {
       this.username = this.newUsername;
     }
     this.errorMessage = this.message;
@@ -35,7 +35,7 @@ export class VueComponent implements OnInit {
     return testString.match(/^[a-zA-Z0-9]+$/i) !== null;
   }
 
-  async isAvailable(username: string): Promise<UserValidationMessage> {
+  isAvailable(username: string): Promise<UserValidationMessage> {
     return  this.userService.sendUserRequest(username).toPromise();
   }
   async validateName(name : string){
@@ -53,7 +53,8 @@ export class VueComponent implements OnInit {
     }
     else {
 
-      this.isAvailable(name).then((response: UserValidationMessage) => this.response = response);
+      await this.isAvailable(name).then((response: UserValidationMessage) => this.response = response);
+      console.error(this.response);
       if (!this.response.available) {
         this.message = 'Cet identifiant est deja pris! Essaie un nouvel identifiant';
         return false;
