@@ -1,5 +1,6 @@
-import {Bitmap} from "./";
-import * as BitmapConstants from "./BitmapConstants";
+import {Bitmap} from "./Bitmap";
+import * as BitmapUtils from "./BitmapUtils"
+import {getBytesPerRowForWidth} from "./BitmapUtils";
 
 export class BitmapFactory {
     public static createBitmap(fileName: string, imageData: Buffer|number[][]) : Bitmap {
@@ -11,11 +12,11 @@ export class BitmapFactory {
     }
 
     private static createFromBuffer(fileName: string, imageData: Buffer): Bitmap {
-        const rawBitmapDataOffset = imageData.readUIntLE(BitmapConstants.RAW_BITMAP_OFFSET_FLAG_OFFSET, BitmapConstants.RAW_BITMAP_OFFSET_FLAG_LENGTH);
-        const width = imageData.readUIntLE(BitmapConstants.WIDTH_FLAG_OFFSET, BitmapConstants.WIDTH_FLAG_LENGTH);
-        const height = imageData.readUIntLE(BitmapConstants.HEIGHT_FLAG_OFFSET, BitmapConstants.HEIGHT_FLAG_LENGTH);
-        const colorDepth = imageData.readUIntLE(BitmapConstants.COLOR_DEPTH_FLAG_OFFSET, BitmapConstants.COLOR_DEPTH_FLAG_LENGTH) / 8;
-        const bitsPerRow = colorDepth * width + (colorDepth * width) % 4; // Addresses are a multiple of 4
+        const rawBitmapDataOffset = imageData.readUIntLE(BitmapUtils.RAW_BITMAP_OFFSET_FLAG_OFFSET, BitmapUtils.RAW_BITMAP_OFFSET_FLAG_LENGTH);
+        const width = imageData.readUIntLE(BitmapUtils.WIDTH_FLAG_OFFSET, BitmapUtils.WIDTH_FLAG_LENGTH);
+        const height = imageData.readUIntLE(BitmapUtils.HEIGHT_FLAG_OFFSET, BitmapUtils.HEIGHT_FLAG_LENGTH);
+        const colorDepth = imageData.readUIntLE(BitmapUtils.COLOR_DEPTH_FLAG_OFFSET, BitmapUtils.COLOR_DEPTH_FLAG_LENGTH) / 8;
+        const bitsPerRow = getBytesPerRowForWidth(width); // Addresses are a multiple of 4
 
         const pixels: number[][] = [];
         for (let i = 0; i < height; i++) {

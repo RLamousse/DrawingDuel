@@ -1,5 +1,5 @@
 {
   "rulesDirectory": [
-    "../client"
+    "../server"
   ]
 }
