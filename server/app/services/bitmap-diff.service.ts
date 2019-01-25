@@ -6,9 +6,7 @@ import Mask from '../../../common/image/Mask'
 @injectable()
 export class BitmapDiffService {
 
-    public getDiff(sourceImage: Bitmap, modifiedImage: Bitmap) {
-
-        let success: Boolean = true;
+    public getDiff(sourceImage: Bitmap, modifiedImage: Bitmap): Bitmap {
         let diffMap: number[][] = [[]];
 
         if (sourceImage.width !== modifiedImage.width || sourceImage.height !== modifiedImage.height) {
@@ -16,15 +14,15 @@ export class BitmapDiffService {
         }
 
         for (let i = 0; i < sourceImage.pixels.length; i++) {
-            for (let j = 0; j < sourceImage[i].length; j++) {
-                const source = sourceImage[i][j];
-                const modif  = modifiedImage[i][j];
+            for (let j = 0; j < sourceImage.pixels[i].length; j++) {
+                const source = sourceImage.pixels[i][j];
+                const modif  = modifiedImage.pixels[i][j];
                 diffMap[i][j] = source === modif ? 0xFFFFFF : 0;
                 this.applyMask(diffMap, i, j);
             }
         }
 
-        return success;
+        return sourceImage;
     }
 
     private applyMask(image: number[][], x_index: number, y_index: number, mask?: Mask) {
