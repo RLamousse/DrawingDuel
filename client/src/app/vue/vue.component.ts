@@ -13,6 +13,7 @@ export class VueComponent implements OnInit {
   message : string;
   username: string = 'inconnu';
   errorMessage: string = '';
+
   response: UserValidationMessage;
 
   constructor(
