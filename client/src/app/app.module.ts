@@ -4,10 +4,12 @@ import { NgModule } from "@angular/core";
 import { AppComponent } from "./app.component";
 import { IndexService } from "./index.service";
 import { HttpClientModule } from "@angular/common/http";
+import { VueAdminComponent } from './vue-admin/vue-admin.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    VueAdminComponent
   ],
   imports: [
     BrowserModule,
