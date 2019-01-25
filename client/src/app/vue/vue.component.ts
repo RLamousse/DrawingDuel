@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { UNListService } from '../unlist.service';
+import { UNListService } from '../username.service';
 import { UserValidationMessage } from "../../../../common/communication/UserValidationMessage";
 
 @Component({
