@@ -37,7 +37,7 @@ export class Application {
         // Notre application utilise le routeur de notre API `Index`
         this.app.use('/api/index', this.indexController.router);
         this.app.use('/api/date', this.dateController.router);
-        this.app.use('/username', this.userController.router);
+        this.app.use('/api/usernames', this.userController.router);
         this.errorHandeling();
     }
 

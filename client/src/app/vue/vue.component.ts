@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { UNListService } from '../unlist.service';
+import { UserValidationMessage } from "../../../../common/communication/UserValidationMessage";
 
 @Component({
   selector: 'app-vue',
@@ -12,7 +13,7 @@ export class VueComponent implements OnInit {
   message : string;
   username: string = 'inconnu';
   errorMessage: string = '';
-  available: boolean;
+  response: UserValidationMessage;
 
   constructor(
     private userService: UNListService
@@ -23,8 +24,9 @@ export class VueComponent implements OnInit {
   }
   
   updateUsername(){
-    if (this.validateName(this.newUsername))
+    if (this.validateName(this.newUsername)) {
       this.username = this.newUsername;
+    }
     this.errorMessage = this.message;
   }
 
@@ -32,23 +34,16 @@ export class VueComponent implements OnInit {
     return testString.match(/^[a-zA-Z0-9]+$/i) !== null;
   }
 
-  isAvailable(username: string): boolean {
-    this.userService.sendUserRequest(this.newUsername).subscribe((avail: boolean) => this.available = avail);
-    if (!this.available) {
-        this.message = 'Cette identifiant est deja pris! Essaie un nouvel identifiant'
-        return false;
-      }
-    //this.userNameList.usernameList.push(username);
-    this.message = 'Ton identifiant est valide!!!'
-    return true;
+  async isAvailable(username: string): Promise<UserValidationMessage> {
+    return  this.userService.sendUserRequest(username).toPromise();
   }
-  validateName(name : string){
+  async validateName(name : string){
     if (name.length < 4) {
       this.message = 'Ton identifiant est trop court!';
       return false;
     }
     if (name.length > 12){
-      this.message = 'Ton nom est trop long!';
+      this.message = 'Ton identifiant est trop long!';
       return false;
     }
     if (!this.isAlphanumeric(name)) {
@@ -56,10 +51,13 @@ export class VueComponent implements OnInit {
       return false;
     }
     else {
-      if (!this.isAvailable(name)) {
-        this.message = 'Ce nom est deja pris! Essai un nouveau nom';
+
+      this.isAvailable(name).then((response: UserValidationMessage) => this.response = response);
+      if (!this.response.available) {
+        this.message = 'Cet identifiant est deja pris! Essaie un nouvel identifiant';
         return false;
       }
+      this.message = 'Ton identifiant est valide!!!';
       return (true);   
     }
   }

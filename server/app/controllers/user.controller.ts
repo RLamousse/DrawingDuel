@@ -1,5 +1,5 @@
 ﻿import { injectable, inject } from "inversify";
-import { Router, Request, Response, NextFunction } from "express";
+import { Router, Request, Response} from "express";
 
 import Types from "../types";
 import { UserNameService } from "../services/UserName.service";
@@ -13,13 +13,10 @@ export class UserController {
         const router: Router = Router();
 
         router.post("/",
-            async (req: Request, res: Response, next: NextFunction) => {
-                if (req.method === "POST")
-                    console.log("POST REQUEST");
-                console.log(req.method);
+            async (req: Request, res: Response) => {
                 // Send the request to the service and send the response
-                let available: boolean = await this.userService.checkAvailability(req.body);
-                res.json(available);
+                let result = await this.userService.checkAvailability(req.body);
+                res.json(result);
             });
 
         return router;

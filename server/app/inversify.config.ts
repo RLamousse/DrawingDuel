@@ -19,7 +19,7 @@ container.bind(Types.IndexService).to(IndexService);
 container.bind(Types.DateController).to(DateController);
 container.bind(Types.DateService).to(DateService);
 
-container.bind(Types.UserNameService).to(UserNameService);
+container.bind(Types.UserNameService).to(UserNameService).inSingletonScope();
 container.bind(Types.UserNameController).to(UserController);
 
 export { container };
