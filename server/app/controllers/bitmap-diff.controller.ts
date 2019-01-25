@@ -1,8 +1,9 @@
 import { Request, Response, Router } from "express";
 import { inject, injectable } from "inversify";
 import multer = require("multer");
-import { Bitmap } from "../../../common/image/Bitmap";
-import {BitmapFactory} from "../../../common/image/BitmapFactory";
+import { Bitmap } from "../../../common/image/Bitmap/Bitmap";
+import {BitmapFactory} from "../../../common/image/Bitmap/BitmapFactory";
+import {BitmapWriter} from "../../../common/image/Bitmap/BitmapWriter";
 import { BitmapDiffService } from "../services/bitmap-diff.service";
 import Types from "../types";
 
@@ -44,9 +45,11 @@ export class BitmapDiffController {
                 const modifiedImageFile: Express.Multer.File = req.files["modifiedImage"][1];
                 const modified: Bitmap = BitmapFactory.createBitmap(modifiedImageFile.originalname, modifiedImageFile.buffer);
 
-                const success: Bitmap = this.bitmapDiffService.getDiff(source, modified);
+                const diffBitmap: Bitmap = this.bitmapDiffService.getDiff(source, modified);
+                BitmapWriter.write("/tmp/", diffBitmap);
+
                 // TODO: Set a place to put server answer constants (e.g success=200)
-                res.status((success ? 200 : 500));
+                res.status((diffBitmap ? 200 : 500));
                 res.json(this.bitmapDiffService.getDiff(source, modified).toString());
             });
 

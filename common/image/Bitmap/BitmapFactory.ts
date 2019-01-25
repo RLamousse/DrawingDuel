@@ -1,4 +1,4 @@
-import {Bitmap} from "./Bitmap";
+import {Bitmap} from "./";
 import * as BitmapConstants from "./BitmapConstants";
 
 export class BitmapFactory {

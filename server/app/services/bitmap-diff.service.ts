@@ -1,7 +1,7 @@
 import {injectable} from "inversify";
 import "reflect-metadata";
-import {Bitmap} from "../../../common/image/Bitmap";
-import {BitmapFactory} from "../../../common/image/BitmapFactory";
+import {Bitmap} from "../../../common/image/Bitmap/Bitmap";
+import {BitmapFactory} from "../../../common/image/Bitmap/BitmapFactory";
 import {DIFFERENCE_MASK, Mask} from "../../../common/image/Mask";
 
 @injectable()
@@ -24,9 +24,7 @@ export class BitmapDiffService {
             }
         }
 
-        BitmapFactory.createBitmap("lmao", diffMap);
-
-        return sourceImage;
+        return BitmapFactory.createBitmap("lmao", diffMap);
     }
 
     private drawMask(image: number[][], xIndex: number, yIndex: number, mask: Mask) {
