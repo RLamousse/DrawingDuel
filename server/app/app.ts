@@ -1,11 +1,11 @@
-import * as express from "express";
-import * as logger from "morgan";
-import * as cookieParser from "cookie-parser";
 import * as bodyParser from "body-parser";
+import * as cookieParser from "cookie-parser";
 import * as cors from "cors";
-import Types from "./types";
-import { injectable, inject } from "inversify";
+import * as express from "express";
+import { inject, injectable } from "inversify";
+import * as logger from "morgan";
 import { GameCreatorController } from "./controllers/game-creator.controller";
+import Types from "./types";
 
 @injectable()
 export class Application {
@@ -32,7 +32,7 @@ export class Application {
 
     public bindRoutes(): void {
         // Notre application utilise le routeur de notre API `Index`
-        this.app.use('/api/game-creator', this.gameCreatorController.router);
+        this.app.use("/api/game-creator", this.gameCreatorController.router);
         this.errorHandeling();
     }
 
@@ -51,7 +51,7 @@ export class Application {
                 res.status(err.status || this.internalError);
                 res.send({
                     message: err.message,
-                    error: err
+                    error: err,
                 });
             });
         }
@@ -63,7 +63,7 @@ export class Application {
             res.status(err.status || this.internalError);
             res.send({
                 message: err.message,
-                error: {}
+                error: {},
             });
         });
     }
