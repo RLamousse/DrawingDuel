@@ -5,9 +5,7 @@ import * as bodyParser from "body-parser";
 import * as cors from "cors";
 import Types from "./types";
 import { injectable, inject } from "inversify";
-import { IndexController } from "./controllers/index.controller";
 import { GameCreatorController } from "./controllers/game-creator.controller";
-import { DateController } from "./controllers/date.controller";
 
 @injectable()
 export class Application {
@@ -15,9 +13,7 @@ export class Application {
     private readonly internalError: number = 500;
     public app: express.Application;
 
-    public constructor(@inject(Types.IndexController) private indexController: IndexController,
-                       @inject(Types.GameCreatorController) private gameCreatorController: GameCreatorController,
-                       @inject(Types.DateController) private dateController: DateController) {
+    public constructor(@inject(Types.GameCreatorController) private gameCreatorController: GameCreatorController) {
         this.app = express();
 
         this.config();
@@ -36,10 +32,6 @@ export class Application {
 
     public bindRoutes(): void {
         // Notre application utilise le routeur de notre API `Index`
-        this.app.use('/', this.indexController.router);
-        this.app.use('/about', this.indexController.router);
-        this.app.use('/api/index', this.indexController.router);
-        this.app.use('/api/date', this.dateController.router);
         this.app.use('/api/game-creator', this.gameCreatorController.router);
         this.errorHandeling();
     }
