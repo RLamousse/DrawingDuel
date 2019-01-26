@@ -1,3 +1,5 @@
+import {BITMAP_FILE_EXTENSION} from "./bitmap-utils";
+
 export class Bitmap {
     private readonly _fileName: string;
     private readonly _width: number;
@@ -5,7 +7,7 @@ export class Bitmap {
     private readonly _pixels: number[][]; // [0][0] is bottom-left
 
     constructor(fileName: string, width: number, height: number, pixels: number[][]) {
-        this._fileName = fileName;
+        this._fileName = `${fileName}${fileName.endsWith(BITMAP_FILE_EXTENSION) ? "" : BITMAP_FILE_EXTENSION}`;
         this._width = width;
         this._height = height;
         this._pixels = pixels;
