@@ -3,7 +3,7 @@ import * as fs from "fs";
 import * as mockfs from "mock-fs";
 import * as os from "os";
 import {Bitmap} from "../../../../common/image/Bitmap/bitmap";
-import {BitmapFactory} from "../../../../common/image/Bitmap/bitmap-factory";
+import {BitmapFactory} from "./bitmap-factory";
 import {BitmapWriter} from "./bitmap-writer";
 
 describe("A util class to write bitmaps to disk", () => {
@@ -34,6 +34,16 @@ describe("A util class to write bitmaps to disk", () => {
         // Write to mock-fs
         const path: string = BitmapWriter.write(os.tmpdir(), originalBitmap);
         expect(fs.existsSync(path)).to.be.true;
+        mockfs.restore(); // Restore mock fs to original state
+    });
+    it("should throw if the specified directory doesn't exist", () => {
+        // Read real bitmap from fs
+        const originalBuffer: Buffer = fs.readFileSync("test/test_bitmaps/white10x10.bmp");
+        const originalBitmap: Bitmap = BitmapFactory.createBitmap("test-white10x10.bmp", originalBuffer);
+        // Init
+        mockfs();
+        // Write to mock-fs
+        expect(() => BitmapWriter.write("/myFakeDir/", originalBitmap)).to.throw;
         mockfs.restore(); // Restore mock fs to original state
     });
 });

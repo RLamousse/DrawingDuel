@@ -1,18 +1,20 @@
 import {injectable} from "inversify";
 import "reflect-metadata";
 import {Bitmap} from "../../../common/image/Bitmap/bitmap";
-import {BitmapFactory} from "../../../common/image/Bitmap/bitmap-factory";
-import {DIFFERENCE_MASK, Mask} from "../../../common/image/mask";
+import {BitmapFactory} from "../images/bitmap/bitmap-factory";
+import {DIFFERENCE_MASK, Mask, SAME_PIXEL_COLOR} from "../../../common/image/mask";
 
 @injectable()
 export class BitmapDiffService {
 
-    public getDiff(sourceImage: Bitmap, modifiedImage: Bitmap): Bitmap {
-        const diffMap: number[][] = [[]];
-
+    public getDiff(diffFileName: string, sourceImage: Bitmap, modifiedImage: Bitmap): Bitmap {
         if (sourceImage.width !== modifiedImage.width || sourceImage.height !== modifiedImage.height) {
             throw new Error("Cannot generate the difference if the images does not have the same dimensions");
         }
+
+        const diffMap: number[][] = new Array(sourceImage.width)
+            .fill(SAME_PIXEL_COLOR)
+            .map(() => new Array(sourceImage.height).fill(SAME_PIXEL_COLOR));
 
         for (let i = 0; i < sourceImage.pixels.length; i++) {
             for (let j = 0; j < sourceImage.pixels[i].length; j++) {
@@ -24,7 +26,7 @@ export class BitmapDiffService {
             }
         }
 
-        return BitmapFactory.createBitmap("lmao", diffMap);
+        return BitmapFactory.createBitmap(diffFileName, diffMap);
     }
 
     private drawMask(image: number[][], xIndex: number, yIndex: number, mask: Mask) {
@@ -48,11 +50,11 @@ export class BitmapDiffService {
             maskYEndIndex = maskYEndIndex - ((yIndex + maskYRadius) - (image.length - 1));
         }
 
-        for (let maskRowIndex: number = maskYStartIndex; maskRowIndex < maskYEndIndex; maskRowIndex++) {
-            for (let maskColumnIndex: number = maskXStartIndex; maskColumnIndex < maskXEndIndex; maskColumnIndex++) {
+        for (let maskRowIndex: number = maskYStartIndex; maskRowIndex <= maskYEndIndex; maskRowIndex++) {
+            for (let maskColumnIndex: number = maskXStartIndex; maskColumnIndex <= maskXEndIndex; maskColumnIndex++) {
                 const xCoord: number = xIndex - maskXRadius + maskColumnIndex;
                 const yCoord: number = yIndex - maskYRadius + maskRowIndex;
-                image[yCoord][xCoord] = mask[maskRowIndex][maskColumnIndex];
+                image[yCoord][xCoord] = mask.maskLayout[maskRowIndex][maskColumnIndex];
             }
         }
     }
