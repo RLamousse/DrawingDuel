@@ -1,7 +1,7 @@
 import {expect} from "chai";
 import * as fs from "fs";
-import {Bitmap} from "../../../common/image/Bitmap/Bitmap";
-import {BitmapFactory} from "../../../common/image/Bitmap/BitmapFactory";
+import {Bitmap} from "../../../common/image/Bitmap/bitmap";
+import {BitmapFactory} from "../../../common/image/Bitmap/bitmap-factory";
 import {BitmapDiffService} from "./bitmap-diff.service";
 
 const bitmapDiffService: BitmapDiffService = new BitmapDiffService();

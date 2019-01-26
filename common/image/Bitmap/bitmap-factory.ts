@@ -1,6 +1,6 @@
-import {Bitmap} from "./Bitmap";
-import * as BitmapUtils from "./BitmapUtils"
-import {getBytesPerRowForWidth} from "./BitmapUtils";
+import {Bitmap} from "./bitmap";
+import * as BitmapUtils from "./bitmap-utils"
+import {getBytesPerRowForWidth} from "./bitmap-utils";
 
 export class BitmapFactory {
     public static createBitmap(fileName: string, imageData: Buffer|number[][]) : Bitmap {

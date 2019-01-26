@@ -1,8 +1,8 @@
 import {injectable} from "inversify";
 import "reflect-metadata";
-import {Bitmap} from "../../../common/image/Bitmap/Bitmap";
-import {BitmapFactory} from "../../../common/image/Bitmap/BitmapFactory";
-import {DIFFERENCE_MASK, Mask} from "../../../common/image/Mask";
+import {Bitmap} from "../../../common/image/Bitmap/bitmap";
+import {BitmapFactory} from "../../../common/image/Bitmap/bitmap-factory";
+import {DIFFERENCE_MASK, Mask} from "../../../common/image/mask";
 
 @injectable()
 export class BitmapDiffService {

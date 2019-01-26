@@ -1,6 +1,11 @@
-import {Bitmap} from "./Bitmap";
 import * as fs from "fs";
-import {COLOR_DEPTH_24BPP_BYTES, getBytesPerRowForWidth, getHeaderForDimension, getTotalBytesForDimension} from "./BitmapUtils";
+import {Bitmap} from "../../../../common/image/Bitmap/bitmap";
+import {
+    COLOR_DEPTH_24BPP_BYTES,
+    getBytesPerRowForWidth,
+    getHeaderForDimension,
+    getTotalBytesForDimension
+} from "../../../../common/image/Bitmap/bitmap-utils";
 
 export class BitmapWriter {
     public static getBitmapBytes(bitmap: Bitmap): Buffer {
