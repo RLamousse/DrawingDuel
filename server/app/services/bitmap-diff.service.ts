@@ -12,16 +12,16 @@ export class BitmapDiffService {
             throw new Error("Cannot generate the difference if the images does not have the same dimensions");
         }
 
-        const diffMap: number[][] = new Array(sourceImage.width)
+        const diffMap: number[][] = new Array(sourceImage.height)
             .fill(SAME_PIXEL_COLOR)
-            .map(() => new Array(sourceImage.height).fill(SAME_PIXEL_COLOR));
+            .map(() => new Array(sourceImage.width).fill(SAME_PIXEL_COLOR));
 
         for (let i = 0; i < sourceImage.pixels.length; i++) {
             for (let j = 0; j < sourceImage.pixels[i].length; j++) {
                 const source = sourceImage.pixels[i][j];
                 const modif  = modifiedImage.pixels[i][j];
                 if (source !== modif) {
-                    this.drawMask(diffMap, i, j, DIFFERENCE_MASK);
+                    this.drawMask(diffMap, j, i, DIFFERENCE_MASK);
                 }
             }
         }

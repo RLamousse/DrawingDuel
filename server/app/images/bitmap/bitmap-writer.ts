@@ -25,7 +25,7 @@ export class BitmapWriter {
 
         return Buffer.concat([bitmapHeaderBuffer, bitmapPixelDataBuffer], bitmapHeaderBuffer.length + bitmapPixelDataBuffer.length);
     }
-    public static write(pathPrefix: string, bitmap: Bitmap): string {
+    public static write(bitmap: Bitmap, pathPrefix: string = "./"): string {
         const path: string = `${pathPrefix}${pathPrefix.endsWith("/") ? "" : "/"}${bitmap.fileName}`;
         fs.writeFileSync(path, this.getBitmapBytes(bitmap));
 

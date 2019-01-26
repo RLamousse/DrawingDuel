@@ -32,7 +32,7 @@ describe("A util class to write bitmaps to disk", () => {
         // Init
         mockfs();
         // Write to mock-fs
-        const path: string = BitmapWriter.write(os.tmpdir(), originalBitmap);
+        const path: string = BitmapWriter.write(originalBitmap, os.tmpdir());
         expect(fs.existsSync(path)).to.be.true;
         mockfs.restore(); // Restore mock fs to original state
     });
@@ -43,7 +43,7 @@ describe("A util class to write bitmaps to disk", () => {
         // Init
         mockfs();
         // Write to mock-fs
-        expect(() => BitmapWriter.write("/myFakeDir/", originalBitmap)).to.throw;
+        expect(() => BitmapWriter.write(originalBitmap, "/myFakeDir/")).to.throw;
         mockfs.restore(); // Restore mock fs to original state
     });
 });

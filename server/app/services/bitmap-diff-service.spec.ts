@@ -2,6 +2,7 @@ import {expect} from "chai";
 import * as fs from "fs";
 import {Bitmap} from "../../../common/image/Bitmap/bitmap";
 import {BitmapFactory} from "../images/bitmap/bitmap-factory";
+import {BitmapWriter} from "../images/bitmap/bitmap-writer";
 import {BitmapDiffService} from "./bitmap-diff.service";
 
 const bitmapDiffService: BitmapDiffService = new BitmapDiffService();
@@ -32,12 +33,22 @@ describe("A service generating the difference between two bitmaps", () => {
 
         expect(actualDiff.pixels).to.deep.equal(expectedDiff.pixels);
     });
-    // it("should return a valid diff for two related images (pikachu)", () => {
-    //     const expectedDiff: Bitmap = BitmapFactory.createBitmap("pika.diff.bmp", fs.readFileSync("test/test_bitmaps/pika.diff.bmp"));
-    //     const original: Bitmap = BitmapFactory.createBitmap("pika.o.bmp", fs.readFileSync("test/test_bitmaps/pika.o.bmp"));
-    //     const modified: Bitmap = BitmapFactory.createBitmap("pika.m.bmp", fs.readFileSync("test/test_bitmaps/pika.m.bmp"));
-    //     const actualDiff: Bitmap = bitmapDiffService.getDiff("test-diff.bmp", original, modified);
-    //
-    //     expect(actualDiff.pixels).to.be.equal(expectedDiff.pixels);
-    // });
+    it("should return a valid diff for two related images (navy seal)", () => {
+        const expectedDiff: Bitmap = BitmapFactory.createBitmap("seal.diff.bmp", fs.readFileSync("test/test_bitmaps/seal.diff.bmp"));
+        const modified: Bitmap = BitmapFactory.createBitmap("seal.m.bmp", fs.readFileSync("test/test_bitmaps/seal.m.bmp"));
+        const actualDiff: Bitmap = bitmapDiffService.getDiff("test-diff4.bmp", largeSolidWhiteBitmap, modified);
+
+        expect(Buffer.compare(BitmapWriter.getBitmapBytes(actualDiff), BitmapWriter.getBitmapBytes(expectedDiff))).to.equal(0);
+    });
+    it("should return a valid diff for two related images (pikachu)", () => {
+        const expectedDiff: Bitmap = BitmapFactory.createBitmap("pika.diff.bmp", fs.readFileSync("test/test_bitmaps/pika.diff.bmp"));
+        const original: Bitmap = BitmapFactory.createBitmap("pika.o.bmp", fs.readFileSync("test/test_bitmaps/pika.o.bmp"));
+        const modified: Bitmap = BitmapFactory.createBitmap("pika.m.bmp", fs.readFileSync("test/test_bitmaps/pika.m.bmp"));
+        const actualDiff: Bitmap = bitmapDiffService.getDiff("test-diff5.bmp", original, modified);
+
+        expect(Buffer.compare(BitmapWriter.getBitmapBytes(actualDiff), BitmapWriter.getBitmapBytes(expectedDiff))).to.equal(0);
+    });
+    it("should test shit", () => {
+        expect(true).to.be.true;
+    });
 });
