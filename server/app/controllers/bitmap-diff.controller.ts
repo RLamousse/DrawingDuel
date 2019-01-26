@@ -47,7 +47,7 @@ export class BitmapDiffController {
                 const modified: Bitmap = BitmapFactory.createBitmap(modifiedImageFile.originalname, modifiedImageFile.buffer);
 
                 const diffBitmap: Bitmap = this.bitmapDiffService.getDiff(diffFileName, source, modified);
-                BitmapWriter.write("./", diffBitmap);
+                BitmapWriter.write(diffBitmap);
 
                 // TODO: Set a place to put server answer constants (e.g success=200)
                 res.status((diffBitmap ? 200 : 500));

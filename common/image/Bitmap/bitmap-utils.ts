@@ -16,6 +16,8 @@ export const HEADER_SIZE_BYTES: number = 54;
 
 export const BITMAP_FILE_EXTENSION: string = ".bmp";
 
+export var BITS_PER_BYTE = 8;
+
 // 54 bytes
 export const BITMAP_HEADER_24BPP: number[] = [
     // BMP HEADER
