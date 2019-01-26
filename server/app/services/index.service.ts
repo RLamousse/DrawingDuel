@@ -1,9 +1,7 @@
-// import { Request } from "express";
 import { Message } from "../../../common/communication/message";
 import "reflect-metadata";
 import { injectable } from "inversify";
 import Axios from "axios";
-import {Request} from "express";
 
 @injectable()
 export class IndexService {
@@ -27,14 +25,6 @@ export class IndexService {
                 body: error.toString()
             };
         })
-    }
-
-    public async createGame(req: Request): Promise<Message> {
-
-        return {
-            title: "fileRecived!",
-            body: "file " + req.file.originalname + " receved!",
-        };
     }
 
 }

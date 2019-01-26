@@ -4,5 +4,7 @@ export default  {
         IndexController: Symbol("IndexController"),
         DateController: Symbol("DateController"),
         IndexService: Symbol("IndexService"),
-        DateService: Symbol("DateService")
+        DateService: Symbol("DateService"),
+        GameCreatorController: Symbol("GameCreatorController"),
+        GameCreatorService: Symbol("GameCreatorService"),
 };
