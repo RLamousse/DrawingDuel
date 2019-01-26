@@ -21,10 +21,12 @@
     "@angular/platform-browser": "~7.1.0",
     "@angular/platform-browser-dynamic": "~7.1.0",
     "@angular/router": "~7.1.0",
+    "@types/three": "^0.93.17",
     "core-js": "2.5.4",
     "rxjs": "~6.3.3",
     "socket.io": "^2.2.0",
     "socket.io-client": "^2.2.0",
+    "three": "^0.100.0",
     "zone.js": "~0.8.26"
   },
   "devDependencies": {
