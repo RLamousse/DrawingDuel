@@ -2,7 +2,7 @@ import {injectable} from "inversify";
 import "reflect-metadata";
 import {Bitmap} from "../../../common/image/Bitmap/bitmap";
 import {BitmapFactory} from "../images/bitmap/bitmap-factory";
-import {DIFFERENCE_MASK, Mask, SAME_PIXEL_COLOR} from "../../../common/image/mask";
+import {DIFFERENCE_MASK, DIFFERENT_PIXEL_COLOR, Mask, SAME_PIXEL_COLOR} from "../../../common/image/mask";
 
 @injectable()
 export class BitmapDiffService {
@@ -54,7 +54,9 @@ export class BitmapDiffService {
             for (let maskColumnIndex: number = maskXStartIndex; maskColumnIndex <= maskXEndIndex; maskColumnIndex++) {
                 const xCoord: number = xIndex - maskXRadius + maskColumnIndex;
                 const yCoord: number = yIndex - maskYRadius + maskRowIndex;
-                image[yCoord][xCoord] = mask.maskLayout[maskRowIndex][maskColumnIndex];
+                if (mask.maskLayout[maskRowIndex][maskColumnIndex]) {
+                    image[yCoord][xCoord] = DIFFERENT_PIXEL_COLOR;
+                }
             }
         }
     }

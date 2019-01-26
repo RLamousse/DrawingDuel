@@ -2,7 +2,6 @@ import {expect} from "chai";
 import * as fs from "fs";
 import {Bitmap} from "../../../common/image/Bitmap/bitmap";
 import {BitmapFactory} from "../images/bitmap/bitmap-factory";
-import {BitmapWriter} from "../images/bitmap/bitmap-writer";
 import {BitmapDiffService} from "./bitmap-diff.service";
 
 const bitmapDiffService: BitmapDiffService = new BitmapDiffService();
@@ -17,11 +16,9 @@ describe("A service generating the difference between two bitmaps", () => {
     it("should return a white image if the same image is passed as parameters", () => {
         const diff: Bitmap = bitmapDiffService.getDiff("test-diff1.bmp", smallSolidWhiteBitmap, smallSolidWhiteBitmap);
         expect(diff.pixels).to.deep.equal(smallSolidWhiteBitmap.pixels);
-        BitmapWriter.write("./", diff);
     });
     it("should return a black image if the two images are completely different", () => {
         const diff: Bitmap = bitmapDiffService.getDiff("test-diff2.bmp", smallSolidWhiteBitmap, smallSolidBlackBitmap);
-        BitmapWriter.write("./", diff);
         expect(diff.pixels).to.deep.equal(smallSolidBlackBitmap.pixels);
     });
     it("should draw the difference mask", () => {
@@ -34,7 +31,6 @@ describe("A service generating the difference between two bitmaps", () => {
         const actualDiff: Bitmap = bitmapDiffService.getDiff("test-diff3.bmp", smallSolidWhiteBitmap, modified);
 
         expect(actualDiff.pixels).to.deep.equal(expectedDiff.pixels);
-        BitmapWriter.write("./", actualDiff);
     });
     // it("should return a valid diff for two related images (pikachu)", () => {
     //     const expectedDiff: Bitmap = BitmapFactory.createBitmap("pika.diff.bmp", fs.readFileSync("test/test_bitmaps/pika.diff.bmp"));
