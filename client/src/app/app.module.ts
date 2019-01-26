@@ -9,13 +9,16 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule, MatFormFieldModule, MatSelectModule, MatInputModule } from '@angular/material';
 import { MatIconModule } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { AppRoutingModule } from './app-routing.module';
 
 import { UNListService } from "./username.service";
+import { GameListComponent } from './game-list/game-list.component';
  
 @NgModule({
   declarations: [
     AppComponent,
-    VueComponent
+    VueComponent,
+    GameListComponent
   ],
   imports: [
     BrowserModule,
@@ -27,7 +30,8 @@ import { UNListService } from "./username.service";
     MatIconModule,
     MatInputModule,
     MatFormFieldModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    AppRoutingModule
   ],
   providers: [IndexService, UNListService],
   bootstrap: [AppComponent]

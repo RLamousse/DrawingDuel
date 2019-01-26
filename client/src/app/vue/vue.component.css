@@ -13,11 +13,11 @@
     min-width: 250px;
     max-width: 500px;
     width: 100%;
-  }
-  
-  .example-full-width {
+}
+
+.example-full-width {
     width: 100%;
-  }
+}
 
 .title{
     color: darkblue;
@@ -25,10 +25,13 @@
 }
 
 .button{
-    background-color: darkblue;
-    color: white;
-    margin: auto;
-    padding: 10px;
-    font-weight: bold;
-    border-radius: 12px;
+    display: inline-block;
+    margin-right: 35px;
+    border:1.3px darkblue solid;
+}
+
+.buttonRow{
+    margin-right:35px;
+    display: flex;
+    flex-direction: row;
 }
