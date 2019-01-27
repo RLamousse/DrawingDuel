@@ -1,47 +1,72 @@
 import { expect } from "chai";
+import * as fs from "fs";
 import {DIFFERENCE_ERROR_MESSAGE, FORMAT_ERROR_MESSAGE, GAME_NAME_KEY, NAME_ERROR_MESSAGE} from "../controllers/game-creator.controller";
 import { GameCreatorService } from "./game-creator.service";
 
-const gameCreatorService: GameCreatorService = new GameCreatorService();
+const GAME_CREATOR_SERVICE: GameCreatorService = new GameCreatorService();
+const FILES_TO_COPY: String[] = ["original.bmp", "6diff-modified.bmp", "7diff-modified.bmp", "8diff-modified.bmp"];
 
 describe("Game creator service", () => {
 
     before(() => {
-        // TODO copy bmp files from test/test_files_for_game_creator_service to tmp/
+        for (const FILE of FILES_TO_COPY) {
+            fs.createReadStream("./test/test_files_for_game_creator_service/" + FILE)
+                .pipe(fs.createWriteStream("./tmp/" + FILE));
+        }
+        // TODO create a game called existingGameTest
+    });
+
+    beforeEach(() => {
+        // TODO remove nonExistingGameTest if there is any
     });
 
     it("should throw a format error if the strings are not the name of existing files", () => {
-        expect(() => gameCreatorService.createSimpleGame( "", "", ""))
+        expect(() => GAME_CREATOR_SERVICE.createSimpleGame( "nonExistingGameTest", "nonExistingFile.bmp", "7diff-modified.bmp"))
             .to.throw(FORMAT_ERROR_MESSAGE);
     });
 
-    it("should throw a difference error if the files don't have 7 difference", () => {
-        expect(() => gameCreatorService.createSimpleGame( "", "", ""))
+    it("should throw a difference error if the files have less than 7 difference", () => {
+        expect(() => GAME_CREATOR_SERVICE.createSimpleGame( "nonExistingGameTest", "original.bmp", "6diff-modified.bmp"))
             .to.throw(DIFFERENCE_ERROR_MESSAGE);
     });
 
-    it("should throw a difference error if the files don't have 7 difference (original image and modified image swaped)", () => {
-        expect(() => gameCreatorService.createSimpleGame( "", "", ""))
+    it("should throw a difference error if the files have less than 7 difference(swaped original and modified files)", () => {
+        expect(() => GAME_CREATOR_SERVICE.createSimpleGame( "nonExistingGameTest", "6diff-modified.bmp", "original.bmp"))
+            .to.throw(DIFFERENCE_ERROR_MESSAGE);
+    });
+
+    it("should throw a difference error if the files have more than 7 difference", () => {
+        expect(() => GAME_CREATOR_SERVICE.createSimpleGame( "nonExistingGameTest", "original.bmp", "8diff-modified.bmp"))
+            .to.throw(DIFFERENCE_ERROR_MESSAGE);
+    });
+
+    it("should throw a difference error if the files have more than 7 difference(swaped original and modified files)", () => {
+        expect(() => GAME_CREATOR_SERVICE.createSimpleGame( "nonExistingGameTest", "8diff-modified.bmp", "original.bmp"))
             .to.throw(DIFFERENCE_ERROR_MESSAGE);
     });
 
     it("should throw a name error if the name of the game already exists", () => {
-        expect(() => gameCreatorService.createSimpleGame( "", "", ""))
+        expect(() => GAME_CREATOR_SERVICE.createSimpleGame( "existingGameTest", "original.bmp", "7diff-modified.bmp"))
             .to.throw(NAME_ERROR_MESSAGE);
     });
 
     it("should return the created game confirm message", () => {
-        expect(gameCreatorService.createSimpleGame( "game 1", "", ""))
-            .to.deep.equal({title: GAME_NAME_KEY, body: "game 1"});
+        expect(GAME_CREATOR_SERVICE.createSimpleGame( "nonExistingGameTest", "original.bmp", "7diff-modified.bmp"))
+            .to.deep.equal({title: GAME_NAME_KEY, body: "nonExistingGameTest"});
     });
 
-    it("should return the created game confirm message(original image and modified image swaped)", () => {
+    it("should return the created game confirm message(swaped original and modified files)", () => {
         // console.log(gameCreatorService.createSimpleGame( "", "", ""));
-        expect(gameCreatorService.createSimpleGame( "game 1", "", ""))
-            .to.deep.equal({title: GAME_NAME_KEY, body: "game 1"});
+        expect(GAME_CREATOR_SERVICE.createSimpleGame( "nonExistingGameTest", "original.bmp", "7diff-modified.bmp"))
+            .to.deep.equal({title: GAME_NAME_KEY, body: "nonExistingGameTest"});
     });
 
     after(() => {
-        // TODO delete all copied files from the beginning
+        for (const FILE of FILES_TO_COPY) {
+            fs.unlink("./tmp/" + FILE, (error: Error) => {
+                if (error) { throw error; }
+            });
+        }
+        // TODO remove the game called existingGameTest
     });
 });
