@@ -32,19 +32,9 @@ const CP_UPLOAD: e.RequestHandler = UPLOAD.fields([{name: ORIGINAL_IMAGE_IDENTIF
 const GAME_NAME_IDENTIFIER: string = "gameName";
 
 // error messages
-const FORMAT_ERROR_MESSAGE: string = "Request sent by the client had the wrong format!";
-const DIFFERENCE_ERROR_MESSAGE: string = "The images that you sent don't have seven difference!";
-const NAME_ERROR_MESSAGE: string = "The game name that you sent already exists!";
-
-const CONFIRM_MESSAGE: Message =  {title: "All good!", body: "Game successfully created!"};
-
-export enum GameCreationStatus {
-    FormatError,
-    DifferenceError,
-    NameError,
-    OtherError,
-    AllGood,
-}
+export const DIFFERENCE_ERROR_MESSAGE: string = "The images that you sent don't have seven difference!";
+export const FORMAT_ERROR_MESSAGE: string = "Request sent by the client had the wrong format!";
+export const NAME_ERROR_MESSAGE: string = "The game name that you sent already exists!";
 
 @injectable()
 export class GameCreatorController {
@@ -60,34 +50,14 @@ export class GameCreatorController {
             if (!this.validityTest(req)) {
                 next(new Error(FORMAT_ERROR_MESSAGE));
             } else {
-                switch (this.gameCreatorService.createSimpleGame(
-                    req.body[GAME_NAME_IDENTIFIER],
-                    req.files[ORIGINAL_IMAGE_IDENTIFIER][0][FILE_NAME_KEY],
-                    req.files[MODIFIED_IMAGE_IDENTIFIER][0][FILE_NAME_KEY])) {
-                        case GameCreationStatus.FormatError: {
-                            next(new Error(FORMAT_ERROR_MESSAGE));
-                            break;
-                        }
-                        case GameCreationStatus.DifferenceError: {
-                            next(new Error(DIFFERENCE_ERROR_MESSAGE));
-                            break;
-                        }
-                        case GameCreationStatus.NameError: {
-                            next(new Error(NAME_ERROR_MESSAGE));
-                            break;
-                        }
-                        case GameCreationStatus.AllGood: {
-                            res.json(CONFIRM_MESSAGE);
-                            break;
-                        }
-                        case GameCreationStatus.OtherError: {
-                            console.error("An unexpected error occurred in gameCreatorService.createSimpleGame!");
-                            break;
-                        }
-                        default: {
-                            console.error("Error with gameCreatorService.createSimpleGame return value!");
-                        }
-                    }
+                try {
+                    res.json(this.gameCreatorService.createSimpleGame(
+                        req.body[GAME_NAME_IDENTIFIER],
+                        req.files[ORIGINAL_IMAGE_IDENTIFIER][0][FILE_NAME_KEY],
+                        req.files[MODIFIED_IMAGE_IDENTIFIER][0][FILE_NAME_KEY]));
+                } catch (error) {
+                    next(error);
+                }
             }
 
         });
