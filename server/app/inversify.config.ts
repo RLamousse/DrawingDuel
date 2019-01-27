@@ -7,7 +7,7 @@ import { IndexService } from "./services/index.service";
 import { DateController } from "./controllers/date.controller";
 import { DateService } from "./services/date.service";
 import { UserNameService } from "./services/UserName.service";
-import { UserController } from "./controllers/user.controller";
+import { UserController } from "./controllers/username.controller";
 
 const container: Container = new Container();
 

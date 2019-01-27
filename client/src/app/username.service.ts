@@ -1,11 +1,9 @@
-import { Injectable } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
+import { Injectable } from "@angular/core";
 
-import { Observable, of } from "rxjs";
-import { catchError } from 'rxjs/operators';
 import { UserValidationMessage } from "../../../common/communication/UserValidationMessage";
-
-
+import { of, Observable } from "rxjs";
+import { catchError } from "rxjs/operators";
 
 @Injectable()
 export class UNListService {
@@ -16,8 +14,7 @@ export class UNListService {
   public sendUserRequest(name: string): Observable<UserValidationMessage> {
     return this.http.post<UserValidationMessage>(this.BASE_URL, { username: name, available: false })
       .pipe(catchError(this.handleError<UserValidationMessage>("sendUserRequest")));
-  };
-  
+  }
 
   private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {
 

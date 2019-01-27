@@ -1,24 +1,22 @@
-import { BrowserModule } from "@angular/platform-browser";
 import { NgModule } from "@angular/core";
+import { BrowserModule } from "@angular/platform-browser";
 
-import { AppComponent } from "./app.component";
-import { IndexService } from "./index.service";
 import { HttpClientModule } from "@angular/common/http";
-import { VueComponent } from './vue/vue.component';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule, MatFormFieldModule, MatSelectModule, MatInputModule } from '@angular/material';
-import { MatIconModule } from '@angular/material';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { AppRoutingModule } from './app-routing.module';
-
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { MatButtonModule, MatFormFieldModule, MatIconModule, MatInputModule, MatSelectModule } from "@angular/material";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { AppRoutingModule } from "./app-routing.module";
+import { AppComponent } from "./app.component";
+import { GameListComponent } from "./game-list/game-list.component";
+import { IndexService } from "./index.service";
 import { UNListService } from "./username.service";
-import { GameListComponent } from './game-list/game-list.component';
- 
+import { VueComponent } from "./vue/vue.component";
+
 @NgModule({
   declarations: [
     AppComponent,
     VueComponent,
-    GameListComponent
+    GameListComponent,
   ],
   imports: [
     BrowserModule,
@@ -31,9 +29,9 @@ import { GameListComponent } from './game-list/game-list.component';
     MatInputModule,
     MatFormFieldModule,
     BrowserAnimationsModule,
-    AppRoutingModule
+    AppRoutingModule,
   ],
   providers: [IndexService, UNListService],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
 export class AppModule { }

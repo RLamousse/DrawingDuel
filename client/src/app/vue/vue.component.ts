@@ -1,66 +1,61 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { UNListService } from '../username.service';
+import { Component, Input, OnInit } from "@angular/core";
 import { UserValidationMessage } from "../../../../common/communication/UserValidationMessage";
+import { UNListService } from "../username.service";
 
 @Component({
-  selector: 'app-vue',
-  templateUrl: './vue.component.html',
-  styleUrls: ['./vue.component.css']
+  selector: "app-vue",
+  templateUrl: "./vue.component.html",
+  styleUrls: ["./vue.component.css"],
 })
 export class VueComponent implements OnInit {
 
-  @Input() newUsername: string;
-  message : string;
-  username: string = 'inconnu';
-  errorMessage: string = '';
+  @Input() private newUsername: string;
+  private message: string;
+  private username: string = "inconnu";
+  private errorMessage: string = "";
+  private minLenght: number = 4;
+  private response: UserValidationMessage;
 
-  response: UserValidationMessage;
-
-  constructor(
-    private userService: UNListService
+  public constructor(
+    private userService: UNListService,
   ) { }
 
-  ngOnInit() {
+  ngOnInit() { }
 
-  }
-  
-  async updateUsername() {
+  public async updateUsername() {
     if (await this.validateName(this.newUsername)) {
       this.username = this.newUsername;
     }
     this.errorMessage = this.message;
   }
 
-  isAlphanumeric(testString : string){
+  public isAlphanumeric(testString: string): boolean{
     return testString.match(/^[a-zA-Z0-9]+$/i) !== null;
   }
 
-  isAvailable(username: string): Promise<UserValidationMessage> {
+  public async isAvailable(username: string): Promise<UserValidationMessage> {
     return  this.userService.sendUserRequest(username).toPromise();
   }
-  async validateName(name : string){
-    if (name.length < 4) {
-      this.message = 'Ton identifiant est trop court!';
-      return false;
-    }
-    if (name.length > 12){
-      this.message = 'Ton identifiant est trop long!';
+  public async validateName(name: string) {
+    if (name.length < this.minLenght) {
+      this.message = "Ton identifiant est trop court!";
+
       return false;
     }
     if (!this.isAlphanumeric(name)) {
-      this.message = 'Tu dois utiliser seulement des caractères alphanumériques!';
+      this.message = "Tu dois utiliser seulement des caractères alphanumériques!";
+
       return false;
     }
-    else {
 
-      await this.isAvailable(name).then((response: UserValidationMessage) => this.response = response);
-      console.error(this.response);
-      if (!this.response.available) {
-        this.message = 'Cet identifiant est deja pris! Essaie un nouvel identifiant';
-        return false;
-      }
-      this.message = 'Ton identifiant est valide!!!';
-      return (true);   
+    await this.isAvailable(name).then((response: UserValidationMessage) => this.response = response);
+    if (!this.response.available) {
+      this.message = "Cet identifiant est deja pris! Essaie un nouvel identifiant";
+
+      return false;
     }
+    this.message = "Ton identifiant est valide!!!";
+
+    return (true);
   }
 }

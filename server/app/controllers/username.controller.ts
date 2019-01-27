@@ -14,7 +14,6 @@ export class UserController {
 
         router.post("/",
             async (req: Request, res: Response) => {
-                // Send the request to the service and send the response
                 let result = await this.userService.checkAvailability(req.body);
                 res.json(result);
             });
