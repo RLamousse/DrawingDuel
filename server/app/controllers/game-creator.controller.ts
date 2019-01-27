@@ -29,7 +29,7 @@ const UPLOAD: multer.Instance = multer({ fileFilter: FILE_FILTER, storage: STORA
 const CP_UPLOAD: e.RequestHandler = UPLOAD.fields([{name: ORIGINAL_IMAGE_IDENTIFIER, maxCount: 1},
                                                    {name: MODIFIED_IMAGE_IDENTIFIER, maxCount: 1}]);
 
-const FORMAT_ERROR_MESSAGE: Message = {title: "error", body: "Request sent by the client had the wrong format!"};
+const FORMAT_ERROR_MESSAGE: string = "Request sent by the client had the wrong format!";
 const GAME_NAME_IDENTIFIER: string = "gameName";
 
 @injectable()
@@ -43,13 +43,13 @@ export class GameCreatorController {
         router.post("/createSimpleGame",
                     CP_UPLOAD,
                     async (req: Request, res: Response, next: NextFunction) => {
-            if (!this.validityTest(req)) {
-                res.json(FORMAT_ERROR_MESSAGE);
-            } else {
+            if (this.validityTest(req)) {
                 res.json(await this.gameCreatorService.createSimpleGame(
                     req.body[GAME_NAME_IDENTIFIER],
                     req.files[ORIGINAL_IMAGE_IDENTIFIER][0][FILE_NAME_KEY],
                     req.files[MODIFIED_IMAGE_IDENTIFIER][0][FILE_NAME_KEY]));
+            } else {
+                next(new Error(FORMAT_ERROR_MESSAGE));
             }
 
         });
