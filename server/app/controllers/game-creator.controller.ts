@@ -2,7 +2,6 @@ import { NextFunction, Request, Response, Router } from "express";
 import e = require("express");
 import { inject, injectable } from "inversify";
 import * as multer from "multer";
-import {Message} from "../../../common/communication/message";
 import { GameCreatorService } from "../services/game-creator.service";
 import Types from "../types";
 
