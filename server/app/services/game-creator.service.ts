@@ -6,7 +6,7 @@ import {DIFFERENCE_ERROR_MESSAGE, FORMAT_ERROR_MESSAGE, NAME_ERROR_MESSAGE} from
 @injectable()
 export class GameCreatorService {
 
-    public async createSimpleGame(gameName: string, originalImage: string, modifiedImage: string): Promise<Message> {
+    public createSimpleGame(gameName: string, originalImage: string, modifiedImage: string): Message {
         return {title: "Game name", body: "name of the game that was successfully created"};
     }
 }
