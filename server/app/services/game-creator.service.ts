@@ -1,15 +1,13 @@
 import { injectable } from "inversify";
 import "reflect-metadata";
+import { GameCreationStatus } from "../controllers/game-creator.controller"
 import { Message } from "../../../common/communication/message";
 
 @injectable()
 export class GameCreatorService {
 
-    public async createSimpleGame(gameName: string, originalImage: string, modifiedImage: string): Promise<Message> {
+    public  createSimpleGame(gameName: string, originalImage: string, modifiedImage: string): GameCreationStatus {
 
-        return {
-            title: "h",
-            body: "b",
-        };
+        return GameCreationStatus.AllGood;
     }
 }
