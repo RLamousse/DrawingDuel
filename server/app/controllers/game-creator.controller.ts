@@ -6,7 +6,7 @@ import {Message} from "../../../common/communication/message";
 import { GameCreatorService } from "../services/game-creator.service";
 import Types from "../types";
 
-export const UPLOAD_PATH: string = "images/";
+export const UPLOAD_PATH: string = "tmp/";
 export const ORIGINAL_IMAGE_IDENTIFIER: string = "originalImage";
 export const MODIFIED_IMAGE_IDENTIFIER: string = "modifiedImage";
 const EXPECTED_FILES_FORMAT: string = "image/bmp";
