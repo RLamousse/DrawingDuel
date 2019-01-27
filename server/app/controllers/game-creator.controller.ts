@@ -28,7 +28,7 @@ const UPLOAD: multer.Instance = multer({ fileFilter: FILE_FILTER, storage: STORA
 const CP_UPLOAD: e.RequestHandler = UPLOAD.fields([{name: ORIGINAL_IMAGE_IDENTIFIER, maxCount: 1},
                                                    {name: MODIFIED_IMAGE_IDENTIFIER, maxCount: 1}]);
 
-const GAME_NAME_IDENTIFIER: string = "gameName";
+export const GAME_NAME_KEY: string = "gameName";
 
 // error messages
 export const DIFFERENCE_ERROR_MESSAGE: string = "The images that you sent don't have seven difference!";
@@ -51,7 +51,7 @@ export class GameCreatorController {
             } else {
                 try {
                     res.json(this.gameCreatorService.createSimpleGame(
-                        req.body[GAME_NAME_IDENTIFIER],
+                        req.body[GAME_NAME_KEY],
                         req.files[ORIGINAL_IMAGE_IDENTIFIER][0][FILE_NAME_KEY],
                         req.files[MODIFIED_IMAGE_IDENTIFIER][0][FILE_NAME_KEY]));
                 } catch (error) {
@@ -68,7 +68,7 @@ export class GameCreatorController {
         try {
             return (req.files[ORIGINAL_IMAGE_IDENTIFIER].length === 1 &&
                     req.files[MODIFIED_IMAGE_IDENTIFIER].length === 1 &&
-                    req.body[GAME_NAME_IDENTIFIER] !== "");
+                    req.body[GAME_NAME_KEY] !== "");
         } catch (error) {
             return false;
         }
