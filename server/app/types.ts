@@ -3,4 +3,6 @@ export default  {
         Application: Symbol("Application"),
         GameCreatorController: Symbol("GameCreatorController"),
         GameCreatorService: Symbol("GameCreatorService"),
+        DataBaseController: Symbol("DataBaseController"),
+        DataBaseService: Symbol("DataBaseService"),
 };
