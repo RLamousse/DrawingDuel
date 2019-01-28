@@ -1,0 +1,114 @@
+# ╔════════╗
+# ║ Stages ║
+# ╚════════╝
+
+stages:
+  - build
+  - test
+
+
+# ╔═══════╗
+# ║ Cache ║
+# ╚═══════╝
+
+cache:
+  paths:
+    - client/node_modules/
+    - server/node_modules/
+
+
+# ╔══════════════╗
+# ║ Stage: Build ║
+# ╚══════════════╝
+
+build client:
+  stage: build
+  tags:
+    - ts
+    - angular
+  before_script:
+    - cd client
+    - yarn
+  script:
+    - yarn build
+
+build server:
+  stage: build
+  tags:
+    - ts
+  before_script:
+    - cd server
+    - yarn
+  script:
+    - yarn tsc
+
+
+# ╔═════════════╗
+# ║ Stage: Test ║
+# ╚═════════════╝
+
+# Test job template
+.test:
+  stage: test
+  script: yarn test
+
+test client:
+  extends: .test
+  tags:
+    - angular
+  before_script:
+    - cd client
+
+test server:
+  extends: .test
+  tags:
+    - mocha
+  before_script:
+    - cd server
+
+# Coverage job template
+.coverage:
+  stage: test
+  script: yarn coverage
+  allow_failure: true
+
+client coverage:
+  extends: .coverage
+  tags:
+    - angular
+  before_script:
+    - cd client
+
+server coverage:
+  extends: .coverage
+  tags:
+    - mocha
+    - nyc
+  before_script:
+    - cd server
+  #coverage: '/All files\s+\|(?:\s+(\d+(?:\.\d+){0,1})\s\|){4}/'
+  artifacts:
+    untracked: false
+    expire_in: 30 days
+    paths:
+      - coverage
+
+# Lint report job template
+.lint:
+  stage: test
+  script: yarn lint
+  allow_failure: true
+
+client lint:
+  extends: .lint
+  tags:
+    - angular
+  before_script:
+    - cd client
+
+server lint:
+  extends: .lint
+  tags:
+    - ts
+  before_script:
+    - cd server
