@@ -6,8 +6,9 @@
   "scripts": {
     "start": "tsc && concurrently --kill-others \"tsc -w \" \"nodemon out/server/app/www.js\" ",
     "lint": "tslint --project tsconfig.json \"./app/**/*.ts\" --format stylish",
+    "fix-lint": "tslint --project tsconfig.json \"./app/**/*.ts\" --format stylish --fix",
     "test": "mocha",
-    "coverage": "nyc mocha",
+    "coverage": "nyc --check-coverage --lines 90 --reporter=html --reporter=text mocha -r ts-node/register app/**/*.spec.ts --opts ./test/mocha.opts",
     "tsc": "tsc",
     "tsc:w": "tsc -w",
     "clean": "rimraf out node_modules",
@@ -16,21 +17,27 @@
   "nyc": {
     "check-coverage": true,
     "per-file": true,
+    "lines": 90,
+    "statements": 90,
+    "functions": 90,
+    "branches": 90,
     "include": [
-      "app/services/**/*.ts"
+      "app/**/*.ts"
+    ],
+    "exclude": [
+      "app/*.ts",
+      "app/**/*.spec.ts",
+      "app/models/**/*.ts"
     ],
     "extension": [
       ".ts"
-    ],
-    "exclude": [
-      "**/*.spec.ts"
     ],
     "require": [
       "ts-node/register"
     ],
     "reporter": [
-      "html",
-      "text"
+      "text-summary",
+      "html"
     ],
     "all": true,
     "cache": true,

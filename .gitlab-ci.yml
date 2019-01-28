@@ -1,0 +1,131 @@
+# ╔════════╗
+# ║ Stages ║
+# ╚════════╝
+
+stages:
+  - build
+  - test
+  - post-test
+
+
+# ╔═══════╗
+# ║ Cache ║
+# ╚═══════╝
+
+cache:
+  paths:
+    - client/node_modules/
+    - server/node_modules/
+
+
+# ╔══════════════╗
+# ║ Stage: Build ║
+# ╚══════════════╝
+
+build client:
+  stage: build
+  tags:
+    - ts
+    - angular
+  before_script:
+    - cd client
+    - yarn
+  script:
+    - yarn build
+
+build server:
+  stage: build
+  tags:
+    - ts
+  before_script:
+    - cd server
+    - yarn
+  script:
+    - yarn tsc
+
+
+# ╔═════════════╗
+# ║ Stage: Test ║
+# ╚═════════════╝
+
+# Test job template
+.test:
+  stage: test
+  script: yarn test
+
+test client:
+  extends: .test
+  tags:
+    - angular
+  dependencies:
+    - build client
+  before_script:
+    - cd client
+
+test server:
+  extends: .test
+  tags:
+    - mocha
+  dependencies:
+    - build server
+  before_script:
+    - cd server
+
+# ╔══════════════════╗
+# ║ Stage: Post-Test ║
+# ╚══════════════════╝
+
+# Coverage job template
+.coverage:
+  stage: post-test
+  script: yarn coverage
+  allow_failure: true
+
+client coverage:
+  extends: .coverage
+  tags:
+    - angular
+  dependencies:
+    - test client
+  before_script:
+    - cd client
+
+server coverage:
+  extends: .coverage
+  tags:
+    - mocha
+    - nyc
+  dependencies:
+    - test server
+  before_script:
+    - cd server
+  #coverage: '/All files\s+\|(?:\s+(\d+(?:\.\d+){0,1})\s\|){4}/'
+  artifacts:
+    untracked: false
+    expire_in: 30 days
+    paths:
+      - coverage
+
+# Lint report job template
+.lint:
+  stage: post-test
+  script: yarn lint
+  allow_failure: true
+
+client lint:
+  extends: .lint
+  tags:
+    - angular
+  dependencies:
+    - test client
+  before_script:
+    - cd client
+
+server lint:
+  extends: .lint
+  tags:
+    - ts
+  dependencies:
+    - test server
+  before_script:
+    - cd server
