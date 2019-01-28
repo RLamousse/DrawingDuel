@@ -5,4 +5,5 @@ export default  {
         GameCreatorService: Symbol("GameCreatorService"),
         DataBaseController: Symbol("DataBaseController"),
         DataBaseService: Symbol("DataBaseService"),
+        DifferenceEvaluatorService: Symbol("DifferenceEvaluatorService"),
 };

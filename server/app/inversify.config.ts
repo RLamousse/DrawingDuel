@@ -4,6 +4,7 @@ import {DataBaseController} from "./controllers/data-base.controller";
 import { GameCreatorController } from "./controllers/game-creator.controller";
 import { Server } from "./server";
 import {DataBaseService} from "./services/data-base.service";
+import {DifferenceEvaluatorService} from "./services/difference-evaluator.service";
 import {GameCreatorService} from "./services/game-creator.service";
 import Types from "./types";
 
@@ -15,5 +16,6 @@ container.bind(Types.GameCreatorController).to(GameCreatorController);
 container.bind(Types.GameCreatorService).to(GameCreatorService);
 container.bind(Types.DataBaseController).to(DataBaseController);
 container.bind(Types.DataBaseService).to(DataBaseService);
+container.bind(Types.DifferenceEvaluatorService).to(DifferenceEvaluatorService);
 
 export { container };
