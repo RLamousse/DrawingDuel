@@ -31,7 +31,7 @@ export class Application {
     }
 
     public bindRoutes(): void {
-        this.app.use('/api/image-diff', this.bitmapDiffController.router);
+        this.app.use("/api/image-diff", this.bitmapDiffController.router);
         this.errorHandeling();
     }
 
@@ -50,7 +50,7 @@ export class Application {
                 res.status(err.status || this.internalError);
                 res.send({
                     message: err.message,
-                    error: err
+                    error: err,
                 });
             });
         }
@@ -62,7 +62,7 @@ export class Application {
             res.status(err.status || this.internalError);
             res.send({
                 message: err.message,
-                error: {}
+                error: {},
             });
         });
     }
