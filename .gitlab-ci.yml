@@ -23,17 +23,22 @@ cache:
 
 build client:
   stage: build
+  tags:
+    - ts
+    - angular
   before_script:
     - cd client
-    - yarn install
+    - yarn
   script:
     - yarn build
 
 build server:
   stage: build
+  tags:
+    - ts
   before_script:
     - cd server
-    - yarn install
+    - yarn
   script:
     - yarn tsc
 
@@ -49,11 +54,15 @@ build server:
 
 test client:
   extends: .test
+  tags:
+    - angular
   before_script:
     - cd client
 
 test server:
   extends: .test
+  tags:
+    - mocha
   before_script:
     - cd server
 
@@ -65,11 +74,16 @@ test server:
 
 client coverage:
   extends: .coverage
+  tags:
+    - angular
   before_script:
     - cd client
 
 server coverage:
   extends: .coverage
+  tags:
+    - mocha
+    - nyc
   before_script:
     - cd server
   #coverage: '/All files\s+\|(?:\s+(\d+(?:\.\d+){0,1})\s\|){4}/'
@@ -87,10 +101,14 @@ server coverage:
 
 client lint:
   extends: .lint
+  tags:
+    - angular
   before_script:
     - cd client
 
 server lint:
   extends: .lint
+  tags:
+    - ts
   before_script:
     - cd server
