@@ -6,8 +6,7 @@ import { UserValidationMessage } from "../../../common/communication/UserValidat
 export class UserNameService {
     private list: string[] = [];
     public async checkAvailability(user: UserValidationMessage): Promise<UserValidationMessage> {
-
-        if (this.list.indexOf(user.username) > -1) {
+        if (this.list.find(takenUser => takenUser === user.username )) {
             user.available = false;
             return user;
         }

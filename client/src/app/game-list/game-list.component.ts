@@ -11,3 +11,4 @@ export class GameListComponent implements OnInit {
 
   ngOnInit() {
   }
+}

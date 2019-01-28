@@ -1,9 +1,13 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
-
 import { VueComponent } from "./vue.component";
-
 import { FormsModule } from "@angular/forms";
+import {CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
+import { UserValidationMessage } from "../../../../common/communication/UserValidationMessage";
+import { UNListService } from "../username.service";
+import { HttpClientModule } from "@angular/common/http";
 
+
+// IMPORTANT : Since some tests add usernames to the database, please restart the database before launching tests.
 describe("VueComponent", () => {
   let component: VueComponent;
   let fixture: ComponentFixture<VueComponent>;
@@ -11,8 +15,9 @@ describe("VueComponent", () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [VueComponent],
-      imports: [FormsModule],
-
+      imports: [FormsModule, HttpClientModule],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      providers: [UNListService],
     });
   }));
 
@@ -38,62 +43,73 @@ describe("VueComponent", () => {
 
   // test validateName
   it("checks if the emtpy string is rejected", () => {
-    expect(component.validateName("")).toBe(false);
+    component.validateName("").then((response: boolean) => { expect(response).toBe(false) });
   });
 
-  it("checks if a too short string is rejected", () => {
-    expect(component.validateName("Jo")).toBe(false);
-    expect(component.validateName("TOM")).toBe(false);
-    expect(component.validateName("eva")).toBe(false);
-    expect(component.validateName("1v3")).toBe(false);
-    expect(component.validateName("123")).toBe(false);
+  it("checks if a too short string is rejected, only character", () => {
+    component.validateName("Jo").then((response: boolean) => { expect(response).toBe(false) });
   });
 
-  it("checks if a too long string is rejected", () => {
-    expect(component.validateName("JonathanSmith33")).toBe(false);
-    expect(component.validateName("1234567891322")).toBe(false);
-    expect(component.validateName("123JohnSnow123")).toBe(false);
+  it("checks if a too short string is rejected, char and number", () => {
+    component.validateName("Bo3").then((response: boolean) => { expect(response).toBe(false) });
+  });
+
+  it("checks if a too short string is rejected, only number", () => {
+    component.validateName("123").then((response: boolean) => { expect(response).toBe(false) });
   });
 
   it("checks if an alphanumeric string from 4 to 11 caracters is accepted", () => {
-    expect(component.validateName("JohnSnow")).toBe(true);
-    expect(component.validateName("123321")).toBe(true);
-    expect(component.validateName("Tom121")).toBe(true);
+    component.validateName("Darksolo4x").then((response: boolean) => { expect(response).toBe(true) });
   });
 
   it("checks if a chain from 4 to 11 caracters but not alphanumeric is rejected", () => {
-    expect(component.validateName("/!v:!;!")).toBe(false);
-    expect(component.validateName("tom-boy")).toBe(false);
-    expect(component.validateName("JO*78*")).toBe(false);
+    component.validateName("Dark*-!").then((response: boolean) => { expect(response).toBe(false) });
   });
 
   // test updateUsername
   it("checks if it overwrites username when a new valid one is entered", () => {
     component.username = "oldUsername";
     component.newUsername = "newUsername";
-    component.updateUsername();
-    expect(component.username).toBe("newUsername");
+    component.updateUsername().then(() => { expect(component.username).toBe("newUsername") });
   });
 
-  it("checks if it does not overwrites a userName when a new non-valid one is entered", () => {
+  it("checks if it does not overwrites a userName when a new non-valid one is entered, verification if not updated", () => {
     component.username = "oldUsername2";
     component.newUsername = "notValidUsername";
     component.updateUsername();
     expect(component.username).not.toBe("notValidUsername");
+  });
+
+  it("checks if it does not overwrites a userName when a new non-valid one is entered,verification if old one is still there", () => {
+    component.username = "oldUsername2";
+    component.newUsername = "notValidUsername";
+    component.updateUsername();
     expect(component.username).toBe("oldUsername2");
   });
 
   // Test isAvailable
-  it("checks if the entry username is available or already taken", () => {
-    expect(component.isAvailable("patate")).toBe(true);
-    expect(component.isAvailable("patate")).toBe(false);
-    expect(component.isAvailable("patate")).toBe(false);
+  it("checks if the entry username is available at first request", () => {
+    component.isAvailable("patate").then((response: UserValidationMessage) => { expect(response.available).toBe(true) });
+  });
+
+  it("checks if the entry username is already taken at second request", () => {
+    component.isAvailable("cooler").then();
+    component.isAvailable("cooler").then((response: UserValidationMessage) => { expect(response.available).toBe(false) });
+  });
+
+  it("checks if the entry username is available at first request, alphanumeric", () => {
+    component.isAvailable("patate123").then((response: UserValidationMessage) => { expect(response.available).toBe(true) });
+  });
+
+  it("checks if the entry username is already taken at second request, alphanumeric", () => {
+    component.isAvailable("Dark123").then();
+    component.isAvailable("Dark123").then((response: UserValidationMessage) => { expect(response.available).toBe(false) });
   });
 
   it("multiple username with different alphanumeric should pass", () => {
-    expect(component.isAvailable("boi48")).toBe(true);
-    expect(component.isAvailable("boi49")).toBe(true);
-    expect(component.isAvailable("48boi")).toBe(true);
+    component.isAvailable("slow123").then();
+    component.isAvailable("123slow").then();
+    component.isAvailable("sl123ow").then((response: UserValidationMessage) => { expect(response.available).toBe(true) });
   });
 
 });

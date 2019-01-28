@@ -9,10 +9,10 @@ import { UNListService } from "../username.service";
 })
 export class VueComponent implements OnInit {
 
-  @Input() private newUsername: string;
-  private message: string;
-  private username: string = "inconnu";
-  private errorMessage: string = "";
+  @Input() public newUsername: string;
+  public message: string;
+  public username: string = "inconnu";
+  public errorMessage: string = "";
   private minLenght: number = 4;
   private response: UserValidationMessage;
 
@@ -22,7 +22,7 @@ export class VueComponent implements OnInit {
 
   ngOnInit() { }
 
-  public async updateUsername() {
+  public async updateUsername(): Promise<void> {
     if (await this.validateName(this.newUsername)) {
       this.username = this.newUsername;
     }
@@ -34,9 +34,9 @@ export class VueComponent implements OnInit {
   }
 
   public async isAvailable(username: string): Promise<UserValidationMessage> {
-    return  this.userService.sendUserRequest(username).toPromise();
+    return  await this.userService.sendUserRequest(username).toPromise();
   }
-  public async validateName(name: string) {
+  public async validateName(name: string): Promise<boolean> {
     if (name.length < this.minLenght) {
       this.message = "Ton identifiant est trop court!";
 

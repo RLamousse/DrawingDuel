@@ -6,6 +6,7 @@ import { FormsModule } from "@angular/forms";
 import { AppComponent } from "./app.component";
 import { IndexService } from "./index.service";
 import { VueComponent } from "./vue/vue.component";
+import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 describe("AppComponent", () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -15,6 +16,7 @@ describe("AppComponent", () => {
       ],
       imports: [HttpClientModule, FormsModule],
       providers: [IndexService],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).compileComponents();
   }));
   it("should create the app", async(() => {
