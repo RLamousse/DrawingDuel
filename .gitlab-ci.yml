@@ -23,18 +23,16 @@ build client:
   stage: build
   tags:
     - angular
-  before_script:
-    - cd client
   script:
+    - cd client
     - yarn build
 
 build server:
   stage: build
   tags:
     - ts
-  before_script:
-    - cd server
   script:
+    - cd server
     - yarn tsc
 
 
@@ -45,7 +43,6 @@ build server:
 # Test job template
 .test:
   stage: test
-  script: yarn test
 
 test client:
   extends: .test
@@ -55,8 +52,9 @@ test client:
     - chrome
   dependencies:
     - build client
-  before_script:
+  script:
     - cd client
+    - yarn test
 
 test server:
   extends: .test
@@ -64,8 +62,9 @@ test server:
     - mocha
   dependencies:
     - build server
-  before_script:
+  script:
     - cd server
+    - yarn test
 
 # ╔══════════════════╗
 # ║ Stage: Post-Test ║
@@ -74,7 +73,6 @@ test server:
 # Coverage job template
 .coverage:
   stage: post-test
-  script: yarn coverage
   coverage: /Lines\s+:\s*(\d+(?:\.\d*)?%)\s+\(\s+\d+\/\d+\s+\)/
   artifacts:
     untracked: false
@@ -88,8 +86,9 @@ client coverage:
     - angular
   dependencies:
     - test client
-  before_script:
+  script:
     - cd client
+    - yarn coverage
 
 server coverage:
   extends: .coverage
@@ -98,13 +97,13 @@ server coverage:
     - nyc
   dependencies:
     - test server
-  before_script:
+  script:
     - cd server
+    - yarn coverage
 
 # Lint report job template
 .lint:
   stage: post-test
-  script: yarn lint
   allow_failure: true
 
 client lint:
@@ -113,8 +112,9 @@ client lint:
     - angular
   dependencies:
     - test client
-  before_script:
+  script:
     - cd client
+    - yarn lint
 
 server lint:
   extends: .lint
@@ -122,5 +122,6 @@ server lint:
     - ts
   dependencies:
     - test server
-  before_script:
+  script:
     - cd server
+    - yarn lint
