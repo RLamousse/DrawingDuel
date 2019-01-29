@@ -7,14 +7,6 @@ stages:
   - test
   - post-test
 
-
-# ╔═══════════════╗
-# ║ before_script ║
-# ╚═══════════════╝
-
-before_script:
-  - npm ci
-
 # ╔══════════════╗
 # ║ Stage: Build ║
 # ╚══════════════╝
@@ -22,11 +14,10 @@ before_script:
 build client:
   stage: build
   tags:
-    - ts
     - angular
   before_script:
     - cd client
-    - yarn
+    - npm ci
   script:
     - yarn build
 
@@ -36,7 +27,7 @@ build server:
     - ts
   before_script:
     - cd server
-    - yarn
+    - npm ci
   script:
     - yarn tsc
 
@@ -60,6 +51,8 @@ test client:
     - build client
   before_script:
     - cd client
+    - npm ci
+
 
 test server:
   extends: .test
@@ -69,6 +62,7 @@ test server:
     - build server
   before_script:
     - cd server
+    - npm ci
 
 # ╔══════════════════╗
 # ║ Stage: Post-Test ║
@@ -93,6 +87,7 @@ client coverage:
     - test client
   before_script:
     - cd client
+    - npm ci
 
 server coverage:
   extends: .coverage
@@ -103,6 +98,7 @@ server coverage:
     - test server
   before_script:
     - cd server
+    - npm ci
 
 # Lint report job template
 .lint:
@@ -118,6 +114,7 @@ client lint:
     - test client
   before_script:
     - cd client
+    - npm ci
 
 server lint:
   extends: .lint
@@ -127,3 +124,4 @@ server lint:
     - test server
   before_script:
     - cd server
+    - npm ci
