@@ -57,6 +57,7 @@ test client:
   extends: .test
   tags:
     - angular
+    - ng-test
   dependencies:
     - build client
   before_script:
