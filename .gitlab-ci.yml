@@ -58,6 +58,7 @@ test client:
   tags:
     - angular
     - ng-test
+    - chrome
   dependencies:
     - build client
   before_script:
