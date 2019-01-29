@@ -8,15 +8,12 @@ stages:
   - post-test
 
 
-# ╔═══════╗
-# ║ Cache ║
-# ╚═══════╝
+# ╔═══════════════╗
+# ║ before_script ║
+# ╚═══════════════╝
 
-cache:
-  paths:
-    - client/node_modules/
-    - server/node_modules/
-
+before_script:
+  - npm ci
 
 # ╔══════════════╗
 # ║ Stage: Build ║
