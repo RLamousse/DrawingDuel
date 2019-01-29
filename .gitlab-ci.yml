@@ -22,11 +22,9 @@ before_script:
 build client:
   stage: build
   tags:
-    - ts
     - angular
   before_script:
     - cd client
-    - yarn
   script:
     - yarn build
 
@@ -36,7 +34,6 @@ build server:
     - ts
   before_script:
     - cd server
-    - yarn
   script:
     - yarn tsc
 
