@@ -1,3 +1,4 @@
+// tslint:disable:no-unused-expression
 import {expect} from "chai";
 import * as fs from "fs";
 import {Bitmap} from "../../../common/image/Bitmap/bitmap";

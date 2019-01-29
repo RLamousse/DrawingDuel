@@ -1,8 +1,8 @@
 import {injectable} from "inversify";
 import "reflect-metadata";
 import {Bitmap} from "../../../common/image/Bitmap/bitmap";
-import {BitmapFactory} from "../images/bitmap/bitmap-factory";
 import {DIFFERENCE_MASK, DIFFERENT_PIXEL_COLOR, Mask, SAME_PIXEL_COLOR} from "../../../common/image/mask";
+import {BitmapFactory} from "../images/bitmap/bitmap-factory";
 
 @injectable()
 export class BitmapDiffService {
@@ -16,10 +16,10 @@ export class BitmapDiffService {
             .fill(SAME_PIXEL_COLOR)
             .map(() => new Array(sourceImage.width).fill(SAME_PIXEL_COLOR));
 
-        for (let i = 0; i < sourceImage.pixels.length; i++) {
-            for (let j = 0; j < sourceImage.pixels[i].length; j++) {
-                const source = sourceImage.pixels[i][j];
-                const modif  = modifiedImage.pixels[i][j];
+        for (let i: number = 0; i < sourceImage.pixels.length; i++) {
+            for (let j: number = 0; j < sourceImage.pixels[i].length; j++) {
+                const source: number = sourceImage.pixels[i][j];
+                const modif: number  = modifiedImage.pixels[i][j];
                 if (source !== modif) {
                     this.drawMask(diffMap, j, i, DIFFERENCE_MASK);
                 }
@@ -29,7 +29,7 @@ export class BitmapDiffService {
         return BitmapFactory.createBitmap(diffFileName, diffMap);
     }
 
-    private drawMask(image: number[][], xIndex: number, yIndex: number, mask: Mask) {
+    private drawMask(image: number[][], xIndex: number, yIndex: number, mask: Mask): void {
         const maskXRadius: number = Math.floor(mask.width / 2);
         const maskYRadius: number = Math.floor(mask.height / 2);
         let maskXStartIndex: number = 0;
@@ -49,7 +49,6 @@ export class BitmapDiffService {
         if (yIndex + maskYRadius >= image.length) {
             maskYEndIndex = maskYEndIndex - ((yIndex + maskYRadius) - (image.length - 1));
         }
-
         for (let maskRowIndex: number = maskYStartIndex; maskRowIndex <= maskYEndIndex; maskRowIndex++) {
             for (let maskColumnIndex: number = maskXStartIndex; maskColumnIndex <= maskXEndIndex; maskColumnIndex++) {
                 const xCoord: number = xIndex - maskXRadius + maskColumnIndex;

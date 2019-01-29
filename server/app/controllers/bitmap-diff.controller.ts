@@ -3,8 +3,6 @@ import * as HttpStatus from "http-status-codes";
 import { inject, injectable } from "inversify";
 import multer = require("multer");
 import { Bitmap } from "../../../common/image/Bitmap/bitmap";
-import FileNotFoundException from "../Exceptions/fileNotFoundException";
-import IllegalBitMapSizeException from "../Exceptions/illegalBitMapSizeException";
 import { BitmapFactory } from "../images/bitmap/bitmap-factory";
 import { BitmapWriter } from "../images/bitmap/bitmap-writer";
 import { BitmapDiffService } from "../services/bitmap-diff.service";
@@ -48,8 +46,8 @@ export class BitmapDiffController {
                 const originalImageFile: Express.Multer.File = req.files["originalImage"][0];
                 const modifiedImageFile: Express.Multer.File = req.files["modifiedImage"][1];
                 try {
-                    this.checkFileExist(originalImageFile, originalImageFile.originalname);
-                    this.checkFileExist(modifiedImageFile, modifiedImageFile.originalname);
+                    this.checkFileExist(originalImageFile, "originalImage");
+                    this.checkFileExist(modifiedImageFile, "modifiedImage");
                 } catch (error) {
                     this.anserWithError(error, res);
 
@@ -91,18 +89,18 @@ export class BitmapDiffController {
 
     private checkFileExist(file: Express.Multer.File, fileName: string): void {
         if (!file) {
-            throw new FileNotFoundException(`No ${fileName} bitmap file was found`);
+            throw new Error(`No ${fileName} bitmap file was found`);
         }
     }
 
     private checkBitMapSizeOk(bitmap: Bitmap): void {
         if (bitmap.height !== this.REQUIRED_IMAGE_HEIGHT || bitmap.width !== this.REQUIRED_IMAGE_WIDTH) {
-            throw new IllegalBitMapSizeException(`${bitmap.fileName} bitmap file is not the right size`);
+            throw new Error(`${bitmap.fileName} bitmap file is not the right size`);
         }
     }
 
     private anserWithError(error: Error, res: Response): void {
-        console.error((error as Error).stack);
+        // console.error((error as Error).stack);
         res.status(HttpStatus.INTERNAL_SERVER_ERROR);
         res.json({
             status: "error",
