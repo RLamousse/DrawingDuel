@@ -7,14 +7,6 @@ stages:
   - test
   - post-test
 
-
-# ╔═══════════════╗
-# ║ before_script ║
-# ╚═══════════════╝
-
-before_script:
-  - npm ci
-
 # ╔══════════════╗
 # ║ Stage: Build ║
 # ╚══════════════╝
@@ -23,16 +15,20 @@ build client:
   stage: build
   tags:
     - angular
-  script:
+  before_script:
     - cd client
+    - npm ci
+  script:
     - yarn build
 
 build server:
   stage: build
   tags:
     - ts
-  script:
+  before_script:
     - cd server
+    - npm ci
+  script:
     - yarn tsc
 
 
@@ -43,6 +39,7 @@ build server:
 # Test job template
 .test:
   stage: test
+  script: yarn test
 
 test client:
   extends: .test
@@ -52,9 +49,10 @@ test client:
     - chrome
   dependencies:
     - build client
-  script:
+  before_script:
     - cd client
-    - yarn test
+    - npm ci
+
 
 test server:
   extends: .test
@@ -62,9 +60,9 @@ test server:
     - mocha
   dependencies:
     - build server
-  script:
+  before_script:
     - cd server
-    - yarn test
+    - npm ci
 
 # ╔══════════════════╗
 # ║ Stage: Post-Test ║
@@ -73,6 +71,7 @@ test server:
 # Coverage job template
 .coverage:
   stage: post-test
+  script: yarn coverage
   coverage: /Lines\s+:\s*(\d+(?:\.\d*)?%)\s+\(\s+\d+\/\d+\s+\)/
   artifacts:
     untracked: false
@@ -86,9 +85,9 @@ client coverage:
     - angular
   dependencies:
     - test client
-  script:
+  before_script:
     - cd client
-    - yarn coverage
+    - npm ci
 
 server coverage:
   extends: .coverage
@@ -97,13 +96,14 @@ server coverage:
     - nyc
   dependencies:
     - test server
-  script:
+  before_script:
     - cd server
-    - yarn coverage
+    - npm ci
 
 # Lint report job template
 .lint:
   stage: post-test
+  script: yarn lint
   allow_failure: true
 
 client lint:
@@ -112,9 +112,9 @@ client lint:
     - angular
   dependencies:
     - test client
-  script:
+  before_script:
     - cd client
-    - yarn lint
+    - npm ci
 
 server lint:
   extends: .lint
@@ -122,6 +122,6 @@ server lint:
     - ts
   dependencies:
     - test server
-  script:
+  before_script:
     - cd server
-    - yarn lint
+    - npm ci
