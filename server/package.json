@@ -8,14 +8,14 @@
     "lint": "tslint --project tsconfig.json \"./app/**/*.ts\" --format stylish",
     "fix-lint": "tslint --project tsconfig.json \"./app/**/*.ts\" --format stylish --fix",
     "test": "mocha",
-    "coverage": "nyc mocha -r ts-node/register app/**/*.spec.ts --opts ./test/mocha.opts",
+    "coverage": "nyc mocha --opts ./test/mocha.opts",
     "tsc": "tsc",
     "tsc:w": "tsc -w",
     "clean": "rimraf out node_modules",
     "postinstall": "rimraf false"
   },
   "nyc": {
-    "check-coverage": true,
+    "check-coverage": false,
     "per-file": true,
     "include": [
       "app/**/*.ts"
