@@ -2,6 +2,7 @@ import {injectable} from "inversify";
 import "reflect-metadata";
 import {Bitmap} from "../../../common/image/Bitmap/bitmap";
 import {DIFFERENCE_MASK, DIFFERENT_PIXEL_COLOR, Mask, SAME_PIXEL_COLOR} from "../../../common/image/mask";
+import {create2dArray} from "../../../common/util/util";
 import {BitmapFactory} from "../images/bitmap/bitmap-factory";
 
 @injectable()
@@ -12,10 +13,7 @@ export class BitmapDiffService {
             throw new Error("Cannot generate the difference if the images does not have the same dimensions");
         }
 
-        const diffMap: number[][] = new Array(sourceImage.height)
-            .fill(SAME_PIXEL_COLOR)
-            .map(() => new Array(sourceImage.width).fill(SAME_PIXEL_COLOR));
-
+        const diffMap: number[][] = create2dArray(sourceImage.width, sourceImage.height, SAME_PIXEL_COLOR);
         for (let i: number = 0; i < sourceImage.pixels.length; i++) {
             for (let j: number = 0; j < sourceImage.pixels[i].length; j++) {
                 const source: number = sourceImage.pixels[i][j];

@@ -1,3 +1,6 @@
+export const BMP_ID_FIELD_OFFSET: number = 0x0;
+export const BMP_ID_FIELD_LENGTH: number = 2;
+export const BMP_ID_FIELD: number = 0x4D42;
 export const FILE_SIZE_FLAG_OFFSET: number = 0x2;
 export const FILE_SIZE_FLAG_LENGTH: number = 4;
 export const RAW_BITMAP_OFFSET_FLAG_OFFSET: number = 0xA;
