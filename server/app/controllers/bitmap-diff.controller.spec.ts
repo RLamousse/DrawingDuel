@@ -7,7 +7,7 @@ import { container } from "../inversify.config";
 
 const errorMessage = (error: Error) => {
     return {
-        message: "error",
+        status: "error",
         error,
     }
 };
@@ -67,6 +67,7 @@ describe("Bitmap diff controller", () => {
             .post("/api/image-diff")
             .field('name', 'testDiff')
             .attach('originalImage', './test/test_diffController/nope.bmp')
+            .expect(500)
             .then((response) => {
                 expect(response.body).to.deep.equal(
                     errorMessage(new Error(`originalImage bitmap file is not the right size`)));
