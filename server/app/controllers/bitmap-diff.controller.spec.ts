@@ -12,10 +12,29 @@ const errorResponse = (errorMessage: string) => {
     }
 };
 
+const okResponse = (fileName: string, filePath: string) => {
+    return {
+        status: "ok",
+        fileName: fileName,
+        filePath: filePath,
+    }
+};
+
+const mockedBitmapService = {
+        getDiff: () => "filename"
+};
+
+const mockedBitmapWriter = {
+        write: () => "filePath"
+};
+
+
 describe("Bitmap diff controller", () => {
     let app: Express.Application;
 
     beforeEach(() => {
+        container.rebind(types.BitmapDiffService).toConstantValue(mockedBitmapService);
+        container.rebind(types.BitmapWriter).toConstantValue(mockedBitmapWriter);
         app = container.get<Application>(types.Application).app;
     });
 
@@ -25,7 +44,7 @@ describe("Bitmap diff controller", () => {
             .field('name', 'testDiff1')
             .then((response) => {
                 expect(response.body).to.deep.equal(
-                    errorResponse("Error: No originalImage bitmap file was found"));
+                    errorResponse("Error: No files were included in request"));
             });
     });
 
@@ -33,7 +52,7 @@ describe("Bitmap diff controller", () => {
         return request(app)
             .post("/api/image-diff")
             .field('name', 'testDiff2')
-            .attach('modifiedImage', './test/test_bitmaps/black10x10.bmp')
+            .attach('modifiedImage', './test/test_bitmaps/white640x480.bmp')
             .then((response) => {
                 expect(response.body).to.deep.equal(
                     errorResponse("Error: No originalImage bitmap file was found"));
@@ -44,7 +63,7 @@ describe("Bitmap diff controller", () => {
         return request(app)
             .post("/api/image-diff")
             .field('name', 'testDiff3')
-            .attach('originalImage', './test/test_bitmaps/black10x10.bmp')
+            .attach('originalImage', './test/test_bitmaps/white640x480.bmp')
             .then((response) => {
                 expect(response.body).to.deep.equal(
                     errorResponse("Error: No modifiedImage bitmap file was found"));
@@ -81,9 +100,20 @@ describe("Bitmap diff controller", () => {
             .attach('modifiedImage', './test/test_bitmaps/black10x10.bmp')
             .expect(500)
             .then((response) => {
-                
                 expect(response.body).to.deep.equal(
                     errorResponse("Error: No name was specified"));
+            });
+    });
+
+    it("should send an success response for valid data", async () => {
+        return request(app)
+            .post("/api/image-diff")
+            .field('name', 'testDiff7')
+            .attach('originalImage', './test/test_bitmaps/pika.o.bmp')
+            .attach('modifiedImage', './test/test_bitmaps/pika.m.bmp')
+            .expect(200)
+            .then((response) => {
+                expect(response.body).to.deep.equal(okResponse("testDiff7", "filePath"));
             });
     });
 });

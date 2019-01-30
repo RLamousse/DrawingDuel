@@ -11,12 +11,9 @@ import Types from "../types";
 @injectable()
 export class BitmapDiffController {
 
-    private readonly _storage: multer.StorageEngine;
-    private readonly _multer: multer.Instance;
-    private readonly REQUIRED_IMAGE_HEIGHT: number = 480;
-    private readonly REQUIRED_IMAGE_WIDTH: number = 640;
-
-    public constructor(@inject(Types.BitmapDiffService) private bitmapDiffService: BitmapDiffService) {
+    public constructor(
+        @inject(Types.BitmapDiffService) private bitmapDiffService: BitmapDiffService,
+        @inject(Types.BitmapWriter) private bitmapWriter: BitmapWriter) {
         this._storage = multer.memoryStorage();
         this._multer = multer({
             storage: this._storage,
@@ -51,26 +48,26 @@ export class BitmapDiffController {
                         if (diffFileName === undefined) {
                             throw new Error("Error: No name was specified");
                         }
-                        if (req.files) {
-                            BitmapDiffController.checkFileExists(req.files["originalImage"], "originalImage");
-                            BitmapDiffController.checkFileExists(req.files["modifiedImage"], "modifiedImage");
+                        if (req.files[BitmapDiffController.ORIGINAL_IMAGE_FIELD_NAME] === undefined &&
+                            req.files[BitmapDiffController.MODIFIED_IMAGE_FIELD_NAME] === undefined) {
+                            throw new Error("Error: No files were included in request");
                         }
 
-                        const originalImageFile: Express.Multer.File = req.files["originalImage"][0];
-                        const modifiedImageFile: Express.Multer.File = req.files["modifiedImage"][0];
+                        const originalBitmap: Bitmap = BitmapDiffController.createBitmapFromRequest(
+                            req.files, BitmapDiffController.ORIGINAL_IMAGE_FIELD_NAME);
+                        const modifiedBitmap: Bitmap = BitmapDiffController.createBitmapFromRequest(
+                            req.files, BitmapDiffController.MODIFIED_IMAGE_FIELD_NAME);
 
-                        const source: Bitmap = BitmapFactory.createBitmap(originalImageFile.originalname, originalImageFile.buffer);
-                        const modified: Bitmap = BitmapFactory.createBitmap(modifiedImageFile.originalname, modifiedImageFile.buffer);
-
-                        this.checkBitMapSizeOk(source);
-                        this.checkBitMapSizeOk(modified);
-
-                        const diffBitmap: Bitmap = this.bitmapDiffService.getDiff(diffFileName, source, modified);
-                        BitmapWriter.write(diffBitmap);
+                        const diffBitmap: Bitmap = this.bitmapDiffService.getDiff(diffFileName, originalBitmap, modifiedBitmap);
+                        const bitmapDiffPath: string = this.bitmapWriter.write(diffBitmap);
                         res.status((diffBitmap ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR));
-                        res.json(diffBitmap.toString());
+                        res.json({
+                             status: "ok",
+                             fileName: diffFileName,
+                             filePath: bitmapDiffPath,
+                        });
                     } catch (error) {
-                        this.answerWithError(error, res);
+                        BitmapDiffController.answerWithError(error, res);
 
                         return;
                     }
@@ -79,25 +76,45 @@ export class BitmapDiffController {
         return router;
     }
 
+    private static readonly REQUIRED_IMAGE_HEIGHT: number = 480;
+    private static readonly REQUIRED_IMAGE_WIDTH: number = 640;
+    private static readonly ORIGINAL_IMAGE_FIELD_NAME: string = "originalImage";
+    private static readonly MODIFIED_IMAGE_FIELD_NAME: string = "modifiedImage";
+
+    private readonly _storage: multer.StorageEngine;
+    private readonly _multer: multer.Instance;
+
+    private static createBitmapFromRequest(
+        files: Express.Multer.File[]|{[fieldname: string]: Express.Multer.File[]},
+        field: string): Bitmap {
+
+        BitmapDiffController.checkFileExists(files[field], field);
+        const bitmapFile: Express.Multer.File = files[field][0];
+        const bitmap: Bitmap = BitmapFactory.createBitmap(bitmapFile.originalname, bitmapFile.buffer);
+        BitmapDiffController.checkBitMapSizeOk(bitmap);
+
+        return bitmap;
+    }
+
     private static checkFileExists(file: Express.Multer.File, fileName: string): void {
         if (!file) {
             throw new Error(`Error: No ${fileName} bitmap file was found`);
         }
     }
 
-    private checkBitMapSizeOk(bitmap: Bitmap): void {
-        if (bitmap.height !== this.REQUIRED_IMAGE_HEIGHT || bitmap.width !== this.REQUIRED_IMAGE_WIDTH) {
-            throw new Error(`Error: ${bitmap.fileName} bitmap file is not the right size`);
-        }
-    }
-
-    private answerWithError(error: Error, res: Response): void {
+    private static answerWithError(error: Error, res: Response): void {
         // console.error(error);
         res.status(HttpStatus.INTERNAL_SERVER_ERROR);
         res.json({
             status: "error",
             error: error.message,
         });
+    }
+
+    private static checkBitMapSizeOk(bitmap: Bitmap): void {
+        if (bitmap.height !== BitmapDiffController.REQUIRED_IMAGE_HEIGHT || bitmap.width !== BitmapDiffController.REQUIRED_IMAGE_WIDTH) {
+            throw new Error(`Error: ${bitmap.fileName} bitmap file is not the right size`);
+        }
     }
 
 }

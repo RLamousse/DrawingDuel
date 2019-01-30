@@ -1,4 +1,6 @@
 import * as fs from "fs";
+import {injectable} from "inversify";
+import "reflect-metadata";
 import {Bitmap} from "../../../../common/image/Bitmap/bitmap";
 import {
     getBytesPerRowForWidth,
@@ -7,8 +9,9 @@ import {
     COLOR_DEPTH_24BPP_BYTES
 } from "../../../../common/image/Bitmap/bitmap-utils";
 
+@injectable()
 export class BitmapWriter {
-    public static getBitmapBytes(bitmap: Bitmap): Buffer {
+    public getBitmapBytes(bitmap: Bitmap): Buffer {
         const bitmapHeaderBuffer: Buffer = getHeaderForDimension(bitmap.width, bitmap.height);
         const bitmapPixelDataBuffer: Buffer = Buffer.alloc(getTotalBytesForDimension(bitmap.width, bitmap.height), 0x0);
         const bytesPerRow: number = getBytesPerRowForWidth(bitmap.width);
@@ -25,7 +28,7 @@ export class BitmapWriter {
 
         return Buffer.concat([bitmapHeaderBuffer, bitmapPixelDataBuffer], bitmapHeaderBuffer.length + bitmapPixelDataBuffer.length);
     }
-    public static write(bitmap: Bitmap, pathPrefix: string = "./"): string {
+    public write(bitmap: Bitmap, pathPrefix: string = "./"): string {
         const path: string = `${pathPrefix}${pathPrefix.endsWith("/") ? "" : "/"}${bitmap.fileName}`;
         fs.writeFileSync(path, this.getBitmapBytes(bitmap));
 
