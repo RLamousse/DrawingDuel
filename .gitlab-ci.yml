@@ -7,17 +7,6 @@ stages:
   - test
   - post-test
 
-
-# ╔═══════╗
-# ║ Cache ║
-# ╚═══════╝
-
-cache:
-  paths:
-    - client/node_modules/
-    - server/node_modules/
-
-
 # ╔══════════════╗
 # ║ Stage: Build ║
 # ╚══════════════╝
@@ -25,11 +14,10 @@ cache:
 build client:
   stage: build
   tags:
-    - ts
     - angular
   before_script:
     - cd client
-    - yarn
+    - npm ci
   script:
     - yarn build
 
@@ -39,7 +27,7 @@ build server:
     - ts
   before_script:
     - cd server
-    - yarn
+    - npm ci
   script:
     - yarn tsc
 
@@ -57,10 +45,14 @@ test client:
   extends: .test
   tags:
     - angular
+    - ng-test
+    - chrome
   dependencies:
     - build client
   before_script:
     - cd client
+    - npm ci
+
 
 test server:
   extends: .test
@@ -70,6 +62,7 @@ test server:
     - build server
   before_script:
     - cd server
+    - npm ci
 
 # ╔══════════════════╗
 # ║ Stage: Post-Test ║
@@ -79,7 +72,12 @@ test server:
 .coverage:
   stage: post-test
   script: yarn coverage
-  allow_failure: true
+  coverage: /Lines\s+:\s*(\d+(?:\.\d*)?%)\s+\(\s+\d+\/\d+\s+\)/
+  artifacts:
+    untracked: false
+    expire_in: 30 days
+    paths:
+      - coverage
 
 client coverage:
   extends: .coverage
@@ -89,6 +87,7 @@ client coverage:
     - test client
   before_script:
     - cd client
+    - npm ci
 
 server coverage:
   extends: .coverage
@@ -99,12 +98,7 @@ server coverage:
     - test server
   before_script:
     - cd server
-  #coverage: '/All files\s+\|(?:\s+(\d+(?:\.\d+){0,1})\s\|){4}/'
-  artifacts:
-    untracked: false
-    expire_in: 30 days
-    paths:
-      - coverage
+    - npm ci
 
 # Lint report job template
 .lint:
@@ -120,6 +114,7 @@ client lint:
     - test client
   before_script:
     - cd client
+    - npm ci
 
 server lint:
   extends: .lint
@@ -129,3 +124,4 @@ server lint:
     - test server
   before_script:
     - cd server
+    - npm ci
