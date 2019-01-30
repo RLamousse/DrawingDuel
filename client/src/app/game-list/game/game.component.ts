@@ -10,6 +10,8 @@ export class GameComponent implements OnInit {
   public title: string = "Jeu1";
   public soloScores: Array<number> = [0, 0, 0];
   public duoScores: Array<number> = [0, 0, 0];
+  public soloNames: Array<string>;
+  public duoNames: Array<string>;
   public randomUsername: Array<string> = ["DarkCat", "SilverTommy", "SpongeBob", "Smasher22", "PeterPan", "SpinningTom", "LightSoul"];
   private minimumRandomScore: number = 15;
   private maximumRandomScore: number = 25;
@@ -20,7 +22,9 @@ export class GameComponent implements OnInit {
 
   ngOnInit() {
     this.soloScores = this.generateRandomScores();
+    this.soloNames = this.generateRandomNames();
     this.duoScores = this.generateRandomScores();
+    this.duoNames = this.generateRandomNames();
   }
 
   private generateRandom(min: number, max: number): number {
@@ -56,7 +60,11 @@ export class GameComponent implements OnInit {
     return scoreArray;
   }
 
-  public generateRandomName(array: Array<string>): string {
-    return array[this.generateRandom(0, array.length - 1)];
+  public generateRandomNames(): Array<string> {
+    let usernamesArray: string[]=[];
+    for (let i = 0; i < this.numberOfScoresToDisplay; i++){
+      usernamesArray.push(this.randomUsername[this.generateRandom(0, this.randomUsername.length - 1)]);
+    }
+    return usernamesArray;
   }
 }
