@@ -20,7 +20,7 @@ describe("Game creator service", () => {
         // TODO remove nonExistingGameTest if there is any
     });
 
-    it("should throw a format error if the strings are not the name of existing files", () => {
+    it("should throw a format error if the strings of the files are not the name of existing files", () => {
         expect(() => GAME_CREATOR_SERVICE.createSimpleGame( "nonExistingGameTest", "nonExistingFile.bmp", "7diff-modified.bmp"))
             .to.throw(FORMAT_ERROR_MESSAGE);
     });
@@ -50,6 +50,11 @@ describe("Game creator service", () => {
             .to.throw(NAME_ERROR_MESSAGE);
     });
 
+    it("should throw a name error if the name of the game already exists(swaped original and modified files)", () => {
+        expect(() => GAME_CREATOR_SERVICE.createSimpleGame( "existingGameTest", "7diff-modified.bmp", "original.bmp"))
+            .to.throw(NAME_ERROR_MESSAGE);
+    });
+
     it("should return the created game confirm message", () => {
         expect(GAME_CREATOR_SERVICE.createSimpleGame( "nonExistingGameTest", "original.bmp", "7diff-modified.bmp"))
             .to.deep.equal({title: GAME_NAME_KEY, body: "nonExistingGameTest"});
@@ -57,7 +62,7 @@ describe("Game creator service", () => {
 
     it("should return the created game confirm message(swaped original and modified files)", () => {
         // console.log(gameCreatorService.createSimpleGame( "", "", ""));
-        expect(GAME_CREATOR_SERVICE.createSimpleGame( "nonExistingGameTest", "original.bmp", "7diff-modified.bmp"))
+        expect(GAME_CREATOR_SERVICE.createSimpleGame( "nonExistingGameTest", "7diff-modified.bmp", "original.bmp"))
             .to.deep.equal({title: GAME_NAME_KEY, body: "nonExistingGameTest"});
     });
 
