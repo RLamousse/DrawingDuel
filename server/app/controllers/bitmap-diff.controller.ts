@@ -23,10 +23,11 @@ export class BitmapDiffController {
             fileFilter: (req: Express.Request,
                          file: Express.Multer.File,
                          cb: (error: Error | null, acceptFile: boolean) => void) => {
-                    if (!(file.mimetype === "image/bmp")) {
-                        return cb(new Error("Only bmp's are allowed!"), false);
+                    if (file.mimetype !== "image/bmp") {
+                        return cb(new Error("Error: Only bmp's are allowed!"), false);
                     }
-                    cb(null, file.mimetype === "image/bmp");
+
+                    cb(null, true);
             },
         });
     }
@@ -45,34 +46,34 @@ export class BitmapDiffController {
                 },
             ]),
                     (req: Request, res: Response) => {
-                const diffFileName: string = req.body["name"];
-                try {
-                    if (req.files) {
-                        BitmapDiffController.checkFileExists(req.files["originalImage"], "originalImage");
-                        BitmapDiffController.checkFileExists(req.files["modifiedImage"], "modifiedImage");
+                    try {
+                        const diffFileName: string = req.body["name"];
+                        if (diffFileName === undefined) {
+                            throw new Error("Error: No name was specified");
+                        }
+                        if (req.files) {
+                            BitmapDiffController.checkFileExists(req.files["originalImage"], "originalImage");
+                            BitmapDiffController.checkFileExists(req.files["modifiedImage"], "modifiedImage");
+                        }
+
+                        const originalImageFile: Express.Multer.File = req.files["originalImage"][0];
+                        const modifiedImageFile: Express.Multer.File = req.files["modifiedImage"][0];
+
+                        const source: Bitmap = BitmapFactory.createBitmap(originalImageFile.originalname, originalImageFile.buffer);
+                        const modified: Bitmap = BitmapFactory.createBitmap(modifiedImageFile.originalname, modifiedImageFile.buffer);
+
+                        this.checkBitMapSizeOk(source);
+                        this.checkBitMapSizeOk(modified);
+
+                        const diffBitmap: Bitmap = this.bitmapDiffService.getDiff(diffFileName, source, modified);
+                        BitmapWriter.write(diffBitmap);
+                        res.status((diffBitmap ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR));
+                        res.json(diffBitmap.toString());
+                    } catch (error) {
+                        this.answerWithError(error, res);
+
+                        return;
                     }
-                } catch (error) {
-                    this.answerWithError(error, res);
-
-                    return;
-                }
-                const originalImageFile: Express.Multer.File = req.files["originalImage"][0];
-                const modifiedImageFile: Express.Multer.File = req.files["modifiedImage"][1];
-                const source: Bitmap = BitmapFactory.createBitmap(originalImageFile.originalname, originalImageFile.buffer);
-                const modified: Bitmap = BitmapFactory.createBitmap(modifiedImageFile.originalname, modifiedImageFile.buffer);
-
-                try {
-                    this.checkBitMapSizeOk(source);
-                    this.checkBitMapSizeOk(modified);
-                } catch (error) {
-                    this.answerWithError(error, res);
-
-                    return;
-                }
-                const diffBitmap: Bitmap = this.bitmapDiffService.getDiff(diffFileName, source, modified);
-                BitmapWriter.write(diffBitmap);
-                res.status((diffBitmap ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR));
-                res.json(diffBitmap.toString());
             });
 
         return router;

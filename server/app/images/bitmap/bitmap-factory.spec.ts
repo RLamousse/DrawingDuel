@@ -1,3 +1,4 @@
+// tslint:disable
 import {expect} from "chai";
 import * as fs from "fs";
 import {instance, mock, when} from "ts-mockito";

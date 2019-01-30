@@ -167,7 +167,6 @@
       2
     ],
     "no-unsafe-finally": true,
-    "no-unused-variable": true,
     "align": [
       true,
       "arguments",

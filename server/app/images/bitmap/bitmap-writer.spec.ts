@@ -1,3 +1,4 @@
+// tslint:disable
 import {expect} from "chai";
 import * as fs from "fs";
 import * as mockfs from "mock-fs";
