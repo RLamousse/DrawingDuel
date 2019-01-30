@@ -1,0 +1,37 @@
+
+<div class="window">
+    <h1>{{title}}</h1>
+    <div class="horizontalWindow">
+        <div>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/LutraCanadensis_fullres.jpg/290px-LutraCanadensis_fullres.jpg" >
+        </div>
+        <div class="scoreTable">
+            <table>
+                <tr>
+                    <td></td>
+                    <td>Solo</td>
+                    <td>1 vs 1</td>
+                </tr>
+                <tr>
+                    <td>Premier:</td>
+                    <td>{{soloScores[0]}} {{generateRandomName(randomUsername)}}</td>
+                    <td>{{duoScores[0]}} {{generateRandomName(randomUsername)}}</td>
+                </tr>
+                <tr>
+                    <td>Deuxieme:</td>
+                    <td>{{soloScores[1]}} {{generateRandomName(randomUsername)}}</td>
+                    <td>{{duoScores[1]}} {{generateRandomName(randomUsername)}}</td>
+                </tr>
+                <tr>
+                    <td>Troisième:</td>
+                    <td>{{soloScores[2]}} {{generateRandomName(randomUsername)}}</td>
+                    <td>{{duoScores[2]}} {{generateRandomName(randomUsername)}}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="buttonRow">
+        <button mat-raised-button color="primary" class="button">Jouer</button>    
+        <button mat-raised-button color="primary" class="button">Créer</button>
+    </div>
+</div>

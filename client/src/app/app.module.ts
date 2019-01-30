@@ -12,6 +12,7 @@ import { IndexService } from "./index.service";
 import { UNListService } from "./username.service";
 import { VueComponent } from "./vue/vue.component";
 import { WindowEventHandler } from "./window-event-handler.directive";
+import { GameComponent } from './game-list/game/game.component';
 
 @NgModule({
   declarations: [
@@ -19,6 +20,7 @@ import { WindowEventHandler } from "./window-event-handler.directive";
     VueComponent,
     GameListComponent,
     WindowEventHandler,
+    GameComponent,
   ],
   imports: [
     BrowserModule,
