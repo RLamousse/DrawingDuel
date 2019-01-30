@@ -13,8 +13,8 @@ export class BitmapWriter {
         const bitmapPixelDataBuffer: Buffer = Buffer.alloc(getTotalBytesForDimension(bitmap.width, bitmap.height), 0x0);
         const bytesPerRow: number = getBytesPerRowForWidth(bitmap.width);
 
-        for (let i = 0; i < bitmap.pixels.length; i++) {
-            for (let j = 0; j < bitmap.pixels[i].length; j++) {
+        for (let i: number = 0; i < bitmap.pixels.length; i++) {
+            for (let j: number = 0; j < bitmap.pixels[i].length; j++) {
                 bitmapPixelDataBuffer.writeUIntLE(
                     bitmap.pixels[i][j],
                     i * bytesPerRow + j * COLOR_DEPTH_24BPP_BYTES,

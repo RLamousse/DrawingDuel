@@ -8,13 +8,13 @@ import {
     COLOR_DEPTH_24BPP_BYTES,
     COLOR_DEPTH_FLAG_LENGTH,
     COLOR_DEPTH_FLAG_OFFSET,
+    FILE_SIZE_FLAG_LENGTH,
+    FILE_SIZE_FLAG_OFFSET,
     HEIGHT_FLAG_LENGTH,
     HEIGHT_FLAG_OFFSET,
     RAW_BITMAP_OFFSET_FLAG_LENGTH,
     RAW_BITMAP_OFFSET_FLAG_OFFSET,
-    WIDTH_FLAG_LENGTH,
-    WIDTH_FLAG_OFFSET,
-    FILE_SIZE_FLAG_OFFSET, FILE_SIZE_FLAG_LENGTH,
+    WIDTH_FLAG_LENGTH, WIDTH_FLAG_OFFSET,
 } from "../../../../common/image/Bitmap/bitmap-utils";
 import {SAME_PIXEL_COLOR} from "../../../../common/image/mask";
 import {create2dArray} from "../../../../common/util/util";
@@ -68,7 +68,7 @@ export class BitmapFactory {
         bitsPerRow: number,
         colorDepth: number): number[][] {
 
-        const pixels: number[][] = create2dArray(10, 10, SAME_PIXEL_COLOR);
+        const pixels: number[][] = create2dArray(width, height, SAME_PIXEL_COLOR);
         for (let i: number = 0; i < height; i++) {
             pixels[i] = [];
             for (let j: number = 0; j < width; j++) {
