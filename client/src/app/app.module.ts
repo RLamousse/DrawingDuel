@@ -11,12 +11,14 @@ import { GameListComponent } from "./game-list/game-list.component";
 import { IndexService } from "./index.service";
 import { UNListService } from "./username.service";
 import { VueComponent } from "./vue/vue.component";
+import { WindowEventHandler } from "./window-event-handler.directive";
 
 @NgModule({
   declarations: [
     AppComponent,
     VueComponent,
     GameListComponent,
+    WindowEventHandler,
   ],
   imports: [
     BrowserModule,

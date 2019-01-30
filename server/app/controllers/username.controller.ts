@@ -12,10 +12,16 @@ export class UserController {
     public get router(): Router {
         const router: Router = Router();
 
-        router.post("/",
+        router.post("/add",
             async (req: Request, res: Response) => {
                 let result = await this.userService.checkAvailability(req.body);
                 res.json(result);
+            });
+
+        router.post("/release",
+            async (req: Request, res: Response) => {
+                let response = await this.userService.releaseUsername(req.body);
+                res.json(response);
             });
 
         return router;

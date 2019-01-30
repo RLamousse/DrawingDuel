@@ -21,10 +21,15 @@ export class VueComponent implements OnInit {
   ) { }
 
   ngOnInit() { }
+  
+  public async releaseUsername(): Promise<void> {
+
+  }
 
   public async updateUsername(): Promise<void> {
     if (await this.validateName(this.newUsername)) {
       this.username = this.newUsername;
+      UNListService.username = this.username;
     }
     this.errorMessage = this.message;
   }
@@ -55,7 +60,6 @@ export class VueComponent implements OnInit {
       return false;
     }
     this.message = "Ton identifiant est valide!!!";
-
     return (true);
   }
 }

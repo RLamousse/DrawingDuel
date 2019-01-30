@@ -14,4 +14,17 @@ export class UserNameService {
         user.available = true;
         return user;
     }
+
+    public async releaseUsername(user: string): Promise<UserValidationMessage> {
+        let index: number = this.list.indexOf(user);
+        if (index != undefined) {
+            this.list.splice(index, 1);
+            return {
+                username: user, available: true
+            };
+        }
+        return {
+            username: user, available: false
+        };
+    }
 }

@@ -9,7 +9,8 @@ import { IndexService } from "./index.service";
 })
 export class AppComponent implements OnInit {
 
-  public constructor(private basicService: IndexService) { }
+  public constructor(private basicService: IndexService) {
+  }
 
   public readonly title: string = "LOG2990";
   public message: string;
