@@ -5,7 +5,7 @@ import { Application } from "../app";
 import types from "../types";
 import { container } from "../inversify.config";
 
-const errorMessage = (error: Error) => {
+const errorMessage = (error: any) => {
     return {
         status: "error",
         error,
@@ -56,9 +56,18 @@ describe("Bitmap diff controller", () => {
         return request(app)
             .post("/api/image-diff")
             .field('name', 'testDiff')
+            .attach('originalImage', './test/test_diffController/jobs.jpg')
+            .attach('modifiedImage', './test/test_diffController/jobs.jpg')
             .then((response) => {
                 expect(response.body).to.deep.equal(
-                    errorMessage(new Error(`No original bitmap file was found`)));
+                    errorMessage({
+                            error: {
+                                storageErrors: []
+                            },
+                            message: "Only bmp's are allowed!"
+                        }
+                    )   
+                );
             });
     });
 
@@ -67,6 +76,7 @@ describe("Bitmap diff controller", () => {
             .post("/api/image-diff")
             .field('name', 'testDiff')
             .attach('originalImage', './test/test_diffController/nope.bmp')
+            .attach('modifiedImage', './test/test_diffController/nope.bmp')
             .expect(500)
             .then((response) => {
                 expect(response.body).to.deep.equal(
