@@ -20,8 +20,8 @@ describe("Bitmap diff controller", () => {
         app = container.get<Application>(types.Application).app;
     });
 
-    it("should send an error when all images are missing", () => {
-        request(app)
+    it("should send an error when all images are missing", async () => {
+        return request(app)
             .post("/api/image-diff")
             .field('name', 'testDiff')
             .then((response) => {
@@ -30,8 +30,8 @@ describe("Bitmap diff controller", () => {
             });
     });
 
-    it("should send an error when original image is missing", () => {
-        request(app)
+    it("should send an error when original image is missing", async () => {
+        return request(app)
             .post("/api/image-diff")
             .field('name', 'testDiff')
             .attach('modifiedImage', './test/test_diffController/nope.bmp')
@@ -41,8 +41,8 @@ describe("Bitmap diff controller", () => {
             });
     });
 
-    it("should send an error when modified image is missing", () => {
-        request(app)
+    it("should send an error when modified image is missing", async () => {
+        return request(app)
             .post("/api/image-diff")
             .field('name', 'testDiff')
             .attach('originalImage', './test/test_diffController/nope.bmp')
@@ -52,8 +52,8 @@ describe("Bitmap diff controller", () => {
             });
     });
 
-    it("should send an error when wrong image type is sent", () => {
-        request(app)
+    it("should send an error when wrong image type is sent", async () => {
+        return request(app)
             .post("/api/image-diff")
             .field('name', 'testDiff')
             .then((response) => {
@@ -62,8 +62,8 @@ describe("Bitmap diff controller", () => {
             });
     });
 
-    it("should send an error when image dimensions aren't 640x480", () => {
-        request(app)
+    it("should send an error when image dimensions aren't 640x480", async () => {
+        return request(app)
             .post("/api/image-diff")
             .field('name', 'testDiff')
             .attach('originalImage', './test/test_diffController/nope.bmp')
@@ -73,8 +73,8 @@ describe("Bitmap diff controller", () => {
             });
     });
 
-    it("should send an error when no name specified", () => {
-        request(app)
+    it("should send an error when no name specified", async () => {
+        return request(app)
             .post("/api/image-diff")
             .attach('originalImage', './test/test_diffController/nope.bmp')
             .attach('modifiedImage', './test/test_diffController/nope.bmp')

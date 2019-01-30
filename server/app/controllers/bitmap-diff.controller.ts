@@ -46,10 +46,10 @@ export class BitmapDiffController {
                 const originalImageFile: Express.Multer.File = req.files["originalImage"][0];
                 const modifiedImageFile: Express.Multer.File = req.files["modifiedImage"][1];
                 try {
-                    this.checkFileExist(originalImageFile, "originalImage");
-                    this.checkFileExist(modifiedImageFile, "modifiedImage");
+                    BitmapDiffController.checkFileExists(originalImageFile, "originalImage");
+                    BitmapDiffController.checkFileExists(modifiedImageFile, "modifiedImage");
                 } catch (error) {
-                    this.anserWithError(error, res);
+                    this.answerWithError(error, res);
 
                     return;
                 }
@@ -60,7 +60,7 @@ export class BitmapDiffController {
                     this.checkBitMapSizeOk(source);
                     this.checkBitMapSizeOk(modified);
                 } catch (error) {
-                    this.anserWithError(error, res);
+                    this.answerWithError(error, res);
 
                     return;
                 }
@@ -71,23 +71,10 @@ export class BitmapDiffController {
                 res.json(diffBitmap.toString());
             });
 
-        // To remove
-        router.get("/", (req: Request, res: Response) => {
-            try {
-                this.checkFileExist(((undefined as unknown) as Express.Multer.File) , "dummy");
-            } catch (error) {
-                // tslint:disable-next-line
-                console.log(error.stack);
-            }
-            res.send("Salut Max");
-            // tslint:disable-next-line:no-console
-            console.log("Apres le throw");
-        });
-
         return router;
     }
 
-    private checkFileExist(file: Express.Multer.File, fileName: string): void {
+    private static checkFileExists(file: Express.Multer.File, fileName: string): void {
         if (!file) {
             throw new Error(`No ${fileName} bitmap file was found`);
         }
@@ -99,7 +86,7 @@ export class BitmapDiffController {
         }
     }
 
-    private anserWithError(error: Error, res: Response): void {
+    private answerWithError(error: Error, res: Response): void {
         // console.error((error as Error).stack);
         res.status(HttpStatus.INTERNAL_SERVER_ERROR);
         res.json({
