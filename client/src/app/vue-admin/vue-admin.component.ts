@@ -13,4 +13,8 @@ export class VueAdminComponent implements OnInit {
   ngOnInit() {
   }
 
+  createSimpleGame(){
+    console.log("sup");
+    
+  }
 }
