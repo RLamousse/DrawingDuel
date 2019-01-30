@@ -68,8 +68,13 @@ test server:
 # ║ Stage: Post-Test ║
 # ╚══════════════════╝
 
+.post test:
+  only:
+    - merge_requests
+
 # Coverage job template
 .coverage:
+  extends: .post test
   stage: post-test
   script: yarn coverage
   coverage: /Lines\s+:\s*(\d+(?:\.\d*)?%)\s+\(\s+\d+\/\d+\s+\)/
@@ -103,6 +108,7 @@ server coverage:
 
 # Lint report job template
 .lint:
+  extends: .post test
   stage: post-test
   script: yarn lint
   allow_failure: true
