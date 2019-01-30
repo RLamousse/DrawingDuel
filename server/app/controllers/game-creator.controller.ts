@@ -50,7 +50,7 @@ export class GameCreatorController {
                 next(new Error(FORMAT_ERROR_MESSAGE));
             } else {
                 try {
-                    res.json(this.gameCreatorService.createSimpleGame(
+                    res.json(await this.gameCreatorService.createSimpleGame(
                         req.body[GAME_NAME_KEY],
                         req.files[ORIGINAL_IMAGE_IDENTIFIER][0][FILE_NAME_KEY],
                         req.files[MODIFIED_IMAGE_IDENTIFIER][0][FILE_NAME_KEY]));
