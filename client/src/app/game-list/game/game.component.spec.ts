@@ -22,4 +22,18 @@ describe('GameComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-});
+
+  it('checks if it generates a number between the min and max', function () {
+    let numArray:number[] = new Array(3) as number[];
+    component.generateRandomScores(numArray);
+    expect (numArray[0]).toBeGreaterThan(7);
+    expect (numArray[1]).toBeLessThan(25);
+  });
+  it('checks if the array of number is sorted', function () {
+    let numArray:number[] = new Array(3) as number[];
+    component.generateRandomScores(numArray);
+    expect (numArray[0]).toBeLessThan(numArray[1]);
+    expect (numArray[1]).toBeLessThan(numArray[2]);
+  });
+}); 
+
