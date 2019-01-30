@@ -7,4 +7,7 @@ export default  {
         DateService: Symbol("DateService"),
         UserNameService: Symbol("UserNameService"),
         UserNameController : Symbol("UserNameController")
+        BitmapDiffController: Symbol("BitmapDiffController"),
+        BitmapDiffService: Symbol("BitmapDiffService"),
+        BitmapWriter: Symbol("BitmapWriter"),
 };
