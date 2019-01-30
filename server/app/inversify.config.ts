@@ -1,16 +1,14 @@
 import { Container } from "inversify";
 import { Application } from "./app";
+import {BitmapDiffController} from "./controllers/bitmap-diff.controller";
 import {DataBaseController} from "./controllers/data-base.controller";
 import { GameCreatorController } from "./controllers/game-creator.controller";
-import { Server } from "./server";
+import {BitmapWriter} from "./images/bitmap/bitmap-writer";
+import {Server} from "./server";
+import {BitmapDiffService} from "./services/bitmap-diff.service";
 import {DataBaseService} from "./services/data-base.service";
 import {DifferenceEvaluatorService} from "./services/difference-evaluator.service";
 import {GameCreatorService} from "./services/game-creator.service";
-import Types from "./types";
-import {BitmapDiffController} from "./controllers/bitmap-diff.controller";
-import {BitmapWriter} from "./images/bitmap/bitmap-writer";
-import { Server } from "./server";
-import {BitmapDiffService} from "./services/bitmap-diff.service";
 import Types from "./types";
 
 const container: Container = new Container();
