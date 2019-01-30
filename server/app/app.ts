@@ -4,9 +4,10 @@ import * as cors from "cors";
 import * as express from "express";
 import { inject, injectable } from "inversify";
 import * as logger from "morgan";
+import {BitmapDiffController} from "./controllers/bitmap-diff.controller";
+import Types from "./types";
 import {DataBaseController} from "./controllers/data-base.controller";
 import { GameCreatorController } from "./controllers/game-creator.controller";
-import Types from "./types";
 
 @injectable()
 export class Application {
@@ -15,7 +16,8 @@ export class Application {
     public app: express.Application;
 
     public constructor(@inject(Types.GameCreatorController) private gameCreatorController: GameCreatorController,
-                       @inject(Types.DataBaseController) private dataBaseController: DataBaseController) {
+                       @inject(Types.DataBaseController) private dataBaseController: DataBaseController,
+                       @inject(Types.BitmapDiffController) private bitmapDiffController: BitmapDiffController) {
         this.app = express();
 
         this.config();
@@ -33,6 +35,7 @@ export class Application {
     }
 
     public bindRoutes(): void {
+        this.app.use("/api/image-diff", this.bitmapDiffController.router);
         // Notre application utilise le routeur de notre API `Index`
         this.app.use("/api/game-creator", this.gameCreatorController.router);
         this.app.use("/api/data-base", this.dataBaseController.router);

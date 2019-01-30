@@ -6,4 +6,7 @@ export default  {
         DataBaseController: Symbol("DataBaseController"),
         DataBaseService: Symbol("DataBaseService"),
         DifferenceEvaluatorService: Symbol("DifferenceEvaluatorService"),
+        BitmapDiffController: Symbol("BitmapDiffController"),
+        BitmapDiffService: Symbol("BitmapDiffService"),
+        BitmapWriter: Symbol("BitmapWriter"),
 };
