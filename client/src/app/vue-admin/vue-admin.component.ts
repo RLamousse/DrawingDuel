@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
+
 @Component({
   selector: 'app-vue-admin',
   templateUrl: './vue-admin.component.html',
