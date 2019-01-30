@@ -9,8 +9,8 @@ export class DifferenceEvaluatorService {
         // pseudocode: 
         const pixels: number[][] = [[1, 0, 1, 0, 1],
                                     [1, 1, 1, 1, 1],
-                                    [0, 0, 0, 0, 0],
                                     [1, 0, 1, 0, 1],
+                                    [0, 1, 0, 1, 0],
                                     [1, 1, 1, 1, 1]];
 
 
@@ -28,66 +28,51 @@ export class DifferenceEvaluatorService {
             }
         }
         for (let i: number = 0; i < pixels.length; i++) {
-
             for (let j: number = 0; j < pixels[0].length; j++) {
                 if (pixels[i][j]) {
-                    let upValue: number = 0;
-                    let leftValue: number = 0;
-                    if (i > 0 && arrayOfLabels[i - 1][j] !== 0) {
-                        upValue = arrayOfLabels[i - 1][j];
-                    }
-                    if (j > 0 && arrayOfLabels[i][j - 1] !== 0) {
-                        leftValue = arrayOfLabels[i][j - 1];
-                    }
-
-                    if (!upValue && !leftValue) {
-                        maxCurrentLabel++;
-                        arrayOfLabels[i][j] = maxCurrentLabel;
-                    } else if (!leftValue) {
-                        arrayOfLabels[i][j] = upValue;
-                    } else if (!upValue || leftValue === upValue) {
-                        arrayOfLabels[i][j] = leftValue;
-                    } else {
-                        //make this into a function
-                        if (typeof translateTable[Math.min(upValue, leftValue)] === "undefined") {
-                            translateTable[Math.min(upValue, leftValue)] = [Math.max(upValue, leftValue)];
-                        } else if (translateTable[Math.min(upValue, leftValue)].indexOf(Math.max(upValue, leftValue) !== -1)) {
-                            translateTable[Math.min(upValue, leftValue)].push(Math.max(upValue, leftValue));
-                        }
-                        arrayOfLabels[i][j] = Math.min(upValue, leftValue);
-                    }
+                    maxCurrentLabel = this.analysePixel(i, j, arrayOfLabels, maxCurrentLabel, translateTable);
                 }
             }
-        }
-
-
-        console.dir(translateTable);
-
-
-        for (let i: number = 0; i < arrayOfLabels.length; i++) {
-
-            let line: string = "";
-            for(let j: number = 0; j < arrayOfLabels[0].length; j++) {
-                if (arrayOfLabels[i][j] != 0){
-                    for (let key in translateTable){
-                        if (translateTable[key].indexOf(arrayOfLabels[i][j]) !== -1) {
-                            arrayOfLabels[i][j] = +key;
-                            break;
-                        }
-                    }
-                }
-
-                line += arrayOfLabels[i][j] + ", ";
-            }
-
-            console.dir(line);
         }
 
         let totalDifferences: number = maxCurrentLabel;
-        for (let key in translateTable){
+        for (let key in translateTable) {
             totalDifferences -= translateTable[key].length;
         }
 
         return totalDifferences;
+    }
+
+    private manageConflict(upValue: number, leftValue: number, translateTable: Map<number, number[]>): void {
+        if (typeof translateTable[Math.min(upValue, leftValue)] === "undefined") {
+            translateTable[Math.min(upValue, leftValue)] = [Math.max(upValue, leftValue)];
+        } else if (translateTable[Math.min(upValue, leftValue)].indexOf(Math.max(upValue, leftValue) !== -1)) {
+            translateTable[Math.min(upValue, leftValue)].push(Math.max(upValue, leftValue));
+        }
+    }
+
+    private analysePixel(xPosition: number, yPosition: number, arrayOfLabels: number[][],
+                         maxCurrentLabel: number, translateTable: Map<number, number[]>): number {
+        let upValue: number = 0;
+        let leftValue: number = 0;
+        if (xPosition > 0 && arrayOfLabels[xPosition - 1][yPosition] !== 0) {
+            upValue = arrayOfLabels[xPosition - 1][yPosition];
+        }
+        if (yPosition > 0 && arrayOfLabels[xPosition][yPosition - 1] !== 0) {
+            leftValue = arrayOfLabels[xPosition][yPosition - 1];
+        }
+
+        if (!upValue && !leftValue) {
+            arrayOfLabels[xPosition][yPosition] = ++maxCurrentLabel;
+        } else if (!leftValue) {
+            arrayOfLabels[xPosition][yPosition] = upValue;
+        } else if (!upValue || leftValue === upValue) {
+            arrayOfLabels[xPosition][yPosition] = leftValue;
+        } else {
+            this.manageConflict(upValue, leftValue, translateTable);
+            arrayOfLabels[xPosition][yPosition] = Math.min(upValue, leftValue);
+        }
+
+        return maxCurrentLabel;
     }
 }
