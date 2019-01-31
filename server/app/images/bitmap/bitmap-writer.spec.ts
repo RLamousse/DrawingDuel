@@ -1,4 +1,4 @@
-// tslint:disable
+import * as assert from "assert";
 import {expect} from "chai";
 import * as fs from "fs";
 import * as mockfs from "mock-fs";
@@ -35,7 +35,7 @@ describe("A util class to write bitmaps to disk", () => {
         mockfs();
         // Write to mock-fs
         const path: string = bitmapWriter.write(originalBitmap, os.tmpdir());
-        expect(fs.existsSync(path)).to.be.true;
+        assert(fs.existsSync(path));
         mockfs.restore(); // Restore mock fs to original state
     });
     it("should throw if the specified directory doesn't exist", () => {
@@ -45,7 +45,7 @@ describe("A util class to write bitmaps to disk", () => {
         // Init
         mockfs();
         // Write to mock-fs
-        expect(() => bitmapWriter.write(originalBitmap, "/myFakeDir/")).to.throw;
+        expect(() => bitmapWriter.write(originalBitmap, "/myFakeDir/")).to.throw();
         mockfs.restore(); // Restore mock fs to original state
     });
 });
