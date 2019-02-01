@@ -1,25 +1,24 @@
 import { HttpClient } from "@angular/common/http";
-import { Injectable, Directive } from "@angular/core";
+import { Injectable } from "@angular/core";
 
 import { UserValidationMessage } from "../../../common/communication/UserValidationMessage";
 import { of, Observable } from "rxjs";
 import { catchError } from "rxjs/operators";
 
-@Injectable() @Directive({ selector: "[unloadevent]" })
+@Injectable()
 export class UNListService {
 
-  static readonly BASE_URL: string = "http://localhost:3000/api/usernames";
+  private static readonly BASE_URL: string = "http://localhost:3000/api/usernames";
   public constructor(private http: HttpClient) {}
 
-  static username: string = "";
+  public static username: string = "";
 
-  public async sendReleaseRequest(): Promise<void> {
-    console.log("sendrelease is called");
-    //let xhr = new XMLHttpRequest();
-    //XML used to make sync post request
-    //xhr.open("POST", UNListService.BASE_URL + "/release", false);
-    //xhr.send(UNListService.username); {
-    await this.http.post(UNListService.BASE_URL + "/release", UNListService.username).toPromise();
+  public async sendReleaseRequest(): Promise<UserValidationMessage> {
+    return this.http.post<UserValidationMessage>(UNListService.BASE_URL + "/release",
+      {
+        username: UNListService.username,
+        available: false
+      }).toPromise<UserValidationMessage>();
   }
 
   public sendUserRequest(name: string): Observable<UserValidationMessage> {

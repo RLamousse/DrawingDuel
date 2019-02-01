@@ -6,7 +6,6 @@ import { UserValidationMessage } from "../../../../common/communication/UserVali
 import { UNListService } from "../username.service";
 import { HttpClientModule } from "@angular/common/http";
 
-
 // IMPORTANT : Since some tests add usernames to the database, please restart the database before launching tests.
 describe("VueComponent", () => {
   let component: VueComponent;
@@ -43,34 +42,34 @@ describe("VueComponent", () => {
 
   // test validateName
   it("checks if the emtpy string is rejected", () => {
-    component.validateName("").then((response: boolean) => { expect(response).toBe(false) });
+    component.validateName("").then((response: boolean) => { expect(response).toBe(false); });
   });
 
   it("checks if a too short string is rejected, only character", () => {
-    component.validateName("Jo").then((response: boolean) => { expect(response).toBe(false) });
+    component.validateName("Jo").then((response: boolean) => { expect(response).toBe(false); });
   });
 
   it("checks if a too short string is rejected, char and number", () => {
-    component.validateName("Bo3").then((response: boolean) => { expect(response).toBe(false) });
+    component.validateName("Bo3").then((response: boolean) => { expect(response).toBe(false); });
   });
 
   it("checks if a too short string is rejected, only number", () => {
-    component.validateName("123").then((response: boolean) => { expect(response).toBe(false) });
+    component.validateName("123").then((response: boolean) => { expect(response).toBe(false); });
   });
 
   it("checks if an alphanumeric string from 4 to 11 caracters is accepted", () => {
-    component.validateName("Darksolo4x").then((response: boolean) => { expect(response).toBe(true) });
+    component.validateName("Darksolo4x").then((response: boolean) => { expect(response).toBe(true); });
   });
 
   it("checks if a chain from 4 to 11 caracters but not alphanumeric is rejected", () => {
-    component.validateName("Dark*-!").then((response: boolean) => { expect(response).toBe(false) });
+    component.validateName("Dark*-!").then((response: boolean) => { expect(response).toBe(false); });
   });
 
   // test updateUsername
   it("checks if it overwrites username when a new valid one is entered", () => {
     component.username = "oldUsername";
     component.newUsername = "newUsername";
-    component.updateUsername().then(() => { expect(component.username).toBe("newUsername") });
+    component.updateUsername().then(() => { expect(component.username).toBe("newUsername"); });
   });
 
   it("checks if it does not overwrites a userName when a new non-valid one is entered, verification if not updated", () => {
@@ -89,27 +88,37 @@ describe("VueComponent", () => {
 
   // Test isAvailable
   it("checks if the entry username is available at first request", () => {
-    component.isAvailable("patate").then((response: UserValidationMessage) => { expect(response.available).toBe(true) });
+    component.isAvailable("patate").then((response: UserValidationMessage) =>
+      expect(response.available).toBe(true)
+    );
   });
 
   it("checks if the entry username is already taken at second request", () => {
     component.isAvailable("cooler").then();
-    component.isAvailable("cooler").then((response: UserValidationMessage) => { expect(response.available).toBe(false) });
+    component.isAvailable("cooler").then((response: UserValidationMessage) =>
+      expect(response.available).toBe(false)
+    );
   });
 
   it("checks if the entry username is available at first request, alphanumeric", () => {
-    component.isAvailable("patate123").then((response: UserValidationMessage) => { expect(response.available).toBe(true) });
+    component.isAvailable("patate123").then((response: UserValidationMessage) =>
+      expect(response.available).toBe(true)
+    );
   });
 
   it("checks if the entry username is already taken at second request, alphanumeric", () => {
     component.isAvailable("Dark123").then();
-    component.isAvailable("Dark123").then((response: UserValidationMessage) => { expect(response.available).toBe(false) });
+    component.isAvailable("Dark123").then((response: UserValidationMessage) =>
+      expect(response.available).toBe(false)
+      );
   });
 
   it("multiple username with different alphanumeric should pass", () => {
     component.isAvailable("slow123").then();
     component.isAvailable("123slow").then();
-    component.isAvailable("sl123ow").then((response: UserValidationMessage) => { expect(response.available).toBe(true) });
+    component.isAvailable("sl123ow").then((response: UserValidationMessage) =>
+      expect(response.available).toBe(true)
+    );
   });
 
 });
