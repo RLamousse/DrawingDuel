@@ -1,0 +1,37 @@
+.window{
+    width: 700px;
+    margin: auto;
+    border: 2px solid darkblue;
+    padding: 10px;
+    border-radius: 25px;
+    background-color:lightblue;
+    padding: 30px;
+    border-style: solid;
+}
+
+.example-form {
+    min-width: 250px;
+    max-width: 500px;
+    width: 100%;
+}
+
+.example-full-width {
+    width: 100%;
+}
+
+.title{
+    color: darkblue;
+    text-align: center;
+}
+
+.button{
+    display: inline-block;
+    margin-right: 35px;
+    border:1.3px darkblue solid;
+}
+
+.buttonRow{
+    margin-right:35px;
+    display: flex;
+    flex-direction: row;
+}

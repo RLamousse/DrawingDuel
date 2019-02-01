@@ -1,17 +1,22 @@
 // tslint:disable:no-any les attributs sont des types any
 // tslint:disable:no-floating-promises pour le before each
-import { TestBed, async, ComponentFixture } from "@angular/core/testing";
+import { HttpClientModule } from "@angular/common/http";
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { FormsModule } from "@angular/forms";
 import { AppComponent } from "./app.component";
 import { IndexService } from "./index.service";
-import { HttpClientModule } from "@angular/common/http";
+import { VueComponent } from "./vue/vue.component";
+import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 describe("AppComponent", () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
-        AppComponent
+        AppComponent,
+        VueComponent,
       ],
-      imports: [HttpClientModule],
-      providers: [IndexService]
+      imports: [HttpClientModule, FormsModule],
+      providers: [IndexService],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).compileComponents();
   }));
   it("should create the app", async(() => {
