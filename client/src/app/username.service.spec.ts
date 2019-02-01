@@ -1,17 +1,18 @@
-import { TestBed, async } from "@angular/core/testing";
 import { HttpClientModule } from "@angular/common/http";
-import { UNListService } from "./username.service";
+import { async, TestBed } from "@angular/core/testing";
 import { UserValidationMessage } from "../../../common/communication/UserValidationMessage";
+import { UNListService } from "./username.service";
+
 describe("UNListService", () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
       providers: [UNListService],
-      imports: [HttpClientModule]
+      imports: [HttpClientModule],
     }));
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientModule],
-      providers: [UNListService]
+      providers: [UNListService],
     });
   }));
 
@@ -25,16 +26,18 @@ describe("UNListService", () => {
     const service: UNListService = TestBed.get(UNListService);
     const messageTypeVariable: UserValidationMessage = {
       available: false,
-      username: "Jonhny"
+      username: "Jonhny",
     };
-    service.sendUserRequest(messageTypeVariable.username).toPromise().then((response: any) => expect(typeof (response)).toBe(typeof (messageTypeVariable)));
+    service.sendUserRequest(messageTypeVariable.username).
+    toPromise().then((response: any) => expect(typeof (response)).
+    toBe(typeof (messageTypeVariable)));
   });
 
   it("should receive a UserValidationMessage with the same username and available tobe true", () => {
     const service: UNListService = TestBed.get(UNListService);
     const messageTypeVariable: UserValidationMessage = {
       available: false,
-      username: "Bobby96"
+      username: "Bobby96",
     };
     service.sendUserRequest(messageTypeVariable.username).toPromise().then((response: UserValidationMessage) => {
       expect(response.username).toEqual(messageTypeVariable.username);
@@ -46,14 +49,14 @@ describe("UNListService", () => {
     const service: UNListService = TestBed.get(UNListService);
     const messageTypeVariable: UserValidationMessage = {
       available: false,
-      username: "cochon4"
+      username: "cochon4",
     };
     service.sendUserRequest(messageTypeVariable.username).toPromise().then(() => {
       service.sendUserRequest(messageTypeVariable.username).toPromise().then((response: UserValidationMessage) => {
-        expect(response.available).toBe(false)
+        expect(response.available).toBe(false);
         expect(response.username).toEqual(messageTypeVariable.username);
       });
-    })
+    });
   });
 
   it("should receive an error", () => {
@@ -61,7 +64,7 @@ describe("UNListService", () => {
     const crashTest: any = 12;
     const messageTypeVariable: UserValidationMessage = {
       available: false,
-      username: crashTest
+      username: crashTest,
     };
     service.sendUserRequest(crashTest).toPromise().then((response: UserValidationMessage) => {
       expect(response.username).toEqual(messageTypeVariable.username);
@@ -75,7 +78,7 @@ describe("UNListService", () => {
     UNListService.username = "spongebob";
     const messageTypeVariable: UserValidationMessage = {
       available: false,
-      username: UNListService.username
+      username: UNListService.username,
     };
     service.sendReleaseRequest().then((response: any) => expect(typeof (response)).toBe(typeof (messageTypeVariable)));
   });

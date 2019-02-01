@@ -1,6 +1,6 @@
 import { Directive, HostListener } from "@angular/core";
-import { UNListService } from "./username.service";
 import { UserValidationMessage } from "../../../common/communication/UserValidationMessage";
+import { UNListService } from "./username.service";
 
 @Directive({ selector: "[appUnloadEvent]" })
 export class WindowEventHandlerDirective {

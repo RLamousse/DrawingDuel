@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from "@angular/core";
+import { Component, Input, OnInit } from "@angular/core";
 
 @Component({
   selector: "app-game",
@@ -7,29 +7,24 @@ import { Component, OnInit, Input } from "@angular/core";
 })
 
 export class GameComponent implements OnInit {
-  
-  
+
+  public constructor() {}
+
   @Input() public title: string;
   @Input() public soloScores: Array<number> = [0, 0, 0];
   @Input() public duoScores: Array<number> = [0, 0, 0];
   @Input() public soloNames: Array<string>;
   @Input() public duoNames: Array<string>;
   @Input() public image: string = "https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/LutraCanadensis_fullres.jpg/290px-LutraCanadensis_fullres.jpg";
-  
-  constructor() {}
-
-  ngOnInit() {
-  }
-  
 
   // Methods to generate scores and usernames
-  static generateRandom(min: number, max: number): number {
+  public static generateRandom(min: number, max: number): number {
     return Number((min + Math.random() * (max - min)).toFixed(0));
   }
 
-  static generateAscendingOrderRandoms(arraySize: number, min: number, max: number): Array<number>{
+  public static generateAscendingOrderRandoms(arraySize: number, min: number, max: number): Array<number> {
     const numArray: number[] = [];
-    for (let i: number = 0; i < arraySize; i++){
+    for (let i: number = 0; i < arraySize; i++) {
       numArray.push(this.generateRandom(min, max));
     }
     numArray.sort((a, b) => {
@@ -46,7 +41,7 @@ export class GameComponent implements OnInit {
     return numArray;
   }
 
-  static generateRandomScores(): Array<number> {
+  public static generateRandomScores(): Array<number> {
     const numberOfScoresToDisplay: number = 3;
     const minimumRandomScore: number = 15;
     const maximumRandomScore: number = 25;
@@ -55,14 +50,16 @@ export class GameComponent implements OnInit {
                                                                          minimumRandomScore,
                                                                          maximumRandomScore);
     const seconds: number[] =  this.generateAscendingOrderRandoms(scoreArray.length, 0, maximumSecond);
-    for (let i in scoreArray){
-      scoreArray[i] += (seconds[i] / 100);
+    // tslint:disable-next-line:forin
+    const coefficient: number = 100;
+    for (const i in scoreArray) {
+      scoreArray[i] += (seconds[i] / coefficient);
     }
 
     return scoreArray;
   }
 
-  static generateRandomNames(): Array<string> {
+  public static generateRandomNames(): Array<string> {
     const randomUsername: Array<string> = ["DarkCat", "SilverTommy", "SpongeBob", "Smasher22", "PeterPan", "SpinningTom", "LightSoul"];
     const numberOfScoresToDisplay: number = 3;
     const usernamesArray: string[] = [];
@@ -72,4 +69,6 @@ export class GameComponent implements OnInit {
 
     return usernamesArray;
   }
+
+  public ngOnInit() {}
 }

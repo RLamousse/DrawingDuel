@@ -1,12 +1,12 @@
-﻿import { TestBed, ComponentFixture } from "@angular/core/testing";
+﻿import { HttpClientModule } from "@angular/common/http";
 import { Component, DebugElement } from "@angular/core";
-import { WindowEventHandlerDirective } from "./window-event-handler.directive";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { By } from "@angular/platform-browser";
 import { UNListService } from "./username.service";
-import { HttpClientModule } from "@angular/common/http";
+import { WindowEventHandlerDirective } from "./window-event-handler.directive";
 
 @Component({
-  template: `<input type="text" appUnloadEvent>`
+  template: `<input type="text" appUnloadEvent>`,
 })
 class TestWindowEventHandlerComponent {
 }
@@ -19,7 +19,7 @@ describe("Directive: WindowEventHandler", () => {
     TestBed.configureTestingModule({
       declarations: [TestWindowEventHandlerComponent, WindowEventHandlerDirective],
       providers: [UNListService],
-      imports: [HttpClientModule]
+      imports: [HttpClientModule],
     });
     fixture = TestBed.createComponent(TestWindowEventHandlerComponent);
     // component = fixture.componentInstance;
