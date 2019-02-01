@@ -21,10 +21,8 @@ export class VueComponent implements OnInit {
   ) { }
 
   ngOnInit() { }
-  
-  public async releaseUsername(): Promise<void> {
 
-  }
+  public async releaseUsername(): Promise<void> {}
 
   public async updateUsername(): Promise<void> {
     if (await this.validateName(this.newUsername)) {
@@ -34,7 +32,7 @@ export class VueComponent implements OnInit {
     this.errorMessage = this.message;
   }
 
-  public isAlphanumeric(testString: string): boolean{
+  public isAlphanumeric(testString: string): boolean {
     return testString.match(/^[a-zA-Z0-9]+$/i) !== null;
   }
 
@@ -60,6 +58,7 @@ export class VueComponent implements OnInit {
       return false;
     }
     this.message = "Ton identifiant est valide!!!";
+
     return (true);
   }
 }
