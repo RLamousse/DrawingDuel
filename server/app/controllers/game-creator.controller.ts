@@ -14,7 +14,7 @@ const EXPECTED_FILES_FORMAT: string = "image/bmp";
 export const DIFFERENCE_ERROR_MESSAGE: string = "Error: The images that you sent don't have seven difference!";
 export const FORMAT_ERROR_MESSAGE: string = "Error: Request sent by the client had the wrong format!";
 export const NAME_ERROR_MESSAGE: string = "Error: The game name that you sent already exists!";
-export const BMP_ERROR_MESSAGE: string = "Error: Files you sent are not bmp!";
+export const BMP_ERROR_MESSAGE: string = "Error: Sent files are not in bmp format!";
 
 @injectable()
 export class GameCreatorController {
@@ -37,6 +37,7 @@ export class GameCreatorController {
                          file: Express.Multer.File,
                          cb: (error: Error | null, acceptFile: boolean) => void) => {
                 if (file.mimetype !== EXPECTED_FILES_FORMAT) {
+                    //TODO validate files(maybe extern validator)
                     return cb(new Error(BMP_ERROR_MESSAGE), false);
                 }
 
