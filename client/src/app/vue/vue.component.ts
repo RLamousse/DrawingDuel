@@ -37,6 +37,7 @@ export class VueComponent implements OnInit {
   }
 
   public async isAvailable(username: string): Promise<UserValidationMessage> {
+    
     return  await this.userService.sendUserRequest(username).toPromise();
   }
   public async validateName(name: string): Promise<boolean> {
