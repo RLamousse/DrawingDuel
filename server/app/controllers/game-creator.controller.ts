@@ -2,61 +2,66 @@ import { NextFunction, Request, Response, Router } from "express";
 import e = require("express");
 import { inject, injectable } from "inversify";
 import * as multer from "multer";
+import {GAME_NAME_FIELD} from "../services/data-base.service";
 import { GameCreatorService } from "../services/game-creator.service";
 import Types from "../types";
 
-export const UPLOAD_PATH: string = "tmp/";
 export const ORIGINAL_IMAGE_IDENTIFIER: string = "originalImage";
 export const MODIFIED_IMAGE_IDENTIFIER: string = "modifiedImage";
 const EXPECTED_FILES_FORMAT: string = "image/bmp";
-const FILE_NAME_KEY: string = "filename";
-
-const FILE_FILTER: Function = (req: Request, file: Express.Multer.File, cb: Function) => {
-    cb(null, file.mimetype === EXPECTED_FILES_FORMAT);
-};
-const STORAGE: multer.StorageEngine = multer.diskStorage({
-    destination: (req: Request, file: Express.Multer.File, cb: Function) => {
-        cb(null, UPLOAD_PATH);
-    },
-    filename: (req: Request, file: Express.Multer.File, cb: Function) => {
-        cb(null, file.fieldname + "-" + Date.now());
-    },
-});
-
-// @ts-ignore
-const UPLOAD: multer.Instance = multer({ fileFilter: FILE_FILTER, storage: STORAGE});
-const CP_UPLOAD: e.RequestHandler = UPLOAD.fields([{name: ORIGINAL_IMAGE_IDENTIFIER, maxCount: 1},
-                                                   {name: MODIFIED_IMAGE_IDENTIFIER, maxCount: 1}]);
-
-export const GAME_NAME_KEY: string = "gameName";
 
 // error messages
-export const DIFFERENCE_ERROR_MESSAGE: string = "The images that you sent don't have seven difference!";
-export const FORMAT_ERROR_MESSAGE: string = "Request sent by the client had the wrong format!";
-export const NAME_ERROR_MESSAGE: string = "The game name that you sent already exists!";
+export const DIFFERENCE_ERROR_MESSAGE: string = "Error: The images that you sent don't have seven difference!";
+export const FORMAT_ERROR_MESSAGE: string = "Error: Request sent by the client had the wrong format!";
+export const NAME_ERROR_MESSAGE: string = "Error: The game name that you sent already exists!";
+export const BMP_ERROR_MESSAGE: string = "Error: Files you sent are not bmp!";
 
 @injectable()
 export class GameCreatorController {
+    private readonly _storage: multer.StorageEngine;
+    private readonly _multer: multer.Instance;
+    private readonly _cpUpload: e.RequestHandler;
 
-    public constructor(@inject(Types.GameCreatorService) private gameCreatorService: GameCreatorService) { }
+    public constructor(@inject(Types.GameCreatorService) private gameCreatorService: GameCreatorService) {
+        this._storage = multer.diskStorage({
+            destination: (req: Express.Request, file: Express.Multer.File, cb: (error: Error | null, destination: string) => void) => {
+                cb(null, "./tmp");
+            },
+            filename: (req: Express.Request, file: Express.Multer.File, cb: (error: Error | null, destination: string) => void) => {
+                cb(null, file.fieldname + "-" + Date.now() + ".bmp");
+            },
+        });
+        this._multer = multer({
+            storage: this._storage,
+            fileFilter: (req: Express.Request,
+                         file: Express.Multer.File,
+                         cb: (error: Error | null, acceptFile: boolean) => void) => {
+                if (file.mimetype !== EXPECTED_FILES_FORMAT) {
+                    return cb(new Error(BMP_ERROR_MESSAGE), false);
+                }
+
+                cb(null, true);
+
+            },
+        });
+        this._cpUpload = this._multer.fields([{name: ORIGINAL_IMAGE_IDENTIFIER, maxCount: 1},
+                                              {name: MODIFIED_IMAGE_IDENTIFIER, maxCount: 1}]);
+    }
 
     public get router(): Router {
         const router: Router = Router();
 
-        router.post("/createSimpleGame",
-                    CP_UPLOAD,
+        router.post("/create-simple-game",
+                    this._cpUpload,
                     async (req: Request, res: Response, next: NextFunction) => {
-            if (!this.validityTest(req)) {
-                next(new Error(FORMAT_ERROR_MESSAGE));
-            } else {
-                try {
-                    res.json(await this.gameCreatorService.createSimpleGame(
-                        req.body[GAME_NAME_KEY],
-                        req.files[ORIGINAL_IMAGE_IDENTIFIER][0][FILE_NAME_KEY],
-                        req.files[MODIFIED_IMAGE_IDENTIFIER][0][FILE_NAME_KEY]));
-                } catch (error) {
-                    next(error);
-                }
+            try {
+                this.validityTest(req);
+                res.json(await this.gameCreatorService.createSimpleGame(
+                    req.body[GAME_NAME_FIELD],
+                    req.files[ORIGINAL_IMAGE_IDENTIFIER][0].path,
+                    req.files[MODIFIED_IMAGE_IDENTIFIER][0].path));
+            } catch (error) {
+                next(error);
             }
 
         });
@@ -64,13 +69,10 @@ export class GameCreatorController {
         return router;
     }
 
-    private validityTest(req: Request): boolean {
-        try {
-            return (req.files[ORIGINAL_IMAGE_IDENTIFIER].length === 1 &&
-                    req.files[MODIFIED_IMAGE_IDENTIFIER].length === 1 &&
-                    req.body[GAME_NAME_KEY] !== "");
-        } catch (error) {
-            return false;
-        }
+    //TODO validate files and name
+    private validityTest(req: Request): void {
+            // return (req.files[ORIGINAL_IMAGE_IDENTIFIER].length === 1 &&
+            //         req.files[MODIFIED_IMAGE_IDENTIFIER].length === 1 &&
+            //         req.body[GAME_NAME_FIELD] !== "");
     }
 }

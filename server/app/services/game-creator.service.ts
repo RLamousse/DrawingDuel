@@ -1,46 +1,100 @@
-import {inject, injectable} from "inversify";
+import Axios from "axios";
+import * as FormData from "form-data";
+import * as fs from "fs";
+import {injectable} from "inversify";
 import "reflect-metadata";
+import {Game} from "../../../common/Object/game";
 import {Message} from "../../../common/communication/message";
-import {DIFFERENCE_ERROR_MESSAGE, FORMAT_ERROR_MESSAGE,/* GAME_NAME_KEY,*/ NAME_ERROR_MESSAGE} from "../controllers/game-creator.controller";
-import Axios, {AxiosResponse} from "axios";
-import Types from "../types";
-import {DataBaseController} from "../controllers/data-base.controller"
-import {DifferenceEvaluatorService} from "./difference-evaluator.service";
+import {
+    DIFFERENCE_ERROR_MESSAGE,
+    FORMAT_ERROR_MESSAGE, MODIFIED_IMAGE_IDENTIFIER,
+    NAME_ERROR_MESSAGE,
+    ORIGINAL_IMAGE_IDENTIFIER
+} from "../controllers/game-creator.controller";
+import {
+    ALREADY_EXISTING_GAME_MESSAGE_ERROR,
+    GAME_NAME_FIELD,
+    NOT_EXISTING_GAME_MESSAGE_ERROR
+} from "./data-base.service";
 
 @injectable()
 export class GameCreatorService {
 
-    constructor(@inject(Types.DifferenceEvaluatorService) private differenceEvaluatorService: DifferenceEvaluatorService,
-                @inject(Types.DataBaseController) private dataBaseController: DataBaseController){}
+    // constructor(/*@inject(Types.DifferenceEvaluatorService) private differenceEvaluatorService: DifferenceEvaluatorService,
+    //             @inject(Types.DataBaseController) private dataBaseController: DataBaseController*/) {}
 
-    public async createSimpleGame(gameName: string, originalImage: string, modifiedImage: string): Promise<Message> {
+    public async createSimpleGame(gameName: string, originalImageFile: string, modifiedImageFile: string): Promise<Message> {
 
-               // 1 test name in db
-        // 1.1 if fail: throw NAME_ERROR_MESSAGE
+        this.testNameExistance(gameName);
         // 2 call diff function from the phillips
-        // 2.1 if files are not in temp/, throw format error
+        let diffImage: object;
+        try {
+
+            const formData: FormData = new FormData();
+            formData.append("name", "diffImage-" + Date.now() + ".bmp");
+            formData.append(ORIGINAL_IMAGE_IDENTIFIER, await fs.createReadStream(originalImageFile));
+            formData.append(MODIFIED_IMAGE_IDENTIFIER, await fs.createReadStream(modifiedImageFile));
+            diffImage = (await Axios.post<object>("http://localhost:3000/api/image-diff",
+                                                  formData,
+                                                  {headers: {"Content-Type": "multipart/form-data"}})).data;
+            // @ts-ignore
+            // diffImage = (await Axios({
+            //     method: "post",
+            //     url: "http://localhost:3000/api/image-diff",
+            //     data: formData,
+            //     config: { headers: {"Content-Type": "multipart/form-data" }},
+            // })).data;
+
+        } catch (error) {
+            throw new Error("imageDiff: " + error);
+        }
         // 3 call compare service when imported and finished
+        // TODO solve same problem as 2
         // 3.1 if there are not 7 difference, throw difference error
         // 4 generate data in the database
 
-        return this.generateGame(gameName, originalImage, modifiedImage);
+        const test: Message = await this.generateGame(gameName, originalImageFile, modifiedImageFile);
 
+        // return test;
         // 5 send back name of game
+        test.body = JSON.stringify(diffImage);
 
-        // return {title: GAME_NAME_KEY, body: gameName};
+        return test;
 
         throw new Error(FORMAT_ERROR_MESSAGE);
         throw new Error(DIFFERENCE_ERROR_MESSAGE);
         throw new Error(NAME_ERROR_MESSAGE);
     }
 
-
     private async generateGame(gameName: string, originalImage: string, modifiedImage: string): Promise<Message> {
-        //remplacer localhost par une variable url de notre serveur
-        //demander charger si api/data-base est une valeur magique
-        let response: AxiosResponse<Message> = await Axios.get<Message>("http://localhost:3000/api/data-base/get");
 
-        return response.data;
+        // let response: Message = await Axios.get<Message>("http://localhost:3000/api/data-base/add-game");
+        // remplacer localhost par une variable url de notre serveur
+        // demander charger si api/data-base est une valeur magique
 
+        // TODO delete bcp de choses
+        return {title: "k", body: "ok"};
+
+    }
+
+    // TODO prendre le code de Robin
+    // private createRandomScores(): {name: string, time: number}[] {
+    //     return [{name: "1", time: 1},
+    //             {name: "2", time: 2},
+    //             {name: "3", time: 3}];
+    // }
+
+    private async testNameExistance(gameName: string): Promise<void> {
+
+        try {
+            await Axios.get<Game>("http://localhost:3000/api/data-base/get-game",
+                                  {data: {[GAME_NAME_FIELD]: gameName}});
+        } catch (error) {
+            if (error.response.data.message === ALREADY_EXISTING_GAME_MESSAGE_ERROR) {
+                throw new Error(NAME_ERROR_MESSAGE);
+            } else if (error.response.data.message !== NOT_EXISTING_GAME_MESSAGE_ERROR) {
+                throw new Error("dataBase: " + error.response.data.message);
+            }
+        }
     }
 }
