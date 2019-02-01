@@ -72,6 +72,22 @@ export class DataBaseService {
         }
     }
 
+    public async deleteGame(gameName: string): Promise<Message> {
+        if (!(await this.containsGame(gameName))) {
+            throw new Error(NOT_EXISTING_GAME_MESSAGE_ERROR);
+        } else {
+
+            return new Promise<Message>((resolve: (value?: Message | PromiseLike<Message>) => void, reject: (reason?: Error) => void) => {
+                this._games.deleteOne( {[GAME_NAME_FIELD]: {$eq : gameName}}, (error: MongoError, res: InsertOneWriteOpResult) => {
+                    if (error) {
+                        reject( new Error(DATA_BASE_MESSAGE_ERROR));
+                    }
+                    resolve({title: "Game deleted", body: "game " + gameName + " successfully deleted!"});
+                });
+            });
+        }
+    }
+
     private async containsUser(userName: string): Promise<boolean> {
         try {
             return ((await this._users.count( {[USER_NAME_FIELD] : {$eq : userName}})) !== 0);

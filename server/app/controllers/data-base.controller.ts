@@ -35,6 +35,16 @@ export class DataBaseController {
 
         });
 
+        router.delete("/delete-game", async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                this.isStringFieldCorrect(GAME_NAME_FIELD, req.body);
+                res.json(await this.dataBaseService.deleteGame(req.body[GAME_NAME_FIELD]));
+            } catch (error) {
+                next(error);
+            }
+
+        });
+
         router.post("/add-game", async (req: Request, res: Response, next: NextFunction) => {
             try {
                 this.testGame(req);
