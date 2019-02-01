@@ -1,7 +1,7 @@
 export interface Game {
-    name: string;
-    //TODO make files
-    originalImage: string;
-    modifiedImage: string;
-    thumbnail: string;
+    gameName: string,
+    originalImage: Buffer,
+    modifiedImage: Buffer,
+    bestSoloTimes: {name: string, time: number}[],
+    bestMultiTimes: {name: string, time: number}[]
 }
