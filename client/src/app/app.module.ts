@@ -15,6 +15,11 @@ import { WindowEventHandler } from "./window-event-handler.directive";
 import { GameComponent } from './game-list/game/game.component';
 import { VueAdminComponent } from './vue-admin/vue-admin.component';
 
+import {MatDialogModule} from '@angular/material';
+import {CreateSimpleGame} from './create-simple-game/create-simple-game';
+import {Create3DGameComponent} from './create3-dgame/create3-dgame.component'
+
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -23,7 +28,10 @@ import { VueAdminComponent } from './vue-admin/vue-admin.component';
     WindowEventHandler,
     GameComponent,
     AppComponent,
-    VueAdminComponent
+    VueAdminComponent,
+    CreateSimpleGame,
+    Create3DGameComponent,
+    
   ],
   imports: [
     BrowserModule,
@@ -37,9 +45,12 @@ import { VueAdminComponent } from './vue-admin/vue-admin.component';
     MatFormFieldModule,
     BrowserAnimationsModule,
     AppRoutingModule,
+    MatDialogModule
+  
   ],
   providers: [IndexService, UNListService],
   bootstrap: [AppComponent],
+  entryComponents: [CreateSimpleGame,Create3DGameComponent],
   schemas: [NO_ERRORS_SCHEMA],
 })
 export class AppModule { }

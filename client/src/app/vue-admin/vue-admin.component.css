@@ -3,13 +3,13 @@
     border: none;
     color: white;
     padding: 15px 32px;
-    text-align: center;
-    height:75px;
-    width:170px;
+    text-align: center !important;
     display: inline-block;
     font-size: 16px;
+    width: 45%;
     margin: 4px;
     margin-right: 10px;
+    margin-left: 10px;
     cursor: pointer;
 }
 
@@ -22,6 +22,8 @@
     position: fixed;
     top: 1em;
     right: 1em;
+    background-color: skyblue;
+    
 }
 .test{
     padding-top: 9999px

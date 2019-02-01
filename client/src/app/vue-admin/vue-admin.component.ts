@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
+import {MatDialog, MatDialogConfig} from "@angular/material";
+import {CreateSimpleGame} from '../create-simple-game/create-simple-game';
+import {Create3DGameComponent} from '../create3-dgame/create3-dgame.component';
+
+
 
 
 @Component({
@@ -9,14 +13,33 @@ import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
 })
 export class VueAdminComponent implements OnInit {
 
-  constructor() { }
+  constructor(private dialog: MatDialog) { }
 
   ngOnInit() {
   }
 
-  createSimpleGame(){
-    console.log("sup");
-    
-    
+  protected createSimpleGame(): void{
+   
+
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.autoFocus = true;
+
+    this.dialog.open(CreateSimpleGame, dialogConfig);
+
+  };
+
+  protected create3DGame(): void{
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.autoFocus = true;
+
+    this.dialog.open(Create3DGameComponent, dialogConfig);
+
   }
+
+
 }
+    
+  
+
+
+
