@@ -20,7 +20,6 @@ export class GameListComponent implements OnInit {
                       duoNames: GameComponent.generateRandomNames(), 
                       image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/LutraCanadensis_fullres.jpg/290px-LutraCanadensis_fullres.jpg"};
     this.addGame(game);
-    console.log(this.games);
   }
 
 
