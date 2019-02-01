@@ -13,7 +13,6 @@ import { UNListService } from "./username.service";
 import { VueComponent } from "./vue/vue.component";
 import { WindowEventHandler } from "./window-event-handler.directive";
 import { GameComponent } from './game-list/game/game.component';
-import { HttpClientModule } from "@angular/common/http";
 import { VueAdminComponent } from './vue-admin/vue-admin.component';
 
 @NgModule({
