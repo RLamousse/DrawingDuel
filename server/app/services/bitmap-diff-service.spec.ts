@@ -1,4 +1,3 @@
-// tslint:disable
 import {expect} from "chai";
 import * as fs from "fs";
 import {Bitmap} from "../../../common/image/Bitmap/bitmap";
@@ -49,8 +48,5 @@ describe("A service generating the difference between two bitmaps", () => {
         const actualDiff: Bitmap = bitmapDiffService.getDiff("test-diff5.bmp", original, modified);
 
         expect(Buffer.compare(bitmapWriter.getBitmapBytes(actualDiff), bitmapWriter.getBitmapBytes(expectedDiff))).to.equal(0);
-    });
-    it("should test shit", () => {
-        expect(true).to.be.true;
     });
 });

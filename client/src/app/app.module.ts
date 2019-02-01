@@ -11,7 +11,7 @@ import { GameListComponent } from "./game-list/game-list.component";
 import { IndexService } from "./index.service";
 import { UNListService } from "./username.service";
 import { VueComponent } from "./vue/vue.component";
-import { WindowEventHandler } from "./window-event-handler.directive";
+import { WindowEventHandlerDirective } from "./window-event-handler.directive";
 import { GameComponent } from './game-list/game/game.component';
 import { VueAdminComponent } from './vue-admin/vue-admin.component';
 
@@ -25,7 +25,7 @@ import {Create3DGameComponent} from './create3-dgame/create3-dgame.component'
     AppComponent,
     VueComponent,
     GameListComponent,
-    WindowEventHandler,
+    WindowEventHandlerDirective,
     GameComponent,
     AppComponent,
     VueAdminComponent,

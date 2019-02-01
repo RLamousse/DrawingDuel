@@ -6,9 +6,6 @@ import { inject, injectable } from "inversify";
 import * as logger from "morgan";
 import {BitmapDiffController} from "./controllers/bitmap-diff.controller";
 import Types from "./types";
-import { injectable, inject } from "inversify";
-import { IndexController } from "./controllers/index.controller";
-import { DateController } from "./controllers/date.controller";
 import { UserController } from "./controllers/username.controller";
 
 @injectable()
@@ -17,8 +14,7 @@ export class Application {
     private readonly internalError: number = 500;
     public app: express.Application;
 
-    public constructor(@inject(Types.IndexController,@inject(Types.BitmapDiffController) private indexController: IndexController,
-        @inject(Types.DateController) private dateController: DateController, @inject(Types.UserNameController) private userController: UserController,
+    public constructor(@inject(Types.UserNameController) private userController: UserController,
         @inject(Types.BitmapDiffController) private bitmapDiffController: BitmapDiffController) 
     {
         this.app = express();
@@ -39,8 +35,6 @@ export class Application {
 
     public bindRoutes(): void {
         // Notre application utilise le routeur de notre API `Index`
-        this.app.use('/api/index', this.indexController.router);
-        this.app.use('/api/date', this.dateController.router);
         this.app.use('/api/usernames', this.userController.router);
         this.app.use("/api/image-diff", this.bitmapDiffController.router);
         this.errorHandeling();
