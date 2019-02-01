@@ -69,10 +69,15 @@ export class GameCreatorController {
         return router;
     }
 
-    //TODO validate files and name
     private validityTest(req: Request): void {
-            // return (req.files[ORIGINAL_IMAGE_IDENTIFIER].length === 1 &&
-            //         req.files[MODIFIED_IMAGE_IDENTIFIER].length === 1 &&
-            //         req.body[GAME_NAME_FIELD] !== "");
+        if (typeof req.files[ORIGINAL_IMAGE_IDENTIFIER] === "undefined" ||
+            typeof req.files[MODIFIED_IMAGE_IDENTIFIER] === "undefined" ||
+            typeof req.files[ORIGINAL_IMAGE_IDENTIFIER][0] === "undefined" ||
+            typeof req.files[MODIFIED_IMAGE_IDENTIFIER][0] === "undefined") {
+            throw new Error(FORMAT_ERROR_MESSAGE);
+        }
+        if (typeof req.body[GAME_NAME_FIELD] !== "string" || req.body[GAME_NAME_FIELD] === "") {
+            throw new Error(FORMAT_ERROR_MESSAGE);
+        }
     }
 }
