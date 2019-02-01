@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { UNListService } from "../username.service";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "app-vue",
@@ -15,21 +16,19 @@ export class VueComponent implements OnInit {
   public available: boolean;
 
   public constructor(
+    private router: Router,
     private userService: UNListService,
   ) { }
 
   ngOnInit() { }
 
-  public async updateUsername(): Promise<boolean> {
+  public async updateUsername(): Promise<void> {
     if (await this.userService.validateName(this.newUsername)) {
       this.username = this.newUsername;
       UNListService.username = this.username;
 
-      return true;
+      this.router.navigate(["/game-list"])
     }
     this.errorMessage = this.userService.message;
-
-    return false;
   }
-
 }

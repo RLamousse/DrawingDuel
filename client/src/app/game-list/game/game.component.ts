@@ -16,8 +16,6 @@ export class GameComponent implements OnInit {
   @Input() public duoNames: Array<string>;
   @Input() public image: string = "https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/LutraCanadensis_fullres.jpg/290px-LutraCanadensis_fullres.jpg";
   
-  
-
   constructor() {}
 
   ngOnInit() {
