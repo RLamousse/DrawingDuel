@@ -18,10 +18,10 @@ export class WindowEventHandlerDirective {
         if (response.available) {
           WindowEventHandlerDirective.beforeUnloadMessage = this.usernameLoggedIn;
         }
-        $event.returnValue = true;
       });
     } else {
       WindowEventHandlerDirective.beforeUnloadMessage = this.noUsername;
     }
+    $event.returnValue = true;
   }
 }

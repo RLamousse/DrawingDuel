@@ -12,6 +12,10 @@ export class UNListService {
   public constructor(private http: HttpClient) {}
 
   public static username: string = "";
+  private minLenght: number = 4;
+  public message: string;
+  public username: string = "";
+  private response: UserValidationMessage;
 
   public async sendReleaseRequest(): Promise<UserValidationMessage> {
     return this.http.post<UserValidationMessage>(UNListService.BASE_URL + "/release",
@@ -31,5 +35,37 @@ export class UNListService {
     return (error: Error): Observable<T> => {
       return of(result as T);
     };
+  }
+
+  public isAlphanumeric(testString: string): boolean {
+    return testString.match(/^[a-zA-Z0-9]+$/i) !== null;
+  }
+
+  private async isAvailable(username: string): Promise<UserValidationMessage> {
+    return this.sendUserRequest(username).toPromise();
+  }
+  public async validateName(name: string): Promise<boolean> {
+    if (name.length < this.minLenght) {
+      this.message = "Ton identifiant est trop court!";
+
+      return false;
+    }
+    if (!this.isAlphanumeric(name)) {
+      this.message = "Tu dois utiliser seulement des caractères alphanumériques!";
+
+      return false;
+    }
+
+    await this.isAvailable(name).then((response: UserValidationMessage) => {
+      this.response = response;
+    });
+    if (!this.response.available) {
+      this.message = "Cet identifiant est deja pris! Essaie un nouvel identifiant";
+
+      return false;
+    }
+    this.message = "Ton identifiant est valide!!!";
+
+    return (true);
   }
 }
