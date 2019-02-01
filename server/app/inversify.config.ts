@@ -5,10 +5,6 @@ import {BitmapWriter} from "./images/bitmap/bitmap-writer";
 import { Server } from "./server";
 import Types from "./types";
 import {BitmapDiffService} from "./services/bitmap-diff.service";
-import { IndexController } from "./controllers/index.controller";
-import { IndexService } from "./services/index.service";
-import { DateController } from "./controllers/date.controller";
-import { DateService } from "./services/date.service";
 import { UserNameService } from "./services/UserName.service";
 import { UserController } from "./controllers/username.controller";
 

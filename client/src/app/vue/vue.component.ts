@@ -22,8 +22,6 @@ export class VueComponent implements OnInit {
 
   ngOnInit() { }
 
-  public async releaseUsername(): Promise<void> {}
-
   public async updateUsername(): Promise<void> {
     if (await this.validateName(this.newUsername)) {
       this.username = this.newUsername;
@@ -37,7 +35,7 @@ export class VueComponent implements OnInit {
   }
 
   public async isAvailable(username: string): Promise<UserValidationMessage> {
-    return  await this.userService.sendUserRequest(username).toPromise();
+    return  this.userService.sendUserRequest(username).toPromise();
   }
   public async validateName(name: string): Promise<boolean> {
     if (name.length < this.minLenght) {
