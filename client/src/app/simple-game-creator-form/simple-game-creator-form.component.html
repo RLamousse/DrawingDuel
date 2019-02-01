@@ -1,17 +1,40 @@
-<div class="container">
-  <h1>Hero Form</h1>
-  <form>
-    <div class="form-group">
-      <label for="originalImage">Original Image</label>
-      <input type="file" class="form-control" id="originalImage" accept="images/bmp" required>
-    </div>
+<form [formGroup]="formDoc" novalidate>
 
-    <div class="form-group">
-      <label for="modifiedImage">Modified Image</label>
-      <input type="file" class="form-control" id="modifiedImage" accept="images/bmp" required>
-    </div>
+  <mat-form-field hintLabel="Max 10 charactères" id="name">
+    <input matInput #input maxlength="10" placeholder="Nom de la partie">
+    <mat-hint align="end">{{input.value?.length || 0}}/10</mat-hint>
+  </mat-form-field>
 
-    <button type="submit" class="btn btn-success">Submit</button>
+  <mat-form-field>
+    <ngx-mat-file-input accept="image/bmp" formControlName="originalImage" placeholder="Obligatoire" valuePlaceholder="Image Originale"
+      required>
+    </ngx-mat-file-input>
+    <mat-icon matSuffix>image</mat-icon>
+    <mat-error *ngIf="formDoc.get('originalImage').hasError('required')">
+      Please select a file
+    </mat-error>
+    <mat-error *ngIf="checkFileDimension(originalImage)">
+      The total size must not exceed {{formDoc.get('originalImage')?.getError('maxContentSize').maxSize | byteFormat}}
+      ({{formDoc.get('originalImage')?.getError('maxContentSize').actualSize
+      | byteFormat}}).
+    </mat-error>
+  </mat-form-field>
 
-  </form>
+  <mat-form-field>
+    <ngx-mat-file-input accept="image/bmp" formControlName="modifiedImage" placeholder="Obligatoire" valuePlaceholder="Image Modifiée"
+      required></ngx-mat-file-input>
+    <mat-icon matSuffix>image</mat-icon>
+    <mat-error *ngIf="formDoc.get('modifiedImage').hasError('required')">
+      Please select a file
+    </mat-error>
+    <mat-error *ngIf="formDoc.get('modifiedImage').hasError('maxContentSize')">
+      The total size must not exceed {{formDoc.get('modifiedImage')?.getError('maxContentSize').maxSize | byteFormat}}
+      ({{formDoc.get('modifiedImage')?.getError('maxContentSize').actualSize
+      | byteFormat}}).
+    </mat-error>
+  </mat-form-field>
+</form>
+<div class="button-group">
+  <button mat-button>Envoyer</button>
+  <button mat-button color="warn">Annuler</button>
 </div>
