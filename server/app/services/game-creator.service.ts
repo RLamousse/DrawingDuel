@@ -32,11 +32,14 @@ export class GameCreatorService {
 
         this.testNameExistance(gameName);
         // 2 call diff function from the phillips
-        let diffImage: object;
+        let diffImage: {status: string, fileName: string, filePath: string};
         try {
-            diffImage = await Axios.get<object>("http://localhost:3000/api/image-diff/",
+            diffImage = (await Axios.get<{status: string,
+                                          fileName: string,
+                                          filePath: string,
+            }>("http://localhost:3000/api/image-diff/",
                 //TODO regarder leurs parametres dentree quand fini
-                                                {data: {name: "image-diff-" + Date.now() + ".bmp"}});
+               {data: {name: "image-diff-" + Date.now() + ".bmp"}})).data;
 
         } catch (error) {
             throw new Error("game diff: " + error.response.data.message);
@@ -46,8 +49,8 @@ export class GameCreatorService {
         let diffNumber: number;
         try {
             diffNumber = this.differenceEvaluatorService.getNDifferences(
-                         BitmapFactory.createBitmap(/*nom image arg des phls*/,
-                         fs.readFileSync(/*path de limage arg des phils*/)).pixels);
+                         BitmapFactory.createBitmap(diffImage.fileName,
+                                                    fs.readFileSync(diffImage.filePath)).pixels);
         } catch (error) {
             throw new Error("bmp diff counting: " + error.message);
         }
@@ -63,7 +66,6 @@ export class GameCreatorService {
     }
 
     private async generateGame(gameName: string, originalImageData: Buffer, modifiedImageData: Buffer): Promise<Message> {
-
 
         // remplacer localhost par une variable url de notre serveur
 
