@@ -31,14 +31,16 @@ export class GameListComponent implements OnInit {
 }
 
   public ngOnInit(): void {
-    const game: Game = {title: "JEU",
-                        soloScores: GameComponent.generateRandomScores(),
-                        duoScores: GameComponent.generateRandomScores(),
-                        soloNames: GameComponent.generateRandomNames(),
-                        duoNames: GameComponent.generateRandomNames(),
-                        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/LutraCanadensis_fullres.jpg/290px-LutraCanadensis_fullres.jpg"};
+    const scores: number[] = GameComponent.generateRandomScores();
+    const names: string[] = GameComponent.generateRandomNames();
+    const game: Game = {title: "JEU1",
+                        soloScores: [{name: names[0], time: scores[0]}, {name: names[1], time: scores[1]}, {name: names[2], time: scores[2]}],
+                        duoScores: [{name: names[0], time: scores[0]}, {name: names[1], time: scores[1]}, {name: names[2], time: scores[2]}],
+                        image: "https://upload.wikimedia.org/wikipedia/commons/c/c9/Moon.jpg",
+                       };
     this.addGame(game);
-    console.log(this.convertTimeScores(3456));
+    console.log(game.image);
+    console.log(this.convertTimeScores(60));
   }
 
   private addGame(game: Game): void {
@@ -47,9 +49,20 @@ export class GameListComponent implements OnInit {
 
   private convertTimeScores(seconds: number): number {
     const coefficient: number = 0.6;
-    seconds *= coefficient;
-    const remaining: number = seconds - Math.floor(seconds);
+    const minute: number = 60;
+    seconds /= minute;
 
-    return (Math.floor(seconds) + (remaining * coefficient));
+    return (Math.floor(seconds) + ((seconds - Math.floor(seconds)) * coefficient));
   }
+
+  /*private convertScoresObject(game: Game): Game {
+    for (const i in game.soloScores) {
+      if (game.soloScores.hasOwnProperty(i)) {
+        game.soloScores[i].time = this.convertTimeScores(game.soloScores[i].time);
+        game.duoScores[i].time = this.convertTimeScores(game.duoScores[i].time);
+      }
+    }
+
+    return game;
+  }*/
 }

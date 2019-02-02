@@ -15,7 +15,7 @@ export class GameComponent implements OnInit {
   @Input() public duoScores: Array<number> = [0, 0, 0];
   @Input() public soloNames: Array<string>;
   @Input() public duoNames: Array<string>;
-  @Input() public image: string = "https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/LutraCanadensis_fullres.jpg/290px-LutraCanadensis_fullres.jpg";
+  @Input() public image: string;
 
   // Methods to generate scores and usernames
   public static generateRandom(min: number, max: number): number {
