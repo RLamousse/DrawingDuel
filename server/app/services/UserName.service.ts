@@ -1,5 +1,4 @@
-﻿//import { Request } from "express";
-import "reflect-metadata";
+﻿import "reflect-metadata";
 import { injectable } from "inversify";
 import { UserValidationMessage } from "../../../common/communication/UserValidationMessage";
 @injectable()
