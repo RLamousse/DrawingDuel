@@ -1,5 +1,6 @@
 import { injectable } from "inversify";
 import "reflect-metadata";
+import {create2dArray} from "../../../common/util/util";
 
 @injectable()
 export class DifferenceEvaluatorService {
@@ -8,18 +9,8 @@ export class DifferenceEvaluatorService {
 
         const TRANSLATE_TABLE: Map<number, number[]> = new Map<number, number[]>();
         let maxCurrentLabel: number = 0;
-        const ARRAY_OF_LABELS: number[][] = new Array<number[]>(pixels.length);
+        const ARRAY_OF_LABELS: number[][] = create2dArray(pixels.length, pixels[0].length, 0);
 
-        for (let i: number = 0; i < ARRAY_OF_LABELS.length; i++) {
-            ARRAY_OF_LABELS[i] = new Array<number>(pixels[0].length);
-        }
-        for (const LINE of ARRAY_OF_LABELS) {
-            for (const ELEMENT in LINE) {
-                if (LINE.hasOwnProperty(ELEMENT)) {
-                    LINE[ELEMENT] = 0;
-                }
-            }
-        }
         for (let i: number = 0; i < pixels.length; i++) {
             for (let j: number = 0; j < pixels[0].length; j++) {
                 if (pixels[i][j]) {
