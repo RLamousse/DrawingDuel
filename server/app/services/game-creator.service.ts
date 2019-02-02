@@ -6,7 +6,6 @@ import {Game, TIMES_ARRAY_SIZE} from "../../../common/Object/game";
 import {Message} from "../../../common/communication/message";
 import {
     DIFFERENCE_ERROR_MESSAGE,
-    FORMAT_ERROR_MESSAGE,
     NAME_ERROR_MESSAGE
 } from "../controllers/game-creator.controller";
 import {BitmapFactory} from "../images/bitmap/bitmap-factory";
@@ -56,10 +55,11 @@ export class GameCreatorService {
             throw new Error(DIFFERENCE_ERROR_MESSAGE);
         }
 
-        return this.generateGame(gameName, fs.readFileSync(originalImageFile), fs.readFileSync(modifiedImageFile));
+        const ANSWER: Message = await this.generateGame(gameName, fs.readFileSync(originalImageFile), fs.readFileSync(modifiedImageFile));
 
-        throw new Error(FORMAT_ERROR_MESSAGE);
-        throw new Error(NAME_ERROR_MESSAGE);
+        this.deleteFiles(originalImageFile, modifiedImageFile);
+
+        return ANSWER;
     }
 
     private async generateGame(gameName: string, originalImageData: Buffer, modifiedImageData: Buffer): Promise<Message> {
@@ -127,5 +127,15 @@ export class GameCreatorService {
                 throw new Error("dataBase: " + error.response.data.message);
             }
         }
+    }
+
+    public deleteFiles(originalImageFile: string, modifiedImageFile: string): void {
+
+        fs.unlink(originalImageFile, (error: Error) => {
+            if (error) { console.dir("file " + originalImageFile + " was not found"); }
+        });
+        fs.unlink(modifiedImageFile, (error: Error) => {
+            if (error) { console.dir("file " + modifiedImageFile + " was not found"); }
+        });
     }
 }

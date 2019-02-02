@@ -62,6 +62,8 @@ export class GameCreatorController {
                     req.files[ORIGINAL_IMAGE_IDENTIFIER][0].path,
                     req.files[MODIFIED_IMAGE_IDENTIFIER][0].path));
             } catch (error) {
+                this.gameCreatorService.deleteFiles(req.files[ORIGINAL_IMAGE_IDENTIFIER][0].path,
+                                                    req.files[MODIFIED_IMAGE_IDENTIFIER][0].path);
                 next(error);
             }
 
