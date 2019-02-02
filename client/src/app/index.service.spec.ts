@@ -1,8 +1,8 @@
-import { IndexService } from "./index.service";
 import { Message } from "../../../common/communication/message";
 import { TestHelper } from "../test.helper";
+import { IndexService } from "./index.service";
 
-// tslint:disable-next-line:no-any Used to mock the http call
+// tslint:disable-next-line:no-any
 let httpClientSpy: any;
 let indexService: IndexService;
 
@@ -24,7 +24,7 @@ describe("IndexService", () => {
                 expect(response.title).toEqual(expectedMessage.title, "Title check");
                 expect(response.body).toEqual(expectedMessage.body, "body check");
             },
-            fail
+            fail,
         );
 
         // check if only one call was made

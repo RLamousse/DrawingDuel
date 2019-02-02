@@ -1,9 +1,7 @@
-import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-
-import { Observable, of } from "rxjs";
+import { Injectable } from "@angular/core";
+import { of, Observable } from "rxjs";
 import { catchError } from "rxjs/operators";
-
 import { Message } from "../../../common/communication/message";
 
 @Injectable()
@@ -15,7 +13,7 @@ export class IndexService {
     public basicGet(): Observable<Message> {
 
         return this.http.get<Message>(this.BASE_URL).pipe(
-            catchError(this.handleError<Message>("basicGet"))
+            catchError(this.handleError<Message>("basicGet")),
         );
     }
 
