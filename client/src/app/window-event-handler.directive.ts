@@ -1,27 +1,23 @@
 import { Directive, HostListener } from "@angular/core";
-import { UserValidationMessage } from "../../../common/communication/UserValidationMessage";
 import { UNListService } from "./username.service";
 
 @Directive({ selector: "[appUnloadEvent]" })
 export class WindowEventHandlerDirective {
 
-  public constructor(private userService: UNListService) { }
+  public constructor(
+    private userService: UNListService) { }
 
   public static beforeUnloadMessage: string = "";
-  private noUsername: string = "empty username passed";
-  private usernameLoggedIn: string = "username released";
 
   @HostListener("window:beforeunload", ["$event"])
   public beforeUnload($event: Event): void {
     if (UNListService.username.length !== 0) {
-      this.userService.sendReleaseRequest().then((response: UserValidationMessage) => {
-        if (response.available) {
-          WindowEventHandlerDirective.beforeUnloadMessage = this.usernameLoggedIn;
-        }
-      });
-    } else {
-      WindowEventHandlerDirective.beforeUnloadMessage = this.noUsername;
+      $event.returnValue = true;
     }
-    $event.returnValue = true;
+  }
+
+  @HostListener("window:unload", ["$event"])
+  public unload($event: Event): void {
+    this.userService.sendReleaseRequest().then().catch();
   }
 }

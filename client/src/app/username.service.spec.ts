@@ -1,14 +1,17 @@
 import { HttpClientModule } from "@angular/common/http";
-import { async, TestBed } from "@angular/core/testing";
-import { UserValidationMessage } from "../../../common/communication/UserValidationMessage";
 import { UNListService } from "./username.service";
+import { async, TestBed } from "@angular/core/testing";
 
 describe("UNListService", () => {
-  beforeEach(() =>
+
+  let service: UNListService;
+
+  beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [UNListService],
-      imports: [HttpClientModule],
-    }));
+      imports: [HttpClientModule]
+    });
+  });
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientModule],
@@ -17,83 +20,89 @@ describe("UNListService", () => {
   }));
 
   it("should be created", () => {
-    const service: UNListService = TestBed.get(UNListService);
+    service = TestBed.get(UNListService);
     expect(service).toBeTruthy();
   });
 
-  // Test sendUserRequest()
-  it("should receive a UserValidationMessage after sendUserRequest", () => {
-    const service: UNListService = TestBed.get(UNListService);
-    const messageTypeVariable: UserValidationMessage = {
-      available: false,
-      username: "Jonhny",
-    };
-    service.sendUserRequest(messageTypeVariable.username).
-    toPromise().then((response: any) => expect(typeof (response)).
-    toBe(typeof (messageTypeVariable)));
+  // Test isAlphanumeric
+
+  it("should return false if name contain non-valid char with associate errMessage", () => {
+    service = TestBed.get(UNListService);
+    expect(service.isAlphanumeric("-Bubbles-")).toBe(false);
+    expect(service.message).toBe("Tu dois utiliser seulement des caractères alphanumériques!");
   });
 
-  it("should receive a UserValidationMessage with the same username and available tobe true", () => {
-    const service: UNListService = TestBed.get(UNListService);
-    const messageTypeVariable: UserValidationMessage = {
-      available: false,
-      username: "Bobby96",
-    };
-    service.sendUserRequest(messageTypeVariable.username).toPromise().then((response: UserValidationMessage) => {
-      expect(response.username).toEqual(messageTypeVariable.username);
-      expect(response.available).toBe(true);
+  it("should return true if a valid username is enter", () => {
+    service = TestBed.get(UNListService);
+    expect(service.isAlphanumeric("ButterCup2")).toBe(true);
+  });
+
+  //Test isTooShort
+  it("should return true is username.lenght is = 3", () => {
+    service = TestBed.get(UNListService);
+    expect(service.isTooShort("Uto")).toBe(true);
+  });
+
+  it("should return true is username.lenght is < 3", () => {
+    service = TestBed.get(UNListService);
+    expect(service.isTooShort("U2")).toBe(true);
+  });
+
+  it("should return false is username.lenght is > 3", () => {
+    service = TestBed.get(UNListService);
+    expect(service.isTooShort("Utonium")).toBe(false);
+  });
+
+  it("should return false if tooShort and avec a specific errMessage", () => {
+    service = TestBed.get(UNListService);
+    service.isTooShort("Ace");
+    expect(service.message).toBe("Ton identifiant est trop court!");
+  });
+
+  // Test validateName
+  it("should return true if a valid username is used", () => {
+    service = TestBed.get(UNListService);
+    spyOn<UNListService>(service, "sendUserRequest").and.callFake(() => {
+      service.response = { available: true, username: "SaraBellum" };
+      return { available: true, username: "SaraBellum" };
+    });
+    service.validateName("SaraBellum").then((response: boolean) => {
+      expect(response).toBe(true);
+      console.log(service.response);
     });
   });
 
-  it("should receive a UserValidationMessage with available as false and with the same username", () => {
-    const service: UNListService = TestBed.get(UNListService);
-    const messageTypeVariable: UserValidationMessage = {
-      available: false,
-      username: "cochon4",
-    };
-    service.sendUserRequest(messageTypeVariable.username).toPromise().then(() => {
-      service.sendUserRequest(messageTypeVariable.username).toPromise().then((response: UserValidationMessage) => {
-        expect(response.available).toBe(false);
-        expect(response.username).toEqual(messageTypeVariable.username);
-      });
+  it("should return false if a invalid username is used + have an errorMessage(already used)", () => {
+    service = TestBed.get(UNListService);
+    spyOn<UNListService>(service, "sendUserRequest").and.callFake(() => {
+      service.response = { available: false, username: "SaraBellum" };
+      return { available: false, username: "SaraBellum" };
+    });
+    service.validateName("SaraBellum").then((response: boolean) => {
+      expect(response).toBe(false);
+      expect(service.message).toBe("Cet identifiant est deja pris! Essaie un nouvel identifiant");
     });
   });
 
-  it("should receive an error", () => {
-    const service: UNListService = TestBed.get(UNListService);
-    const crashTest: any = 12;
-    const messageTypeVariable: UserValidationMessage = {
-      available: false,
-      username: crashTest,
-    };
-    service.sendUserRequest(crashTest).toPromise().then((response: UserValidationMessage) => {
-      expect(response.username).toEqual(messageTypeVariable.username);
-      expect(response.available).toBe(false);
+  it("should return false if a invalid username is used (too short)", () => {
+    service = TestBed.get(UNListService);
+    spyOn<UNListService>(service, "sendUserRequest").and.callFake(() => {
+      service.response = { available: false, username: "Sar" };
+      return { available: false, username: "Sar" };
+    });
+    service.validateName("Sar").then((response: boolean) => {
+      expect(response).toBe(false);
     });
   });
 
-  // Test sendReleaseRequest()
-  it("should receive a UserValidationMessage after sendReleaseRequest", () => {
-    const service: UNListService = TestBed.get(UNListService);
-    UNListService.username = "spongebob";
-    const messageTypeVariable: UserValidationMessage = {
-      available: false,
-      username: UNListService.username,
-    };
-    service.sendReleaseRequest().then((response: any) => expect(typeof (response)).toBe(typeof (messageTypeVariable)));
+  it("should return false if a invalid username is used (not alphanumeric)", () => {
+    service = TestBed.get(UNListService);
+    spyOn<UNListService>(service, "sendUserRequest").and.callFake(() => {
+      service.response = { available: false, username: "SaraBellum!" };
+      return { available: false, username: "SaraBellum!" };
+    });
+    service.validateName("SaraBellum!").then((response: boolean) => {
+      expect(response).toBe(false);
+    });
   });
-
-  it("should receive a UserValidationMessage with available as true", () => {
-    const service: UNListService = TestBed.get(UNListService);
-    UNListService.username = "carlos";
-    service.sendUserRequest(UNListService.username);
-    service.sendReleaseRequest().then((response: UserValidationMessage) => expect(response.available).toBe(true));
-  });
-
-  it("should receive a UserValidationMessage with available as false (username not in server)", () => {
-    const service: UNListService = TestBed.get(UNListService);
-    UNListService.username = "sandy";
-    service.sendReleaseRequest().then((response: UserValidationMessage) => expect(response.available).toBe(false));
-  });
-
 });

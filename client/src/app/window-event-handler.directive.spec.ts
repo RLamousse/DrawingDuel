@@ -1,40 +1,23 @@
-﻿import { HttpClientModule } from "@angular/common/http";
-import { Component, DebugElement } from "@angular/core";
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { By } from "@angular/platform-browser";
-import { UNListService } from "./username.service";
+import { TestBed } from "@angular/core/testing";
+import { Component } from "@angular/core";
 import { WindowEventHandlerDirective } from "./window-event-handler.directive";
+﻿import { HttpClientModule } from "@angular/common/http";
+import { UNListService } from "./username.service";
 
 @Component({
-  template: `<input type="text" appUnloadEvent>`,
+  template: `<input type="text" id="input" appUnloadEvent>`
 })
 class TestWindowEventHandlerComponent {
 }
 
 describe("Directive: WindowEventHandler", () => {
-  // let component: TestWindowEventHandler;
-  let fixture: ComponentFixture<TestWindowEventHandlerComponent>;
-  let inputElement: DebugElement;
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [TestWindowEventHandlerComponent, WindowEventHandlerDirective],
       providers: [UNListService],
       imports: [HttpClientModule],
     });
-    fixture = TestBed.createComponent(TestWindowEventHandlerComponent);
-    // component = fixture.componentInstance;
-    inputElement = fixture.debugElement.query(By.css("input"));
   });
 
-  it("beforeUnload over input, test with emptyString as username in UNListService", () => {
-    UNListService.username = "";
-    inputElement.triggerEventHandler("window:beforeunload", null);
-    expect(WindowEventHandlerDirective.beforeUnloadMessage).toBe("empty username passed");
-  });
-
-  it("beforeUnload over input, test with username not empty in UNListService", () => {
-    UNListService.username = "CoolFire43";
-    inputElement.triggerEventHandler("window:beforeunload", null);
-    expect(WindowEventHandlerDirective.beforeUnloadMessage).toBe("username released");
-  });
 });
