@@ -1,9 +1,17 @@
+import { HttpClientModule } from "@angular/common/http";
+import {CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
-import { VueComponent } from "./vue.component";
 import { FormsModule } from "@angular/forms";
+<<<<<<< HEAD
 import {CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { UNListService } from "../username.service";
 import { HttpClientModule } from "@angular/common/http";
+=======
+import { UserValidationMessage } from "../../../../common/communication/UserValidationMessage";
+import { UNListService } from "../username.service";
+import { VueComponent } from "./vue.component";
+import createSpyObj = jasmine.createSpyObj;
+>>>>>>> 81926880c5a48c31c774dbf2849580800b8a927e
 
 // IMPORTANT : Since some tests add usernames to the database, please restart the database before launching tests.
 describe("VueComponent", () => {
@@ -17,7 +25,11 @@ describe("VueComponent", () => {
       declarations: [VueComponent],
       imports: [FormsModule, HttpClientModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
+<<<<<<< HEAD
       providers: [{ provide: UNListService, useValue: unListSpyService }],
+=======
+      providers: [UNListService],
+>>>>>>> 81926880c5a48c31c774dbf2849580800b8a927e
     });
     fixture = TestBed.createComponent(VueComponent);
     component = fixture.componentInstance;

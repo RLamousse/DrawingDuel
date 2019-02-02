@@ -1,7 +1,6 @@
-import { TestBed, async } from "@angular/core/testing";
 import { HttpClientModule } from "@angular/common/http";
 import { UNListService } from "./username.service";
-//import { UserValidationMessage } from "../../../common/communication/UserValidationMessage";
+import { async, TestBed } from "@angular/core/testing";
 
 describe("UNListService", () => {
 
@@ -13,11 +12,10 @@ describe("UNListService", () => {
       imports: [HttpClientModule]
     });
   });
-
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientModule],
-      providers: [UNListService]
+      providers: [UNListService],
     });
   }));
 
