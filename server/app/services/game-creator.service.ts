@@ -1,80 +1,71 @@
 import Axios from "axios";
-import * as FormData from "form-data";
 import * as fs from "fs";
-import {injectable} from "inversify";
+import {inject, injectable} from "inversify";
 import "reflect-metadata";
 import {Game, TIMES_ARRAY_SIZE} from "../../../common/Object/game";
 import {Message} from "../../../common/communication/message";
 import {
     DIFFERENCE_ERROR_MESSAGE,
-    FORMAT_ERROR_MESSAGE, MODIFIED_IMAGE_IDENTIFIER,
-    NAME_ERROR_MESSAGE,
-    ORIGINAL_IMAGE_IDENTIFIER
+    FORMAT_ERROR_MESSAGE,
+    NAME_ERROR_MESSAGE
 } from "../controllers/game-creator.controller";
+import {BitmapFactory} from "../images/bitmap/bitmap-factory";
+import Types from "../types";
 import {
     ALREADY_EXISTING_GAME_MESSAGE_ERROR, GAME_FIELD,
     GAME_NAME_FIELD,
     NOT_EXISTING_GAME_MESSAGE_ERROR
 } from "./data-base.service";
+import {DifferenceEvaluatorService} from "./difference-evaluator.service";
+
+export const EXPECTED_DIFF_NUMBER: number = 7;
 
 @injectable()
 export class GameCreatorService {
 
+    public constructor(@inject(Types.DifferenceEvaluatorService) private differenceEvaluatorService: DifferenceEvaluatorService) {}
+
     private readonly _MIN_GENERATED_SCORE: number = 20;
     private readonly _MAX_GENERATED_SCORE: number = 120;
+    private readonly _GENERATED_NAMES: string[] = ["normie", "hardTryer4269", "xXx_D4B0W5_xXx"];
 
     public async createSimpleGame(gameName: string, originalImageFile: string, modifiedImageFile: string): Promise<Message> {
-
 
         this.testNameExistance(gameName);
         // 2 call diff function from the phillips
         let diffImage: object;
         try {
-
-            const formData: FormData = new FormData();
-            formData.append("name", "diffImage-" + Date.now() + ".bmp");
-            // let file = document.querySelector();
-            console.dir(fs.readFileSync(originalImageFile));
-            formData.append(ORIGINAL_IMAGE_IDENTIFIER, fs.readFileSync(originalImageFile));
-            formData.append(MODIFIED_IMAGE_IDENTIFIER, fs.readFileSync(modifiedImageFile));
-            diffImage = (await Axios.post<object>("http://localhost:3000/api/image-diff",
-                                                  formData,
-                                                  {headers: {"Content-Type": "multipart/form-data"}})).data;
-            // @ts-ignore
-            // diffImage = (await Axios({
-            //     method: "post",
-            //     url: "http://localhost:3000/api/image-diff",
-            //     data: formData,
-            //     config: { headers: {"Content-Type": "multipart/form-data" }},
-            // })).data;
+            diffImage = await Axios.get<object>("http://localhost:3000/api/image-diff/",
+                //TODO regarder leurs parametres dentree quand fini
+                                                {data: {name: "image-diff-" + Date.now() + ".bmp"}});
 
         } catch (error) {
-            throw new Error("imageDiff: " + error);
+            throw new Error("game diff: " + error.response.data.message);
         }
-        // 3 call compare service when imported and finished
-        // TODO solve same problem as 2
-        // 3.1 if there are not 7 difference, throw difference error
-        // 4 generate data in the database
 
-        const test: Message = await this.generateGame(gameName, fs.readFileSync(originalImageFile), fs.readFileSync(modifiedImageFile));
+        // 3 call count difference service when imported and finished
+        let diffNumber: number;
+        try {
+            diffNumber = this.differenceEvaluatorService.getNDifferences(
+                         BitmapFactory.createBitmap(/*nom image arg des phls*/,
+                         fs.readFileSync(/*path de limage arg des phils*/)).pixels);
+        } catch (error) {
+            throw new Error("bmp diff counting: " + error.message);
+        }
+        if (diffNumber !== EXPECTED_DIFF_NUMBER) {
+            throw new Error(DIFFERENCE_ERROR_MESSAGE);
+        }
 
-        // return test;
-        // 5 send back name of game
-        test.title = JSON.stringify(diffImage);
-
-        return test;
+        return this.generateGame(gameName, fs.readFileSync(originalImageFile), fs.readFileSync(modifiedImageFile));
 
         throw new Error(FORMAT_ERROR_MESSAGE);
-        throw new Error(DIFFERENCE_ERROR_MESSAGE);
         throw new Error(NAME_ERROR_MESSAGE);
     }
 
     private async generateGame(gameName: string, originalImageData: Buffer, modifiedImageData: Buffer): Promise<Message> {
 
 
-        // let response: Message = await Axios.get<Message>("http://localhost:3000/api/data-base/add-game");
         // remplacer localhost par une variable url de notre serveur
-        // demander charger si api/data-base est une valeur magique
 
         const GAME: Game = {
             bestMultiTimes: this.createRandomScores(),
@@ -93,6 +84,7 @@ export class GameCreatorService {
                 throw new Error("dataBase: " + error.response.data.message);
             }
         }
+
         return {title: "Game created", body: "The game was successfully created!"};
 
     }
@@ -100,17 +92,27 @@ export class GameCreatorService {
     private createRandomScores(): {name: string, time: number}[] {
 
         const scoreArray: number[] = new Array(TIMES_ARRAY_SIZE);
-        for (const I of scoreArray){
+        for (const I of scoreArray) {
             scoreArray[I] = Number((this._MIN_GENERATED_SCORE +
                 Math.random() * (this._MAX_GENERATED_SCORE - this._MIN_GENERATED_SCORE)).toFixed(0));
         }
 
-        scoreArray.sort();
+        //DEMANDER SI ca compte comme des valeurs magiques
+        scoreArray.sort((a: number, b: number) => {
+            if (a < b) {
+                //TODO ignore this shit
+                return -1;
+            }
+            if (a > b) {
+                return 1;
+            } else {
+                return 0;
+            }
+        });
 
-        //TODO demander si ce sont des valeurs magiques
-        return [{name: "xXx_D4B0W5_xXx", time: scoreArray[2]},
-                {name: "hardTryer4269", time: scoreArray[1]},
-                {name: "normie", time: scoreArray[0]}];
+        return [{name: this._GENERATED_NAMES[2], time: scoreArray[2]},
+                {name: this._GENERATED_NAMES[1], time: scoreArray[1]},
+                {name: this._GENERATED_NAMES[0], time: scoreArray[0]}];
     }
 
     private async testNameExistance(gameName: string): Promise<void> {
