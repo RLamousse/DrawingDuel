@@ -15,7 +15,7 @@ export class UNListService {
   private minLenght: number = 4;
   public message: string;
   public username: string = "";
-  private response: UserValidationMessage;
+  public response: UserValidationMessage;
 
   public async sendReleaseRequest(): Promise<UserValidationMessage> {
     return this.http.post<UserValidationMessage>(UNListService.BASE_URL + "/release",
@@ -38,34 +38,38 @@ export class UNListService {
   }
 
   public isAlphanumeric(testString: string): boolean {
-    return testString.match(/^[a-zA-Z0-9]+$/i) !== null;
-  }
+    if (testString.match(/^[a-zA-Z0-9]+$/i) !== null) {
 
-  private async isAvailable(username: string): Promise<UserValidationMessage> {
-    return this.sendUserRequest(username).toPromise();
-  }
-  public async validateName(name: string): Promise<boolean> {
-    if (name.length < this.minLenght) {
-      this.message = "Ton identifiant est trop court!";
-
-      return false;
-    }
-    if (!this.isAlphanumeric(name)) {
+      return true;
+    } else {
       this.message = "Tu dois utiliser seulement des caractères alphanumériques!";
 
       return false;
     }
+  }
 
-    await this.isAvailable(name).then((response: UserValidationMessage) => {
-      this.response = response;
-    });
-    if (!this.response.available) {
-      this.message = "Cet identifiant est deja pris! Essaie un nouvel identifiant";
+  public isTooShort(name: string): boolean {
+    if (name.length < this.minLenght) {
+      this.message = "Ton identifiant est trop court!";
 
-      return false;
+      return true;
     }
-    this.message = "Ton identifiant est valide!!!";
 
-    return (true);
+    return false;
+  }
+  public async validateName(name: string): Promise<boolean> {
+    if (!this.isTooShort(name) && this.isAlphanumeric(name)) {
+      await this.sendUserRequest(name).toPromise().then((response: UserValidationMessage) => {
+        this.response = response;
+      }).catch();
+      if (!this.response.available) {
+        this.message = "Cet identifiant est deja pris! Essaie un nouvel identifiant";
+
+        return false;
+      }
+
+    } else { return false;}
+    
+    return true;
   }
 }

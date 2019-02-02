@@ -9,13 +9,12 @@ import { UNListService } from "../username.service";
 export class VueComponent implements OnInit {
 
   @Input() public newUsername: string;
-  public message: string;
   public username: string = "inconnu";
   public errorMessage: string = "";
   public available: boolean;
 
   public constructor(
-    private userService: UNListService,
+    public userService: UNListService,
   ) { }
 
   ngOnInit() { }
@@ -26,10 +25,11 @@ export class VueComponent implements OnInit {
       UNListService.username = this.username;
 
       return true;
-    }
-    this.errorMessage = this.userService.message;
+    } else {
+      this.errorMessage = this.userService.message;
 
-    return false;
+      return false;
+    }
   }
 
 }
