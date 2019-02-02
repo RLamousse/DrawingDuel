@@ -15,12 +15,8 @@ export class VueComponent implements OnInit {
   public available: boolean;
 
   public constructor(
-<<<<<<< HEAD
     public userService: UNListService,
-=======
     private router: Router,
-    private userService: UNListService,
->>>>>>> 81926880c5a48c31c774dbf2849580800b8a927e
   ) { }
 
   ngOnInit() {}
@@ -29,18 +25,9 @@ export class VueComponent implements OnInit {
     if (await this.userService.validateName(this.newUsername)) {
       this.username = this.newUsername;
       UNListService.username = this.username;
-
-<<<<<<< HEAD
-      return true;
+      this.router.navigate(["/game-list"]);
     } else {
       this.errorMessage = this.userService.message;
-
-      return false;
     }
-=======
-      this.router.navigate(["/game-list"]);
-    }
-    this.errorMessage = this.userService.message;
->>>>>>> 81926880c5a48c31c774dbf2849580800b8a927e
   }
 }
