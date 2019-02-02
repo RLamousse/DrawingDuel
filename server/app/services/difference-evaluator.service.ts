@@ -2,10 +2,15 @@ import { injectable } from "inversify";
 import "reflect-metadata";
 import {create2dArray} from "../../../common/util/util";
 
+export const ARGUMENT_ERROR_MESSAGE: string = "Error: the argument has the wrong format! Must be a number[][].";
+export const EMPTY_ARRAY_ERROR_MESSAGE: string = "Error: the given array is empty!";
+
 @injectable()
 export class DifferenceEvaluatorService {
 
     public getNDifferences(pixels: number[][]): number {
+
+        this.validateData(pixels);
 
         const TRANSLATE_TABLE: Map<number, number[]> = new Map<number, number[]>();
         let maxCurrentLabel: number = 0;
@@ -65,5 +70,14 @@ export class DifferenceEvaluatorService {
         }
 
         return totalDifferences;
+    }
+
+    private validateData(pixels: number[][]): void {
+        if (typeof pixels !== "number[][]") {
+            throw new Error(ARGUMENT_ERROR_MESSAGE);
+        }
+        if (pixels.length === 0 || pixels[0].length === 0) {
+            throw new Error(EMPTY_ARRAY_ERROR_MESSAGE);
+        }
     }
 }
