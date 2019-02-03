@@ -67,8 +67,8 @@ export class UNListService {
         return false;
       }
 
-    } else { return false;}
-    
+    } else { return false; }
+
     return true;
   }
 }

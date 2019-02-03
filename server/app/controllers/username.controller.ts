@@ -1,8 +1,9 @@
-﻿import { injectable, inject } from "inversify";
-import { Router, Request, Response} from "express";
-
-import Types from "../types";
+import { Request, Response, Router} from "express";
+import * as HttpStatus from "http-status-codes";
+import { inject, injectable } from "inversify";
+import { UserValidationMessage } from "../../../common/communication/UserValidationMessage";
 import { UserNameService } from "../services/UserName.service";
+import Types from "../types";
 
 @injectable()
 export class UserController {
@@ -12,18 +13,42 @@ export class UserController {
     public get router(): Router {
         const router: Router = Router();
 
-        router.post("/add",
-            async (req: Request, res: Response) => {
-                let result = await this.userService.checkAvailability(req.body);
-                res.json(result);
+        router.post("/add", async (req: Request, res: Response) => {
+                try {
+                    if (req.body.constructor === Object && Object.keys(req.body).length === 0) {
+                        throw new Error("Error: no username to add was included in the request");
+                    }
+                    const result: UserValidationMessage = await this.userService.checkAvailability(req.body);
+                    res.json(result);
+                } catch (error) {
+                    UserController.answerWithError(error, res);
+
+                    return;
+                }
             });
 
-        router.post("/release",
-            async (req: Request, res: Response) => {
-                let response = await this.userService.releaseUsername(req.body);
-                res.json(response);
+        router.post("/release", async (req: Request, res: Response) => {
+                try {
+                    if (req.body.constructor === Object && Object.keys(req.body).length === 0) {
+                        throw new Error("Error: no username to release included in the request");
+                    }
+                    const response: UserValidationMessage = await this.userService.releaseUsername(req.body);
+                    res.json(response);
+                } catch (error) {
+                    UserController.answerWithError(error, res);
+
+                    return;
+                }
             });
 
         return router;
+    }
+
+    private static answerWithError(error: Error, res: Response): void {
+        res.status(HttpStatus.INTERNAL_SERVER_ERROR);
+        res.json({
+            status: "error",
+            error: error.message,
+        });
     }
 }

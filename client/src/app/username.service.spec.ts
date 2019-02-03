@@ -1,6 +1,6 @@
 import { HttpClientModule } from "@angular/common/http";
-import { UNListService } from "./username.service";
 import { async, TestBed } from "@angular/core/testing";
+import { UNListService } from "./username.service";
 
 describe("UNListService", () => {
 
@@ -9,7 +9,7 @@ describe("UNListService", () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [UNListService],
-      imports: [HttpClientModule]
+      imports: [HttpClientModule],
     });
   });
   beforeEach(async(() => {
@@ -37,7 +37,7 @@ describe("UNListService", () => {
     expect(service.isAlphanumeric("ButterCup2")).toBe(true);
   });
 
-  //Test isTooShort
+  // Test isTooShort
   it("should return true is username.lenght is = 3", () => {
     service = TestBed.get(UNListService);
     expect(service.isTooShort("Uto")).toBe(true);
@@ -64,45 +64,48 @@ describe("UNListService", () => {
     service = TestBed.get(UNListService);
     spyOn<UNListService>(service, "sendUserRequest").and.callFake(() => {
       service.response = { available: true, username: "SaraBellum" };
+
       return { available: true, username: "SaraBellum" };
     });
     service.validateName("SaraBellum").then((response: boolean) => {
       expect(response).toBe(true);
-      console.log(service.response);
-    });
+    }).catch();
   });
 
   it("should return false if a invalid username is used + have an errorMessage(already used)", () => {
     service = TestBed.get(UNListService);
     spyOn<UNListService>(service, "sendUserRequest").and.callFake(() => {
       service.response = { available: false, username: "SaraBellum" };
+
       return { available: false, username: "SaraBellum" };
     });
     service.validateName("SaraBellum").then((response: boolean) => {
       expect(response).toBe(false);
       expect(service.message).toBe("Cet identifiant est deja pris! Essaie un nouvel identifiant");
-    });
+    }).catch();
   });
 
   it("should return false if a invalid username is used (too short)", () => {
     service = TestBed.get(UNListService);
     spyOn<UNListService>(service, "sendUserRequest").and.callFake(() => {
       service.response = { available: false, username: "Sar" };
+
       return { available: false, username: "Sar" };
     });
     service.validateName("Sar").then((response: boolean) => {
       expect(response).toBe(false);
-    });
+    }).catch();
   });
 
   it("should return false if a invalid username is used (not alphanumeric)", () => {
     service = TestBed.get(UNListService);
     spyOn<UNListService>(service, "sendUserRequest").and.callFake(() => {
       service.response = { available: false, username: "SaraBellum!" };
+
       return { available: false, username: "SaraBellum!" };
     });
     service.validateName("SaraBellum!").then((response: boolean) => {
       expect(response).toBe(false);
-    });
+    }).catch();
   });
 });

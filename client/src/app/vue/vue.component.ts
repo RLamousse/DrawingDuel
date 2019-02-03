@@ -13,19 +13,20 @@ export class VueComponent implements OnInit {
   public username: string = "inconnu";
   public errorMessage: string = "";
   public available: boolean;
+  public readonly logoPath: string = "./facebook_cover_photo_1.PNG";
 
   public constructor(
     public userService: UNListService,
     private router: Router,
   ) { }
 
-  ngOnInit() {}
+  public ngOnInit() {}
 
   public async updateUsername(): Promise<void> {
     if (await this.userService.validateName(this.newUsername)) {
       this.username = this.newUsername;
       UNListService.username = this.username;
-      this.router.navigate(["/game-list"]);
+      this.router.navigate(["/game-list"]).catch();
     } else {
       this.errorMessage = this.userService.message;
     }

@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import * as THREE from 'three';
+import { Injectable } from "@angular/core";
+import * as THREE from "three";
 // import Stats = require('stats.js');
 
 @Injectable()
@@ -58,7 +58,7 @@ export class RenderService {
       this.fieldOfView,
       aspectRatio,
       this.nearClippingPane,
-      this.farClippingPane
+      this.farClippingPane,
     );
     this.camera.position.z = this.cameraZ;
   }
