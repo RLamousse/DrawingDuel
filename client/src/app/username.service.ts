@@ -15,7 +15,9 @@ export class UNListService {
   private minLenght: number = 4;
   public message: string;
   public username: string = "";
-  public response: UserValidationMessage;
+  public response: UserValidationMessage = {
+    username: "", available: true
+  };
 
   public async sendReleaseRequest(): Promise<UserValidationMessage> {
     return this.http.post<UserValidationMessage>(UNListService.BASE_URL + "/release", {
