@@ -30,7 +30,7 @@ export class DataBaseService {
     private _games: Collection<Game>;
 
     public constructor() {
-        MongoClient.connect(this.DB_URL, {useNewUrlParser : true}, (err: MongoError, client: any) => {
+        MongoClient.connect(this.DB_URL, {useNewUrlParser : true}, (err: MongoError, client: MongoClient) => {
             if (!err) {
                 this._dataBase = client.db(this.DB_DB);
                 this._users = this._dataBase.collection("users");
