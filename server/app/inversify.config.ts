@@ -3,15 +3,15 @@ import { Application } from "./app";
 import {BitmapDiffController} from "./controllers/bitmap-diff.controller";
 import {DataBaseController} from "./controllers/data-base.controller";
 import { GameCreatorController } from "./controllers/game-creator.controller";
+import { UserController } from "./controllers/username.controller";
 import {BitmapWriter} from "./images/bitmap/bitmap-writer";
 import {Server} from "./server";
+import { UserNameService } from "./services/UserName.service";
 import {BitmapDiffService} from "./services/bitmap-diff.service";
 import {DataBaseService} from "./services/data-base.service";
 import {DifferenceEvaluatorService} from "./services/difference-evaluator.service";
 import {GameCreatorService} from "./services/game-creator.service";
 import Types from "./types";
-import { UserNameService } from "./services/UserName.service";
-import { UserController } from "./controllers/username.controller";
 
 const container: Container = new Container();
 
