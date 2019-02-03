@@ -1,6 +1,6 @@
 import { HttpClientModule } from "@angular/common/http";
-import { UNListService } from "./username.service";
 import { async, TestBed } from "@angular/core/testing";
+import { UNListService } from "./username.service";
 
 describe("UNListService", () => {
 
@@ -9,7 +9,7 @@ describe("UNListService", () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [UNListService],
-      imports: [HttpClientModule]
+      imports: [HttpClientModule],
     });
   });
   beforeEach(async(() => {
@@ -37,7 +37,7 @@ describe("UNListService", () => {
     expect(service.isAlphanumeric("ButterCup2")).toBe(true);
   });
 
-  //Test isTooShort
+  // Test isTooShort
   it("should return true is username.lenght is = 3", () => {
     service = TestBed.get(UNListService);
     expect(service.isTooShort("Uto")).toBe(true);
