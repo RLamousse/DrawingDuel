@@ -1,8 +1,11 @@
-<form [formGroup]="formDoc" novalidate>
+<form name="creat-game-form" [formGroup]="formDoc" novalidate ng-submit="creat-game-form.$valid">
 
-  <mat-form-field hintLabel="Max 10 charactères" id="name">
-    <input matInput #input maxlength="10" placeholder="Nom de la partie">
-    <mat-hint align="end">{{input.value?.length || 0}}/10</mat-hint>
+  <mat-form-field hintLabel="Max 15 charactères" id="name">
+    <input matInput #input required maxlength="15" placeholder="Nom de la partie" formControlName="name">
+    <mat-hint align="end">{{input.value?.length || 0}}/15</mat-hint>
+    <mat-error *ngIf="formDoc.get('name').hasError('minlength')">
+      Minimum de 5 charactères
+    </mat-error>
   </mat-form-field>
 
   <mat-form-field>
@@ -13,7 +16,7 @@
     <mat-error *ngIf="formDoc.get('originalImage').hasError('required')">
       Please select a file
     </mat-error>
-    <mat-error *ngIf="checkFileDimension(originalImage)">
+    <mat-error *ngIf="false">
       The total size must not exceed {{formDoc.get('originalImage')?.getError('maxContentSize').maxSize | byteFormat}}
       ({{formDoc.get('originalImage')?.getError('maxContentSize').actualSize
       | byteFormat}}).
@@ -27,14 +30,14 @@
     <mat-error *ngIf="formDoc.get('modifiedImage').hasError('required')">
       Please select a file
     </mat-error>
-    <mat-error *ngIf="formDoc.get('modifiedImage').hasError('maxContentSize')">
+    <mat-error *ngIf="false">
       The total size must not exceed {{formDoc.get('modifiedImage')?.getError('maxContentSize').maxSize | byteFormat}}
       ({{formDoc.get('modifiedImage')?.getError('maxContentSize').actualSize
       | byteFormat}}).
     </mat-error>
   </mat-form-field>
+  <div>
+    <button type="submit" mat-button [disabled]="!formDoc.valid">Envoyer</button>
+    <button type="reset" mat-button color="warn" (click)="revert()">Annuler</button>
+  </div>
 </form>
-<div class="button-group">
-  <button mat-button>Envoyer</button>
-  <button mat-button color="warn">Annuler</button>
-</div>
