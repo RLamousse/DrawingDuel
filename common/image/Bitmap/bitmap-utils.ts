@@ -42,6 +42,15 @@ export const BITMAP_HEADER_24BPP: number[] = [
     0x00, 0x00, 0x00, 0x00 // Important colors
 ];
 
+export function getDimensionsFromBuffer(buffer: Buffer) {
+    const width: number = buffer.readUIntLE(WIDTH_FLAG_OFFSET, WIDTH_FLAG_LENGTH);
+    const height: number = buffer.readUIntLE(HEIGHT_FLAG_OFFSET, WIDTH_FLAG_LENGTH);
+    return {
+        width,
+        height
+    };
+  }
+
 export function getHeaderForDimension(width: number, height: number): Buffer {
     const buffer = Buffer.from(BITMAP_HEADER_24BPP);
     const pixelArrayBytesCount = getTotalBytesForDimension(width, height);
