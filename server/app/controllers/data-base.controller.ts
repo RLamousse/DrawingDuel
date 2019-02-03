@@ -6,6 +6,7 @@ import Types from "../types";
 
 export const USERNAME_FORMAT_ERROR_MESSAGE: string = "ERROR: the username has the wrong format!";
 export const GAME_NAME_FORMAT_ERROR_MESSAGE: string = "ERROR: the game name has the wrong format!";
+export const GAME_FORMAT_ERROR_MESSAGE: string = "ERROR: the game has the wrong format!";
 
 @injectable()
 export class DataBaseController {
@@ -37,7 +38,7 @@ export class DataBaseController {
 
         router.delete("/delete-game", async (req: Request, res: Response, next: NextFunction) => {
             try {
-                this.isStringFieldCorrect(GAME_NAME_FIELD, req.body);
+                this.testGameName(req);
                 res.json(await this.dataBaseService.deleteGame(req.body[GAME_NAME_FIELD]));
             } catch (error) {
                 next(error);
@@ -83,20 +84,11 @@ export class DataBaseController {
         }
     }
 
-    //TODO test if game has all its attributes first
-    //TODO complete function with file testing
     private testGame(req: e.Request): void {
-        if (!this.isStringFieldCorrect("gameName", req.body[GAME_FIELD])) {
-            throw new Error(GAME_NAME_FORMAT_ERROR_MESSAGE);
-        }
-
+        this.dataBaseService.testGameStructure(req.body[GAME_FIELD]);
     }
 
     private testGameName(req: Request): void {
-        if (!this.isStringFieldCorrect(GAME_NAME_FIELD, req.body)) {
-            throw new Error(GAME_NAME_FORMAT_ERROR_MESSAGE);
-        }
-
     }
 
     private isStringFieldCorrect(filedName: string, item: object): boolean {

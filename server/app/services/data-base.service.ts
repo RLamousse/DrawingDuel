@@ -3,6 +3,7 @@ import {Collection, Db, InsertOneWriteOpResult, MongoClient, MongoError} from "m
 import "reflect-metadata";
 import {Game} from "../../../common/Object/game";
 import {Message} from "../../../common/communication/message";
+import {GAME_FORMAT_ERROR_MESSAGE, USERNAME_FORMAT_ERROR_MESSAGE} from "../controllers/data-base.controller";
 
 export const ALREADY_EXISTING_USER_MESSAGE_ERROR: string = "ERROR: the specified usename already exists!";
 export const ALREADY_EXISTING_GAME_MESSAGE_ERROR: string = "ERROR: a game with the same name already exists!";
@@ -41,6 +42,9 @@ export class DataBaseService {
     }
 
     public async addUser(userName: string): Promise<Message> {
+        if (typeof userName !== "string" || userName === "") {
+            throw new Error(USERNAME_FORMAT_ERROR_MESSAGE);
+        }
         if (await this.containsUser(userName)) {
             throw new Error(ALREADY_EXISTING_USER_MESSAGE_ERROR);
         } else {
@@ -57,6 +61,9 @@ export class DataBaseService {
     }
 
     public async deleteUser(userName: string): Promise<Message> {
+        if (typeof userName !== "string" || userName === "") {
+            throw new Error(USERNAME_FORMAT_ERROR_MESSAGE);
+        }
         if (!(await this.containsUser(userName))) {
             throw new Error(NOT_EXISTING_USER_MESSAGE_ERROR);
         } else {
@@ -73,6 +80,9 @@ export class DataBaseService {
     }
 
     public async deleteGame(gameName: string): Promise<Message> {
+        if (typeof gameName !== "string" || gameName === "") {
+            throw new Error(USERNAME_FORMAT_ERROR_MESSAGE);
+        }
         if (!(await this.containsGame(gameName))) {
             throw new Error(NOT_EXISTING_GAME_MESSAGE_ERROR);
         } else {
@@ -97,6 +107,7 @@ export class DataBaseService {
     }
 
     public async addGame(game: Game): Promise<Message> {
+        this.testGameStructure(game);
         if (await this.containsGame(game.gameName)) {
             throw new Error(ALREADY_EXISTING_GAME_MESSAGE_ERROR);
         } else {
@@ -133,6 +144,9 @@ export class DataBaseService {
     }
 
     public async getGame(gameName: string): Promise<Game> {
+        if (typeof gameName !== "string" || gameName === "") {
+            throw new Error(USERNAME_FORMAT_ERROR_MESSAGE);
+        }
         return new Promise<Game>((resolve: (value?: Game | PromiseLike<Game>) => void, reject: (reason?: Error) => void) => {
             this._games.find({[GAME_NAME_FIELD] : {$eq : gameName}}).toArray((error: MongoError, res: Game[]) => {
                 if (error) {
@@ -143,5 +157,23 @@ export class DataBaseService {
                 resolve(res[0]);
             });
         });
+    }
+
+    // TODO test if game has all its attributes of game
+    public testGameStructure(game: Game): void{
+        console.dir(typeof game);
+        if (typeof game.gameName !== "string" || game.gameName === "") {
+            throw new Error(USERNAME_FORMAT_ERROR_MESSAGE);
+        }
+        // @ts-ignore
+        if (typeof game.originalImage !== "Buffer") {
+            throw new Error(GAME_FORMAT_ERROR_MESSAGE);
+        }
+        // @ts-ignore
+        if (typeof game.modifiedImage !== "Buffer") {
+            throw new Error(GAME_FORMAT_ERROR_MESSAGE);
+        }
+        console.dir(typeof game.bestSoloTimes);
+
     }
 }
