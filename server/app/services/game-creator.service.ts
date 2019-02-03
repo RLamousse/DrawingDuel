@@ -60,8 +60,6 @@ export class GameCreatorService {
 
         const ANSWER: Message = await this.generateGame(gameName, fs.readFileSync(originalImageFile), fs.readFileSync(modifiedImageFile));
 
-        this.deleteFiles(originalImageFile, modifiedImageFile);
-
         return ANSWER;
     }
 
