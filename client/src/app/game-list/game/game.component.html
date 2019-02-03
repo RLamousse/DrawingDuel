@@ -1,9 +1,9 @@
 
 <div class="window" appUnloadEvent>
-    <h1>{{title}}</h1>
+    <h1>{{gameName}}</h1>
     <div class="horizontalWindow">
         <div>
-            <img src={{image}}>
+            <img src={{originalImage}}>
         </div>
         <div class="scoreTable">
             <table>
@@ -14,18 +14,18 @@
                 </tr>
                 <tr>
                     <td>Premier:</td>
-                    <td>{{soloScores[0].time}} {{soloScores[0].name}}</td>
-                    <td>{{duoScores[0].time}} {{duoScores[0].name}}</td>
+                    <td>{{bestSoloScores[0].time}} {{bestSoloScores[0].name}}</td>
+                    <td>{{bestMultiScores[0].time}} {{bestMultiScores[0].name}}</td>
                 </tr>
                 <tr>
                     <td>Deuxieme:</td>
-                    <td>{{soloScores[1].time}} {{soloScores[1].name}}</td>
-                    <td>{{duoScores[1].time}} {{duoScores[1].name}}</td>
+                    <td>{{bestSoloScores[1].time}} {{bestSoloScores[1].name}}</td>
+                    <td>{{bestMultiScores[1].time}} {{bestMultiScores[1].name}}</td>
                 </tr>
                 <tr>
                     <td>Troisième:</td>
-                    <td>{{soloScores[2].time}} {{soloScores[2].name}}</td>
-                    <td>{{duoScores[2].time}} {{duoScores[2].name}}</td>
+                    <td>{{bestSoloScores[2].time}} {{bestSoloScores[2].name}}</td>
+                    <td>{{bestMultiScores[2].time}} {{bestMultiScores[2].name}}</td>
                 </tr>
             </table>
         </div>
