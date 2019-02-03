@@ -1,6 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CreateSimpleGame } from './create-simple-game';
+import { MatDialogRef, MAT_DIALOG_DATA, } from "@angular/material";
+
 
 describe('CourseDialogComponentComponent', () => {
   let component: CreateSimpleGame;
@@ -8,7 +10,8 @@ describe('CourseDialogComponentComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CreateSimpleGame ]
+      declarations: [ CreateSimpleGame ],
+      providers: [{provide: MAT_DIALOG_DATA, useValue: {}}, {provide: MatDialogRef, useValue: {}}]
     })
     .compileComponents();
   }));
