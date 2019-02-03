@@ -1,12 +1,12 @@
 import { Container } from "inversify";
 import { Application } from "./app";
 import {BitmapDiffController} from "./controllers/bitmap-diff.controller";
+import { UserController } from "./controllers/username.controller";
 import {BitmapWriter} from "./images/bitmap/bitmap-writer";
 import { Server } from "./server";
-import Types from "./types";
-import {BitmapDiffService} from "./services/bitmap-diff.service";
 import { UserNameService } from "./services/UserName.service";
-import { UserController } from "./controllers/username.controller";
+import {BitmapDiffService} from "./services/bitmap-diff.service";
+import Types from "./types";
 
 const container: Container = new Container();
 

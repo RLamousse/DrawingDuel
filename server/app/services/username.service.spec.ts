@@ -1,6 +1,6 @@
-﻿import { expect } from "chai";
-import { UserNameService } from "./UserName.service";
+import { expect } from "chai";
 import { UserValidationMessage } from "../../../common/communication/UserValidationMessage";
+import { UserNameService } from "./UserName.service";
 
 describe("UserNameService", () => {
 

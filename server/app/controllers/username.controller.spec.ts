@@ -4,12 +4,11 @@ import * as request from "supertest";
 import { Application } from "../app";
 import { container } from "../inversify.config";
 import types from "../types";
-//import { UserValidationMessage } from "../../../common/communication/UserValidationMessage";
 
 const mockedUsernameService = {
-    checkAvailability: () => { return { username: "validUsernameAdd", available: true } },
-    releaseUsername: () => { return { username: "validUsernameRelease", available: true } },
-}
+    checkAvailability: () => ({ username: "validUsernameAdd", available: true }),
+    releaseUsername: () => ({ username: "validUsernameRelease", available: true }),
+};
 
 const errorResponse = (errorMessage: string) => {
     return {
