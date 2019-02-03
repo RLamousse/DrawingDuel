@@ -1,6 +1,7 @@
 .window{
     width: 700px;
     margin: auto;
+    margin-top: 20px;
     border: 2px solid darkblue;
     border-radius: 25px;
     background-color:lightblue;
