@@ -34,19 +34,24 @@ export class GameListComponent implements OnInit {
     const scores: number[] = GameComponent.generateRandomScores();
     const names: string[] = GameComponent.generateRandomNames();
     const game: Game = {gameName: "JEU1",
+                        originalImage: "https://upload.wikimedia.org/wikipedia/commons/c/c9/Moon.jpg",
+                        modifiedImage: "https://upload.wikimedia.org/wikipedia/commons/c/c9/Moon.jpg",
                         bestSoloTimes: [{name: names[0], time: scores[0]},
                                         {name: names[1], time: scores[1]}, {name: names[2], time: scores[2]}],
                         bestMultiTimes: [{name: names[0], time: scores[0]},
                                          {name: names[1], time: scores[1]}, {name: names[2], time: scores[2]}],
-                        originalImage: "https://upload.wikimedia.org/wikipedia/commons/c/c9/Moon.jpg",
-                        modifiedImage: "https://upload.wikimedia.org/wikipedia/commons/c/c9/Moon.jpg",
                        };
     this.addGame(game);
-    console.log(game.originalImage);
+    console.log(game);//fonctionne
+    console.log(this.games);//fonctionne
     console.log(this.convertTimeScores(60));
     this.getGames().subscribe((gameToModify) => {
       this.convertScoresObject(gameToModify);
-      this.games = gameToModify;
+      for(const i in gameToModify){
+        if(gameToModify.hasOwnProperty(i)){
+          this.addGame(gameToModify[i]);
+        }
+      }
     });
   }
 

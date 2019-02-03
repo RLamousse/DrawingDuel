@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from "@angular/core";
+import { Game } from "../../../../../common/Object/game";
 
 @Component({
   selector: "app-game",
@@ -10,12 +11,10 @@ export class GameComponent implements OnInit {
 
   public constructor() {/*vide*/}
 
-  @Input() public title: string;
-  @Input() public soloScores: Array<number> = [0, 0, 0];
-  @Input() public duoScores: Array<number> = [0, 0, 0];
-  @Input() public soloNames: Array<string>;
-  @Input() public duoNames: Array<string>;
-  @Input() public image: string;
+  @Input() public gameName: string;
+  @Input() public bestSoloTimes: Game[];
+  @Input() public bestMultiTimes: Game[];
+  @Input() public originalImage: string;
 
   // Methods to generate scores and usernames
   public static generateRandom(min: number, max: number): number {
