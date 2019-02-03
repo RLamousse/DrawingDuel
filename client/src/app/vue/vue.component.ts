@@ -13,7 +13,7 @@ export class VueComponent implements OnInit {
   public username: string = "inconnu";
   public errorMessage: string = "";
   public available: boolean;
-  public readonly logoPath: string = "./facebook_cover_photo_1.PNG";
+  public readonly logoPath: string = "./logo.png";
 
   public constructor(
     public userService: UNListService,
