@@ -25,7 +25,7 @@ export class VueComponent implements OnInit {
     if (await this.userService.validateName(this.newUsername)) {
       this.username = this.newUsername;
       UNListService.username = this.username;
-      this.router.navigate(["/game-list"]);
+      this.router.navigate(["/game-list"]).catch();
     } else {
       this.errorMessage = this.userService.message;
     }

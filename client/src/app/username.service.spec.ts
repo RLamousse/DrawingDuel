@@ -64,45 +64,48 @@ describe("UNListService", () => {
     service = TestBed.get(UNListService);
     spyOn<UNListService>(service, "sendUserRequest").and.callFake(() => {
       service.response = { available: true, username: "SaraBellum" };
+
       return { available: true, username: "SaraBellum" };
     });
     service.validateName("SaraBellum").then((response: boolean) => {
       expect(response).toBe(true);
-      console.log(service.response);
-    });
+    }).catch();
   });
 
   it("should return false if a invalid username is used + have an errorMessage(already used)", () => {
     service = TestBed.get(UNListService);
     spyOn<UNListService>(service, "sendUserRequest").and.callFake(() => {
       service.response = { available: false, username: "SaraBellum" };
+
       return { available: false, username: "SaraBellum" };
     });
     service.validateName("SaraBellum").then((response: boolean) => {
       expect(response).toBe(false);
       expect(service.message).toBe("Cet identifiant est deja pris! Essaie un nouvel identifiant");
-    });
+    }).catch();
   });
 
   it("should return false if a invalid username is used (too short)", () => {
     service = TestBed.get(UNListService);
     spyOn<UNListService>(service, "sendUserRequest").and.callFake(() => {
       service.response = { available: false, username: "Sar" };
+
       return { available: false, username: "Sar" };
     });
     service.validateName("Sar").then((response: boolean) => {
       expect(response).toBe(false);
-    });
+    }).catch();
   });
 
   it("should return false if a invalid username is used (not alphanumeric)", () => {
     service = TestBed.get(UNListService);
     spyOn<UNListService>(service, "sendUserRequest").and.callFake(() => {
       service.response = { available: false, username: "SaraBellum!" };
+
       return { available: false, username: "SaraBellum!" };
     });
     service.validateName("SaraBellum!").then((response: boolean) => {
       expect(response).toBe(false);
-    });
+    }).catch();
   });
 });

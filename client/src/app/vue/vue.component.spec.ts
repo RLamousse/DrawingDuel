@@ -47,7 +47,7 @@ describe("VueComponent", () => {
     component.updateUsername().then(() => {
       expect(component.username).toBe("perry24");
       expect(UNListService.username).toBe("perry24");
-    });
+    }).catch();
   });
 
   it("should have an error message if validateName return false", async () => {
@@ -57,7 +57,7 @@ describe("VueComponent", () => {
     unListSpyService.validateName.and.callFake(() => false);
     component.updateUsername().then(() => {
       expect(component.errorMessage.length).not.toEqual(0);
-    });
+    }).catch();
   });
 
   it("should update username (service and component) if a valid one is enter", async () => {
@@ -68,6 +68,6 @@ describe("VueComponent", () => {
     component.updateUsername().then(() => {
       expect(component.username).toBe("Candice");
       expect(UNListService.username).toBe("Candice");
-    });
+    }).catch();
   });
 });
