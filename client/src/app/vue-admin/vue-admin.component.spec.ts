@@ -23,12 +23,5 @@ describe('VueAdminComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should emit greeting event', (done) => {
-    let testGameCreator = new gameCreator();
-    testGameCreator.createSimpleGame.subscribe(g => {
-       expect(g).toEqual({greeting:'hello'});
-       done();
-    });
-    testGameCreator.sayHello();
-  });
+  
 });

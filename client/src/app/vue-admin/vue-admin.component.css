@@ -1,5 +1,5 @@
 .gameCreationButton{
-    background-color: #4CAF50;
+    background-color: green;
     border: none;
     color: white;
     padding: 15px 32px;
@@ -15,6 +15,7 @@
 
 .Admin{
     font-size: 25px;
+    color: white;
     padding-left: 10px;
     text-align : center;
 }
@@ -22,10 +23,8 @@
     position: fixed;
     top: 1em;
     right: 1em;
-    background-color: skyblue;
+    background-color: grey;
     
 }
-.test{
-    padding-top: 9999px
-}
+
 

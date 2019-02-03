@@ -12,6 +12,7 @@ export class Create3DGameComponent implements OnInit {
 
   ngOnInit() {
   }
+  
   close() {
     this.dialogRef.close();
   }
