@@ -100,7 +100,7 @@ export class DataBaseService {
 
     private async containsUser(userName: string): Promise<boolean> {
         try {
-            return ((await this._users.count( {[USER_NAME_FIELD] : {$eq : userName}})) !== 0);
+            return ((await this._users.countDocuments( {[USER_NAME_FIELD] : {$eq : userName}})) !== 0);
         } catch (error) {
             throw new Error(DATA_BASE_MESSAGE_ERROR);
         }
@@ -121,12 +121,11 @@ export class DataBaseService {
                 });
             });
         }
-
     }
 
     private async containsGame(gameName: string): Promise<boolean> {
         try {
-            return ((await this._games.count( {[GAME_NAME_FIELD] : {$eq : gameName}})) !== 0);
+            return ((await this._games.countDocuments( {[GAME_NAME_FIELD] : {$eq : gameName}})) !== 0);
         } catch (error) {
             throw new Error(DATA_BASE_MESSAGE_ERROR);
         }
@@ -147,6 +146,7 @@ export class DataBaseService {
         if (typeof gameName !== "string" || gameName === "") {
             throw new Error(USERNAME_FORMAT_ERROR_MESSAGE);
         }
+
         return new Promise<Game>((resolve: (value?: Game | PromiseLike<Game>) => void, reject: (reason?: Error) => void) => {
             this._games.find({[GAME_NAME_FIELD] : {$eq : gameName}}).toArray((error: MongoError, res: Game[]) => {
                 if (error) {
@@ -159,21 +159,23 @@ export class DataBaseService {
         });
     }
 
-    // TODO test if game has all its attributes of game
-    public testGameStructure(game: Game): void{
-        console.dir(typeof game);
+    public testGameStructure(game: Game): void {
+        try {
+            game.gameName = game.gameName;
+        } catch (error) {
+            throw new Error(GAME_FORMAT_ERROR_MESSAGE);
+        }
         if (typeof game.gameName !== "string" || game.gameName === "") {
-            throw new Error(USERNAME_FORMAT_ERROR_MESSAGE);
-        }
-        // @ts-ignore
-        if (typeof game.originalImage !== "Buffer") {
             throw new Error(GAME_FORMAT_ERROR_MESSAGE);
         }
         // @ts-ignore
-        if (typeof game.modifiedImage !== "Buffer") {
+        if (typeof game.originalImage !== "string") {
             throw new Error(GAME_FORMAT_ERROR_MESSAGE);
         }
-        console.dir(typeof game.bestSoloTimes);
+        // @ts-ignore
+        if (typeof game.modifiedImage !== "string") {
+            throw new Error(GAME_FORMAT_ERROR_MESSAGE);
+        }
 
     }
 }

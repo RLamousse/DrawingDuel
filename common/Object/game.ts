@@ -1,7 +1,7 @@
 export interface Game {
     gameName: string,
-    originalImage: Buffer,
-    modifiedImage: Buffer,
+    originalImage: string,
+    modifiedImage: string,
     bestSoloTimes: {name: string, time: number}[],
     bestMultiTimes: {name: string, time: number}[]
 }

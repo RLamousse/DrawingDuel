@@ -27,6 +27,8 @@ export class GameCreatorService {
     private readonly _MIN_GENERATED_SCORE: number = 20;
     private readonly _MAX_GENERATED_SCORE: number = 120;
     private readonly _GENERATED_NAMES: string[] = ["normie", "hardTryer4269", "xXx_D4B0W5_xXx"];
+    private readonly _LOCAL_PICTURE_IMAGES_END: string[] = ["-originalImage.bmp", "-modifiedImage.bmp"];
+    private readonly _PATH_TO_IMAGES: string = "public/";
 
     public async createSimpleGame(gameName: string, originalImageFile: string, modifiedImageFile: string): Promise<Message> {
 
@@ -58,21 +60,24 @@ export class GameCreatorService {
             throw new Error(DIFFERENCE_ERROR_MESSAGE);
         }
 
-        const ANSWER: Message = await this.generateGame(gameName, fs.readFileSync(originalImageFile), fs.readFileSync(modifiedImageFile));
-
-        return ANSWER;
+        return this.generateGame(gameName, originalImageFile, modifiedImageFile);
     }
 
-    private async generateGame(gameName: string, originalImageData: Buffer, modifiedImageData: Buffer): Promise<Message> {
+    private async generateGame(gameName: string, originalImageData: string, modifiedImageData: string): Promise<Message> {
 
-        // remplacer localhost par une variable url de notre serveur
+        fs.createReadStream(originalImageData).pipe(fs.createWriteStream(this._PATH_TO_IMAGES +
+            gameName + this._LOCAL_PICTURE_IMAGES_END[0]));
+        fs.createReadStream(modifiedImageData).pipe(fs.createWriteStream(this._PATH_TO_IMAGES +
+            modifiedImageData + this._LOCAL_PICTURE_IMAGES_END[1]));
 
         const GAME: Game = {
             bestMultiTimes: this.createRandomScores(),
             bestSoloTimes: this.createRandomScores(),
             gameName: gameName,
-            modifiedImage: modifiedImageData,
-            originalImage: originalImageData,
+            modifiedImage: this._PATH_TO_IMAGES +
+                gameName + this._LOCAL_PICTURE_IMAGES_END[0],
+            originalImage: this._PATH_TO_IMAGES +
+                modifiedImageData + this._LOCAL_PICTURE_IMAGES_END[1],
         };
         try {
             await Axios.post<Game>("http://localhost:3000/api/data-base/add-game",
