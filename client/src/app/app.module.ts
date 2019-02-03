@@ -7,6 +7,7 @@ import { MatButtonModule, MatFormFieldModule, MatIconModule, MatInputModule } fr
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { MaterialFileInputModule } from "ngx-material-file-input";
 import { AppComponent } from "./app.component";
+import { FormPostService } from "./form-post.service";
 import { IndexService } from "./index.service";
 import { SimpleGameCreatorFormComponent } from "./simple-game-creator-form/simple-game-creator-form.component";
 
@@ -26,7 +27,7 @@ import { SimpleGameCreatorFormComponent } from "./simple-game-creator-form/simpl
     MatInputModule,
     BrowserAnimationsModule,
   ],
-  providers: [IndexService],
+  providers: [IndexService, FormPostService],
   bootstrap: [AppComponent],
 })
 export class AppModule { }
