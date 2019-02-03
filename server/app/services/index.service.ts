@@ -1,5 +1,3 @@
-
-//import { Request } from "express";
 import { Message } from "../../../common/communication/message";
 import "reflect-metadata";
 import { injectable } from "inversify";
