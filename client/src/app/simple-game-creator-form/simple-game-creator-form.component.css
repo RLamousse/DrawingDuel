@@ -8,6 +8,6 @@ form {
     flex-flow: column;
 }
 
-#name {
+#name, #originalImage {
     margin-bottom: 10px;
 }
