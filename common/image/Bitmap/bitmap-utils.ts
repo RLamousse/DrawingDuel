@@ -1,3 +1,5 @@
+import {Dimension} from './IDimension';
+
 export const BMP_ID_FIELD_OFFSET: number = 0x0;
 export const BMP_ID_FIELD_LENGTH: number = 2;
 export const BMP_ID_FIELD: number = 0x4D42;
@@ -42,27 +44,28 @@ export const BITMAP_HEADER_24BPP: number[] = [
     0x00, 0x00, 0x00, 0x00 // Important colors
 ];
 
-export function getDimensionsFromBuffer(buffer: Buffer) {
-    const width: number = buffer.readUIntLE(WIDTH_FLAG_OFFSET, WIDTH_FLAG_LENGTH);
-    const height: number = buffer.readUIntLE(HEIGHT_FLAG_OFFSET, WIDTH_FLAG_LENGTH);
+export function getDimensionsFromBuffer(buffer: ArrayBuffer): Dimension {
+    const dataView = new DataView(buffer);
     return {
-        width,
-        height
-    };
-  }
-
-export function getHeaderForDimension(width: number, height: number): Buffer {
-    const buffer = Buffer.from(BITMAP_HEADER_24BPP);
-    const pixelArrayBytesCount = getTotalBytesForDimension(width, height);
-    buffer.writeUIntLE(HEADER_SIZE_BYTES + pixelArrayBytesCount, FILE_SIZE_FLAG_OFFSET, FILE_SIZE_FLAG_LENGTH);
-    buffer.writeUIntLE(width, WIDTH_FLAG_OFFSET, WIDTH_FLAG_LENGTH);
-    buffer.writeUIntLE(height, HEIGHT_FLAG_OFFSET, WIDTH_FLAG_LENGTH);
-    buffer.writeUIntLE(pixelArrayBytesCount, RAW_BITMAP_DATA_SIZE_FLAG_OFFSET, RAW_BITMAP_DATA_SIZE_FLAG_LENGTH);
-    return buffer;
+        width: dataView.getUint32(WIDTH_FLAG_OFFSET, true),
+        height: dataView.getUint32(HEIGHT_FLAG_OFFSET, true),
+    }
 }
 
-export function getTotalBytesForDimension(width: number, height: number): number {
-    return getBytesPerRowForWidth(width) * height;
+export function getHeaderForDimension(dimension: Dimension): Uint8Array {
+    const pixelArrayBytesCount = getTotalBytesForDimension(dimension);
+
+    const buffer: DataView = new DataView(new Uint8Array(BITMAP_HEADER_24BPP).buffer);
+    buffer.setUint32(FILE_SIZE_FLAG_OFFSET, HEADER_SIZE_BYTES + pixelArrayBytesCount, true);
+    buffer.setUint32(WIDTH_FLAG_OFFSET, dimension.width, true);
+    buffer.setUint32(HEIGHT_FLAG_OFFSET, dimension.height, true);
+    buffer.setUint32(RAW_BITMAP_DATA_SIZE_FLAG_OFFSET, pixelArrayBytesCount, true);
+
+    return new Uint8Array(buffer.buffer);
+}
+
+export function getTotalBytesForDimension(dimension: Dimension): number {
+    return getBytesPerRowForWidth(dimension.width) * dimension.height;
 }
 
 export function getBytesPerRowForWidth(width: number): number {

@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from "@angular/forms";
-import { Buffer } from "buffer";
-import { getDimensionsFromBuffer } from "../../../../common/image/Bitmap/bitmap-utils";
+import {Dimension} from "../../../../common/image/Bitmap/IDimension";
+import {getDimensionsFromBuffer} from "../../../../common/image/Bitmap/bitmap-utils";
 
 @Component({
   selector: "app-simple-game-creator-form",
@@ -48,7 +48,7 @@ export class SimpleGameCreatorFormComponent implements OnInit {
         return { imageType: "L'image doit être de type bmp" };
       }
       if (file.size > this.MAX_IMAGE_SIZE) {
-        return { imageSize: "L'image est trop grande" };
+        return { imageSize: `L'image est invalide (taille maximale de ${this.MAX_IMAGE_SIZE})` };
       }
       const dimensionsOk: boolean = await this.checkFile(file);
       if (!dimensionsOk) {
@@ -68,10 +68,12 @@ export class SimpleGameCreatorFormComponent implements OnInit {
       const REQUIRED_HEIGHT: number = 480;
       // tslint:disable-next-line:no-any
       reader.onload = (event: any) => {
-        const data: Buffer = new Buffer(event.target.result);
-        const dimensions: {width: number, height: number} = getDimensionsFromBuffer(data);
-        const imageOk: boolean = dimensions.width === REQUIRED_WIDTH && dimensions.height === REQUIRED_HEIGHT;
-        resolve(imageOk);
+        if (event.target.result) {
+          const dimensions: Dimension = getDimensionsFromBuffer(event.target.result);
+          resolve(dimensions.width === REQUIRED_WIDTH && dimensions.height === REQUIRED_HEIGHT);
+        } else {
+          resolve(false);
+        }
       };
       reader.readAsArrayBuffer(file);
     });

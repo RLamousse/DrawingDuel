@@ -1,4 +1,5 @@
 import {BITMAP_FILE_EXTENSION} from "./bitmap-utils";
+import {Dimension} from "./IDimension";
 
 export class Bitmap {
     private readonly _fileName: string;
@@ -23,6 +24,13 @@ export class Bitmap {
 
     get height(): number {
         return this._height;
+    }
+
+    get dimension(): Dimension {
+        return {
+            width: this._width,
+            height: this._height,
+        }
     }
 
     get pixels(): number[][] {
