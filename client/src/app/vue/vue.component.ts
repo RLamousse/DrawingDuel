@@ -20,7 +20,7 @@ export class VueComponent implements OnInit {
     private router: Router,
   ) { }
 
-  public ngOnInit() {}
+  public ngOnInit(): void {/*void*/}
 
   public async updateUsername(): Promise<void> {
     if (await this.userService.validateName(this.newUsername)) {
