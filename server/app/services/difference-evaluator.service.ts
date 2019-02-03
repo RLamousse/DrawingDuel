@@ -12,64 +12,26 @@ export class DifferenceEvaluatorService {
 
         this.validateData(pixels);
 
-        const TRANSLATE_TABLE: Map<number, number[]> = new Map<number, number[]>();
+        // this algorithm is the two-pass algorithm and a set of connected labelled zones is connected by a disjoint-set data structure
+        // the algorithm does not consider edge connections
+
+        // the element PARENT_TABLE[x] contains the parent of x, nodes without parent contain the value of 0
+        const PARENT_TABLE: Map<number, number> = new Map<number, number>();
         let maxCurrentLabel: number = 0;
-        const ARRAY_OF_LABELS: number[][] = create2dArray(pixels.length, pixels[0].length, 0);
+        const ARRAY_OF_LABELS: number[][] = create2dArray(pixels[0].length, pixels.length, 0);
 
         for (let i: number = 0; i < pixels.length; i++) {
             for (let j: number = 0; j < pixels[0].length; j++) {
-                if (pixels[i][j]) {
-                    maxCurrentLabel = this.analysePixel(i, j, ARRAY_OF_LABELS, maxCurrentLabel, TRANSLATE_TABLE);
+
+                // if pixel is not withe
+                if (!pixels[i][j]) {
+                    maxCurrentLabel = this.analysePixel(i, j, ARRAY_OF_LABELS, maxCurrentLabel, PARENT_TABLE);
                 }
+
             }
         }
 
-        return this.calculateDifference(maxCurrentLabel, TRANSLATE_TABLE);
-    }
-
-    private manageConflict(upValue: number, leftValue: number, translateTable: Map<number, number[]>): void {
-        if (typeof translateTable[Math.min(upValue, leftValue)] === "undefined") {
-            translateTable[Math.min(upValue, leftValue)] = [Math.max(upValue, leftValue)];
-        } else if (translateTable[Math.min(upValue, leftValue)].indexOf(Math.max(upValue, leftValue) >= 0)) {
-            translateTable[Math.min(upValue, leftValue)].push(Math.max(upValue, leftValue));
-        }
-    }
-
-    private analysePixel(xPosition: number, yPosition: number, arrayOfLabels: number[][],
-                         maxCurrentLabel: number, translateTable: Map<number, number[]>): number {
-        let upValue: number = 0;
-        let leftValue: number = 0;
-        if (xPosition > 0 && arrayOfLabels[xPosition - 1][yPosition] !== 0) {
-            upValue = arrayOfLabels[xPosition - 1][yPosition];
-        }
-        if (yPosition > 0 && arrayOfLabels[xPosition][yPosition - 1] !== 0) {
-            leftValue = arrayOfLabels[xPosition][yPosition - 1];
-        }
-
-        if (!upValue && !leftValue) {
-            arrayOfLabels[xPosition][yPosition] = ++maxCurrentLabel;
-        } else if (!leftValue) {
-            arrayOfLabels[xPosition][yPosition] = upValue;
-        } else if (!upValue || leftValue === upValue) {
-            arrayOfLabels[xPosition][yPosition] = leftValue;
-        } else {
-            this.manageConflict(upValue, leftValue, translateTable);
-            arrayOfLabels[xPosition][yPosition] = Math.min(upValue, leftValue);
-        }
-
-        return maxCurrentLabel;
-    }
-
-    private calculateDifference(maxCurrentLabel: number, TRANSLATE_TABLE: Map<number, number[]>): number {
-
-        let totalDifferences: number = maxCurrentLabel;
-        for (const key in TRANSLATE_TABLE) {
-            if (TRANSLATE_TABLE.hasOwnProperty(key)) {
-                totalDifferences -= TRANSLATE_TABLE[key].length;
-            }
-        }
-
-        return totalDifferences;
+        return this.calculateTotalZones(PARENT_TABLE);
     }
 
     private validateData(pixels: number[][]): void {
@@ -90,5 +52,73 @@ export class DifferenceEvaluatorService {
         if (typeof TMP_ARRAY[0][0] !== "number") {
             throw new Error(ARGUMENT_ERROR_MESSAGE);
         }
+    }
+
+    private analysePixel(xPosition: number, yPosition: number, arrayOfLabels: number[][],
+                         maxCurrentLabel: number, parentTable: Map<number, number>): number {
+        let abovePixelLabel: number = 0;
+        let leftPixelLabel: number = 0;
+
+        // only computes pixels above and left if not at the border of the picture
+        if (xPosition > 0 && arrayOfLabels[xPosition - 1][yPosition] !== 0) {
+            abovePixelLabel = arrayOfLabels[xPosition - 1][yPosition];
+        }
+        if (yPosition > 0 && arrayOfLabels[xPosition][yPosition - 1] !== 0) {
+            leftPixelLabel = arrayOfLabels[xPosition][yPosition - 1];
+        }
+
+        // if the pixel can be newly labelled
+        if (!abovePixelLabel && !leftPixelLabel) {
+            arrayOfLabels[xPosition][yPosition] = ++maxCurrentLabel;
+            parentTable[maxCurrentLabel] = 0;
+
+            // if only the upPixel is labelled
+        } else if (!leftPixelLabel) {
+            arrayOfLabels[xPosition][yPosition] = abovePixelLabel;
+
+            // if only the left pixel is labelled, or both have the same label
+        } else if (!abovePixelLabel || leftPixelLabel === abovePixelLabel) {
+            arrayOfLabels[xPosition][yPosition] = leftPixelLabel;
+
+            // if the two pixels are labelled differently
+        } else {
+            this.updateParentValue(Math.min(abovePixelLabel, leftPixelLabel), Math.max(abovePixelLabel, leftPixelLabel), parentTable);
+            arrayOfLabels[xPosition][yPosition] = this.findRoot(leftPixelLabel, parentTable);
+        }
+
+        return maxCurrentLabel;
+    }
+
+    private updateParentValue(a: number, b: number, parentTable: Map<number, number>): void {
+        const ROOT_A: number = this.findRoot(a, parentTable);
+        const ROOT_B: number = this.findRoot(b, parentTable);
+
+        // Basically, this links the two sets if they are not already linked
+        if (ROOT_A !== ROOT_B) {
+            parentTable[Math.max(ROOT_A, ROOT_B)] = Math.min(ROOT_A, ROOT_B);
+        }
+    }
+
+    // Counts the total of zones in the drawing
+    private calculateTotalZones(TRANSLATE_TABLE: Map<number, number>): number {
+
+        let totalZones: number = 0;
+        for (const KEY in TRANSLATE_TABLE) {
+            // adds a zone to the counter if it has not any parent(equals to 0)
+            if (TRANSLATE_TABLE.hasOwnProperty(KEY) && !TRANSLATE_TABLE[KEY]) {
+                totalZones++;
+            }
+        }
+
+        return totalZones;
+    }
+
+    private findRoot(value: number, parentTable: Map<number, number>): number {
+        if (!parentTable[value]) {
+            return value;
+        }
+
+        // this assignation makes the average complexity of the find function lower than O(m∙log(n))
+        return parentTable[value] = this.findRoot(parentTable[value], parentTable);
     }
 }
