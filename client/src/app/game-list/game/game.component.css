@@ -1,0 +1,49 @@
+.window{
+    width:700px;
+    background-color: lightblue;
+    padding: 20px;
+    min-height: 300px;
+    margin: auto;
+    margin-top: 20px;
+    border: 2px solid darkblue;
+    border-radius: 25px;
+}
+
+h1{
+    text-align: center;
+}
+
+.horizontalWindow{
+    display: flex;
+    flex-direction: row;
+}
+
+img{
+    border: 5px solid darkblue;
+    border-radius: 12px;
+    max-width: 250px;
+    max-height: 170px;
+}
+
+.scoreTable{
+    margin: 25px;
+    font-weight: bold;
+}
+
+td{
+    padding-left: 20px;
+    padding-top: 12px;
+}
+
+.buttonRow{
+    margin-left: 40%;   
+    margin-right:35px;
+    display: flex;
+    flex-direction: row;
+}
+
+.button{
+    display: inline-block;
+    margin-right: 35px;
+    border:1.3px darkblue solid;
+}
