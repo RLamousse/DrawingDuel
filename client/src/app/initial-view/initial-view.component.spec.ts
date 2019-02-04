@@ -6,7 +6,7 @@ import { Router } from "@angular/router";
 import { UNListService } from "../username.service";
 import { InitialViewComponent } from "./initial-view.component";
 
-describe("VueComponent", () => {
+describe("Initial View Component tests", () => {
   let component: InitialViewComponent;
   let fixture: ComponentFixture<InitialViewComponent>;
   let unListSpyService: jasmine.SpyObj<UNListService>;
@@ -19,7 +19,7 @@ describe("VueComponent", () => {
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         { provide: UNListService, useValue: unListSpyService },
-        { provide: Router, useClass: class { public navigate = jasmine.createSpy("navigate"); } },
+        { provide: Router, useClass: class { public navigate: jasmine.Spy = jasmine.createSpy("navigate"); } },
         ],
     });
     fixture = TestBed.createComponent(InitialViewComponent);

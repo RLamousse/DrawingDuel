@@ -18,7 +18,6 @@ describe("UNListService", () => {
       imports: [HttpClientModule],
       providers: [UNListService],
     });
-    //spy = spyOn(service, "sendUserRequest");
   }));
 
   it("should be created", () => {

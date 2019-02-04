@@ -44,8 +44,8 @@ export class GameListComponent implements OnInit {
     this.games.push(game);
     this.getGames().subscribe((gameToModify) => {
       this.convertScoresObject(gameToModify);
-      for(const i in gameToModify){
-        if(gameToModify.hasOwnProperty(i)){
+      for (const i in gameToModify) {
+        if (gameToModify.hasOwnProperty(i)) {
           this.games.push(gameToModify[i]);
         }
       }
@@ -59,10 +59,10 @@ export class GameListComponent implements OnInit {
 
     return (Math.floor(seconds) + ((seconds - Math.floor(seconds)) * coefficient));
   }
-  
-  private buildHttpAdress(imageAdress : string): string {
-    const adress : string = "http://localhost:3000/";
-    const extension : string = ".bmp";
+
+  private buildHttpAdress(imageAdress: string): string {
+    const adress: string = "http://localhost:3000/";
+    const extension: string = ".bmp";
 
     return (adress + imageAdress + extension);
   }

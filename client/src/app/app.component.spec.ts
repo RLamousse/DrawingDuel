@@ -1,5 +1,4 @@
 // tslint:disable:no-any les attributs sont des types any
-// tslint:disable:no-floating-promises pour le before each
 import { HttpClientModule } from "@angular/common/http";
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
