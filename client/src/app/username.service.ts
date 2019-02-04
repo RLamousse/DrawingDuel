@@ -12,10 +12,12 @@ export class UNListService {
   public constructor(private http: HttpClient) {}
 
   public static username: string = "";
-  private minLenght: number = 4;
+  private minLength: number = 4;
   public message: string;
   public username: string = "";
-  public response: UserValidationMessage;
+  public response: UserValidationMessage = {
+    username: "", available: true,
+  };
 
   public async sendReleaseRequest(): Promise<UserValidationMessage> {
     return this.http.post<UserValidationMessage>(UNListService.BASE_URL + "/release", {
@@ -48,7 +50,7 @@ export class UNListService {
   }
 
   public isTooShort(name: string): boolean {
-    if (name.length < this.minLenght) {
+    if (name.length < this.minLength) {
       this.message = "Ton identifiant est trop court!";
 
       return true;

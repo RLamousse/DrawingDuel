@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from "@angular/core";
+import { Game } from "../../../../../common/Object/game";
 
 @Component({
   selector: "app-game",
@@ -8,14 +9,12 @@ import { Component, Input, OnInit } from "@angular/core";
 
 export class GameComponent implements OnInit {
 
-  public constructor() {}
+  public constructor() {/*vide*/}
 
-  @Input() public title: string;
-  @Input() public soloScores: Array<number> = [0, 0, 0];
-  @Input() public duoScores: Array<number> = [0, 0, 0];
-  @Input() public soloNames: Array<string>;
-  @Input() public duoNames: Array<string>;
-  @Input() public image: string;
+  @Input() public gameName: string;
+  @Input() public bestSoloTimes: Game[];
+  @Input() public bestMultiTimes: Game[];
+  @Input() public originalImage: string;
 
   // Methods to generate scores and usernames
   public static generateRandom(min: number, max: number): number {
@@ -50,10 +49,11 @@ export class GameComponent implements OnInit {
                                                                          minimumRandomScore,
                                                                          maximumRandomScore);
     const seconds: number[] =  this.generateAscendingOrderRandoms(scoreArray.length, 0, maximumSecond);
-    // tslint:disable-next-line:forin
     const coefficient: number = 100;
     for (const i in scoreArray) {
-      scoreArray[i] += (seconds[i] / coefficient);
+      if (scoreArray.hasOwnProperty(i)) {
+        scoreArray[i] += (seconds[i] / coefficient);
+      }
     }
 
     return scoreArray;
@@ -70,5 +70,5 @@ export class GameComponent implements OnInit {
     return usernamesArray;
   }
 
-  public ngOnInit() {}
+  public ngOnInit(): void {/*vide*/}
 }

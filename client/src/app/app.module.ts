@@ -8,15 +8,14 @@ import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
 import { GameListComponent } from "./game-list/game-list.component";
 import { GameComponent } from "./game-list/game/game.component";
-import { IndexService } from "./index.service";
+import { InitialViewComponent } from "./initial-view/initial-view.component";
 import { UNListService } from "./username.service";
-import { VueComponent } from "./vue/vue.component";
 import { WindowEventHandlerDirective } from "./window-event-handler.directive";
 
 @NgModule({
   declarations: [
     AppComponent,
-    VueComponent,
+    InitialViewComponent,
     GameListComponent,
     WindowEventHandlerDirective,
     GameComponent,
@@ -34,7 +33,7 @@ import { WindowEventHandlerDirective } from "./window-event-handler.directive";
     BrowserAnimationsModule,
     AppRoutingModule,
   ],
-  providers: [IndexService, UNListService],
+  providers: [UNListService],
   bootstrap: [AppComponent],
   schemas: [NO_ERRORS_SCHEMA],
 })

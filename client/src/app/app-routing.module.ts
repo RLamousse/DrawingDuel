@@ -1,11 +1,10 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 import { GameListComponent } from "./game-list/game-list.component";
-import { VueComponent } from "./vue/vue.component";
+import { InitialViewComponent } from "./initial-view/initial-view.component";
 
 const routes: Routes = [
-    {path: "", redirectTo: "/initial-view", pathMatch: "full" },
-    {path: "initial-view", component: VueComponent},
+    {path: "", component: InitialViewComponent},
     {path: "game-list", component: GameListComponent},
 ];
 
@@ -15,4 +14,4 @@ const routes: Routes = [
 })
 
 export class AppRoutingModule { }
-export const routingComponents: (typeof VueComponent | typeof GameListComponent)[] = [];
+export const routingComponents: (typeof InitialViewComponent | typeof GameListComponent)[] = [];

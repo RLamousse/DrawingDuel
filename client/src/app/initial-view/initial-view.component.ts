@@ -3,24 +3,24 @@ import { Router } from "@angular/router";
 import { UNListService } from "../username.service";
 
 @Component({
-  selector: "app-vue",
-  templateUrl: "./vue.component.html",
-  styleUrls: ["./vue.component.css"],
+  selector: "app-initial-view",
+  templateUrl: "./initial-view.component.html",
+  styleUrls: ["./initial-view.component.css"],
 })
-export class VueComponent implements OnInit {
+export class InitialViewComponent implements OnInit {
 
   @Input() public newUsername: string;
   public username: string = "inconnu";
   public errorMessage: string = "";
   public available: boolean;
-  public readonly logoPath: string = "./facebook_cover_photo_1.PNG";
+  public readonly logoPath: string = require("./logo.png");
 
   public constructor(
     public userService: UNListService,
     private router: Router,
   ) { }
 
-  public ngOnInit() {}
+  public ngOnInit(): void {/*void*/}
 
   public async updateUsername(): Promise<void> {
     if (await this.userService.validateName(this.newUsername)) {
