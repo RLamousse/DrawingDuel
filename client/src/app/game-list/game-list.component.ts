@@ -12,7 +12,8 @@ import { GameComponent } from "./game/game.component";
 })
 
 export class GameListComponent implements OnInit {
-  public games: Array<Game> = [];
+  public simpleGames: Game[] = [];
+  public freeGames: Game[] = [];
   public readonly BASE_URL: string = "https://localhost:3000/api/data-base/get-games";
 
   public constructor(private http: HttpClient) {/*vide*/}
@@ -40,15 +41,13 @@ export class GameListComponent implements OnInit {
                                         {name: names[1], time: scores[1]}, {name: names[2], time: scores[2]}],
                         bestMultiTimes: [{name: names[0], time: scores[0]},
                                          {name: names[1], time: scores[1]}, {name: names[2], time: scores[2]}],
+                        isSimpleGame: true,
                        };
-    this.games.push(game);
-    this.getGames().subscribe((gameToModify) => {
-      this.convertScoresObject(gameToModify);
-      for (const i in gameToModify) {
-        if (gameToModify.hasOwnProperty(i)) {
-          this.games.push(gameToModify[i]);
-        }
-      }
+    this.simpleGames.push(game);
+    this.freeGames.push(game);
+    this.getGames().subscribe((gamesToModify) => {
+      this.convertScoresObject(gamesToModify);
+      this.pushGames(gamesToModify);
     });
   }
 
@@ -82,4 +81,17 @@ export class GameListComponent implements OnInit {
 
     return game;
   }
+
+  private pushGames(gamesToPush: Game[]): void {
+    for (const i in gamesToPush) {
+      if (gamesToPush.hasOwnProperty(i)) {
+        if (gamesToPush[i].isSimpleGame) {
+          this.simpleGames.push(gamesToPush[i]);
+        } else {
+          this.freeGames.push(gamesToPush[i]);
+        }
+      }
+    }
+  }
+
 }
