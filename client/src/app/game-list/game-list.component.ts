@@ -82,7 +82,7 @@ export class GameListComponent implements OnInit {
     return game;
   }
 
-  private pushGames(gamesToPush: Game[]): void {
+  public pushGames(gamesToPush: Game[]): void {
     for (const i in gamesToPush) {
       if (gamesToPush.hasOwnProperty(i)) {
         if (gamesToPush[i].isSimpleGame) {
