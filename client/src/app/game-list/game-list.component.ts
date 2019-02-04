@@ -67,7 +67,7 @@ export class GameListComponent implements OnInit {
     return (adress + imageAdress + extension);
   }
 
-  private convertScoresObject(game: Game[]): Game[] {
+  public convertScoresObject(game: Game[]): Game[] {
     for (const j in game) {
       if (game.hasOwnProperty(j)) {
         game[j].originalImage = this.buildHttpAdress(game[j].originalImage);
