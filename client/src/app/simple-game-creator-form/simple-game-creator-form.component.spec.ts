@@ -1,4 +1,5 @@
 import { HttpClientModule } from "@angular/common/http";
+import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatButtonModule, MatDialogModule, MatFormFieldModule, MatIconModule, MatInputModule } from "@angular/material";
@@ -15,10 +16,11 @@ describe("SimpleGameCreatorFormComponent", () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      declarations: [ SimpleGameCreatorFormComponent ],
       imports: [
+        BrowserModule,
         ReactiveFormsModule,
         FormsModule,
-        BrowserModule,
         HttpClientModule,
         MatFormFieldModule,
         MaterialFileInputModule,
@@ -29,7 +31,7 @@ describe("SimpleGameCreatorFormComponent", () => {
         BrowserAnimationsModule,
         MatDialogModule,
       ],
-      declarations: [ SimpleGameCreatorFormComponent ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [FormPostService],
     })
     .compileComponents();
