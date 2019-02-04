@@ -1,4 +1,5 @@
 export interface Game {
+    isSimpleGame: boolean,
     gameName: string,
     originalImage: string,
     modifiedImage: string,
