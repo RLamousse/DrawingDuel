@@ -169,11 +169,10 @@ export class DataBaseService {
             throw new Error(GAME_FORMAT_ERROR_MESSAGE);
         }
         // @ts-ignore
-        if (typeof game.originalImage !== "string") {
+        if (typeof game.originalImage !== "string" || game.originalImage === "") {
             throw new Error(GAME_FORMAT_ERROR_MESSAGE);
         }
-        // @ts-ignore
-        if (typeof game.modifiedImage !== "string") {
+        if (typeof game.modifiedImage !== "string" || game.modifiedImage === "") {
             throw new Error(GAME_FORMAT_ERROR_MESSAGE);
         }
 

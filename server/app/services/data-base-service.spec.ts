@@ -124,6 +124,7 @@ describe("A service that communicates with the data-base", () => {
 
         it("should throw a format error if the game has a missing element", async () => {
             const partialGame: object = {
+                isSimpleGame: true,
                 gameName: "name",
                 modifiedImage: "image",
                 bestSoloTimes: [{name: "name", time: 123}, {name: "name", time: 123}, {name: "name", time: 123}],
@@ -141,6 +142,7 @@ describe("A service that communicates with the data-base", () => {
 
         it("should throw an already existing game error if the game is already in the database(added twice)", async () => {
             const alreadyExistingGame: Game = {
+                isSimpleGame: true,
                 gameName: "alreadyExistingGame",
                 modifiedImage: "image",
                 originalImage: "image",
@@ -164,6 +166,7 @@ describe("A service that communicates with the data-base", () => {
 
         it("should have a success message when added an non-existing game", async () => {
             const notExistingGame: Game = {
+                isSimpleGame: true,
                 gameName: "notExistingGame",
                 modifiedImage: "image",
                 originalImage: "image",
@@ -212,12 +215,14 @@ describe("A service that communicates with the data-base", () => {
 
         it("should have a success message when deleting an existing game", async () => {
             const existingGame: Game = {
+                isSimpleGame: true,
                 gameName: "existingGame",
                 modifiedImage: "image",
                 originalImage: "image",
                 bestSoloTimes: [{name: "name", time: 123}, {name: "name", time: 123}, {name: "name", time: 123}],
                 bestMultiTimes: [{name: "name", time: 123}, {name: "name", time: 123}, {name: "name", time: 123}],
             };
+            // console.dir(existingGame);
             await DATA_BASE_SERVICE.addGame(existingGame);
             expect((await DATA_BASE_SERVICE.deleteGame("existingGame")).title).to.equal("Game deleted");
         });
@@ -239,6 +244,7 @@ describe("A service that communicates with the data-base", () => {
 
         it("should throw a format error if the game has a missing element", async () => {
             const partialGame: object = {
+                isSimpleGame: true,
                 gameName: "name",
                 modifiedImage: "image",
                 bestSoloTimes: [{name: "name", time: 123}, {name: "name", time: 123}, {name: "name", time: 123}],

@@ -60,6 +60,7 @@ export class GameCreatorService {
         });
 
         const GAME: Game = {
+            isSimpleGame: true,
             bestMultiTimes: this.createRandomScores(),
             bestSoloTimes: this.createRandomScores(),
             gameName: gameName,
