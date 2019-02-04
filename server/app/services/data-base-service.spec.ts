@@ -1,9 +1,11 @@
 import {expect} from "chai";
 import {GAME_FORMAT_ERROR_MESSAGE, USERNAME_FORMAT_ERROR_MESSAGE} from "../controllers/data-base.controller";
 import {
+    ALREADY_EXISTING_GAME_MESSAGE_ERROR,
     ALREADY_EXISTING_USER_MESSAGE_ERROR,
-    DataBaseService, NOT_EXISTING_USER_MESSAGE_ERROR
+    DataBaseService, NOT_EXISTING_GAME_MESSAGE_ERROR, NOT_EXISTING_USER_MESSAGE_ERROR
 } from "./data-base.service";
+import {Game} from "../../../common/Object/game";
 
 describe("A service that communicates with the data-base", () => {
 
@@ -137,68 +139,89 @@ describe("A service that communicates with the data-base", () => {
             return expect.fail();
         });
 
-    //     it("should throw an already existing username error if the username is already in the database(added twice)", async () => {
-    //         try {
-    //             await DATA_BASE_SERVICE.addUser("alreadyExistingTestUser");
-    //             await DATA_BASE_SERVICE.addUser("alreadyExistingTestUser");
-    //         } catch (error) {
-    //             // cleanup
-    //             if (error.message === ALREADY_EXISTING_USER_MESSAGE_ERROR) {
-    //                 await DATA_BASE_SERVICE.deleteUser("alreadyExistingTestUser");
-    //             }
-    //
-    //             return expect(error.message).to.equal(ALREADY_EXISTING_USER_MESSAGE_ERROR);
-    //         }
-    //
-    //         return expect.fail();
-    //     });
-    //
-    //     it("should have a success message when added an non-existing user", async () => {
-    //         expect((await DATA_BASE_SERVICE.addUser("notExistingTestUser")).title).to.equal("User added");
-    //         // cleanup
-    //         await DATA_BASE_SERVICE.deleteUser("notExistingTestUser");
-    //     });
-    //
-    // });
-    //
-    // describe("Deleting a user from the data-base", () => {
-    //
-    //     it("should throw a format error if the username is not a string(undefined)", async () => {
-    //         try {
-    //             // @ts-ignore
-    //             await DATA_BASE_SERVICE.deleteUser(null);
-    //         } catch (error) {
-    //             return expect(error.message).to.equal(USERNAME_FORMAT_ERROR_MESSAGE);
-    //         }
-    //
-    //         return expect.fail();
-    //     });
-    //
-    //     it("should throw a format error if the username is an empty string", async () => {
-    //         try {
-    //             await DATA_BASE_SERVICE.deleteUser("");
-    //         } catch (error) {
-    //             return expect(error.message).to.equal(USERNAME_FORMAT_ERROR_MESSAGE);
-    //         }
-    //
-    //         return expect.fail();
-    //     });
-    //
-    //     it("should throw a not existing username error if the username does not exist in the database", async () => {
-    //         try {
-    //             await DATA_BASE_SERVICE.deleteUser("notExistingTestUser2");
-    //         } catch (error) {
-    //             return expect(error.message).to.equal(NOT_EXISTING_USER_MESSAGE_ERROR);
-    //         }
-    //
-    //         return expect.fail();
-    //     });
-    //
-    //     it("should have a success message when deleting an existing user", async () => {
-    //         await DATA_BASE_SERVICE.addUser("alreadyExistingTestUser2");
-    //         expect((await DATA_BASE_SERVICE.deleteUser("alreadyExistingTestUser2")).title).to.equal("User deleted");
-    //     });
-    //
+        it("should throw an already existing game error if the game is already in the database(added twice)", async () => {
+            const alreadyExistingGame: Game = {
+                gameName: "alreadyExistingGame",
+                modifiedImage: "image",
+                originalImage: "image",
+                bestSoloTimes: [{name: "name", time: 123}, {name: "name", time: 123}, {name: "name", time: 123}],
+                bestMultiTimes: [{name: "name", time: 123}, {name: "name", time: 123}, {name: "name", time: 123}],
+            };
+            try {
+                await DATA_BASE_SERVICE.addGame(alreadyExistingGame);
+                await DATA_BASE_SERVICE.addGame(alreadyExistingGame);
+            } catch (error) {
+                // cleanup
+                if (error.message === ALREADY_EXISTING_GAME_MESSAGE_ERROR) {
+                    await DATA_BASE_SERVICE.deleteGame("alreadyExistingGame");
+                }
+
+                return expect(error.message).to.equal(ALREADY_EXISTING_GAME_MESSAGE_ERROR);
+            }
+
+            return expect.fail();
+        });
+
+        it("should have a success message when added an non-existing game", async () => {
+            const notExistingGame: Game = {
+                gameName: "notExistingGame",
+                modifiedImage: "image",
+                originalImage: "image",
+                bestSoloTimes: [{name: "name", time: 123}, {name: "name", time: 123}, {name: "name", time: 123}],
+                bestMultiTimes: [{name: "name", time: 123}, {name: "name", time: 123}, {name: "name", time: 123}],
+            };
+            expect((await DATA_BASE_SERVICE.addGame(notExistingGame)).title).to.equal("game added");
+            // cleanup
+            await DATA_BASE_SERVICE.deleteGame("notExistingGame");
+        });
+
+    });
+
+    describe("Deleting a game from the data-base", () => {
+
+        it("should throw a format error if the game name is not a string(undefined)", async () => {
+            try {
+                // @ts-ignore
+                await DATA_BASE_SERVICE.deleteGame(null);
+            } catch (error) {
+                return expect(error.message).to.equal(GAME_FORMAT_ERROR_MESSAGE);
+            }
+
+            return expect.fail();
+        });
+
+        it("should throw a format error if the game name is an empty string", async () => {
+            try {
+                await DATA_BASE_SERVICE.deleteGame("");
+            } catch (error) {
+                return expect(error.message).to.equal(GAME_FORMAT_ERROR_MESSAGE);
+            }
+
+            return expect.fail();
+        });
+
+        it("should throw a not existing game error if the game name does not exist in the database", async () => {
+            try {
+                await DATA_BASE_SERVICE.deleteGame("notExistingTestGame");
+            } catch (error) {
+                return expect(error.message).to.equal(NOT_EXISTING_GAME_MESSAGE_ERROR);
+            }
+
+            return expect.fail();
+        });
+
+        it("should have a success message when deleting an existing game", async () => {
+            const existingGame: Game = {
+                gameName: "existingGame",
+                modifiedImage: "image",
+                originalImage: "image",
+                bestSoloTimes: [{name: "name", time: 123}, {name: "name", time: 123}, {name: "name", time: 123}],
+                bestMultiTimes: [{name: "name", time: 123}, {name: "name", time: 123}, {name: "name", time: 123}],
+            };
+            await DATA_BASE_SERVICE.addGame(existingGame);
+            expect((await DATA_BASE_SERVICE.deleteGame("existingGame")).title).to.equal("Game deleted");
+        });
+
     });
 
 });
