@@ -1,8 +1,8 @@
 
-<app-game *ngFor="let game of games " 
-    [gameName]="game.gameName"
-    [bestSoloScores]="game.bestSoloScores"
-    [bestMultiScores]="game.bestMultiScores"
-    [originalImage]="game.originalImage">
+<app-game *ngFor="let instance of games" 
+    [gameName]= "instance.gameName"
+    [originalImage]= "instance.originalImage"
+    [bestSoloTimes]= "instance.bestSoloTimes"
+    [bestMultiTimes]= "instance.bestMultiTimes">
 </app-game>
 

@@ -34,24 +34,22 @@ export class GameListComponent implements OnInit {
     const scores: number[] = GameComponent.generateRandomScores();
     const names: string[] = GameComponent.generateRandomNames();
     const game: Game = {gameName: "JEU1",
+                        originalImage: "https://upload.wikimedia.org/wikipedia/commons/c/c9/Moon.jpg",
+                        modifiedImage: "https://upload.wikimedia.org/wikipedia/commons/c/c9/Moon.jpg",
                         bestSoloTimes: [{name: names[0], time: scores[0]},
                                         {name: names[1], time: scores[1]}, {name: names[2], time: scores[2]}],
                         bestMultiTimes: [{name: names[0], time: scores[0]},
                                          {name: names[1], time: scores[1]}, {name: names[2], time: scores[2]}],
-                        originalImage: "https://upload.wikimedia.org/wikipedia/commons/c/c9/Moon.jpg",
-                        modifiedImage: "https://upload.wikimedia.org/wikipedia/commons/c/c9/Moon.jpg",
                        };
-    this.addGame(game);
-    console.log(game.originalImage);
-    console.log(this.convertTimeScores(60));
+    this.games.push(game);
     this.getGames().subscribe((gameToModify) => {
       this.convertScoresObject(gameToModify);
-      this.games = gameToModify;
+      for(const i in gameToModify){
+        if(gameToModify.hasOwnProperty(i)){
+          this.games.push(gameToModify[i]);
+        }
+      }
     });
-  }
-
-  private addGame(game: Game): void {
-    this.games.push(game);
   }
 
   private convertTimeScores(seconds: number): number {
@@ -61,10 +59,18 @@ export class GameListComponent implements OnInit {
 
     return (Math.floor(seconds) + ((seconds - Math.floor(seconds)) * coefficient));
   }
+  
+  private buildHttpAdress(imageAdress : string): string {
+    const adress : string = "http://localhost:3000/";
+    const extension : string = ".bmp";
+
+    return (adress + imageAdress + extension);
+  }
 
   private convertScoresObject(game: Game[]): Game[] {
     for (const j in game) {
       if (game.hasOwnProperty(j)) {
+        game[j].originalImage = this.buildHttpAdress(game[j].originalImage);
         for (const i in game[j].bestSoloTimes) {
           if (game[j].bestSoloTimes.hasOwnProperty(i)) {
             game[j].bestSoloTimes[i].time = this.convertTimeScores(game[j].bestSoloTimes[i].time);
