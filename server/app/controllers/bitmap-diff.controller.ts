@@ -65,18 +65,11 @@ export class BitmapDiffController {
         files: Express.Multer.File[]|{[fieldname: string]: Express.Multer.File[]},
         field: string): Bitmap {
 
-        BitmapDiffController.checkFileExists(files[field], field);
         const bitmapFile: Express.Multer.File = files[field][0];
         const bitmap: Bitmap = BitmapFactory.createBitmap(bitmapFile.originalname, bitmapFile.buffer);
         BitmapDiffController.checkBitMapSizeOk(bitmap);
 
         return bitmap;
-    }
-
-    private static checkFileExists(file: Express.Multer.File, fileName: string): void {
-        if (!file) {
-            throw new Error(`Error: No ${fileName} bitmap file was found.`);
-        }
     }
 
     private static checkBitMapSizeOk(bitmap: Bitmap): void {

@@ -12,8 +12,6 @@ export const DIFFERENCE_ERROR_MESSAGE: string = "Error: The images that you sent
 export const FORMAT_ERROR_MESSAGE: string = "Error: Request sent by the client had the wrong format!";
 export const NAME_ERROR_MESSAGE: string = "Error: The game name that you sent already exists!";
 export const BMP_ERROR_MESSAGE: string = "Error: Sent files are not in bmp format!";
-export const NO_FILE_NAME_ERROR_MESSAGE: string = "Error: The output file name was not specified.";
-export const NO_FILES_ERROR_MESSAGE: string = "Error: No files were included in the request.";
 
 export const BITMAP_MULTER_FILTER:
     (req: Express.Request, file: Express.Multer.File, cb: (error: (Error | null), acceptFile: boolean) => void) => void =
@@ -31,7 +29,7 @@ export const assertRequestImageFilesFields = (req: Request): void => {
         typeof req.files[MODIFIED_IMAGE_FIELD_NAME] === "undefined" ||
         typeof req.files[ORIGINAL_IMAGE_FIELD_NAME][0] === "undefined" ||
         typeof req.files[MODIFIED_IMAGE_FIELD_NAME][0] === "undefined") {
-            throw new Error(NO_FILES_ERROR_MESSAGE);
+            throw new Error(FORMAT_ERROR_MESSAGE);
     }
 };
 
