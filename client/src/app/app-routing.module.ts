@@ -3,9 +3,10 @@ import { RouterModule, Routes } from "@angular/router";
 import { GameListComponent } from "./game-list/game-list.component";
 import { VueComponent } from "./vue/vue.component";
 import { VueAdminComponent } from "./vue-admin/vue-admin.component";
+import { InitialViewComponent } from "./initial-view/initial-view.component";
 
 const routes: Routes = [
-    {path: "initial-view", component: VueComponent},
+    {path: "", component: InitialViewComponent},
     {path: "game-list", component: GameListComponent},
     {path: "admin", component: VueAdminComponent},
 ];
@@ -16,4 +17,4 @@ const routes: Routes = [
 })
 
 export class AppRoutingModule { }
-export const routingComponents = [VueComponent, GameListComponent];
+export const routingComponents: (typeof InitialViewComponent | typeof GameListComponent)[] = [];

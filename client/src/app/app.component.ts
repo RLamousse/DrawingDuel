@@ -1,21 +1,10 @@
-import { Component, OnInit } from "@angular/core";
-import { Message } from "../../../common/communication/message";
-import { IndexService } from "./index.service";
+import { Component} from "@angular/core";
 
 @Component({
   selector: "app-root",
   templateUrl: "./app.component.html",
   styleUrls: ["./app.component.css"],
 })
-export class AppComponent implements OnInit {
-
-  public constructor(private basicService: IndexService) {
-  }
-
+export class AppComponent {
   public readonly title: string = "LOG2990";
-  public message: string;
-
-  public ngOnInit(): void {
-    this.basicService.basicGet().subscribe((message: Message) => this.message = message.title + message.body);
-  }
 }

@@ -5,8 +5,10 @@ import * as express from "express";
 import { inject, injectable } from "inversify";
 import * as logger from "morgan";
 import {BitmapDiffController} from "./controllers/bitmap-diff.controller";
-import Types from "./types";
+import {DataBaseController} from "./controllers/data-base.controller";
+import {GameCreatorController} from "./controllers/game-creator.controller";
 import { UserController } from "./controllers/username.controller";
+import Types from "./types";
 
 @injectable()
 export class Application {
@@ -14,9 +16,11 @@ export class Application {
     private readonly internalError: number = 500;
     public app: express.Application;
 
-    public constructor(@inject(Types.UserNameController) private userController: UserController,
-        @inject(Types.BitmapDiffController) private bitmapDiffController: BitmapDiffController) 
-    {
+    public constructor(@inject(Types.GameCreatorController) private gameCreatorController: GameCreatorController,
+                       @inject(Types.DataBaseController) private dataBaseController: DataBaseController,
+                       @inject(Types.UserNameController) private userController: UserController,
+                       @inject(Types.BitmapDiffController) private bitmapDiffController: BitmapDiffController) {
+
         this.app = express();
 
         this.config();
@@ -27,6 +31,7 @@ export class Application {
     private config(): void {
         // Middlewares configuration
         this.app.use(logger("dev"));
+        this.app.use(express.static("public"));
         this.app.use(bodyParser.json());
         this.app.use(bodyParser.urlencoded({ extended: true }));
         this.app.use(cookieParser());
@@ -35,8 +40,11 @@ export class Application {
 
     public bindRoutes(): void {
         // Notre application utilise le routeur de notre API `Index`
-        this.app.use('/api/usernames', this.userController.router);
+        this.app.use("/api/usernames", this.userController.router);
         this.app.use("/api/image-diff", this.bitmapDiffController.router);
+        // Notre application utilise le routeur de notre API `Index`
+        this.app.use("/api/game-creator", this.gameCreatorController.router);
+        this.app.use("/api/data-base", this.dataBaseController.router);
         this.errorHandeling();
     }
 
