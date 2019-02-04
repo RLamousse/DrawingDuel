@@ -34,31 +34,10 @@ export class GameCreatorService {
 
         this.testNameExistance(gameName);
         // 2 call diff function from the phillips
-        let diffImage: {status: string, fileName: string, filePath: string};
-        try {
-            diffImage = (await Axios.get<{status: string,
-                                          fileName: string,
-                                          filePath: string,
-            }>("http://localhost:3000/api/image-diff/",
-                //TODO regarder leurs parametres dentree quand fini
-               {data: {name: "image-diff-" + Date.now() + ".bmp"}})).data;
+        const DIFF_IMAGE: {status: string, fileName: string, filePath: string} = await this.getDiffImage(originalImageFile,
+                                                                                                         modifiedImageFile);
 
-        } catch (error) {
-            throw new Error("game diff: " + error.response.data.message);
-        }
-
-        // 3 call count difference service when imported and finished
-        let diffNumber: number;
-        try {
-            diffNumber = this.differenceEvaluatorService.getNDifferences(
-                         BitmapFactory.createBitmap(diffImage.fileName,
-                                                    fs.readFileSync(diffImage.filePath)).pixels);
-        } catch (error) {
-            throw new Error("bmp diff counting: " + error.message);
-        }
-        if (diffNumber !== EXPECTED_DIFF_NUMBER) {
-            throw new Error(DIFFERENCE_ERROR_MESSAGE);
-        }
+        this.testNumberOfDifference(DIFF_IMAGE);
 
         return this.generateGame(gameName, originalImageFile, modifiedImageFile);
     }
@@ -102,10 +81,8 @@ export class GameCreatorService {
                 Math.random() * (this._MAX_GENERATED_SCORE - this._MIN_GENERATED_SCORE)).toFixed(0));
         }
 
-        //DEMANDER SI ca compte comme des valeurs magiques
         scoreArray.sort((a: number, b: number) => {
             if (a < b) {
-                //TODO ignore this shit
                 return -1;
             }
             if (a > b) {
@@ -142,5 +119,40 @@ export class GameCreatorService {
         fs.unlink(modifiedImageFile, (error: Error) => {
             if (error) { console.dir("file " + modifiedImageFile + " was not found"); }
         });
+    }
+
+    private testNumberOfDifference(diffImage: {status: string, fileName: string, filePath: string}): void {
+        let diffNumber: number;
+        try {
+            diffNumber = this.differenceEvaluatorService.getNDifferences(
+                BitmapFactory.createBitmap(diffImage.fileName,
+                                           fs.readFileSync(diffImage.filePath)).pixels);
+        } catch (error) {
+            throw new Error("bmp diff counting: " + error.message);
+        }
+        if (diffNumber !== EXPECTED_DIFF_NUMBER) {
+            throw new Error(DIFFERENCE_ERROR_MESSAGE);
+        }
+    }
+
+    private async getDiffImage(originalImageFile: string, modifiedImageFile: string): Promise<{status: string,
+                                                                                               fileName: string,
+                                                                                               filePath: string}> {
+        let diffImage: {status: string, fileName: string, filePath: string};
+        try {
+        diffImage = (await Axios.get<{status: string,
+                                      fileName: string,
+                                      filePath: string,
+        }>("http://localhost:3000/api/image-diff/",
+            //TODO regarder leurs parametres dentree quand fini
+           {data: {name: "image-diff-" + Date.now() + ".bmp",
+                   originalImage: originalImageFile,
+                   modifiedImage: modifiedImageFile}})).data;
+
+        } catch (error) {
+            throw new Error("game diff: " + error.response.data.message);
+        }
+
+        return diffImage;
     }
 }
