@@ -1,12 +1,12 @@
 import { expect } from "chai";
 import { UserValidationMessage } from "../../../common/communication/UserValidationMessage";
-import { UserNameService } from "./UserName.service";
+import { UsernameService } from "./username.service";
 
 describe("UserNameService", () => {
 
-    let service: UserNameService;
+    let service: UsernameService;
     beforeEach(() => {
-        service = new UserNameService();
+        service = new UsernameService();
     });
 
     // Test checkAvailability

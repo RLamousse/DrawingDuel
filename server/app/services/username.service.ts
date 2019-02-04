@@ -2,7 +2,7 @@
 import { UserValidationMessage } from "../../../common/communication/UserValidationMessage";
 
 @injectable()
-export class UserNameService {
+export class UsernameService {
     private list: string[] = [];
     public async checkAvailability(user: UserValidationMessage): Promise<UserValidationMessage> {
         if (this.list.find((takenUser: string) => takenUser === user.username )) {
