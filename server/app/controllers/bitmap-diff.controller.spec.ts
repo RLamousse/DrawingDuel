@@ -5,19 +5,12 @@ import * as request from "supertest";
 import { Application } from "../app";
 import { container } from "../inversify.config";
 import types from "../types";
+import {BMP_ERROR_MESSAGE, NO_FILE_NAME_ERROR_MESSAGE, NO_FILES_ERROR_MESSAGE} from "./controller-utils";
 
 const errorResponse = (errorMessage: string) => {
     return {
-        status: "error",
-        error: errorMessage,
-    };
-};
-
-const okResponse = (fileName: string, filePath: string) => {
-    return {
-        status: "ok",
-        fileName: fileName,
-        filePath: filePath,
+        message: errorMessage,
+        error: {},
     };
 };
 
@@ -45,7 +38,7 @@ describe("Bitmap diff controller", () => {
             .expect(HttpStatus.INTERNAL_SERVER_ERROR)
             .then((response) => {
                 expect(response.body).to.deep.equal(
-                    errorResponse("Error: No files were included in request"));
+                    errorResponse(NO_FILES_ERROR_MESSAGE));
             });
     });
 
@@ -57,7 +50,7 @@ describe("Bitmap diff controller", () => {
             .expect(HttpStatus.INTERNAL_SERVER_ERROR)
             .then((response) => {
                 expect(response.body).to.deep.equal(
-                    errorResponse("Error: No originalImage bitmap file was found"));
+                    errorResponse("Error: No originalImage bitmap file was found."));
             });
     });
 
@@ -69,7 +62,7 @@ describe("Bitmap diff controller", () => {
             .expect(HttpStatus.INTERNAL_SERVER_ERROR)
             .then((response) => {
                 expect(response.body).to.deep.equal(
-                    errorResponse("Error: No modifiedImage bitmap file was found"));
+                    errorResponse("Error: No modifiedImage bitmap file was found."));
             });
     });
 
@@ -81,7 +74,7 @@ describe("Bitmap diff controller", () => {
             .attach("modifiedImage", "./test/test_diffController/jobs.jpg")
             .expect(HttpStatus.INTERNAL_SERVER_ERROR)
             .then((response) => {
-                expect(response.body.message).to.equal("Error: Only bmp's are allowed!");
+                expect(response.body.message).to.equal(BMP_ERROR_MESSAGE);
             });
     });
 
@@ -93,7 +86,7 @@ describe("Bitmap diff controller", () => {
             .attach("modifiedImage", "./test/test_bitmaps/white10x10.bmp")
             .expect(HttpStatus.INTERNAL_SERVER_ERROR)
             .then((response) => {
-                expect(response.body.error).to.match(/Error: \w+\.bmp bitmap file is not the right size/);
+                expect(response.body.message).to.match(/Error: \w+\.bmp bitmap file is not the right size\./);
             });
     });
 
@@ -105,7 +98,7 @@ describe("Bitmap diff controller", () => {
             .expect(HttpStatus.INTERNAL_SERVER_ERROR)
             .then((response) => {
                 expect(response.body).to.deep.equal(
-                    errorResponse("Error: No name was specified"));
+                    errorResponse(NO_FILE_NAME_ERROR_MESSAGE));
             });
     });
 
@@ -117,7 +110,10 @@ describe("Bitmap diff controller", () => {
             .attach("modifiedImage", "./test/test_bitmaps/pika.m.bmp")
             .expect(HttpStatus.OK)
             .then((response) => {
-                expect(response.body).to.deep.equal(okResponse("testDiff7", "filePath"));
+                expect(response.body).to.deep.equal({
+                                                        fileName: "testDiff7",
+                                                        filePath: "filePath",
+                                                    });
             });
     });
 });

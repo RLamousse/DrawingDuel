@@ -1,13 +1,16 @@
-import Axios from "axios";
+import Axios, {AxiosResponse} from "axios";
 import * as fs from "fs";
 import {inject, injectable} from "inversify";
 import "reflect-metadata";
 import {Game, TIMES_ARRAY_SIZE} from "../../../common/Object/game";
 import {Message} from "../../../common/communication/message";
+import {IBitmapDiffControllerResponse} from "../controllers/bitmap-diff.controller";
 import {
-    DIFFERENCE_ERROR_MESSAGE, FORMAT_ERROR_MESSAGE,
-    NAME_ERROR_MESSAGE
-} from "../controllers/game-creator.controller";
+    DIFFERENCE_ERROR_MESSAGE, FORM_DATA_CONTENT_TYPE,
+    FORMAT_ERROR_MESSAGE, MODIFIED_IMAGE_FIELD_NAME,
+    NAME_ERROR_MESSAGE, ORIGINAL_IMAGE_FIELD_NAME,
+    OUTPUT_FILE_NAME_FIELD_NAME
+} from "../controllers/controller-utils";
 import {BitmapFactory} from "../images/bitmap/bitmap-factory";
 import Types from "../types";
 import {
@@ -36,14 +39,12 @@ export class GameCreatorService {
 
         await this.testNameExistance(gameName);
 
-        const DIFF_IMAGE: {status: string, fileName: string, filePath: string} = await this.getDiffImage(originalImageFile,
-                                                                                                         modifiedImageFile);
+        const DIFF_IMAGE: IBitmapDiffControllerResponse = await this.getDiffImage(originalImageFile, modifiedImageFile);
         this.testNumberOfDifference(DIFF_IMAGE);
 
         return this.generateGame(gameName, originalImageFile, modifiedImageFile);
     }
 
-    // @ts-ignore
     private async generateGame(gameName: string, originalImage: string, modifiedImage: string): Promise<Message> {
 
         fs.copyFile(originalImage, this._PATH_TO_IMAGES +
@@ -53,7 +54,7 @@ export class GameCreatorService {
             }
         });
         fs.copyFile(modifiedImage, this._PATH_TO_IMAGES +
-            gameName + this._LOCAL_PICTURE_IMAGES_END[1],(err: Error) => {
+            gameName + this._LOCAL_PICTURE_IMAGES_END[1], (err: Error) => {
             if (err) {
                 throw err;
             }
@@ -123,7 +124,7 @@ export class GameCreatorService {
         throw new Error(NAME_ERROR_MESSAGE);
     }
 
-    private testNumberOfDifference(diffImage: {status: string, fileName: string, filePath: string}): void {
+    private testNumberOfDifference(diffImage: IBitmapDiffControllerResponse): void {
         let diffNumber: number;
         try {
             diffNumber = this.differenceEvaluatorService.getNDifferences(
@@ -137,10 +138,8 @@ export class GameCreatorService {
         }
     }
 
-    private async getDiffImage(originalImageFile: string, modifiedImageFile: string): Promise<{status: string,
-                                                                                               fileName: string,
-                                                                                               filePath: string}> {
-        let diffImage: {status: string, fileName: string, filePath: string};
+    private async getDiffImage(originalImageFile: string, modifiedImageFile: string): Promise<IBitmapDiffControllerResponse> {
+        let diffImage: IBitmapDiffControllerResponse;
         try {
         diffImage = (await Axios.get<{status: string,
                                       fileName: string,
