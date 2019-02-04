@@ -5,7 +5,7 @@ import {
     ALREADY_EXISTING_USER_MESSAGE_ERROR,
     DataBaseService, NOT_EXISTING_GAME_MESSAGE_ERROR, NOT_EXISTING_USER_MESSAGE_ERROR
 } from "./data-base.service";
-import {Game} from "../../../common/Object/game";
+import {Game} from "../../../common/object/game";
 
 describe("A service that communicates with the data-base", () => {
 

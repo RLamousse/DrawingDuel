@@ -37,8 +37,8 @@ describe("A service that creates a game", () => {
 
         try {
             await GAME_CREATOR_SERVICE.createSimpleGame( "nonExistingGameTest",
-                                                         PATH_TO_TMP + "original.bmp",
-                                                         PATH_TO_TMP + "7diff-modified.bmp");
+                                                         fs.readFileSync("test/test_files_for_game_creator_service/original.bmp"),
+                                                         fs.readFileSync("test/test_files_for_game_creator_service/7diff-modified.bmp"));
         } catch (error) {
             return expect(error.message).to.be.equal(NAME_ERROR_MESSAGE);
         }
@@ -50,8 +50,8 @@ describe("A service that creates a game", () => {
 
         try {
             await GAME_CREATOR_SERVICE.createSimpleGame( "someGameTest",
-                                                         PATH_TO_TMP + "nonExistingFile.bmp",
-                                                         PATH_TO_TMP + "7diff-modified.bmp");
+                                                         fs.readFileSync("test/test_files_for_game_creator_service/nonExistingFile.bmp"),
+                                                         fs.readFileSync("test/test_files_for_game_creator_service/7diff-modified.bmp"));
         } catch (error) {
             return expect(error.message).to.be.equal(FORMAT_ERROR_MESSAGE);
         }
@@ -73,8 +73,8 @@ describe("A service that creates a game", () => {
             });
         try {
             await GAME_CREATOR_SERVICE.createSimpleGame( "someGameTest",
-                                                         PATH_TO_TMP + "original.bmp",
-                                                         PATH_TO_TMP + "6diff-modified.bmp");
+                                                         fs.readFileSync("test/test_files_for_game_creator_service/original.bmp"),
+                                                         fs.readFileSync("test/test_files_for_game_creator_service/6diff-modified.bmp"));
         } catch (error) {
             return expect(error.message).to.be.equal(DIFFERENCE_ERROR_MESSAGE);
         }
@@ -96,8 +96,8 @@ describe("A service that creates a game", () => {
             });
         try {
             await GAME_CREATOR_SERVICE.createSimpleGame( "someGameTest",
-                                                         PATH_TO_TMP + "original.bmp",
-                                                         PATH_TO_TMP + "8diff-modified.bmp");
+                                                         fs.readFileSync("test/test_files_for_game_creator_service/original.bmp"),
+                                                         fs.readFileSync("test/test_files_for_game_creator_service/8diff-modified.bmp"));
         } catch (error) {
             return expect(error.message).to.be.equal(DIFFERENCE_ERROR_MESSAGE);
         }
@@ -121,9 +121,10 @@ describe("A service that creates a game", () => {
         MOCK.onPost("http://localhost:3000/api/data-base/add-game")
             .reply(HttpStatus.OK);
 
-        expect((await GAME_CREATOR_SERVICE.createSimpleGame( "someGameTest",
-                                                             PATH_TO_TMP + "original.bmp",
-                                                             PATH_TO_TMP + "7diff-modified.bmp")).title).to.be.equal("Game created");
+        expect((await GAME_CREATOR_SERVICE.createSimpleGame(
+            "someGameTest",
+            fs.readFileSync("test/test_files_for_game_creator_service/original.bmp"),
+            fs.readFileSync("test/test_files_for_game_creator_service/7diff-modified.bmp"))).title).to.be.equal("Game created");
     });
 
     after(() => {

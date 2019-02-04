@@ -2,7 +2,7 @@
 import {expect} from "chai";
 import * as fs from "fs";
 import {instance, mock, when} from "ts-mockito";
-import {Bitmap} from "../../../../common/image/Bitmap/bitmap";
+import {Bitmap} from "../../../../common/image/bitmap/bitmap";
 import {create2dArray} from "../../../../common/util/util";
 import {BitmapFactory} from "./bitmap-factory";
 
