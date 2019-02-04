@@ -8,6 +8,7 @@ import Types from "../types";
 
 export const ORIGINAL_IMAGE_IDENTIFIER: string = "originalImage";
 export const MODIFIED_IMAGE_IDENTIFIER: string = "modifiedImage";
+export const PATH_TO_TMP: string = "./tmp/";
 const EXPECTED_FILES_FORMAT: string = "image/bmp";
 
 // error messages
@@ -25,7 +26,7 @@ export class GameCreatorController {
     public constructor(@inject(Types.GameCreatorService) private gameCreatorService: GameCreatorService) {
         this._storage = multer.diskStorage({
             destination: (req: Express.Request, file: Express.Multer.File, cb: (error: Error | null, destination: string) => void) => {
-                cb(null, "./tmp");
+                cb(null, PATH_TO_TMP);
             },
             filename: (req: Express.Request, file: Express.Multer.File, cb: (error: Error | null, destination: string) => void) => {
                 cb(null, file.fieldname + "-" + Date.now() + ".bmp");
