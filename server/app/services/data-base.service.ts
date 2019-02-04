@@ -81,7 +81,7 @@ export class DataBaseService {
 
     public async deleteGame(gameName: string): Promise<Message> {
         if (typeof gameName !== "string" || gameName === "") {
-            throw new Error(USERNAME_FORMAT_ERROR_MESSAGE);
+            throw new Error(GAME_FORMAT_ERROR_MESSAGE);
         }
         if (!(await this.containsGame(gameName))) {
             throw new Error(NOT_EXISTING_GAME_MESSAGE_ERROR);
@@ -169,11 +169,10 @@ export class DataBaseService {
             throw new Error(GAME_FORMAT_ERROR_MESSAGE);
         }
         // @ts-ignore
-        if (typeof game.originalImage !== "string") {
+        if (typeof game.originalImage !== "string" || game.originalImage === "") {
             throw new Error(GAME_FORMAT_ERROR_MESSAGE);
         }
-        // @ts-ignore
-        if (typeof game.modifiedImage !== "string") {
+        if (typeof game.modifiedImage !== "string" || game.modifiedImage === "") {
             throw new Error(GAME_FORMAT_ERROR_MESSAGE);
         }
 

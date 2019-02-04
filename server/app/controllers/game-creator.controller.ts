@@ -5,9 +5,11 @@ import * as multer from "multer";
 import {GAME_NAME_FIELD} from "../services/data-base.service";
 import { GameCreatorService } from "../services/game-creator.service";
 import Types from "../types";
+import * as fs from "fs";
 
 export const ORIGINAL_IMAGE_IDENTIFIER: string = "originalImage";
 export const MODIFIED_IMAGE_IDENTIFIER: string = "modifiedImage";
+export const PATH_TO_TMP: string = "./tmp/";
 const EXPECTED_FILES_FORMAT: string = "image/bmp";
 
 // error messages
@@ -25,7 +27,7 @@ export class GameCreatorController {
     public constructor(@inject(Types.GameCreatorService) private gameCreatorService: GameCreatorService) {
         this._storage = multer.diskStorage({
             destination: (req: Express.Request, file: Express.Multer.File, cb: (error: Error | null, destination: string) => void) => {
-                cb(null, "./tmp");
+                cb(null, PATH_TO_TMP);
             },
             filename: (req: Express.Request, file: Express.Multer.File, cb: (error: Error | null, destination: string) => void) => {
                 cb(null, file.fieldname + "-" + Date.now() + ".bmp");
@@ -64,7 +66,7 @@ export class GameCreatorController {
             } catch (error) {
                 next(error);
             }
-            this.gameCreatorService.deleteFiles(req.files[ORIGINAL_IMAGE_IDENTIFIER][0].path,
+            this.deleteTmpFiles(req.files[ORIGINAL_IMAGE_IDENTIFIER][0].path,
                                                 req.files[MODIFIED_IMAGE_IDENTIFIER][0].path);
 
         });
@@ -82,5 +84,15 @@ export class GameCreatorController {
         if (typeof req.body[GAME_NAME_FIELD] !== "string" || req.body[GAME_NAME_FIELD] === "") {
             throw new Error(FORMAT_ERROR_MESSAGE);
         }
+    }
+
+    private deleteTmpFiles(originalImageFile: string, modifiedImageFile: string): void {
+
+        fs.unlink(originalImageFile, (error: Error) => {
+            if (error) { console.dir("file " + originalImageFile + " was not found"); }
+        });
+        fs.unlink(modifiedImageFile, (error: Error) => {
+            if (error) { console.dir("file " + modifiedImageFile + " was not found"); }
+        });
     }
 }

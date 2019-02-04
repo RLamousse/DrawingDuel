@@ -34,14 +34,14 @@ export class GameListComponent implements OnInit {
   public ngOnInit(): void {
     const scores: number[] = GameComponent.generateRandomScores();
     const names: string[] = GameComponent.generateRandomNames();
-    const game: Game = {gameName: "JEU1",
+    const game: Game = {isSimpleGame: true,
+                        gameName: "JEU1",
                         originalImage: "https://upload.wikimedia.org/wikipedia/commons/c/c9/Moon.jpg",
                         modifiedImage: "https://upload.wikimedia.org/wikipedia/commons/c/c9/Moon.jpg",
                         bestSoloTimes: [{name: names[0], time: scores[0]},
                                         {name: names[1], time: scores[1]}, {name: names[2], time: scores[2]}],
                         bestMultiTimes: [{name: names[0], time: scores[0]},
                                          {name: names[1], time: scores[1]}, {name: names[2], time: scores[2]}],
-                        isSimpleGame: true,
                        };
     this.simpleGames.push(game);
     this.freeGames.push(game);

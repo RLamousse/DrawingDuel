@@ -1,77 +1,138 @@
-// import { expect } from "chai";
-// import * as fs from "fs";
-// import {DIFFERENCE_ERROR_MESSAGE, FORMAT_ERROR_MESSAGE, GAME_NAME_FIELD, NAME_ERROR_MESSAGE} from "../controllers/game-creator.controller";
-// import { GameCreatorService } from "./game-creator.service";
-//
-// const GAME_CREATOR_SERVICE: GameCreatorService = new GameCreatorService();
-// const FILES_TO_COPY: String[] = ["original.bmp", "6diff-modified.bmp", "7diff-modified.bmp", "8diff-modified.bmp"];
-//
-// describe("Game creator service", () => {
-//
-//     before(() => {
-//         for (const FILE of FILES_TO_COPY) {
-//             fs.createReadStream("./test/test_files_for_game_creator_service/" + FILE)
-//                 .pipe(fs.createWriteStream("./tmp/" + FILE));
-//         }
-//         // TODO create a game called existingGameTest
-//     });
-//
-//     beforeEach(() => {
-//         // TODO remove nonExistingGameTest if there is any
-//     });
-//
-//     it("should throw a format error if the strings of the files are not the name of existing files", () => {
-//         expect(() => GAME_CREATOR_SERVICE.createSimpleGame( "nonExistingGameTest", "nonExistingFile.bmp", "7diff-modified.bmp"))
-//             .to.throw(FORMAT_ERROR_MESSAGE);
-//     });
-//
-//     it("should throw a difference error if the files have less than 7 difference", () => {
-//         expect(() => GAME_CREATOR_SERVICE.createSimpleGame( "nonExistingGameTest", "original.bmp", "6diff-modified.bmp"))
-//             .to.throw(DIFFERENCE_ERROR_MESSAGE);
-//     });
-//
-//     it("should throw a difference error if the files have less than 7 difference(swaped original and modified files)", () => {
-//         expect(() => GAME_CREATOR_SERVICE.createSimpleGame( "nonExistingGameTest", "6diff-modified.bmp", "original.bmp"))
-//             .to.throw(DIFFERENCE_ERROR_MESSAGE);
-//     });
-//
-//     it("should throw a difference error if the files have more than 7 difference", () => {
-//         expect(() => GAME_CREATOR_SERVICE.createSimpleGame( "nonExistingGameTest", "original.bmp", "8diff-modified.bmp"))
-//             .to.throw(DIFFERENCE_ERROR_MESSAGE);
-//     });
-//
-//     it("should throw a difference error if the files have more than 7 difference(swaped original and modified files)", () => {
-//         expect(() => GAME_CREATOR_SERVICE.createSimpleGame( "nonExistingGameTest", "8diff-modified.bmp", "original.bmp"))
-//             .to.throw(DIFFERENCE_ERROR_MESSAGE);
-//     });
-//
-//     it("should throw a name error if the name of the game already exists", () => {
-//         expect(() => GAME_CREATOR_SERVICE.createSimpleGame( "existingGameTest", "original.bmp", "7diff-modified.bmp"))
-//             .to.throw(NAME_ERROR_MESSAGE);
-//     });
-//
-//     it("should throw a name error if the name of the game already exists(swaped original and modified files)", () => {
-//         expect(() => GAME_CREATOR_SERVICE.createSimpleGame( "existingGameTest", "7diff-modified.bmp", "original.bmp"))
-//             .to.throw(NAME_ERROR_MESSAGE);
-//     });
-//
-//     it("should return the created game confirm message", () => {
-//         expect(GAME_CREATOR_SERVICE.createSimpleGame( "nonExistingGameTest", "original.bmp", "7diff-modified.bmp"))
-//             .to.deep.equal({title: GAME_NAME_FIELD, body: "nonExistingGameTest"});
-//     });
-//
-//     it("should return the created game confirm message(swaped original and modified files)", () => {
-//         // console.log(gameCreatorService.createSimpleGame( "", "", ""));
-//         expect(GAME_CREATOR_SERVICE.createSimpleGame( "nonExistingGameTest", "7diff-modified.bmp", "original.bmp"))
-//             .to.deep.equal({title: GAME_NAME_FIELD, body: "nonExistingGameTest"});
-//     });
-//
-//     after(() => {
-//         for (const FILE of FILES_TO_COPY) {
-//             fs.unlink("./tmp/" + FILE, (error: Error) => {
-//                 if (error) { throw error; }
-//             });
-//         }
-//         // TODO remove the game called existingGameTest
-//     });
-// });
+import { expect } from "chai";
+import * as fs from "fs";
+import AxiosAdapter from "axios-mock-adapter";
+import Axios from "axios";
+import {
+// @ts-ignore
+    DIFFERENCE_ERROR_MESSAGE,
+    FORMAT_ERROR_MESSAGE,
+    NAME_ERROR_MESSAGE,
+    PATH_TO_TMP
+} from "../controllers/game-creator.controller";
+import { GameCreatorService } from "./game-creator.service";
+import {DifferenceEvaluatorService} from "./difference-evaluator.service";
+// @ts-ignore
+import {GAME_NAME_FIELD, NOT_EXISTING_GAME_MESSAGE_ERROR} from "./data-base.service";
+
+const GAME_CREATOR_SERVICE: GameCreatorService = new GameCreatorService(new DifferenceEvaluatorService());
+const FILES_TO_COPY: String[] = ["original.bmp", "6diff-modified.bmp", "7diff-modified.bmp", "8diff-modified.bmp"];
+
+describe("A service that creates a game", () => {
+
+    before(() => {
+        for (const FILE of FILES_TO_COPY) {
+            // fs.createReadStream("./test/test_files_for_game_creator_service/" + FILE)
+            //     .pipe(fs.createWriteStream(PATH_TO_TMP + FILE));
+            fs.copyFile("./test/test_files_for_game_creator_service/" + FILE, PATH_TO_TMP + FILE, (err: Error) => {
+                if (err) {
+                    throw err;
+                }
+            });
+        }
+    });
+
+    it("should throw a name error if the game name  is already in the data base", async () => {
+        const MOCK = new AxiosAdapter(Axios);
+
+        MOCK.onGet("http://localhost:3000/api/data-base/get-game", { data: { [GAME_NAME_FIELD]: "nonExistingGameTest" } })
+            .reply(200);
+
+        try {
+            await GAME_CREATOR_SERVICE.createSimpleGame( "nonExistingGameTest",
+                                                         PATH_TO_TMP + "original.bmp",
+                                                         PATH_TO_TMP + "7diff-modified.bmp");
+        } catch (error) {
+            return expect(error.message).to.be.equal(NAME_ERROR_MESSAGE);
+        }
+
+        return expect.fail();
+    });
+
+    it("should throw a format error if the strings of the files are not the name of existing files", async () => {
+
+        try {
+            await GAME_CREATOR_SERVICE.createSimpleGame( "someGameTest",
+                                                         PATH_TO_TMP + "nonExistingFile.bmp",
+                                                         PATH_TO_TMP + "7diff-modified.bmp");
+        } catch (error) {
+            return expect(error.message).to.be.equal(FORMAT_ERROR_MESSAGE);
+        }
+
+        return expect.fail();
+    });
+
+    it("should throw a difference error if there are less than 7 differences", async () => {
+
+        const MOCK = new AxiosAdapter(Axios);
+
+        MOCK.onGet("http://localhost:3000/api/data-base/get-game", { data: { [GAME_NAME_FIELD]: "nonExistingGameTest" } })
+            .reply(500, {message: NOT_EXISTING_GAME_MESSAGE_ERROR});
+
+        MOCK.onGet("http://localhost:3000/api/image-diff/")
+            .reply(200, {status: "ok",
+                         fileName: "original.bmp",
+                         filePath: "./test/test_files_for_game_creator_service/" + FILES_TO_COPY[1],
+            });
+        try {
+            await GAME_CREATOR_SERVICE.createSimpleGame( "someGameTest",
+                                                         PATH_TO_TMP + "original.bmp",
+                                                         PATH_TO_TMP + "6diff-modified.bmp");
+        } catch (error) {
+            return expect(error.message).to.be.equal(DIFFERENCE_ERROR_MESSAGE);
+        }
+
+        return expect.fail();
+    });
+
+    it("should throw a difference error if there are more than 7 differences", async () => {
+
+        const MOCK = new AxiosAdapter(Axios);
+
+        MOCK.onGet("http://localhost:3000/api/data-base/get-game", { data: { [GAME_NAME_FIELD]: "nonExistingGameTest" } })
+            .reply(500, {message: NOT_EXISTING_GAME_MESSAGE_ERROR});
+
+        MOCK.onGet("http://localhost:3000/api/image-diff/")
+            .reply(200, {status: "ok",
+                         fileName: "original.bmp",
+                         filePath: "./test/test_files_for_game_creator_service/" + FILES_TO_COPY[3],
+            });
+        try {
+            await GAME_CREATOR_SERVICE.createSimpleGame( "someGameTest",
+                                                         PATH_TO_TMP + "original.bmp",
+                                                         PATH_TO_TMP + "8diff-modified.bmp");
+        } catch (error) {
+            return expect(error.message).to.be.equal(DIFFERENCE_ERROR_MESSAGE);
+        }
+
+        return expect.fail();
+    });
+
+    it("should return a success message if everything is good", async () => {
+
+        const MOCK = new AxiosAdapter(Axios);
+
+        MOCK.onGet("http://localhost:3000/api/data-base/get-game", { data: { [GAME_NAME_FIELD]: "nonExistingGameTest" } })
+            .reply(500, {message: NOT_EXISTING_GAME_MESSAGE_ERROR});
+
+        MOCK.onGet("http://localhost:3000/api/image-diff/")
+            .reply(200, {status: "ok",
+                         fileName: "original.bmp",
+                         filePath: PATH_TO_TMP + FILES_TO_COPY[2],
+            });
+
+        MOCK.onPost("http://localhost:3000/api/data-base/add-game")
+            .reply(200);
+
+            expect((await GAME_CREATOR_SERVICE.createSimpleGame( "someGameTest",
+                PATH_TO_TMP + "original.bmp",
+                PATH_TO_TMP + "7diff-modified.bmp")).title).to.be.equal("Game created");
+    });
+
+    after(() => {
+        for (const FILE of FILES_TO_COPY) {
+            fs.unlink(PATH_TO_TMP + FILE, (error: Error) => {
+                if (error) { throw error; }
+            });
+        }
+    });
+});
