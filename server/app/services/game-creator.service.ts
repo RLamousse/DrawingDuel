@@ -111,14 +111,9 @@ export class GameCreatorService {
         }
     }
 
-    public deleteFiles(originalImageFile: string, modifiedImageFile: string): void {
-
-        fs.unlink(originalImageFile, (error: Error) => {
-            if (error) { console.dir("file " + originalImageFile + " was not found"); }
-        });
-        fs.unlink(modifiedImageFile, (error: Error) => {
-            if (error) { console.dir("file " + modifiedImageFile + " was not found"); }
-        });
+            return;
+        }
+        throw new Error(NAME_ERROR_MESSAGE);
     }
 
     private testNumberOfDifference(diffImage: {status: string, fileName: string, filePath: string}): void {
