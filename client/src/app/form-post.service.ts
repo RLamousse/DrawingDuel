@@ -12,9 +12,9 @@ export class FormPostService {
   private readonly BASE_URL: string = "http://localhost:3000/api/image-diff";
   public constructor(private http: HttpClient) { }
 
-  public basicPost(formdata: FormData | {}): Observable<Object> {
+  public basicPost(body: FormData | {}): Observable<Object> {
 
-      return this.http.post<Object>(this.BASE_URL, formdata).pipe(
+      return this.http.post<Object>(this.BASE_URL, body).pipe(
           catchError(this.handleError<Object>("basicPost")),
       );
   }

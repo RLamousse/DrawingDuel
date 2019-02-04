@@ -1,8 +1,9 @@
-import { HttpClient } from "@angular/common/http";
 import { Component, OnInit } from "@angular/core";
 import { FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from "@angular/forms";
+// import { MatDialogRef } from "@angular/material/dialog";
 import {Dimension} from "../../../../common/image/Bitmap/IDimension";
 import {getDimensionsFromBuffer} from "../../../../common/image/Bitmap/bitmap-utils";
+import { FormPostService } from "../form-post.service";
 
 @Component({
   selector: "app-simple-game-creator-form",
@@ -16,8 +17,8 @@ export class SimpleGameCreatorFormComponent implements OnInit {
   private readonly MAX_IMAGE_SIZE: number = 1000000;
 
   public constructor(private _fb: FormBuilder,
-                    //  private dialogRef: MatDialogRef<SimpleGameCreatorFormComponent>,
-                     private http: HttpClient) {
+                    //  public dialogRef: MatDialogRef<SimpleGameCreatorFormComponent>,
+                     private formPost: FormPostService) {
     this.fileValidator = this.fileValidator.bind(this);
   }
 
@@ -45,7 +46,7 @@ export class SimpleGameCreatorFormComponent implements OnInit {
     fd.append("name", this.formDoc.value.name);
     fd.append("originalImage", this.formDoc.value.originalImage.files[0]);
     fd.append("modifiedImage", this.formDoc.value.modifiedImage.files[0]);
-    this.http.post("localhost:3000/api/image-diff", fd).subscribe((data) => {
+    this.formPost.basicPost(fd).subscribe((data) => {
       // tslint:disable-next-line:no-console
       console.log(data);
     });
@@ -57,6 +58,11 @@ export class SimpleGameCreatorFormComponent implements OnInit {
 
   public exit(): void {
     this.formDoc.reset();
+    this.closeDialog();
+  }
+
+  public getFormGroup(): FormGroup {
+    return this.formDoc;
   }
 
   // TO BE DONE: Create Class with Custom validators

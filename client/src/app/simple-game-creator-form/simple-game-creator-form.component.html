@@ -1,7 +1,7 @@
 <form name="creat-game-form" [formGroup]="formDoc" novalidate (ngSubmit)="onSubmit()">
 
   <mat-form-field hintLabel="Max 15 charactères" id="name">
-    <input matInput #input maxlength="15" placeholder="Nom de la partie" formControlName="name">
+    <input required matInput #input maxlength="15" placeholder="Nom de la partie" formControlName="name">
     <mat-hint align="end">{{input.value?.length || 0}}/15</mat-hint>
     <mat-error *ngIf="formDoc.get('name').hasError('minlength')">
       Minimum de 5 charactères
@@ -27,7 +27,7 @@
     </mat-error>
   </mat-form-field>
 
-  <mat-form-field>
+  <mat-form-field id="modifiedImage">
     <ngx-mat-file-input accept="image/bmp" formControlName="modifiedImage" placeholder="Obligatoire" valuePlaceholder="Image Modifiée"
       required></ngx-mat-file-input>
     <mat-icon matSuffix>image</mat-icon>
@@ -45,7 +45,7 @@
     </mat-error>
   </mat-form-field>
   <div>
-    <button type="submit" mat-button [disabled]="!formDoc.valid">Envoyer</button>
-    <button type="reset" mat-button color="warn" (click)="revert()">Annuler</button>
+    <button id="form-submit" type="submit" mat-button [disabled]="!formDoc.valid">Envoyer</button>
+    <button id="form-reset" type="reset" mat-button color="warn" (click)="exit()">Annuler</button>
   </div>
 </form>
