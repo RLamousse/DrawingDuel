@@ -5,11 +5,6 @@ import { Component, OnInit } from "@angular/core";
   templateUrl: "./app.component.html",
   styleUrls: ["./app.component.css"],
 })
-export class AppComponent implements OnInit {
-    public constructor() {/* */}
-
-    public readonly title: string = "LOG2990";
-    public message: string;
-
-    public ngOnInit(): void {/* */}
+export class AppComponent {
+  public readonly title: string = "LOG2990";
 }
