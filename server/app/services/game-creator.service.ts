@@ -5,7 +5,7 @@ import "reflect-metadata";
 import {Game, TIMES_ARRAY_SIZE} from "../../../common/Object/game";
 import {Message} from "../../../common/communication/message";
 import {
-    DIFFERENCE_ERROR_MESSAGE,
+    DIFFERENCE_ERROR_MESSAGE, FORMAT_ERROR_MESSAGE,
     NAME_ERROR_MESSAGE
 } from "../controllers/game-creator.controller";
 import {BitmapFactory} from "../images/bitmap/bitmap-factory";
@@ -32,22 +32,32 @@ export class GameCreatorService {
 
     public async createSimpleGame(gameName: string, originalImageFile: string, modifiedImageFile: string): Promise<Message> {
 
-        this.testNameExistance(gameName);
-        // 2 call diff function from the phillips
+        this.testFileExistence(originalImageFile, modifiedImageFile);
+
+        await this.testNameExistance(gameName);
+
         const DIFF_IMAGE: {status: string, fileName: string, filePath: string} = await this.getDiffImage(originalImageFile,
                                                                                                          modifiedImageFile);
-
         this.testNumberOfDifference(DIFF_IMAGE);
 
         return this.generateGame(gameName, originalImageFile, modifiedImageFile);
     }
 
-    private async generateGame(gameName: string, originalImageData: string, modifiedImageData: string): Promise<Message> {
+    // @ts-ignore
+    private async generateGame(gameName: string, originalImage: string, modifiedImage: string): Promise<Message> {
 
-        fs.createReadStream(originalImageData).pipe(fs.createWriteStream(this._PATH_TO_IMAGES +
-            gameName + this._LOCAL_PICTURE_IMAGES_END[0]));
-        fs.createReadStream(modifiedImageData).pipe(fs.createWriteStream(this._PATH_TO_IMAGES +
-            modifiedImageData + this._LOCAL_PICTURE_IMAGES_END[1]));
+        fs.copyFile(originalImage, this._PATH_TO_IMAGES +
+            gameName + this._LOCAL_PICTURE_IMAGES_END[0], (err: Error) => {
+            if (err) {
+                throw err;
+            }
+        });
+        fs.copyFile(modifiedImage, this._PATH_TO_IMAGES +
+            gameName + this._LOCAL_PICTURE_IMAGES_END[1],(err: Error) => {
+            if (err) {
+                throw err;
+            }
+        });
 
         const GAME: Game = {
             bestMultiTimes: this.createRandomScores(),
@@ -56,7 +66,7 @@ export class GameCreatorService {
             modifiedImage: this._PATH_TO_IMAGES +
                 gameName + this._LOCAL_PICTURE_IMAGES_END[0],
             originalImage: this._PATH_TO_IMAGES +
-                modifiedImageData + this._LOCAL_PICTURE_IMAGES_END[1],
+                modifiedImage + this._LOCAL_PICTURE_IMAGES_END[1],
         };
         try {
             await Axios.post<Game>("http://localhost:3000/api/data-base/add-game",
@@ -103,13 +113,9 @@ export class GameCreatorService {
             await Axios.get<Game>("http://localhost:3000/api/data-base/get-game",
                                   {data: {[GAME_NAME_FIELD]: gameName}});
         } catch (error) {
-            if (error.response.data.message === ALREADY_EXISTING_GAME_MESSAGE_ERROR) {
-                throw new Error(NAME_ERROR_MESSAGE);
-            } else if (error.response.data.message !== NOT_EXISTING_GAME_MESSAGE_ERROR) {
+            if (error.response.data.message !== NOT_EXISTING_GAME_MESSAGE_ERROR) {
                 throw new Error("dataBase: " + error.response.data.message);
             }
-        }
-    }
 
             return;
         }
@@ -139,7 +145,6 @@ export class GameCreatorService {
                                       fileName: string,
                                       filePath: string,
         }>("http://localhost:3000/api/image-diff/",
-            //TODO regarder leurs parametres dentree quand fini
            {data: {name: "image-diff-" + Date.now() + ".bmp",
                    originalImage: originalImageFile,
                    modifiedImage: modifiedImageFile}})).data;
@@ -149,5 +154,11 @@ export class GameCreatorService {
         }
 
         return diffImage;
+    }
+
+    private testFileExistence(originalImageFile: string, modifiedImageFile: string): void {
+        if (!(fs.existsSync(originalImageFile) && fs.existsSync(modifiedImageFile))) {
+            throw new Error(FORMAT_ERROR_MESSAGE);
+        }
     }
 }
