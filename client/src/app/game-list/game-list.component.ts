@@ -78,7 +78,7 @@ export class GameListComponent implements OnInit {
     return (ADRESS + imageAdress + EXTENSION);
   }
 
-  private convertScoresObject(game: Game[]): Game[] {
+  public convertScoresObject(game: Game[]): Game[] {
     for (const j in game) {
       if (game.hasOwnProperty(j)) {
         game[j].originalImage = this.buildHttpAdress(game[j].originalImage);
@@ -94,7 +94,7 @@ export class GameListComponent implements OnInit {
     return game;
   }
 
-  private pushGames(gamesToPush: Game[]): void {
+  public pushGames(gamesToPush: Game[]): void {
     for (const i in gamesToPush) {
       if (gamesToPush.hasOwnProperty(i)) {
         if (gamesToPush[i].isSimpleGame) {
