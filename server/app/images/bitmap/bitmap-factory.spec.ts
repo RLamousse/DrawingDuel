@@ -51,4 +51,20 @@ describe("A util class to create Bitmap objects", () => {
         const originalBuffer: Buffer = fs.readFileSync("test/test_bitmaps/incomplete.bmp");
         expect(() => BitmapFactory.createBitmap("test-factory4.bmp", originalBuffer)).to.throw("Buffer is not complete");
     });
+    it("should create a valid bitmap with extra padding before EOF", () => {
+        const originalBuffer: Buffer = fs.readFileSync("test/test_bitmaps/black10x10-extra-padding.bmp");
+        const bitmap: Bitmap = BitmapFactory.createBitmap("test-factory5.bmp", originalBuffer);
+        const mockedBitmap: Bitmap = mock(Bitmap);
+
+        when(mockedBitmap.fileName).thenReturn("test-factory5.bmp");
+        when(mockedBitmap.width).thenReturn(10);
+        when(mockedBitmap.height).thenReturn(10);
+        when(mockedBitmap.pixels).thenReturn(create2dArray(10, 10, 0x0));
+
+        const bitmapInstance: Bitmap = instance(mockedBitmap);
+        expect(bitmap.fileName).to.equal(bitmapInstance.fileName);
+        expect(bitmap.width).to.equal(bitmapInstance.width);
+        expect(bitmap.height).to.equal(bitmapInstance.height);
+        expect(bitmap.pixels).to.deep.equal(bitmapInstance.pixels);
+    });
 });
