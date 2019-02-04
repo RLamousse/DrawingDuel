@@ -109,7 +109,7 @@ describe("A service that communicates with the data-base", () => {
 
     });
 
-    describe("Adding an game to the data-base", () => {
+    describe("Adding a game to the data-base", () => {
 
         it("should throw a format error if the game has the wrong format(undefined)", async () => {
             try {
@@ -220,6 +220,38 @@ describe("A service that communicates with the data-base", () => {
             };
             await DATA_BASE_SERVICE.addGame(existingGame);
             expect((await DATA_BASE_SERVICE.deleteGame("existingGame")).title).to.equal("Game deleted");
+        });
+
+    });
+
+    describe("Testing a game that is going to be added to the data-base", () => {
+
+        it("should throw a format error if the game has the wrong format(undefined)", async () => {
+            try {
+                // @ts-ignore
+                await DATA_BASE_SERVICE.testGameStructure(null);
+            } catch (error) {
+                return expect(error.message).to.equal(GAME_FORMAT_ERROR_MESSAGE);
+            }
+
+            return expect.fail();
+        });
+
+        it("should throw a format error if the game has a missing element", async () => {
+            const partialGame: object = {
+                gameName: "name",
+                modifiedImage: "image",
+                bestSoloTimes: [{name: "name", time: 123}, {name: "name", time: 123}, {name: "name", time: 123}],
+                bestMultiTimes: [{name: "name", time: 123}, {name: "name", time: 123}, {name: "name", time: 123}],
+            };
+            try {
+                // @ts-ignore
+                await DATA_BASE_SERVICE.testGameStructure(partialGame);
+            } catch (error) {
+                return expect(error.message).to.equal(GAME_FORMAT_ERROR_MESSAGE);
+            }
+
+            return expect.fail();
         });
 
     });
