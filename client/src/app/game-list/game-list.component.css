@@ -6,7 +6,7 @@
 .window {
     width: 800px;
     border: 1px black solid;
-    margin: auto;
+    top: 0;
     min-height: 600px;
 }
 

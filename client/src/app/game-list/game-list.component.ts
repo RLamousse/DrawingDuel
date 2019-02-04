@@ -34,17 +34,28 @@ export class GameListComponent implements OnInit {
   public ngOnInit(): void {
     const scores: number[] = GameComponent.generateRandomScores();
     const names: string[] = GameComponent.generateRandomNames();
-    const game: Game = {isSimpleGame: true,
-                        gameName: "JEU1",
-                        originalImage: "https://upload.wikimedia.org/wikipedia/commons/c/c9/Moon.jpg",
-                        modifiedImage: "https://upload.wikimedia.org/wikipedia/commons/c/c9/Moon.jpg",
-                        bestSoloTimes: [{name: names[0], time: scores[0]},
-                                        {name: names[1], time: scores[1]}, {name: names[2], time: scores[2]}],
-                        bestMultiTimes: [{name: names[0], time: scores[0]},
+    const game1: Game = {isSimpleGame: true,
+                         gameName: "JEU1",
+                         originalImage: "https://upload.wikimedia.org/wikipedia/commons/c/c9/Moon.jpg",
+                         modifiedImage: "https://upload.wikimedia.org/wikipedia/commons/c/c9/Moon.jpg",
+                         bestSoloTimes: [{name: names[0], time: scores[0]},
                                          {name: names[1], time: scores[1]}, {name: names[2], time: scores[2]}],
-                       };
-    this.simpleGames.push(game);
-    this.freeGames.push(game);
+                         bestMultiTimes: [{name: names[0], time: scores[0]},
+                                          {name: names[1], time: scores[1]}, {name: names[2], time: scores[2]}],
+                        };
+    const game2: Game = {isSimpleGame: true,
+                         gameName: "JEU2",
+                         originalImage: "Moon",
+                         modifiedImage: "Moon",
+                         bestSoloTimes: [{name: names[0], time: 1170},
+                                         {name: names[1], time: 1180}, {name: names[2], time: 1250}],
+                         bestMultiTimes: [{name: names[0], time: 1750},
+                                          {name: names[1], time: 1756}, {name: names[2], time: 1896}],
+                        };
+    this.simpleGames.push(game2);
+    this.convertScoresObject(this.simpleGames);
+    this.simpleGames.push(game1);
+    this.freeGames.push(game1);
     this.getGames().subscribe((gamesToModify) => {
       this.convertScoresObject(gamesToModify);
       this.pushGames(gamesToModify);
@@ -52,18 +63,19 @@ export class GameListComponent implements OnInit {
   }
 
   private convertTimeScores(seconds: number): number {
-    const coefficient: number = 0.6;
-    const minute: number = 60;
-    seconds /= minute;
+    const COEFFICIENT: number = 0.6;
+    const MINUTE: number = 60;
+    seconds /= MINUTE;
 
-    return (Math.floor(seconds) + ((seconds - Math.floor(seconds)) * coefficient));
+    // tslint:disable-next-line:no-magic-numbers
+    return Number((Math.floor(seconds) + ((seconds - Math.floor(seconds)) * COEFFICIENT)).toFixed(2));
   }
 
   private buildHttpAdress(imageAdress: string): string {
-    const adress: string = "http://localhost:3000/";
-    const extension: string = ".bmp";
+    const ADRESS: string = "https://upload.wikimedia.org/wikipedia/commons/c/c9/";
+    const EXTENSION: string = ".jpg";
 
-    return (adress + imageAdress + extension);
+    return (ADRESS + imageAdress + EXTENSION);
   }
 
   private convertScoresObject(game: Game[]): Game[] {
