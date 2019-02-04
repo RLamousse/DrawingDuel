@@ -11,7 +11,7 @@
 
 .example-form {
     min-width: 250px;
-    max-width: 500px;
+    max-width: 600px;
     width: 100%;
 }
 
@@ -34,9 +34,4 @@
     margin-right:35px;
     display: flex;
     flex-direction: row;
-}
-
-.img{
-  margin-right:25px;
-  margin-bottom:auto;
 }
