@@ -81,7 +81,7 @@ export class DataBaseService {
 
     public async deleteGame(gameName: string): Promise<Message> {
         if (typeof gameName !== "string" || gameName === "") {
-            throw new Error(USERNAME_FORMAT_ERROR_MESSAGE);
+            throw new Error(GAME_FORMAT_ERROR_MESSAGE);
         }
         if (!(await this.containsGame(gameName))) {
             throw new Error(NOT_EXISTING_GAME_MESSAGE_ERROR);
