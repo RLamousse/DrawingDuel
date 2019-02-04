@@ -4,17 +4,17 @@ import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormsModule } from "@angular/forms";
 import { Router } from "@angular/router";
 import { UNListService } from "../username.service";
-import { VueComponent } from "./vue.component";
+import { InitialViewComponent } from "./initial-view.component";
 
 describe("VueComponent", () => {
-  let component: VueComponent;
-  let fixture: ComponentFixture<VueComponent>;
+  let component: InitialViewComponent;
+  let fixture: ComponentFixture<InitialViewComponent>;
   let unListSpyService: jasmine.SpyObj<UNListService>;
 
   beforeEach(async(() => {
     unListSpyService = jasmine.createSpyObj("UNListService", ["validateName"]);
     TestBed.configureTestingModule({
-      declarations: [VueComponent],
+      declarations: [InitialViewComponent],
       imports: [FormsModule, HttpClientModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
@@ -22,13 +22,13 @@ describe("VueComponent", () => {
         { provide: Router, useClass: class { public navigate = jasmine.createSpy("navigate"); } },
         ],
     });
-    fixture = TestBed.createComponent(VueComponent);
+    fixture = TestBed.createComponent(InitialViewComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(VueComponent);
+    fixture = TestBed.createComponent(InitialViewComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

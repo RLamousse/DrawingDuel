@@ -3,11 +3,11 @@ import { Router } from "@angular/router";
 import { UNListService } from "../username.service";
 
 @Component({
-  selector: "app-vue",
-  templateUrl: "./vue.component.html",
-  styleUrls: ["./vue.component.css"],
+  selector: "app-initial-view",
+  templateUrl: "./initial-view.component.html",
+  styleUrls: ["./initial-view.component.css"],
 })
-export class VueComponent implements OnInit {
+export class InitialViewComponent implements OnInit {
 
   @Input() public newUsername: string;
   public username: string = "inconnu";

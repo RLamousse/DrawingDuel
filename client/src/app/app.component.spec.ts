@@ -5,18 +5,16 @@ import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormsModule } from "@angular/forms";
 import { AppComponent } from "./app.component";
-import { IndexService } from "./index.service";
-import { VueComponent } from "./vue/vue.component";
+import { InitialViewComponent } from "./initial-view/initial-view.component";
 
 describe("AppComponent", () => {
   beforeEach(async(() => {
-    TestBed.configureTestingModule({
+    return TestBed.configureTestingModule({
       declarations: [
         AppComponent,
-        VueComponent,
+        InitialViewComponent,
       ],
       imports: [HttpClientModule, FormsModule],
-      providers: [IndexService],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).compileComponents();
   }));
