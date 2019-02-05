@@ -1,7 +1,7 @@
 import { HttpClientModule } from "@angular/common/http";
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { AbstractControl, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatButtonModule, MatDialogModule, MatFormFieldModule, MatIconModule, MatInputModule } from "@angular/material";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
@@ -16,7 +16,7 @@ describe("SimpleGameCreatorFormComponent", () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SimpleGameCreatorFormComponent ],
+      declarations: [SimpleGameCreatorFormComponent],
       imports: [
         BrowserModule,
         ReactiveFormsModule,
@@ -34,7 +34,7 @@ describe("SimpleGameCreatorFormComponent", () => {
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [FormPostService],
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -49,59 +49,68 @@ describe("SimpleGameCreatorFormComponent", () => {
   });
 
   it("should prevent submit if all fields are missing", async () => {
-    /**
-     * We know the button exists, we just want to see if it's disabled
-     */
-    // tslint:disable-next-line:no-non-null-assertion
-    expect((document.getElementById("form-submit")! as HTMLButtonElement).disabled).toBeTruthy();
+    expect(component.formDoc.valid).toBeFalsy();
   });
 
-  // it("should prevent submit if at least one field is missing", async () => {
-  //   const formGroup: FormGroup = component.getFormGroup();
-  //   const fileInput: HTMLInputElement = document.createElement("input");
-  //   // tslint:disable-next-line:no-non-null-assertion
-  //   fileInput.files = new FileList();
-  //   formGroup.setValue({
-  //     name: "Maxime",
-  //   });
-  //   // tslint:disable-next-line:no-non-null-assertion
-  //   expect((document.getElementById("form-submit")! as HTMLButtonElement).disabled).toBeTruthy();
-  // });
+  it("should prevent submit if at least one field is missing", async () => {
+    const name: AbstractControl = component.formDoc.controls["name"];
+    name.setValue("12345");
+    expect(component.formDoc.valid).toBeFalsy();
+  });
 
   it("should have an error if name is to short", async () => {
-    component.getFormGroup().setValue({name: "1234"}, {emitEvent: true});
-    // tslint:disable-next-line:no-any
-    expect((component.getFormGroup().controls as any).get("name").hasError("minlength")).toBeTruthy();
+    const name: AbstractControl = component.formDoc.controls["name"];
+    name.setValue("1234");
+    expect(name.valid).toBeFalsy(`${name.value} wasn't falsy`);
   });
 
   it("should have an error if no name specified", async () => {
-    component.getFormGroup().setValue({name: "1234"}, {emitEvent: true});
-    component.getFormGroup().setValue({name: ""}, {emitEvent: true});
-    // tslint:disable-next-line:no-any
-    expect((component.getFormGroup().controls as any).get("name").hasError("required")).toBeTruthy();
+    const name: AbstractControl = component.formDoc.controls["name"];
+    expect(name.valid).toBeFalsy(`${name.value} wasn't falsy`);
   });
 
   it("should have an error if no file specified", async () => {
-    component.getFormGroup().setValue({originalImage: "1234"}, {emitEvent: true});
-    // tslint:disable-next-line:no-any
-    expect((component.getFormGroup().controls as any).get("originalImage").hasError("required")).toBeTruthy();
+    const originalImage: AbstractControl = component.formDoc.controls["originalImage"];
+    expect(originalImage.valid).toBeFalsy();
   });
 
-  // it("should have an error if the file isn't a bmp", async () => {
-  //   component.getFormGroup().setValue({originalImage: "1234"}, {emitEvent: true});
-  //   // tslint:disable-next-line:no-any
-  //   expect((component.getFormGroup().controls as any).get("originalImage").hasError("imageType")).toBeTruthy();
-  // });
+  it("should have an error if the file isn't a bmp", async () => {
+    const originalImage: AbstractControl = component.formDoc.controls["originalImage"];
+    originalImage.setValue({
+      files: [new File([""], "maxime", {type: "text/html"})],
+    });
+    expect(originalImage.valid).toBeFalsy();
+  });
 
-  // it("should have an error if the file isn't the right dimensions", async () => {
-  //   component.getFormGroup().setValue({originalImage: "1234"}, {emitEvent: true});
-  //   // tslint:disable-next-line:no-any
-  //   expect((component.getFormGroup().controls as any).get("originalImage").hasError("imageDimensions")).toBeTruthy();
-  // });
+  it("should have an error if the file is too big for upload", async () => {
+    const originalImage: AbstractControl = component.formDoc.controls["originalImage"];
+    originalImage.setValue({
+      files: [new File(new Array(component.MAX_IMAGE_SIZE + 1).fill(0), "maxime.bmp", {type: "image/bmp"})],
+    });
+    expect(originalImage.valid).toBeFalsy();
+  });
 
-  // it("should have an error if the file is too big for upload", async () => {
-  //   component.getFormGroup().setValue({originalImage: "1234"}, {emitEvent: true});
-  //   // tslint:disable-next-line:no-any
-  //   expect((component.getFormGroup().controls as any).get("originalImage").hasError("imageSize")).toBeTruthy();
-  // });
+  it("should have an error if the file isn't the right dimensions", async () => {
+    const originalImage: AbstractControl = component.formDoc.controls["originalImage"];
+    originalImage.setValue({
+      files: [new File(new Array(component.MAX_IMAGE_SIZE - 1).fill(0), "maxime.bmp", {type: "image/bmp"})],
+    });
+    expect(originalImage.valid).toBeFalsy();
+  });
+
+  it("should let submit if everything ok", async () => {
+    const originalImage: AbstractControl = component.formDoc.controls["originalImage"];
+    const modifiedImage: AbstractControl = component.formDoc.controls["modifiedImage"];
+    originalImage.clearAsyncValidators();
+    modifiedImage.clearAsyncValidators();
+    originalImage.setValue({
+      files: [new File(new Array(component.MAX_IMAGE_SIZE - 1).fill(0), "maxime.bmp", {type: "image/bmp"})],
+    });
+    modifiedImage.setValue({
+      files: [new File(new Array(component.MAX_IMAGE_SIZE - 1).fill(0), "maxime.bmp", {type: "image/bmp"})],
+    });
+    const name: AbstractControl = component.formDoc.controls["name"];
+    name.setValue("12345");
+    expect(component.formDoc.valid).toBeTruthy();
+  });
 });

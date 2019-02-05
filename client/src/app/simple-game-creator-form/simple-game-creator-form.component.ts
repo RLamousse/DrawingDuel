@@ -12,9 +12,9 @@ import { FormPostService } from "../form-post.service";
 })
 export class SimpleGameCreatorFormComponent implements OnInit {
 
-  private formDoc: FormGroup;
+  public formDoc: FormGroup;
   private readonly MIN_NAME_LENGTH: number = 5;
-  private readonly MAX_IMAGE_SIZE: number = 1000000;
+  public readonly MAX_IMAGE_SIZE: number = 1000000;
 
   public constructor(private _fb: FormBuilder,
                     //  public dialogRef: MatDialogRef<SimpleGameCreatorFormComponent>,
@@ -61,10 +61,6 @@ export class SimpleGameCreatorFormComponent implements OnInit {
     this.closeDialog();
   }
 
-  public getFormGroup(): FormGroup {
-    return this.formDoc;
-  }
-
   // TO BE DONE: Create Class with Custom validators
   private async fileValidator(control: FormControl): Promise<ValidationErrors | null> {
     if (control.value) {
@@ -99,6 +95,7 @@ export class SimpleGameCreatorFormComponent implements OnInit {
           const dimensions: Dimension = getDimensionsFromBuffer(event.target.result);
           resolve(dimensions.width === REQUIRED_WIDTH && dimensions.height === REQUIRED_HEIGHT);
         } else {
+          // TO BE DONE: Throw error if not resolved
           resolve(false);
         }
       };
