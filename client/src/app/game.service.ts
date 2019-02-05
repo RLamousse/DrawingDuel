@@ -3,7 +3,6 @@ import { Injectable } from "@angular/core";
 import { of, Observable } from "rxjs";
 import { catchError } from "rxjs/operators";
 import { Game } from "../../../common/Object/game";
-import {stringify} from "querystring";
 
 @Injectable({
   providedIn: "root",
