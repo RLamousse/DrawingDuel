@@ -11,7 +11,6 @@ import { GameComponent } from "./game-list/game/game.component";
 import { InitialViewComponent } from "./initial-view/initial-view.component";
 import { UNListService } from "./username.service";
 import { WindowEventHandlerDirective } from "./window-event-handler.directive";
-
 import { VueAdminComponent } from './vue-admin/vue-admin.component';
 
 import {MatDialogModule} from '@angular/material';
