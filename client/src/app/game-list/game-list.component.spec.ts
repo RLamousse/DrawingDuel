@@ -1,8 +1,8 @@
 import { HttpClientModule } from "@angular/common/http";
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
-import { TestBed, ComponentFixture } from "@angular/core/testing";
-import { GameListComponent } from "./game-list.component";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { GameService } from "../game.service";
+import { GameListComponent } from "./game-list.component";
 
 describe("GameListComponent", () => {
   let component: GameListComponent;

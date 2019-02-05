@@ -1,10 +1,11 @@
+import { HttpClientModule } from "@angular/common/http";
 import { async, TestBed } from "@angular/core/testing";
 import { Game } from "../../../common/Object/game";
 import { GameService } from "./game.service";
-import { HttpClientModule } from "@angular/common/http";
 
 describe("GameService", () => {
   let serviceGame: GameService;
+  let spyService: jasmine.SpyObj<GameService>;
 
   const emptyMockedGameList: Game[] = [];
 
@@ -53,9 +54,10 @@ describe("GameService", () => {
   }));
 
   beforeEach(() => {
+    spyService = jasmine.createSpyObj("GameService", ["getGames"]);
     TestBed.configureTestingModule({
       imports: [HttpClientModule],
-      providers: [GameService],
+      providers: [{ provide: GameService, useValue: spyService}, GameService],
     });
   });
 
@@ -63,6 +65,13 @@ describe("GameService", () => {
     serviceGame = TestBed.get(GameService);
     spyOn(serviceGame, "getGames").and.returnValue(emptyMockedGameList);
     expect(serviceGame).toBeTruthy();
+  });
+
+  it("should return an observable Game[]", () => {
+    spyService.getGames().subscribe((games) => {
+      expect(games).toEqual(emptyMockedGameList);
+      expect(games.length).toBe(0);
+    });
   });
 
   // Test ConvertScoresObject
