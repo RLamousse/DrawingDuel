@@ -8,4 +8,8 @@
     <button mat-raised-button class="gameCreationButton" (click) = "create3DGame()">Creation de jeu 3D</button>
   </div>
 </div>
-<app-game-list></app-game-list>
+<div class = "lineSkip">
+  <app-game-list [rightButton]="rightButton"
+               [leftButton]="leftButton">
+  </app-game-list>
+</div>  

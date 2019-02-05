@@ -11,9 +11,6 @@ import {Create3DGameComponent} from '../create3-dgame/create3-dgame.component';
   selector: 'app-vue-admin',
   templateUrl: './vue-admin.component.html',
   styleUrls: ['./vue-admin.component.css'],
-  template: `<app-game-list [rightButton]="rightButton"
-                            [leftButton]="leftButton">
-             </app-game-list>`
   
 })
 export class VueAdminComponent implements OnInit {
@@ -21,7 +18,7 @@ export class VueAdminComponent implements OnInit {
   constructor(private dialog: MatDialog ) { }
   
   public rightButton: string = "reinitialiser";
-  public leftButton: string = "creer";
+  public leftButton: string = "supprimer";
 
   ngOnInit() {
   }

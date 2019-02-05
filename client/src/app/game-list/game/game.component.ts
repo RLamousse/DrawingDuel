@@ -76,14 +76,14 @@ export class GameComponent implements OnInit {
   public ngOnInit(): void {console.log(this.rightButton);}
 
   public leftButtonClick() : void{
-    if(this.leftButton == "creer"){
+    if(this.leftButton === "supprimer"){
       console.log("sup");
     }
     
   }
 
   public rightButtonClick() : void{
-    if(this.rightButton == "reinitialiser"){
+    if(this.rightButton === "reinitialiser"){
       console.log("sup");
     }
     

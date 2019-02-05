@@ -18,8 +18,8 @@ export class GameListComponent implements OnInit {
 
   public constructor(private http: HttpClient) {/*vide*/}
 
-  @Input() public rightButton: string;
-  @Input() public leftButton: string;
+  @Input() public rightButton: string = "creer";
+  @Input() public leftButton: string = "jouer";
 
   
 
