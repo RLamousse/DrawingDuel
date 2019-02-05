@@ -1,8 +1,8 @@
 import { Component, OnInit } from "@angular/core";
 import { FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from "@angular/forms";
-// import { MatDialogRef } from "@angular/material/dialog";
-import {Dimension} from "../../../../common/image/Bitmap/IDimension";
-import {getDimensionsFromBuffer} from "../../../../common/image/Bitmap/bitmap-utils";
+import { MatDialogRef } from "@angular/material/dialog";
+import { Dimension } from "../../../../common/image/Bitmap/IDimension";
+import { getDimensionsFromBuffer } from "../../../../common/image/Bitmap/bitmap-utils";
 import { FormPostService } from "../form-post.service";
 
 @Component({
@@ -17,7 +17,7 @@ export class SimpleGameCreatorFormComponent implements OnInit {
   public readonly MAX_IMAGE_SIZE: number = 1000000;
 
   public constructor(private _fb: FormBuilder,
-                    //  public dialogRef: MatDialogRef<SimpleGameCreatorFormComponent>,
+                     public dialogRef: MatDialogRef<SimpleGameCreatorFormComponent>,
                      private formPost: FormPostService) {
     this.fileValidator = this.fileValidator.bind(this);
   }
@@ -47,18 +47,13 @@ export class SimpleGameCreatorFormComponent implements OnInit {
     fd.append("originalImage", this.formDoc.value.originalImage.files[0]);
     fd.append("modifiedImage", this.formDoc.value.modifiedImage.files[0]);
     this.formPost.basicPost(fd).subscribe((data) => {
-      // tslint:disable-next-line:no-console
-      console.log(data);
+      this.exit(data);
     });
   }
 
-  public closeDialog (): void {
-    // this.dialogRef.close("");
-  }
-
-  public exit(): void {
+  public exit(message: Object = {status: "cancelled"}): void {
     this.formDoc.reset();
-    this.closeDialog();
+    this.dialogRef.close(message);
   }
 
   // TO BE DONE: Create Class with Custom validators

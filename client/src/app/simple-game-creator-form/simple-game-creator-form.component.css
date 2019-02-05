@@ -6,6 +6,7 @@ form {
     display: flex;
     flex-direction: column;
     flex-flow: column;
+    min-width: 50vw;
 }
 
 #name, #originalImage {

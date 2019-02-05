@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
 import {MatDialog, MatDialogConfig} from "@angular/material";
-import {CreateSimpleGame} from "../create-simple-game/create-simple-game";
 import {Create3DGameComponent} from "../create3-dgame/create3-dgame.component";
+import { SimpleGameCreatorFormComponent } from "../simple-game-creator-form/simple-game-creator-form.component";
 
 @Component({
   selector: "app-vue-admin",
@@ -24,7 +24,7 @@ export class VueAdminComponent {
     const dialogConfig: MatDialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = true;
 
-    this.dialog.open(CreateSimpleGame, dialogConfig);
+    this.dialog.open(SimpleGameCreatorFormComponent, dialogConfig);
 
   }
 
