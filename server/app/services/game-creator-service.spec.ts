@@ -34,7 +34,7 @@ describe("A service that creates a game", () => {
     it("should throw a name error if the game name  is already in the data base", async () => {
         const MOCK = new AxiosAdapter(Axios);
 
-        MOCK.onGet("http://localhost:3000/api/data-base/get-game", { data: { [GAME_NAME_FIELD]: "nonExistingGameTest" } })
+        MOCK.onGet("http://localhost:3000/api/data-base/get-game/?gameName=nonExistingGameTest")
             .reply(200);
 
         try {
@@ -65,7 +65,7 @@ describe("A service that creates a game", () => {
 
         const MOCK = new AxiosAdapter(Axios);
 
-        MOCK.onGet("http://localhost:3000/api/data-base/get-game", { data: { [GAME_NAME_FIELD]: "nonExistingGameTest" } })
+        MOCK.onGet("http://localhost:3000/api/data-base/get-game/?gameName=someGameTest")
             .reply(500, {message: NOT_EXISTING_GAME_MESSAGE_ERROR});
 
         MOCK.onGet("http://localhost:3000/api/image-diff/")
@@ -88,7 +88,7 @@ describe("A service that creates a game", () => {
 
         const MOCK = new AxiosAdapter(Axios);
 
-        MOCK.onGet("http://localhost:3000/api/data-base/get-game", { data: { [GAME_NAME_FIELD]: "nonExistingGameTest" } })
+        MOCK.onGet("http://localhost:3000/api/data-base/get-game/?gameName=someGameTest")
             .reply(500, {message: NOT_EXISTING_GAME_MESSAGE_ERROR});
 
         MOCK.onGet("http://localhost:3000/api/image-diff/")
@@ -111,7 +111,7 @@ describe("A service that creates a game", () => {
 
         const MOCK = new AxiosAdapter(Axios);
 
-        MOCK.onGet("http://localhost:3000/api/data-base/get-game", { data: { [GAME_NAME_FIELD]: "nonExistingGameTest" } })
+        MOCK.onGet("http://localhost:3000/api/data-base/get-game/?gameName=someGameTest")
             .reply(500, {message: NOT_EXISTING_GAME_MESSAGE_ERROR});
 
         MOCK.onGet("http://localhost:3000/api/image-diff/")
