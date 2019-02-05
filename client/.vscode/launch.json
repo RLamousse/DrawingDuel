@@ -1,0 +1,17 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+      {
+        "name": "Start with debugging",
+        "type": "chrome",
+        "request": "launch",
+        "url": "http://localhost:4200",
+        "preLaunchTask": "ngserve",
+        "webRoot": "${workspaceRoot}",
+        "sourceMaps": true,
+        "runtimeArgs": [
+            "--remote-debugging-port=9222"
+        ]
+    }
+  ]
+}
