@@ -1,11 +1,10 @@
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { async, TestBed } from "@angular/core/testing";
 import { Game } from "../../../common/Object/game";
-import { GameListComponent } from "./game-list/game-list.component";
 import { GameService } from "./game.service";
+import { HttpClientModule } from "@angular/common/http";
 
 describe("GameService", () => {
   let serviceGame: GameService;
-  let fixture: ComponentFixture<GameListComponent>;
 
   const emptyMockedGameList: Game[] = [];
 
@@ -48,20 +47,22 @@ describe("GameService", () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [],
+      imports: [HttpClientModule],
       providers: [GameService],
     });
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(GameListComponent);
-    fixture.detectChanges();
-    spyOn(serviceGame, "getGames").and.returnValue(mockMixGameList);
+    TestBed.configureTestingModule({
+      imports: [HttpClientModule],
+      providers: [GameService],
+    });
   });
 
   it("should be created", () => {
-    const service: GameService = TestBed.get(GameService);
-    expect(service).toBeTruthy();
+    serviceGame = TestBed.get(GameService);
+    spyOn(serviceGame, "getGames").and.returnValue(emptyMockedGameList);
+    expect(serviceGame).toBeTruthy();
   });
 
   // Test ConvertScoresObject
