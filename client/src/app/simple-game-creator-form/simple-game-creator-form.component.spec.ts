@@ -2,12 +2,12 @@ import { HttpClientModule } from "@angular/common/http";
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { AbstractControl, FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { MatButtonModule, MatDialogModule, MatFormFieldModule, MatIconModule, MatInputModule } from "@angular/material";
+import { MatButtonModule, MatFormFieldModule, MatIconModule, MatInputModule } from "@angular/material";
+import { MatDialogModule, MatDialogRef } from "@angular/material/dialog";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { MaterialFileInputModule } from "ngx-material-file-input";
 import { FormPostService } from "../form-post.service";
-// import { FormGroup, FormControl } from "@angular/forms";
 import { SimpleGameCreatorFormComponent } from "./simple-game-creator-form.component";
 
 describe("SimpleGameCreatorFormComponent", () => {
@@ -32,7 +32,7 @@ describe("SimpleGameCreatorFormComponent", () => {
         MatDialogModule,
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [FormPostService],
+      providers: [FormPostService, {provide: MatDialogRef, useValue: {}}],
     })
       .compileComponents();
   }));
