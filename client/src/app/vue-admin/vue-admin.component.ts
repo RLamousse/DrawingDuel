@@ -1,9 +1,7 @@
-import { Component, OnInit,  } from '@angular/core';
+import { Component, OnInit, } from '@angular/core';
 import {MatDialog, MatDialogConfig} from "@angular/material";
 import {CreateSimpleGame} from '../create-simple-game/create-simple-game';
 import {Create3DGameComponent} from '../create3-dgame/create3-dgame.component';
-
-
 
 
 
@@ -16,7 +14,6 @@ import {Create3DGameComponent} from '../create3-dgame/create3-dgame.component';
 export class VueAdminComponent implements OnInit {
 
   constructor(private dialog: MatDialog ) { }
-  
   public rightButton: string = "reinitialiser";
   public leftButton: string = "supprimer";
 

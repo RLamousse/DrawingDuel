@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { Game } from "../../../../../common/Object/game";
+import {AdminGameServiceService} from "./admin-game-service.service"
 
 @Component({
   selector: "app-game",
@@ -8,8 +9,10 @@ import { Game } from "../../../../../common/Object/game";
 })
 
 export class GameComponent implements OnInit {
+  public readonly BASE_URL: string = "localhost:3000/api/data-base/delete-game/";
 
-  public constructor() {/*vide*/}
+
+  public constructor(public adminService : AdminGameServiceService) {/*vide*/}
 
   @Input() public gameName: string;
   @Input() public bestSoloTimes: Game[];
@@ -75,16 +78,20 @@ export class GameComponent implements OnInit {
   
   public ngOnInit(): void {console.log(this.rightButton);}
 
+
+
   public leftButtonClick() : void{
     if(this.leftButton === "supprimer"){
-      console.log("sup");
+      this.adminService.deleteGames(this.gameName).subscribe(
+        ()=> console.log(`Game with name ${this.gameName} deleted`)
+      )
     }
     
   }
 
   public rightButtonClick() : void{
     if(this.rightButton === "reinitialiser"){
-      console.log("sup");
+     
     }
     
   }
