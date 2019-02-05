@@ -1,5 +1,5 @@
 import { HttpClient } from "@angular/common/http";
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, Input } from "@angular/core";
 import { of, Observable } from "rxjs";
 import { catchError } from "rxjs/operators";
 import { Game } from "../../../../common/Object/game";
@@ -9,6 +9,7 @@ import { GameComponent } from "./game/game.component";
   selector: "app-game-list",
   templateUrl: "./game-list.component.html",
   styleUrls: ["./game-list.component.css"],
+  
 })
 
 export class GameListComponent implements OnInit {
@@ -17,10 +18,16 @@ export class GameListComponent implements OnInit {
 
   public constructor(private http: HttpClient) {/*vide*/}
 
+  @Input() public rightButton: string;
+  @Input() public leftButton: string;
+
+  
+
   public getGames(): Observable<Game[]> {
     return this.http.get<Game[]>(this.BASE_URL).pipe(
       catchError(this.handleError<Game[]>("basicGet")),
     );
+
   }
 
   private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {
@@ -40,8 +47,19 @@ export class GameListComponent implements OnInit {
                                         {name: names[1], time: scores[1]}, {name: names[2], time: scores[2]}],
                         bestMultiTimes: [{name: names[0], time: scores[0]},
                                          {name: names[1], time: scores[1]}, {name: names[2], time: scores[2]}],
+                        
                        };
+    const game2: Game = {gameName: "JEU1",
+                        originalImage: "https://upload.wikimedia.org/wikipedia/commons/c/c9/Moon.jpg",
+                        modifiedImage: "https://upload.wikimedia.org/wikipedia/commons/c/c9/Moon.jpg",
+                        bestSoloTimes: [{name: names[0], time: scores[0]},
+                                        {name: names[1], time: scores[1]}, {name: names[2], time: scores[2]}],
+                         bestMultiTimes: [{name: names[0], time: scores[0]},
+                                          {name: names[1], time: scores[1]}, {name: names[2], time: scores[2]}],
+   };
+                    
     this.games.push(game);
+    this.games.push(game2);
     this.getGames().subscribe((gameToModify) => {
       this.convertScoresObject(gameToModify);
       for (const i in gameToModify) {
@@ -79,7 +97,6 @@ export class GameListComponent implements OnInit {
         }
       }
     }
-
     return game;
   }
 }

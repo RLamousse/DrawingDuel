@@ -15,6 +15,12 @@ import { InitialViewComponent } from "./initial-view/initial-view.component";
 import { SimpleGameCreatorFormComponent } from "./simple-game-creator-form/simple-game-creator-form.component";
 import { UNListService } from "./username.service";
 import { WindowEventHandlerDirective } from "./window-event-handler.directive";
+import { VueAdminComponent } from './vue-admin/vue-admin.component';
+
+import {MatDialogModule} from '@angular/material';
+import {CreateSimpleGame} from './create-simple-game/create-simple-game';
+import {Create3DGameComponent} from './create3-dgame/create3-dgame.component'
+
 
 @NgModule({
   declarations: [
@@ -23,6 +29,9 @@ import { WindowEventHandlerDirective } from "./window-event-handler.directive";
     GameListComponent,
     WindowEventHandlerDirective,
     GameComponent,
+    AppComponent,
+    VueAdminComponent,
+    Create3DGameComponent,
     SimpleGameCreatorFormComponent,
   ],
   imports: [
@@ -42,6 +51,7 @@ import { WindowEventHandlerDirective } from "./window-event-handler.directive";
   ],
   providers: [UNListService, FormPostService],
   bootstrap: [AppComponent],
+  entryComponents: [CreateSimpleGame,Create3DGameComponent],
   schemas: [NO_ERRORS_SCHEMA],
 })
 export class AppModule { }

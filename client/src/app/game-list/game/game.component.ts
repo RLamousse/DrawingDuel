@@ -15,11 +15,13 @@ export class GameComponent implements OnInit {
   @Input() public bestSoloTimes: Game[];
   @Input() public bestMultiTimes: Game[];
   @Input() public originalImage: string;
-
+  @Input() public rightButton: string;
+  @Input() public leftButton: string;
   // Methods to generate scores and usernames
   public static generateRandom(min: number, max: number): number {
     return Number((min + Math.random() * (max - min)).toFixed(0));
   }
+  
 
   public static generateAscendingOrderRandoms(arraySize: number, min: number, max: number): Array<number> {
     const numArray: number[] = [];
@@ -36,7 +38,7 @@ export class GameComponent implements OnInit {
         return 0;
       }
     });
-
+    
     return numArray;
   }
 
@@ -70,5 +72,20 @@ export class GameComponent implements OnInit {
     return usernamesArray;
   }
 
-  public ngOnInit(): void {/*vide*/}
+  
+  public ngOnInit(): void {console.log(this.rightButton);}
+
+  public leftButtonClick() : void{
+    if(this.leftButton == "creer"){
+      console.log("sup");
+    }
+    
+  }
+
+  public rightButtonClick() : void{
+    if(this.rightButton == "reinitialiser"){
+      console.log("sup");
+    }
+    
+  }
 }
