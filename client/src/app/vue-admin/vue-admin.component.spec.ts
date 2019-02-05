@@ -1,18 +1,18 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientModule } from "@angular/common/http";
-import { VueAdminComponent } from './vue-admin.component';
-import { GameListComponent } from '../game-list/game-list.component'
-import { GameComponent } from '../game-list/game/game.component'
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { MatDialogModule, } from "@angular/material";
+import { GameListComponent } from "../game-list/game-list.component";
+import { GameComponent } from "../game-list/game/game.component";
+import { VueAdminComponent } from "./vue-admin.component";
 
-describe('VueAdminComponent', () => {
+describe("VueAdminComponent", () => {
   let component: VueAdminComponent;
   let fixture: ComponentFixture<VueAdminComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ VueAdminComponent, GameListComponent, GameComponent],
-      imports:[ MatDialogModule,  HttpClientModule],
+      imports: [ MatDialogModule,  HttpClientModule],
     })
     .compileComponents();
   }));
@@ -23,9 +23,8 @@ describe('VueAdminComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 
-  
 });

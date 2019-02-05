@@ -11,8 +11,7 @@ import {AdminGameServiceService} from "./admin-game-service.service"
 export class GameComponent implements OnInit {
   public readonly BASE_URL: string = "localhost:3000/api/data-base/delete-game/";
 
-
-  public constructor(public adminService : AdminGameServiceService) {/*vide*/}
+  public constructor(public adminService:AdminGameServiceService) {/*vide*/}
 
   @Input() public gameName: string;
   @Input() public bestSoloTimes: Game[];
@@ -24,8 +23,6 @@ export class GameComponent implements OnInit {
   public static generateRandom(min: number, max: number): number {
     return Number((min + Math.random() * (max - min)).toFixed(0));
   }
-  
-
   public static generateAscendingOrderRandoms(arraySize: number, min: number, max: number): Array<number> {
     const numArray: number[] = [];
     for (let i: number = 0; i < arraySize; i++) {
@@ -41,7 +38,7 @@ export class GameComponent implements OnInit {
         return 0;
       }
     });
-    
+
     return numArray;
   }
 
@@ -75,24 +72,15 @@ export class GameComponent implements OnInit {
     return usernamesArray;
   }
 
-  
-  public ngOnInit(): void {console.log(this.rightButton);}
-
-
-
-  public leftButtonClick() : void{
-    if(this.leftButton === "supprimer"){
+  public ngOnInit(): void {}
+  public leftButtonClick(): void {
+    if (this.leftButton === "supprimer") {
       this.adminService.deleteGames(this.gameName).subscribe(
-        ()=> console.log(`Game with name ${this.gameName} deleted`)
-      )
+        ()=> console.log(`Game with name ${this.gameName} deleted`));
     }
-    
   }
 
-  public rightButtonClick() : void{
-    if(this.rightButton === "reinitialiser"){
-     
-    }
-    
+  public rightButtonClick(): void {
+    if (this.rightButton === "reinitialiser") {}
   }
 }

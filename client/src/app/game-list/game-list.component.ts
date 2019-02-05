@@ -9,7 +9,6 @@ import { GameComponent } from "./game/game.component";
   selector: "app-game-list",
   templateUrl: "./game-list.component.html",
   styleUrls: ["./game-list.component.css"],
-  
 })
 
 export class GameListComponent implements OnInit {
@@ -20,8 +19,6 @@ export class GameListComponent implements OnInit {
 
   @Input() public rightButton: string = "creer";
   @Input() public leftButton: string = "jouer";
-
-  
 
   public getGames(): Observable<Game[]> {
     return this.http.get<Game[]>(this.BASE_URL).pipe(
