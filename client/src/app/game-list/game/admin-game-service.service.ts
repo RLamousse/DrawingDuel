@@ -9,13 +9,13 @@ import {Message} from '../../../../../common/communication/message';
 })
 export class AdminGameServiceService {
 
-  public readonly BASE_URL: string = "https://localhost:3000/api/data-base/get-games";
+  public readonly BASE_URL: string = "localhost:3000/api/data-base/delete-game";
 
   constructor(private http: HttpClient) { }
 
-
+  
   public deleteGames(gameName : string) : Observable<Message>{
-    return this.http.delete<Message>(`${this.BASE_URL}/${gameName}`, ).pipe(
+    return this.http.delete<Message>(`${this.BASE_URL}/?gameName=${gameName}`, ).pipe(
       catchError(this.handleError<Message>("wrong ID"))
     );
 
