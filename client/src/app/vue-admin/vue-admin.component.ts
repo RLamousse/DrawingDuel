@@ -1,4 +1,4 @@
-import { Component, OnInit, } from '@angular/core';
+import { Component, } from '@angular/core';
 import {MatDialog, MatDialogConfig} from "@angular/material";
 import {CreateSimpleGame} from "../create-simple-game/create-simple-game";
 import {Create3DGameComponent} from "../create3-dgame/create3-dgame.component";
