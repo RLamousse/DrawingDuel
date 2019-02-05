@@ -8,7 +8,7 @@ import { MatDialogRef, MAT_DIALOG_DATA, } from "@angular/material";
 })
 export class Create3DGameComponent implements OnInit {
 
-  public constructor(private dialogRef: MatDialogRef<Create3DGameComponent>, @Inject(MAT_DIALOG_DATA) public data: any) { }
+  public constructor(private dialogRef: MatDialogRef<Create3DGameComponent>, @Inject(MAT_DIALOG_DATA) public data: string) { }
 
   public ngOnInit(): void {/*vide*/}
 
