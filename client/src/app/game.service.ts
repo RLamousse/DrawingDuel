@@ -3,6 +3,7 @@ import { Injectable } from "@angular/core";
 import { of, Observable } from "rxjs";
 import { catchError } from "rxjs/operators";
 import { Game } from "../../../common/Object/game";
+import {stringify} from "querystring";
 
 @Injectable({
   providedIn: "root",
@@ -44,7 +45,7 @@ export class GameService {
 
   public pushGames(gamesToPush: Game[]): void {
     for (const i in gamesToPush) {
-      if (gamesToPush[i].isSimpleGame) {
+      if (String(gamesToPush[i].isSimpleGame) === "true") {
         this.simpleGames.push(gamesToPush[i]);
       } else {
         this.freeGames.push(gamesToPush[i]);
