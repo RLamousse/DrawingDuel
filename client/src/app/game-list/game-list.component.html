@@ -1,7 +1,7 @@
 <div class= "gameList">
     <div class= "window">
         <h1>Parties Simples</h1>
-        <app-game *ngFor="let instance of simpleGames" 
+        <app-game *ngFor="let instance of gameService.simpleGames" 
             [gameName]= "instance.gameName"
             [originalImage]= "instance.originalImage"
             [bestSoloTimes]= "instance.bestSoloTimes"
@@ -10,7 +10,7 @@
     </div>
     <div class="window">
         <h1>Parties Libres</h1>
-        <app-game *ngFor="let instance of freeGames" 
+        <app-game *ngFor="let instance of gameService.freeGames" 
             [gameName]= "instance.gameName"
             [originalImage]= "instance.originalImage"
             [bestSoloTimes]= "instance.bestSoloTimes"

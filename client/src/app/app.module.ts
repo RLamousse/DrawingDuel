@@ -8,6 +8,7 @@ import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
 import { GameListComponent } from "./game-list/game-list.component";
 import { GameComponent } from "./game-list/game/game.component";
+import { GameService } from "./game.service";
 import { InitialViewComponent } from "./initial-view/initial-view.component";
 import { UNListService } from "./username.service";
 import { WindowEventHandlerDirective } from "./window-event-handler.directive";
@@ -33,7 +34,8 @@ import { WindowEventHandlerDirective } from "./window-event-handler.directive";
     BrowserAnimationsModule,
     AppRoutingModule,
   ],
-  providers: [UNListService],
+  providers: [UNListService,
+              GameService],
   bootstrap: [AppComponent],
   schemas: [NO_ERRORS_SCHEMA],
 })

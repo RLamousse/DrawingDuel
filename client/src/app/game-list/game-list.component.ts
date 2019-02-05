@@ -10,8 +10,6 @@ import { GameComponent } from "./game/game.component";
 })
 
 export class GameListComponent implements OnInit {
-  public simpleGames: Game[] = [];
-  public freeGames: Game[] = [];
 
   public constructor(private gameService: GameService) {/*vide*/}
 
@@ -36,10 +34,10 @@ export class GameListComponent implements OnInit {
                          bestMultiTimes: [{name: names[0], time: 1750},
                                           {name: names[1], time: 1756}, {name: names[2], time: 1896}],
                         };
-    this.simpleGames.push(game2);
-    this.gameService.convertScoresObject(this.simpleGames);
-    this.simpleGames.push(game1);
-    this.freeGames.push(game1);
+    this.gameService.simpleGames.push(game2);
+    this.gameService.convertScoresObject(this.gameService.simpleGames);
+    this.gameService.simpleGames.push(game1);
+    this.gameService.freeGames.push(game1);
     this.gameService.getGames().subscribe((gamesToModify) => {
       this.gameService.convertScoresObject(gamesToModify);
       this.gameService.pushGames(gamesToModify);

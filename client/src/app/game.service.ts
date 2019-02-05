@@ -3,17 +3,15 @@ import { Injectable } from "@angular/core";
 import { of, Observable } from "rxjs";
 import { catchError } from "rxjs/operators";
 import { Game } from "../../../common/Object/game";
-import { GameListComponent } from "./game-list/game-list.component";
 
 @Injectable({
   providedIn: "root",
 })
 export class GameService {
-
-  private constructor(private http: HttpClient) { }
-
-  private component: GameListComponent;
+  public simpleGames: Game[] = [];
+  public freeGames: Game[] = [];
   public readonly BASE_URL: string = "https://localhost:3000/api/data-base/get-games";
+  public constructor(private http: HttpClient) { }
 
   private convertTimeScores(seconds: number): number {
     const COEFFICIENT: number = 0.6;
@@ -48,9 +46,9 @@ export class GameService {
   public pushGames(gamesToPush: Game[]): void {
     for (const i in gamesToPush) {
       if (gamesToPush[i].isSimpleGame) {
-        this.component.simpleGames.push(gamesToPush[i]);
+        this.simpleGames.push(gamesToPush[i]);
       } else {
-        this.component.freeGames.push(gamesToPush[i]);
+        this.freeGames.push(gamesToPush[i]);
       }
     }
   }

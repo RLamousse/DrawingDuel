@@ -1,10 +1,9 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { Game } from "../../../common/Object/game";
 import { GameListComponent } from "./game-list/game-list.component";
 import { GameService } from "./game.service";
 
 describe("GameService", () => {
-  let component: GameListComponent;
   let serviceGame: GameService;
   let fixture: ComponentFixture<GameListComponent>;
 
@@ -47,11 +46,15 @@ describe("GameService", () => {
     isSimpleGame: false,
   }];
 
-  beforeEach(() => TestBed.configureTestingModule({}));
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      imports: [],
+      providers: [GameService],
+    });
+  }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(GameListComponent);
-    component = fixture.componentInstance;
     fixture.detectChanges();
     spyOn(serviceGame, "getGames").and.returnValue(mockMixGameList);
   });
@@ -96,34 +99,34 @@ describe("GameService", () => {
 
   // Test pushGames
   it("should not have any game in its list if gameToPush is empty", () => {
-    component.freeGames = [];
-    component.simpleGames = [];
+    serviceGame.freeGames = [];
+    serviceGame.simpleGames = [];
     serviceGame.pushGames(emptyMockedGameList);
-    expect(component.freeGames.length).toBe(0);
-    expect(component.simpleGames.length).toBe(0);
+    expect(serviceGame.freeGames.length).toBe(0);
+    expect(serviceGame.simpleGames.length).toBe(0);
   });
 
   it("should only have games in freeGames list and none in simpleGame list", () => {
-    component.freeGames = [];
-    component.simpleGames = [];
+    serviceGame.freeGames = [];
+    serviceGame.simpleGames = [];
     serviceGame.pushGames(mockFreeGameList);
-    expect(component.freeGames.length).not.toBe(0);
-    expect(component.simpleGames.length).toBe(0);
+    expect(serviceGame.freeGames.length).not.toBe(0);
+    expect(serviceGame.simpleGames.length).toBe(0);
   });
 
   it("should only have games in simpleGames list and none in freeGame list", () => {
-    component.freeGames = [];
-    component.simpleGames = [];
+    serviceGame.freeGames = [];
+    serviceGame.simpleGames = [];
     serviceGame.pushGames(mockSimpleGameList);
-    expect(component.freeGames.length).toBe(0);
-    expect(component.simpleGames.length).not.toBe(0);
+    expect(serviceGame.freeGames.length).toBe(0);
+    expect(serviceGame.simpleGames.length).not.toBe(0);
   });
 
   it("should only have games both its list", () => {
-    component.freeGames = [];
-    component.simpleGames = [];
+    serviceGame.freeGames = [];
+    serviceGame.simpleGames = [];
     serviceGame.pushGames(mockMixGameList);
-    expect(component.freeGames.length).not.toBe(0);
-    expect(component.simpleGames.length).not.toBe(0);
+    expect(serviceGame.freeGames.length).not.toBe(0);
+    expect(serviceGame.simpleGames.length).not.toBe(0);
   });
 });
