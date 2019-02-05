@@ -1,6 +1,5 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { Game } from "../../../../../common/Object/game";
-import {AdminGameServiceService} from "./admin-game-service.service"
 
 @Component({
   selector: "app-game",
@@ -11,7 +10,7 @@ import {AdminGameServiceService} from "./admin-game-service.service"
 export class GameComponent implements OnInit {
   public readonly BASE_URL: string = "localhost:3000/api/data-base/delete-game/";
 
-  public constructor(public adminService:AdminGameServiceService) {/*vide*/}
+  public constructor() {/*vide*/}
 
   @Input() public gameName: string;
   @Input() public bestSoloTimes: Game[];
@@ -72,15 +71,28 @@ export class GameComponent implements OnInit {
     return usernamesArray;
   }
 
-  public ngOnInit(): void {}
+  public ngOnInit(): void {/*void*/}
   public leftButtonClick(): void {
     if (this.leftButton === "supprimer") {
-      this.adminService.deleteGames(this.gameName).subscribe(
-        ()=> console.log(`Game with name ${this.gameName} deleted`));
+      /* placeholder pour la fonction supprimer */
+      // tslint:disable-next-line:no-console
+      console.log("Feature supprimer en developpement");
+    } else if (this.leftButton === "jouer") {
+      /* placeholder pour la fonction jouer */
+      // tslint:disable-next-line:no-console
+      console.log("Feature jouer en developpement");
     }
   }
 
   public rightButtonClick(): void {
-    if (this.rightButton === "reinitialiser") {}
+    if (this.rightButton === "reinitialiser") {
+       /* placeholder pour la fonction supprimer */
+      // tslint:disable-next-line:no-console
+      console.log("Feature reinitialiser en developpement");
+    } else if (this.rightButton === "creer") {
+      /* placeholder pour la fonction jouer */
+      // tslint:disable-next-line:no-console
+      console.log("Feature creer en developpement");
+    }
   }
 }
