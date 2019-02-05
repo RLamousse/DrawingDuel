@@ -1,7 +1,9 @@
 import { Component, OnInit, } from '@angular/core';
 import {MatDialog, MatDialogConfig} from "@angular/material";
-import {CreateSimpleGame} from '../create-simple-game/create-simple-game';
-import {Create3DGameComponent} from '../create3-dgame/create3-dgame.component';
+import {CreateSimpleGame} from "../create-simple-game/create-simple-game";
+import {Create3DGameComponent} from "../create3-dgame/create3-dgame.component";
+
+
 
 
 
@@ -11,37 +13,28 @@ import {Create3DGameComponent} from '../create3-dgame/create3-dgame.component';
   styleUrls: ['./vue-admin.component.css'],
   
 })
-export class VueAdminComponent implements OnInit {
+export class VueAdminComponent {
 
-  constructor(private dialog: MatDialog ) { }
+  public constructor(private dialog: MatDialog ) { }
+
   public rightButton: string = "reinitialiser";
   public leftButton: string = "supprimer";
 
-  ngOnInit() {
-  }
+  protected createSimpleGame(): void {
 
-  protected createSimpleGame(): void{
-   
-
-    const dialogConfig = new MatDialogConfig();
+    const dialogConfig: MatDialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = true;
 
     this.dialog.open(CreateSimpleGame, dialogConfig);
 
-  };
+  }
 
-  protected create3DGame(): void{
-    const dialogConfig = new MatDialogConfig();
+  protected create3DGame(): void {
+    const dialogConfig: MatDialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = true;
 
     this.dialog.open(Create3DGameComponent, dialogConfig);
 
   }
 
-
 }
-    
-  
-
-
-
