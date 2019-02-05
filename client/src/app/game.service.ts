@@ -10,7 +10,7 @@ import { Game } from "../../../common/Object/game";
 export class GameService {
   public simpleGames: Game[] = [];
   public freeGames: Game[] = [];
-  public readonly BASE_URL: string = "https://localhost:3000/api/data-base/get-games";
+  public readonly BASE_URL: string = "http://localhost:3000/api/data-base/get-games";
   public constructor(private http: HttpClient) { }
 
   private convertTimeScores(seconds: number): number {
@@ -23,10 +23,9 @@ export class GameService {
   }
 
   private buildHttpAdress(imageAdress: string): string {
-    const ADRESS: string = "https://upload.wikimedia.org/wikipedia/commons/c/c9/";
-    const EXTENSION: string = ".jpg";
+    const ADRESS: string = "http://localhost:3000/";
 
-    return (ADRESS + imageAdress + EXTENSION);
+    return (ADRESS + imageAdress);
   }
 
   public convertScoresObject(game: Game[]): Game[] {
