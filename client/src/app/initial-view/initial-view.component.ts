@@ -26,7 +26,7 @@ export class InitialViewComponent implements OnInit {
     if (await this.userService.validateName(this.newUsername)) {
       this.username = this.newUsername;
       UNListService.username = this.username;
-      this.router.navigate(["/game-list"]).catch();
+      await this.router.navigate(["/game-list"]);
     } else {
       this.errorMessage = this.userService.message;
     }
