@@ -66,14 +66,14 @@ describe("GameService", () => {
     spyOn(serviceGame, "getGames").and.returnValue(emptyMockedGameList);
     expect(serviceGame).toBeTruthy();
   });
-
+/*?????????????????????????????????????????????????
   it("should return an observable Game[]", () => {
     spyService.getGames().subscribe((games) => {
       expect(games).toEqual(emptyMockedGameList);
       expect(games.length).toBe(0);
     });
   });
-
+?????????????????????????????????????????????????*/
   // Test ConvertScoresObject
   it("should return a Game type Object", () => {
     expect(typeof (mockMixGameList)).toBe(typeof (serviceGame.convertScoresObject(mockMixGameList)));
@@ -94,8 +94,8 @@ describe("GameService", () => {
   it("should return and modify originalImage if no time inside list", () => {
     const incompleteList: Game[] = [{
       gameName: "incompleteList",
-      originalImage: "name1",
-      modifiedImage: "name2",
+      originalImage: "name1.bmp",
+      modifiedImage: "name2.bmp",
       bestSoloTimes: [],
       bestMultiTimes: [],
       isSimpleGame: true,
@@ -103,6 +103,7 @@ describe("GameService", () => {
     serviceGame.convertScoresObject(incompleteList);
     expect(incompleteList[0].gameName).toBe("incompleteList");
     expect(incompleteList[0].originalImage).toBe("http://localhost:3000/name1.bmp");
+    expect(incompleteList[0].modifiedImage).toBe("name2.bmp");
     expect(incompleteList[0].bestSoloTimes.length).toBe(0);
     expect(incompleteList[0].bestMultiTimes.length).toBe(0);
   });

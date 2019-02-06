@@ -1,5 +1,4 @@
 import { Component, Input, OnInit } from "@angular/core";
-import { Game } from "../../../../../common/Object/game";
 
 @Component({
   selector: "app-game",
@@ -11,10 +10,10 @@ export class GameComponent implements OnInit {
 
   public constructor() {/*vide*/}
 
-  @Input() public gameName: string;
-  @Input() public bestSoloTimes: Game[];
-  @Input() public bestMultiTimes: Game[];
-  @Input() public originalImage: string;
+  @Input() public gameName: string = "test";
+  @Input() public bestSoloTimes: { name: string, time: number }[];
+  @Input() public bestMultiTimes: { name: string, time: number }[];
+  @Input() public originalImage: string = "test";
 
   public ngOnInit(): void {/*vide*/}
 }
