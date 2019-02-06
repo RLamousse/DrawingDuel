@@ -29,13 +29,21 @@ export class GameService {
   }
 
   public convertScoresObject(game: Game[]): Game[] {
-    // tslint:disable-next-line:forin
-    for (const j in game) {
-      game[j].originalImage = this.buildHttpAdress(game[j].originalImage);
-      // tslint:disable-next-line:forin
-      for (const i in game[j].bestSoloTimes) {
-        game[j].bestSoloTimes[i].time = this.convertTimeScores(game[j].bestSoloTimes[i].time);
-        game[j].bestMultiTimes[i].time = this.convertTimeScores(game[j].bestMultiTimes[i].time);
+    for (const i in game) {
+      if (game.hasOwnProperty(i)) {
+        game[i].originalImage = this.buildHttpAdress(game[i].originalImage);
+        for (const j in game[i].bestSoloTimes) {
+          if (game[i].bestSoloTimes.hasOwnProperty(j)) {
+            game[i].bestSoloTimes[j].time = this.convertTimeScores(game[i].bestSoloTimes[j].time);
+            game[i].bestMultiTimes[j].time = this.convertTimeScores(game[i].bestMultiTimes[j].time);
+          } else {
+
+            break;
+          }
+        }
+      } else {
+
+        break;
       }
     }
 
