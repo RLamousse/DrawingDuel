@@ -1,0 +1,51 @@
+<form name="creat-game-form" [formGroup]="formDoc" novalidate (ngSubmit)="onSubmit()">
+
+  <mat-form-field hintLabel="Max 15 charactères" id="name">
+    <input required matInput #input maxlength="15" placeholder="Nom de la partie" formControlName="name">
+    <mat-hint align="end">{{input.value?.length || 0}}/15</mat-hint>
+    <mat-error *ngIf="formDoc.get('name').hasError('minlength')">
+      Minimum de 5 charactères
+    </mat-error>
+  </mat-form-field>
+
+  <mat-form-field id="originalImage">
+    <ngx-mat-file-input accept="image/bmp" formControlName="originalImage" placeholder="Obligatoire" valuePlaceholder="Image Originale"
+      required>
+    </ngx-mat-file-input>
+    <mat-icon matSuffix>image</mat-icon>
+    <mat-error *ngIf="formDoc.get('originalImage').hasError('required')">
+      Sélectionnez un fichier
+    </mat-error>
+    <mat-error *ngIf="formDoc.get('originalImage').hasError('imageDimension')">
+      L'image n'est pas 640x480
+    </mat-error>
+    <mat-error *ngIf="formDoc.get('originalImage').hasError('imageType')">
+      Le fichier n'est pas un Bitmap
+    </mat-error>
+    <mat-error *ngIf="formDoc.get('originalImage').hasError('imageSize')">
+      L'image est invalide (Max: 1MB)
+    </mat-error>
+  </mat-form-field>
+
+  <mat-form-field id="modifiedImage">
+    <ngx-mat-file-input accept="image/bmp" formControlName="modifiedImage" placeholder="Obligatoire" valuePlaceholder="Image Modifiée"
+      required></ngx-mat-file-input>
+    <mat-icon matSuffix>image</mat-icon>
+    <mat-error *ngIf="formDoc.get('modifiedImage').hasError('required')">
+      Sélectionnez un fichier
+    </mat-error>
+    <mat-error *ngIf="formDoc.get('modifiedImage').hasError('imageDimension')">
+      L'image n'est pas 640x480
+    </mat-error>
+    <mat-error *ngIf="formDoc.get('modifiedImage').hasError('imageType')">
+      Le fichier n'est pas un Bitmap
+    </mat-error>
+    <mat-error *ngIf="formDoc.get('modifiedImage').hasError('imageSize')">
+      L'image est trop grosse
+    </mat-error>
+  </mat-form-field>
+  <div>
+    <button id="form-submit" type="submit" mat-button [disabled]="!formDoc.valid">Envoyer</button>
+    <button id="form-reset" type="reset" mat-button color="warn" (click)="exit()">Annuler</button>
+  </div>
+</form>

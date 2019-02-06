@@ -1,0 +1,134 @@
+# ╔════════╗
+# ║ Stages ║
+# ╚════════╝
+
+stages:
+  - build
+  - test
+  - post-test
+
+# ╔══════════════╗
+# ║ Stage: Build ║
+# ╚══════════════╝
+
+build client:
+  stage: build
+  tags:
+    - angular
+  before_script:
+    - cd client
+    - npm ci
+  script:
+    - yarn build
+
+build server:
+  stage: build
+  tags:
+    - ts
+  before_script:
+    - cd server
+    - npm ci
+  script:
+    - yarn tsc
+
+
+# ╔═════════════╗
+# ║ Stage: Test ║
+# ╚═════════════╝
+
+# Test job template
+.test:
+  stage: test
+  script: yarn test
+
+test client:
+  extends: .test
+  tags:
+    - angular
+    - ng-test
+    - chrome
+  dependencies:
+    - build client
+  before_script:
+    - cd client
+    - npm ci
+
+
+test server:
+  extends: .test
+  tags:
+    - mocha
+  dependencies:
+    - build server
+  before_script:
+    - cd server
+    - npm ci
+
+# ╔══════════════════╗
+# ║ Stage: Post-Test ║
+# ╚══════════════════╝
+
+.post test:
+  only:
+    - merge_requests
+
+# Coverage job template
+.coverage:
+  extends: .post test
+  stage: post-test
+  script: yarn coverage
+  coverage: /Lines\s+:\s*(\d+(?:\.\d*)?%)\s+\(\s+\d+\/\d+\s+\)/
+  artifacts:
+    untracked: false
+    expire_in: 30 days
+    paths:
+      - client/coverage
+      - server/coverage
+
+client coverage:
+  extends: .coverage
+  tags:
+    - angular
+  dependencies:
+    - test client
+  before_script:
+    - cd client
+    - npm ci
+
+server coverage:
+  extends: .coverage
+  tags:
+    - mocha
+    - nyc
+  dependencies:
+    - test server
+  before_script:
+    - cd server
+    - npm ci
+
+# Lint report job template
+.lint:
+  extends: .post test
+  stage: post-test
+  script: yarn lint
+  allow_failure: true
+
+client lint:
+  extends: .lint
+  tags:
+    - angular
+  dependencies:
+    - test client
+  before_script:
+    - cd client
+    - npm ci
+
+server lint:
+  extends: .lint
+  tags:
+    - ts
+  dependencies:
+    - test server
+  before_script:
+    - cd server
+    - npm ci
