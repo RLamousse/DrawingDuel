@@ -31,7 +31,7 @@
         </div>
     </div>
     <div class="buttonRow">
-        <button mat-raised-button color="primary" class="button">Jouer</button>    
-        <button mat-raised-button color="primary" class="button">Créer</button>
+        <button mat-raised-button color="primary" class="button" (click)="leftButtonClick()">{{leftButton}}</button>    
+        <button mat-raised-button color="primary" class="button" (click)="rightButtonClick()">{{rightButton}}</button>
     </div>
 </div>

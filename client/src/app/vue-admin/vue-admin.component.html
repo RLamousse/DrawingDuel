@@ -1,0 +1,15 @@
+
+<div class="adminOptions" unloadevent >
+  <div class = "Admin">
+    Administrator
+  </div>
+  <div>
+    <button mat-raised-button class="gameCreationButton" (click) = "createSimpleGame()">Creation de jeu simple</button>
+    <button mat-raised-button class="gameCreationButton" (click) = "create3DGame()">Creation de jeu 3D</button>
+  </div>
+</div>
+<div class = "lineSkip">
+  <app-game-list [rightButton]="rightButton"
+               [leftButton]="leftButton">
+  </app-game-list>
+</div>  

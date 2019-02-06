@@ -5,7 +5,7 @@ import "reflect-metadata";
 import {Game, TIMES_ARRAY_SIZE} from "../../../common/Object/game";
 import {Message} from "../../../common/communication/message";
 import {
-    DIFFERENCE_ERROR_MESSAGE,
+    DIFFERENCE_ERROR_MESSAGE, FORMAT_ERROR_MESSAGE,
     NAME_ERROR_MESSAGE
 } from "../controllers/game-creator.controller";
 import {BitmapFactory} from "../images/bitmap/bitmap-factory";
@@ -32,52 +32,42 @@ export class GameCreatorService {
 
     public async createSimpleGame(gameName: string, originalImageFile: string, modifiedImageFile: string): Promise<Message> {
 
-        this.testNameExistance(gameName);
-        // 2 call diff function from the phillips
-        let diffImage: {status: string, fileName: string, filePath: string};
-        try {
-            diffImage = (await Axios.get<{status: string,
-                                          fileName: string,
-                                          filePath: string,
-            }>("http://localhost:3000/api/image-diff/",
-                //TODO regarder leurs parametres dentree quand fini
-               {data: {name: "image-diff-" + Date.now() + ".bmp"}})).data;
+        this.testFileExistence(originalImageFile, modifiedImageFile);
 
-        } catch (error) {
-            throw new Error("game diff: " + error.response.data.message);
-        }
+        await this.testNameExistance(gameName);
 
-        // 3 call count difference service when imported and finished
-        let diffNumber: number;
-        try {
-            diffNumber = this.differenceEvaluatorService.getNDifferences(
-                         BitmapFactory.createBitmap(diffImage.fileName,
-                                                    fs.readFileSync(diffImage.filePath)).pixels);
-        } catch (error) {
-            throw new Error("bmp diff counting: " + error.message);
-        }
-        if (diffNumber !== EXPECTED_DIFF_NUMBER) {
-            throw new Error(DIFFERENCE_ERROR_MESSAGE);
-        }
+        const DIFF_IMAGE: {status: string, fileName: string, filePath: string} = await this.getDiffImage(originalImageFile,
+                                                                                                         modifiedImageFile);
+        this.testNumberOfDifference(DIFF_IMAGE);
 
         return this.generateGame(gameName, originalImageFile, modifiedImageFile);
     }
 
-    private async generateGame(gameName: string, originalImageData: string, modifiedImageData: string): Promise<Message> {
+    // @ts-ignore
+    private async generateGame(gameName: string, originalImage: string, modifiedImage: string): Promise<Message> {
 
-        fs.createReadStream(originalImageData).pipe(fs.createWriteStream(this._PATH_TO_IMAGES +
-            gameName + this._LOCAL_PICTURE_IMAGES_END[0]));
-        fs.createReadStream(modifiedImageData).pipe(fs.createWriteStream(this._PATH_TO_IMAGES +
-            modifiedImageData + this._LOCAL_PICTURE_IMAGES_END[1]));
+        fs.copyFile(originalImage, this._PATH_TO_IMAGES +
+            gameName + this._LOCAL_PICTURE_IMAGES_END[0], (err: Error) => {
+            if (err) {
+                throw err;
+            }
+        });
+        fs.copyFile(modifiedImage, this._PATH_TO_IMAGES +
+            gameName + this._LOCAL_PICTURE_IMAGES_END[1],(err: Error) => {
+            if (err) {
+                throw err;
+            }
+        });
 
         const GAME: Game = {
+            isSimpleGame: true,
             bestMultiTimes: this.createRandomScores(),
             bestSoloTimes: this.createRandomScores(),
             gameName: gameName,
             modifiedImage: this._PATH_TO_IMAGES +
                 gameName + this._LOCAL_PICTURE_IMAGES_END[0],
             originalImage: this._PATH_TO_IMAGES +
-                modifiedImageData + this._LOCAL_PICTURE_IMAGES_END[1],
+                modifiedImage + this._LOCAL_PICTURE_IMAGES_END[1],
         };
         try {
             await Axios.post<Game>("http://localhost:3000/api/data-base/add-game",
@@ -102,10 +92,8 @@ export class GameCreatorService {
                 Math.random() * (this._MAX_GENERATED_SCORE - this._MIN_GENERATED_SCORE)).toFixed(0));
         }
 
-        //DEMANDER SI ca compte comme des valeurs magiques
         scoreArray.sort((a: number, b: number) => {
             if (a < b) {
-                //TODO ignore this shit
                 return -1;
             }
             if (a > b) {
@@ -123,24 +111,54 @@ export class GameCreatorService {
     private async testNameExistance(gameName: string): Promise<void> {
 
         try {
-            await Axios.get<Game>("http://localhost:3000/api/data-base/get-game",
-                                  {data: {[GAME_NAME_FIELD]: gameName}});
+            await Axios.get<Game>("http://localhost:3000/api/data-base/get-game/?" + GAME_NAME_FIELD + "=" + gameName);
         } catch (error) {
-            if (error.response.data.message === ALREADY_EXISTING_GAME_MESSAGE_ERROR) {
-                throw new Error(NAME_ERROR_MESSAGE);
-            } else if (error.response.data.message !== NOT_EXISTING_GAME_MESSAGE_ERROR) {
+            if (error.response.data.message !== NOT_EXISTING_GAME_MESSAGE_ERROR) {
                 throw new Error("dataBase: " + error.response.data.message);
             }
+
+            return;
+        }
+        throw new Error(NAME_ERROR_MESSAGE);
+    }
+
+    private testNumberOfDifference(diffImage: {status: string, fileName: string, filePath: string}): void {
+        let diffNumber: number;
+        try {
+            diffNumber = this.differenceEvaluatorService.getNDifferences(
+                BitmapFactory.createBitmap(diffImage.fileName,
+                                           fs.readFileSync(diffImage.filePath)).pixels);
+        } catch (error) {
+            throw new Error("bmp diff counting: " + error.message);
+        }
+        if (diffNumber !== EXPECTED_DIFF_NUMBER) {
+            throw new Error(DIFFERENCE_ERROR_MESSAGE);
         }
     }
 
-    public deleteFiles(originalImageFile: string, modifiedImageFile: string): void {
+    private async getDiffImage(originalImageFile: string, modifiedImageFile: string): Promise<{status: string,
+                                                                                               fileName: string,
+                                                                                               filePath: string}> {
+        let diffImage: {status: string, fileName: string, filePath: string};
+        try {
+        diffImage = (await Axios.get<{status: string,
+                                      fileName: string,
+                                      filePath: string,
+        }>("http://localhost:3000/api/image-diff/",
+           {data: {name: "image-diff-" + Date.now() + ".bmp",
+                   originalImage: originalImageFile,
+                   modifiedImage: modifiedImageFile}})).data;
 
-        fs.unlink(originalImageFile, (error: Error) => {
-            if (error) { console.dir("file " + originalImageFile + " was not found"); }
-        });
-        fs.unlink(modifiedImageFile, (error: Error) => {
-            if (error) { console.dir("file " + modifiedImageFile + " was not found"); }
-        });
+        } catch (error) {
+            throw new Error("game diff: " + error.response.data.message);
+        }
+
+        return diffImage;
+    }
+
+    private testFileExistence(originalImageFile: string, modifiedImageFile: string): void {
+        if (!(fs.existsSync(originalImageFile) && fs.existsSync(modifiedImageFile))) {
+            throw new Error(FORMAT_ERROR_MESSAGE);
+        }
     }
 }
