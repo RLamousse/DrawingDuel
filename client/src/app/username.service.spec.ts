@@ -66,7 +66,7 @@ describe("UNListService", () => {
   });
 
   // Test validateName
-  it("should return true if a valid username is used", () => {
+  it("should return true if a valid username is used", (done) => {
     service = TestBed.get(UNListService);
     spyService.validateName.and.callThrough();
     spyService.sendUserRequest.and.callFake(() => {
@@ -78,10 +78,11 @@ describe("UNListService", () => {
     spyService.isTooShort.and.returnValue(false);
     service.validateName("SaraBellum").then((response: boolean) => {
       expect(response).toBe(true);
+      done();
     }).catch();
   });
 
-  it("should return false if a invalid username is used + have an errorMessage(already used)", () => {
+  it("should return false if a invalid username is used + have an errorMessage(already used)", (done) => {
     service = TestBed.get(UNListService);
     spyService.sendUserRequest.and.callFake(() => {
       service.response = { available: false, username: "SaraBellum" };
@@ -91,10 +92,11 @@ describe("UNListService", () => {
     service.validateName("SaraBellum").then((response: boolean) => {
       expect(response).toBe(false);
       expect(service.message).toBe("Cet identifiant est deja pris! Essaie un nouvel identifiant");
+      done();
     }).catch();
   });
 
-  it("should return false if a invalid username is used (too short)", () => {
+  it("should return false if a invalid username is used (too short)", (done) => {
     service = TestBed.get(UNListService);
     spyService.validateName.and.callFake(() => {
       service.response = { available: false, username: "Sar" };
@@ -102,11 +104,12 @@ describe("UNListService", () => {
       return { available: false, username: "Sar" };
     });
     service.validateName("Sar").then((response: boolean) => {
-      expect(response).toBe(false);
+      expect(response).toBeFalsy();
+      done();
     }).catch();
   });
 
-  it("should return false if a invalid username is used (not alphanumeric)", () => {
+  it("should return false if a invalid username is used (not alphanumeric)", (done) => {
     service = TestBed.get(UNListService);
     spyService.sendUserRequest.and.callFake(() => {
       service.response = { available: false, username: "SaraBellum!" };
@@ -118,6 +121,7 @@ describe("UNListService", () => {
     spyService.validateName.and.callThrough();
     service.validateName("SaraBellum!").then((response: boolean) => {
       expect(response).toBe(false);
+      done();
     }).catch();
   });
 });
