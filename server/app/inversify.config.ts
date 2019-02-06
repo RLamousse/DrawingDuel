@@ -6,11 +6,11 @@ import { GameCreatorController } from "./controllers/game-creator.controller";
 import { UserController } from "./controllers/username.controller";
 import {BitmapWriter} from "./images/bitmap/bitmap-writer";
 import {Server} from "./server";
-import { UsernameService } from "./services/username.service";
 import {BitmapDiffService} from "./services/bitmap-diff.service";
 import {DataBaseService} from "./services/data-base.service";
 import {DifferenceEvaluatorService} from "./services/difference-evaluator.service";
 import {GameCreatorService} from "./services/game-creator.service";
+import { UsernameService } from "./services/username.service";
 import Types from "./types";
 
 const container: Container = new Container();

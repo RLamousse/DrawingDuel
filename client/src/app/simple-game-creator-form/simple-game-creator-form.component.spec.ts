@@ -1,6 +1,6 @@
 import { HttpClientModule } from "@angular/common/http";
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { AbstractControl, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatButtonModule, MatFormFieldModule, MatIconModule, MatInputModule } from "@angular/material";
 import { MatDialogModule, MatDialogRef } from "@angular/material/dialog";
@@ -15,7 +15,7 @@ describe("SimpleGameCreatorFormComponent", () => {
   let component: SimpleGameCreatorFormComponent;
   let fixture: ComponentFixture<SimpleGameCreatorFormComponent>;
 
-  beforeEach(async(() => {
+  beforeEach((done) => {
     TestBed.configureTestingModule({
       declarations: [SimpleGameCreatorFormComponent],
       imports: [
@@ -34,9 +34,9 @@ describe("SimpleGameCreatorFormComponent", () => {
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [FormPostService, {provide: MatDialogRef, useValue: {}}],
-    })
-      .compileComponents();
-  }));
+    });
+    done();
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SimpleGameCreatorFormComponent);

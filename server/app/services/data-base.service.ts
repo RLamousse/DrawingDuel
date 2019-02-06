@@ -1,8 +1,8 @@
 import { injectable } from "inversify";
 import {Collection, Db, InsertOneWriteOpResult, MongoClient, MongoError} from "mongodb";
 import "reflect-metadata";
-import {Game} from "../../../common/model/game";
 import {Message} from "../../../common/communication/message";
+import {Game} from "../../../common/model/game";
 import {GAME_FORMAT_ERROR_MESSAGE, USERNAME_FORMAT_ERROR_MESSAGE} from "../controllers/data-base.controller";
 
 export const ALREADY_EXISTING_USER_MESSAGE_ERROR: string = "ERROR: the specified usename already exists!";
