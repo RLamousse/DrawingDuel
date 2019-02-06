@@ -1,6 +1,6 @@
 import { FormControl, ValidationErrors } from "@angular/forms";
-import { Dimension } from "../../../common/image/Bitmap/IDimension";
-import { getDimensionsFromBuffer } from "../../../common/image/Bitmap/bitmap-utils";
+import {Dimension} from "../../../common/image/bitmap/IDimension";
+import {getDimensionsFromBuffer} from "../../../common/image/bitmap/bitmap-utils";
 import FakeControl from "./fakeControl";
 
 export default class FileValidator {
