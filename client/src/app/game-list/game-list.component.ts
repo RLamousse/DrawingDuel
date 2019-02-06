@@ -12,7 +12,7 @@ import { MOCKMIXGAMELIST } from "../mockGames";
 
 export class GameListComponent implements OnInit {
 
-  @Input() public rightButton: string = "creer";
+  @Input() public rightButton: string = "joindre";
   @Input() public leftButton: string = "jouer";
   public constructor(private gameService: GameService) {/*vide*/}
 

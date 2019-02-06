@@ -18,6 +18,7 @@ import { SimpleGameCreatorFormComponent } from "./simple-game-creator-form/simpl
 import { UNListService } from "./username.service";
 import { VueAdminComponent } from "./vue-admin/vue-admin.component";
 import { WindowEventHandlerDirective } from "./window-event-handler.directive";
+import { PlayViewComponent } from './play-view/play-view.component';
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import { WindowEventHandlerDirective } from "./window-event-handler.directive";
     VueAdminComponent,
     Create3DGameComponent,
     SimpleGameCreatorFormComponent,
+    PlayViewComponent,
   ],
   imports: [
     BrowserModule,
