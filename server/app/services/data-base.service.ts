@@ -160,9 +160,7 @@ export class DataBaseService {
     }
 
     public testGameStructure(game: Game): void {
-        try {
-            game.gameName = game.gameName;
-        } catch (error) {
+        if (typeof game === "undefined") {
             throw new Error(GAME_FORMAT_ERROR_MESSAGE);
         }
         if (typeof game.gameName !== "string" || game.gameName === "") {
