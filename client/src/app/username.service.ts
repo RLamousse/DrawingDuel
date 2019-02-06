@@ -59,18 +59,21 @@ export class UNListService {
   }
 
   public async validateName(name: string): Promise<boolean> {
-    if (!this.isTooShort(name) && this.isAlphanumeric(name)) {
-      await this.sendUserRequest(name).toPromise().then((response: UserValidationMessage) => {
+    if (this.isTooShort(name) || !this.isAlphanumeric(name)) {
+      return false;
+    }
+
+    return this.sendUserRequest(name)
+      .toPromise()
+      .then((response: UserValidationMessage) => {
         this.response = response;
-      }).catch();
-      if (!this.response.available) {
-        this.message = "Cet identifiant est deja pris! Essaie un nouvel identifiant";
+        if (typeof this.response !== "undefined" && !this.response.available) {
+          this.message = "Cet identifiant est deja pris! Essaie un nouvel identifiant";
 
-        return false;
-      }
+          return false;
+        }
 
-    } else { return false; }
-
-    return true;
+        return typeof this.response !== "undefined";
+      });
   }
 }

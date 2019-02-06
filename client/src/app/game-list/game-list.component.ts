@@ -2,6 +2,7 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { Game } from "../../../../common/Object/game";
 import { GameService } from "../../app/game.service";
+import { MOCKMIXGAMELIST } from "../mockGames";
 
 @Component({
   selector: "app-game-list",
@@ -19,6 +20,8 @@ export class GameListComponent implements OnInit {
     this.gameService.getGames().subscribe((gamesToModify: Game[]) => {
       this.gameService.convertScoresObject(gamesToModify);
       this.gameService.pushGames(gamesToModify);
+      this.gameService.convertScoresObject(MOCKMIXGAMELIST);
+      this.gameService.pushGames(MOCKMIXGAMELIST);
     });
   }
 }
