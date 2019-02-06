@@ -81,13 +81,15 @@ describe("UNListService", () => {
     }).catch();
   });
 
-  it("should return false if a invalid username is used + have an errorMessage(already used)", () => {
+  it("should return false if an invalid username is used + have an errorMessage(already used)", () => {
     service = TestBed.get(UNListService);
     spyService.sendUserRequest.and.callFake(() => {
       service.response = { available: false, username: "SaraBellum" };
 
       return { available: false, username: "SaraBellum" };
     });
+    spyService.isAlphanumeric.and.callThrough();
+    spyService.isTooShort.and.callThrough();
     service.validateName("SaraBellum").then((response: boolean) => {
       expect(response).toBe(false);
       expect(service.message).toBe("Cet identifiant est deja pris! Essaie un nouvel identifiant");
@@ -96,6 +98,8 @@ describe("UNListService", () => {
 
   it("should return false if a invalid username is used (too short)", () => {
     service = TestBed.get(UNListService);
+    spyService.isTooShort.and.returnValue(true);
+    spyService.isAlphanumeric.and.returnValue(true);
     spyService.validateName.and.callFake(() => {
       service.response = { available: false, username: "Sar" };
 

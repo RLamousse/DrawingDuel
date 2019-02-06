@@ -19,7 +19,7 @@ export class DataBaseController {
         router.post("/add-user", async (req: Request, res: Response, next: NextFunction) => {
             try {
                 this.testUserName(req);
-                res.json(await this.dataBaseService.addUser(req.body[USER_NAME_FIELD]));
+                res.json(await this.dataBaseService.addUser(req.query[USER_NAME_FIELD]));
             } catch (error) {
                 next(error);
             }
@@ -29,7 +29,7 @@ export class DataBaseController {
         router.delete("/delete-user", async (req: Request, res: Response, next: NextFunction) => {
             try {
                 this.testUserName(req);
-                res.json(await this.dataBaseService.deleteUser(req.body[USER_NAME_FIELD]));
+                res.json(await this.dataBaseService.deleteUser(req.query[USER_NAME_FIELD]));
             } catch (error) {
                 next(error);
             }
@@ -39,7 +39,7 @@ export class DataBaseController {
         router.delete("/delete-game", async (req: Request, res: Response, next: NextFunction) => {
             try {
                 this.testGameName(req);
-                res.json(await this.dataBaseService.deleteGame(req.body[GAME_NAME_FIELD]));
+                res.json(await this.dataBaseService.deleteGame(req.query[GAME_NAME_FIELD]));
             } catch (error) {
                 next(error);
             }
@@ -68,7 +68,7 @@ export class DataBaseController {
         router.get("/get-game", async (req: Request, res: Response, next: NextFunction) => {
             try {
                 this.testGameName(req);
-                res.json(await this.dataBaseService.getGame(req.body.gameName));
+                res.json(await this.dataBaseService.getGame(req.query.gameName));
             } catch (error) {
                 next(error);
             }
@@ -79,7 +79,7 @@ export class DataBaseController {
     }
 
     private testUserName(req: e.Request): void {
-        if (!this.isStringFieldCorrect(USER_NAME_FIELD, req)) {
+        if (!this.isStringFieldCorrect(USER_NAME_FIELD, req.query)) {
             throw new Error(USERNAME_FORMAT_ERROR_MESSAGE);
         }
     }
@@ -89,6 +89,9 @@ export class DataBaseController {
     }
 
     private testGameName(req: Request): void {
+        if (!this.isStringFieldCorrect(GAME_NAME_FIELD, req.query)) {
+            throw new Error(GAME_NAME_FORMAT_ERROR_MESSAGE);
+        }
     }
 
     private isStringFieldCorrect(filedName: string, item: object): boolean {

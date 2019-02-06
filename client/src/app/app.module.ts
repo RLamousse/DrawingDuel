@@ -12,6 +12,7 @@ import {Create3DGameComponent} from "./create3-dgame/create3-dgame.component";
 import { FormPostService } from "./form-post.service";
 import { GameListComponent } from "./game-list/game-list.component";
 import { GameComponent } from "./game-list/game/game.component";
+import { GameService } from "./game.service";
 import { InitialViewComponent } from "./initial-view/initial-view.component";
 import { SimpleGameCreatorFormComponent } from "./simple-game-creator-form/simple-game-creator-form.component";
 import { UNListService } from "./username.service";
@@ -45,7 +46,7 @@ import { WindowEventHandlerDirective } from "./window-event-handler.directive";
     MaterialFileInputModule,
     MatDialogModule,
   ],
-  providers: [UNListService, FormPostService],
+  providers: [UNListService, FormPostService, GameService],
   bootstrap: [AppComponent],
   entryComponents: [SimpleGameCreatorFormComponent, Create3DGameComponent],
   schemas: [NO_ERRORS_SCHEMA],
