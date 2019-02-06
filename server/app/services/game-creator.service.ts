@@ -98,8 +98,7 @@ export class GameCreatorService {
     private async testNameExistance(gameName: string): Promise<void> {
 
         try {
-            await Axios.get<Game>("http://localhost:3000/api/data-base/get-game",
-                                  {data: {[GAME_NAME_FIELD]: gameName}});
+            await Axios.get<Game>("http://localhost:3000/api/data-base/get-game/?" + GAME_NAME_FIELD + "=" + gameName);
         } catch (error) {
             if (error.response.data.message !== NOT_EXISTING_GAME_MESSAGE_ERROR) {
                 throw new Error("dataBase: " + error.response.data.message);

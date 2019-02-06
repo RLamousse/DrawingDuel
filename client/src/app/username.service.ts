@@ -1,6 +1,5 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-
 import { of, Observable } from "rxjs";
 import { catchError } from "rxjs/operators";
 import { UserValidationMessage } from "../../../common/communication/UserValidationMessage";
@@ -58,6 +57,7 @@ export class UNListService {
 
     return false;
   }
+
   public async validateName(name: string): Promise<boolean> {
     if (!this.isTooShort(name) && this.isAlphanumeric(name)) {
       await this.sendUserRequest(name).toPromise().then((response: UserValidationMessage) => {
