@@ -6,8 +6,7 @@ import * as fs from "fs";
 import * as HttpStatus from "http-status-codes";
 import * as os from "os";
 import {DIFFERENCE_ERROR_MESSAGE, NAME_ERROR_MESSAGE} from "../controllers/controller-utils";
-
-import {GAME_NAME_FIELD, NOT_EXISTING_GAME_MESSAGE_ERROR} from "./data-base.service";
+import {NOT_EXISTING_GAME_MESSAGE_ERROR} from "./data-base.service";
 import {DifferenceEvaluatorService} from "./difference-evaluator.service";
 import { GameCreatorService } from "./game-creator.service";
 

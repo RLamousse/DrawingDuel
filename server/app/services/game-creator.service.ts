@@ -5,7 +5,7 @@ import {inject, injectable} from "inversify";
 import "reflect-metadata";
 import {Message} from "../../../common/communication/message";
 import {BITMAP_MEME_TYPE} from "../../../common/image/bitmap/bitmap-utils";
-import {Game, TIMES_ARRAY_SIZE} from "../../../common/object/game";
+import {Game, TIMES_ARRAY_SIZE} from "../../../common/model/game";
 import {IBitmapDiffControllerResponse} from "../controllers/bitmap-diff.controller";
 import {
     DIFFERENCE_ERROR_MESSAGE, FORM_DATA_CONTENT_TYPE, MODIFIED_IMAGE_FIELD_NAME,

@@ -1,7 +1,7 @@
 import { injectable } from "inversify";
 import {Collection, Db, InsertOneWriteOpResult, MongoClient, MongoError} from "mongodb";
 import "reflect-metadata";
-import {Game} from "../../../common/object/game";
+import {Game} from "../../../common/model/game";
 import {Message} from "../../../common/communication/message";
 import {GAME_FORMAT_ERROR_MESSAGE, USERNAME_FORMAT_ERROR_MESSAGE} from "../controllers/data-base.controller";
 

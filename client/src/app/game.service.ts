@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { of, Observable } from "rxjs";
 import { catchError } from "rxjs/operators";
-import { Game } from "../../../common/Object/game";
+import { Game } from "../../../common/model/game";
 
 @Injectable({
   providedIn: "root",
