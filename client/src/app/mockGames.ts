@@ -1,4 +1,4 @@
-import { Game } from "../../../common/Object/game";
+import { Game } from "../../../common/model/game";
 
 export const MOCKMIXGAMELIST: Game[] = [
     {
