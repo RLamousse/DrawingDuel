@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, Input } from "@angular/core";
 
 @Component({
   selector: "app-game",
@@ -6,7 +6,7 @@ import { Component, Input, OnInit } from "@angular/core";
   styleUrls: ["./game.component.css"],
 })
 
-export class GameComponent implements OnInit {
+export class GameComponent {
 
   public constructor() {/*vide*/}
 
@@ -15,5 +15,4 @@ export class GameComponent implements OnInit {
   @Input() public bestMultiTimes: { name: string, time: number }[];
   @Input() public originalImage: string = "test";
 
-  public ngOnInit(): void {/*vide*/}
 }
