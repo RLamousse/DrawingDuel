@@ -47,8 +47,8 @@ export class GameCreatorController {
 
                 res.json(await this.gameCreatorService.createSimpleGame(
                     req.body[GAME_NAME_FIELD],
-                    req.files[ORIGINAL_IMAGE_FIELD_NAME][0].buffer,
-                    req.files[MODIFIED_IMAGE_FIELD_NAME][0].buffer));
+                    req.files[ORIGINAL_IMAGE_FIELD_NAME][0],
+                    req.files[MODIFIED_IMAGE_FIELD_NAME][0]));
 
             } catch (error) {
                 next(error);

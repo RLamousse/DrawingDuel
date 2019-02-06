@@ -5,7 +5,7 @@ import { expect } from "chai";
 import * as fs from "fs";
 import * as HttpStatus from "http-status-codes";
 import * as os from "os";
-import {DIFFERENCE_ERROR_MESSAGE, FORMAT_ERROR_MESSAGE, NAME_ERROR_MESSAGE} from "../controllers/controller-utils";
+import {DIFFERENCE_ERROR_MESSAGE, NAME_ERROR_MESSAGE} from "../controllers/controller-utils";
 
 import {GAME_NAME_FIELD, NOT_EXISTING_GAME_MESSAGE_ERROR} from "./data-base.service";
 import {DifferenceEvaluatorService} from "./difference-evaluator.service";
@@ -41,19 +41,6 @@ describe("A service that creates a game", () => {
                                                          fs.readFileSync("test/test_files_for_game_creator_service/7diff-modified.bmp"));
         } catch (error) {
             return expect(error.message).to.be.equal(NAME_ERROR_MESSAGE);
-        }
-
-        return expect.fail();
-    });
-
-    it("should throw a format error if the strings of the files are not the name of existing files", async () => {
-
-        try {
-            await GAME_CREATOR_SERVICE.createSimpleGame( "someGameTest",
-                                                         fs.readFileSync("test/test_files_for_game_creator_service/nonExistingFile.bmp"),
-                                                         fs.readFileSync("test/test_files_for_game_creator_service/7diff-modified.bmp"));
-        } catch (error) {
-            return expect(error.message).to.be.equal(FORMAT_ERROR_MESSAGE);
         }
 
         return expect.fail();

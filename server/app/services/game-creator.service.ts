@@ -1,10 +1,11 @@
 import Axios, {AxiosResponse} from "axios";
+import * as FormData from "form-data";
 import * as fs from "fs";
 import {inject, injectable} from "inversify";
 import "reflect-metadata";
+import {Message} from "../../../common/communication/message";
 import {BITMAP_MEME_TYPE} from "../../../common/image/bitmap/bitmap-utils";
 import {Game, TIMES_ARRAY_SIZE} from "../../../common/object/game";
-import {Message} from "../../../common/communication/message";
 import {IBitmapDiffControllerResponse} from "../controllers/bitmap-diff.controller";
 import {
     DIFFERENCE_ERROR_MESSAGE, FORM_DATA_CONTENT_TYPE, MODIFIED_IMAGE_FIELD_NAME,
@@ -52,10 +53,8 @@ export class GameCreatorService {
             bestMultiTimes: this.createRandomScores(),
             bestSoloTimes: this.createRandomScores(),
             gameName: gameName,
-            modifiedImage: this._PATH_TO_IMAGES +
-                gameName + this._LOCAL_PICTURE_IMAGES_END[0],
-            originalImage: this._PATH_TO_IMAGES +
-                modifiedImage + this._LOCAL_PICTURE_IMAGES_END[1],
+            modifiedImage: this._PATH_TO_IMAGES + gameName + this._LOCAL_PICTURE_IMAGES_END[0],
+            originalImage: this._PATH_TO_IMAGES + modifiedImage + this._LOCAL_PICTURE_IMAGES_END[1],
         };
         try {
             await Axios.post<Game>("http://localhost:3000/api/data-base/add-game",
@@ -126,13 +125,11 @@ export class GameCreatorService {
     }
 
     private async getDiffImage(originalImageFile: Buffer, modifiedImageFile: Buffer): Promise<IBitmapDiffControllerResponse> {
-
         try {
-
             const requestFormData: FormData = new FormData();
-            requestFormData.set(OUTPUT_FILE_NAME_FIELD_NAME, "image-diff-" + Date.now() + ".bmp");
-            requestFormData.append(ORIGINAL_IMAGE_FIELD_NAME, new Blob([originalImageFile.buffer], {type: BITMAP_MEME_TYPE}));
-            requestFormData.append(MODIFIED_IMAGE_FIELD_NAME, new Blob([modifiedImageFile.buffer], {type: BITMAP_MEME_TYPE}));
+            requestFormData.append(OUTPUT_FILE_NAME_FIELD_NAME, "image-diff-" + Date.now() + ".bmp");
+            requestFormData.append(ORIGINAL_IMAGE_FIELD_NAME, originalImageFile, {contentType: BITMAP_MEME_TYPE});
+            requestFormData.append(MODIFIED_IMAGE_FIELD_NAME, modifiedImageFile, {contentType: BITMAP_MEME_TYPE});
 
             const response: AxiosResponse<IBitmapDiffControllerResponse> = await Axios.get<IBitmapDiffControllerResponse>(
                 "http://localhost:3000/api/image-diff/",
@@ -140,7 +137,6 @@ export class GameCreatorService {
             );
 
             return response.data;
-
         } catch (error) {
             throw new Error("game diff: " + error.response.data.message);
         }

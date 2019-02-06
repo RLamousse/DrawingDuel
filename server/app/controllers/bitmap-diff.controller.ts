@@ -8,11 +8,11 @@ import { BitmapWriter } from "../images/bitmap/bitmap-writer";
 import { BitmapDiffService } from "../services/bitmap-diff.service";
 import Types from "../types";
 import {
+    assertFieldOfRequest,
+    assertRequestImageFilesFields,
     BITMAP_MULTER_FILTER,
-    MODIFIED_IMAGE_FIELD_NAME,
-    MULTER_BMP_FIELDS,
-    ORIGINAL_IMAGE_FIELD_NAME, OUTPUT_FILE_NAME_FIELD_NAME,
-    REQUIRED_IMAGE_HEIGHT, REQUIRED_IMAGE_WIDTH, assertRequestImageFilesFields, assertFieldOfRequest
+    MODIFIED_IMAGE_FIELD_NAME, MULTER_BMP_FIELDS,
+    ORIGINAL_IMAGE_FIELD_NAME, OUTPUT_FILE_NAME_FIELD_NAME, REQUIRED_IMAGE_HEIGHT, REQUIRED_IMAGE_WIDTH
 } from "./controller-utils";
 
 @injectable()
@@ -38,8 +38,12 @@ export class BitmapDiffController {
                         assertFieldOfRequest(req, OUTPUT_FILE_NAME_FIELD_NAME);
                         assertRequestImageFilesFields(req);
 
-                        const originalBitmap: Bitmap = BitmapDiffController.createBitmapFromRequest(req.files, ORIGINAL_IMAGE_FIELD_NAME);
-                        const modifiedBitmap: Bitmap = BitmapDiffController.createBitmapFromRequest(req.files, MODIFIED_IMAGE_FIELD_NAME);
+                        const originalBitmap: Bitmap = BitmapDiffController.createBitmapFromRequest(req.files,
+                                                                                                    ORIGINAL_IMAGE_FIELD_NAME,
+                                                                                                    "o-" + diffFileName);
+                        const modifiedBitmap: Bitmap = BitmapDiffController.createBitmapFromRequest(req.files,
+                                                                                                    MODIFIED_IMAGE_FIELD_NAME,
+                                                                                                    "m-" + diffFileName);
 
                         const diffBitmap: Bitmap = this.bitmapDiffService.getDiff(diffFileName, originalBitmap, modifiedBitmap);
                         const bitmapDiffPath: string = this.bitmapWriter.write(diffBitmap);
@@ -63,10 +67,11 @@ export class BitmapDiffController {
 
     private static createBitmapFromRequest(
         files: Express.Multer.File[]|{[fieldname: string]: Express.Multer.File[]},
-        field: string): Bitmap {
+        field: string,
+        fileName: string): Bitmap {
 
         const bitmapFile: Express.Multer.File = files[field][0];
-        const bitmap: Bitmap = BitmapFactory.createBitmap(bitmapFile.originalname, bitmapFile.buffer);
+        const bitmap: Bitmap = BitmapFactory.createBitmap(fileName, bitmapFile.buffer);
         BitmapDiffController.checkBitMapSizeOk(bitmap);
 
         return bitmap;
