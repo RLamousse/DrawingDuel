@@ -12,8 +12,8 @@ import {
 @injectable()
 export class BitmapWriter {
     public getBitmapBytes(bitmap: Bitmap): Buffer {
-        const bitmapHeaderBuffer: Buffer = getHeaderForDimension(bitmap.width, bitmap.height);
-        const bitmapPixelDataBuffer: Buffer = Buffer.alloc(getTotalBytesForDimension(bitmap.width, bitmap.height), 0x0);
+        const bitmapHeaderBuffer: Buffer = Buffer.from(getHeaderForDimension(bitmap.dimension));
+        const bitmapPixelDataBuffer: Buffer = Buffer.alloc(getTotalBytesForDimension(bitmap.dimension), 0x0);
         const bytesPerRow: number = getBytesPerRowForWidth(bitmap.width);
 
         for (let i: number = 0; i < bitmap.pixels.length; i++) {

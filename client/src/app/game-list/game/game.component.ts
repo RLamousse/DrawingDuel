@@ -1,5 +1,4 @@
-import { Component, Input, OnInit } from "@angular/core";
-import {Game} from "../../../../../common/model/game";
+import { Component, Input } from "@angular/core";
 
 @Component({
   selector: "app-game",
@@ -7,14 +6,14 @@ import {Game} from "../../../../../common/model/game";
   styleUrls: ["./game.component.css"],
 })
 
-export class GameComponent implements OnInit {
+export class GameComponent {
 
   public constructor() {/*vide*/}
 
-  @Input() public gameName: string;
-  @Input() public bestSoloTimes: Game[];
-  @Input() public bestMultiTimes: Game[];
-  @Input() public originalImage: string;
-
-  public ngOnInit(): void {/*vide*/}
+  @Input() public gameName: string = "test";
+  @Input() public bestSoloTimes: { name: string, time: number }[];
+  @Input() public bestMultiTimes: { name: string, time: number }[];
+  @Input() public originalImage: string = "test";
+  @Input() public rightButton: string;
+  @Input() public leftButton: string;
 }

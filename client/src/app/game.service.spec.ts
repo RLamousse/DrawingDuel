@@ -1,10 +1,11 @@
+import { HttpClientModule } from "@angular/common/http";
 import { async, TestBed } from "@angular/core/testing";
 import { Game } from "../../../common/model/game";
 import { GameService } from "./game.service";
-import { HttpClientModule } from "@angular/common/http";
 
 describe("GameService", () => {
   let serviceGame: GameService;
+  let spyService: jasmine.SpyObj<GameService>;
 
   const emptyMockedGameList: Game[] = [];
 
@@ -53,9 +54,10 @@ describe("GameService", () => {
   }));
 
   beforeEach(() => {
+    spyService = jasmine.createSpyObj("GameService", ["getGames"]);
     TestBed.configureTestingModule({
       imports: [HttpClientModule],
-      providers: [GameService],
+      providers: [{ provide: GameService, useValue: spyService}, GameService],
     });
   });
 
@@ -85,8 +87,8 @@ describe("GameService", () => {
   it("should return and modify originalImage if no time inside list", () => {
     const incompleteList: Game[] = [{
       gameName: "incompleteList",
-      originalImage: "name1",
-      modifiedImage: "name2",
+      originalImage: "name1.bmp",
+      modifiedImage: "name2.bmp",
       bestSoloTimes: [],
       bestMultiTimes: [],
       isSimpleGame: true,
@@ -94,6 +96,7 @@ describe("GameService", () => {
     serviceGame.convertScoresObject(incompleteList);
     expect(incompleteList[0].gameName).toBe("incompleteList");
     expect(incompleteList[0].originalImage).toBe("http://localhost:3000/name1.bmp");
+    expect(incompleteList[0].modifiedImage).toBe("name2.bmp");
     expect(incompleteList[0].bestSoloTimes.length).toBe(0);
     expect(incompleteList[0].bestMultiTimes.length).toBe(0);
   });

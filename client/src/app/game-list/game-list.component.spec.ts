@@ -1,28 +1,40 @@
 import { HttpClientModule } from "@angular/common/http";
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
-import { TestBed, ComponentFixture } from "@angular/core/testing";
-import { GameListComponent } from "./game-list.component";
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { FormsModule } from "@angular/forms";
+import { Observable } from "rxjs";
+import { Game } from "../../../../common/Object/game";
 import { GameService } from "../game.service";
+import { GameListComponent } from "./game-list.component";
+import { GameComponent } from "./game/game.component";
 
 describe("GameListComponent", () => {
   let component: GameListComponent;
-  let gameServiceSpy: jasmine.SpyObj<GameService>;
   let fixture: ComponentFixture<GameListComponent>;
 
-  beforeEach((async () => {
-    gameServiceSpy = jasmine.createSpyObj("GameService", ["getGames", "convertScoresObject"]);
+  beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [GameListComponent],
+      declarations: [ GameListComponent, GameComponent],
       imports: [HttpClientModule],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [{provide: GameService, useValue: gameServiceSpy }],
-    });
-    fixture = TestBed.createComponent(GameListComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    })
+    .compileComponents();
   }));
+  class MockGameService {
+    private mockedGames: Game[] = [];
+    public getGames(): Observable<Game[]> {
+      return Observable.create(this.mockedGames);
+    }
+  }
+
+  const mockedGameService: MockGameService = new MockGameService();
 
   beforeEach(() => {
+    TestBed.configureTestingModule({
+      declarations: [GameListComponent],
+      imports: [HttpClientModule, FormsModule ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      providers: [{provide: GameService, useValue: mockedGameService} ],
+    });
     fixture = TestBed.createComponent(GameListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -30,9 +42,5 @@ describe("GameListComponent", () => {
 
   it("should create", () => {
     expect(component).toBeTruthy();
-    gameServiceSpy.convertScoresObject.and.callFake(() => {
-      return true;
-    });
   });
-
 });

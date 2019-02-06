@@ -1,0 +1,40 @@
+import { Game } from "../../../common/Object/game";
+
+export const MOCKMIXGAMELIST: Game[] = [
+    {
+      gameName: "mockedSimpleGameName1",
+      originalImage: "tiger.bmp",
+      modifiedImage: "tiger.bmp",
+      bestSoloTimes: [{ name: "mockedUser1", time: 1200 },
+                      { name: "mockedUser2", time: 1450 },
+                      { name: "mockedUser3", time: 1600 }],
+      bestMultiTimes: [{ name: "mockedUser1", time: 1200 },
+                       { name: "mockedUser2", time: 1450 },
+                       { name: "mockedUser3", time: 1600 }],
+      isSimpleGame: false,
+    },
+    {
+        gameName: "mockedSimpleGameName2",
+        originalImage: "tiger.bmp",
+        modifiedImage: "tiger.bmp",
+        bestSoloTimes: [{ name: "mockedUser1", time: 1200 },
+                        { name: "mockedUser2", time: 1450 },
+                        { name: "mockedUser3", time: 1600 }],
+        bestMultiTimes: [{ name: "mockedUser1", time: 1200 },
+                         { name: "mockedUser2", time: 1450 },
+                         { name: "mockedUser3", time: 1600 }],
+        isSimpleGame: true,
+    },
+    {
+        gameName: "mockedSimpleName3",
+        originalImage: "tiger.bmp",
+        modifiedImage: "tiger.bmp",
+        bestSoloTimes: [{ name: "mockedUser1", time: 1200 },
+                        { name: "mockedUser2", time: 1450 },
+                        { name: "mockedUser3", time: 1600 }],
+        bestMultiTimes: [{ name: "mockedUser1", time: 1200 },
+                         { name: "mockedUser2", time: 1450 },
+                         { name: "mockedUser3", time: 1600 }],
+        isSimpleGame: false,
+    },
+  ];
