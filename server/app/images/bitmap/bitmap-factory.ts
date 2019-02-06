@@ -1,4 +1,4 @@
-import {Bitmap} from "../../../../common/image/Bitmap/bitmap";
+import {Bitmap} from "../../../../common/image/bitmap/bitmap";
 import {
     getBytesPerRowForWidth,
     BITS_PER_BYTE,
@@ -15,7 +15,7 @@ import {
     RAW_BITMAP_OFFSET_FLAG_LENGTH,
     RAW_BITMAP_OFFSET_FLAG_OFFSET,
     WIDTH_FLAG_LENGTH, WIDTH_FLAG_OFFSET,
-} from "../../../../common/image/Bitmap/bitmap-utils";
+} from "../../../../common/image/bitmap/bitmap-utils";
 import {SAME_PIXEL_COLOR} from "../../../../common/image/mask";
 import {create2dArray} from "../../../../common/util/util";
 

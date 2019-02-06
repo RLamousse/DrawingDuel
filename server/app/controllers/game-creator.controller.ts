@@ -1,22 +1,19 @@
 import { NextFunction, Request, Response, Router } from "express";
 import e = require("express");
+import * as fs from "fs";
 import { inject, injectable } from "inversify";
 import * as multer from "multer";
+import * as os from "os";
 import {GAME_NAME_FIELD} from "../services/data-base.service";
 import { GameCreatorService } from "../services/game-creator.service";
 import Types from "../types";
-import * as fs from "fs";
-
-export const ORIGINAL_IMAGE_IDENTIFIER: string = "originalImage";
-export const MODIFIED_IMAGE_IDENTIFIER: string = "modifiedImage";
-export const PATH_TO_TMP: string = "./tmp/";
-const EXPECTED_FILES_FORMAT: string = "image/bmp";
-
-// error messages
-export const DIFFERENCE_ERROR_MESSAGE: string = "Error: The images that you sent don't have seven difference!";
-export const FORMAT_ERROR_MESSAGE: string = "Error: Request sent by the client had the wrong format!";
-export const NAME_ERROR_MESSAGE: string = "Error: The game name that you sent already exists!";
-export const BMP_ERROR_MESSAGE: string = "Error: Sent files are not in bmp format!";
+import {
+    assertFieldOfRequest,
+    assertRequestImageFilesFields,
+    BITMAP_MULTER_FILTER,
+    MODIFIED_IMAGE_FIELD_NAME,
+    MULTER_BMP_FIELDS, ORIGINAL_IMAGE_FIELD_NAME
+} from "./controller-utils";
 
 @injectable()
 export class GameCreatorController {
@@ -27,7 +24,7 @@ export class GameCreatorController {
     public constructor(@inject(Types.GameCreatorService) private gameCreatorService: GameCreatorService) {
         this._storage = multer.diskStorage({
             destination: (req: Express.Request, file: Express.Multer.File, cb: (error: Error | null, destination: string) => void) => {
-                cb(null, PATH_TO_TMP);
+                cb(null, os.tmpdir());
             },
             filename: (req: Express.Request, file: Express.Multer.File, cb: (error: Error | null, destination: string) => void) => {
                 cb(null, file.fieldname + "-" + Date.now() + ".bmp");
@@ -35,55 +32,33 @@ export class GameCreatorController {
         });
         this._multer = multer({
             storage: this._storage,
-            fileFilter: (req: Express.Request,
-                         file: Express.Multer.File,
-                         cb: (error: Error | null, acceptFile: boolean) => void) => {
-                if (file.mimetype !== EXPECTED_FILES_FORMAT) {
-                    //TODO validate files(maybe extern validator)
-                    return cb(new Error(BMP_ERROR_MESSAGE), false);
-                }
-
-                cb(null, true);
-
-            },
+            fileFilter: BITMAP_MULTER_FILTER,
         });
-        this._cpUpload = this._multer.fields([{name: ORIGINAL_IMAGE_IDENTIFIER, maxCount: 1},
-                                              {name: MODIFIED_IMAGE_IDENTIFIER, maxCount: 1}]);
+        this._cpUpload = this._multer.fields(MULTER_BMP_FIELDS);
     }
 
     public get router(): Router {
         const router: Router = Router();
 
-        router.post("/create-simple-game",
-                    this._cpUpload,
-                    async (req: Request, res: Response, next: NextFunction) => {
+        router.post("/create-simple-game", this._cpUpload, async (req: Request, res: Response, next: NextFunction) => {
             try {
-                this.validityTest(req);
+                assertFieldOfRequest(req, GAME_NAME_FIELD);
+                assertRequestImageFilesFields(req);
+
                 res.json(await this.gameCreatorService.createSimpleGame(
                     req.body[GAME_NAME_FIELD],
-                    req.files[ORIGINAL_IMAGE_IDENTIFIER][0].path,
-                    req.files[MODIFIED_IMAGE_IDENTIFIER][0].path));
+                    req.files[ORIGINAL_IMAGE_FIELD_NAME][0],
+                    req.files[MODIFIED_IMAGE_FIELD_NAME][0]));
+
             } catch (error) {
                 next(error);
+            } finally {
+                this.deleteTmpFiles(req.files[ORIGINAL_IMAGE_FIELD_NAME][0].path,
+                                    req.files[MODIFIED_IMAGE_FIELD_NAME][0].path);
             }
-            this.deleteTmpFiles(req.files[ORIGINAL_IMAGE_IDENTIFIER][0].path,
-                                                req.files[MODIFIED_IMAGE_IDENTIFIER][0].path);
-
         });
 
         return router;
-    }
-
-    private validityTest(req: Request): void {
-        if (typeof req.files[ORIGINAL_IMAGE_IDENTIFIER] === "undefined" ||
-            typeof req.files[MODIFIED_IMAGE_IDENTIFIER] === "undefined" ||
-            typeof req.files[ORIGINAL_IMAGE_IDENTIFIER][0] === "undefined" ||
-            typeof req.files[MODIFIED_IMAGE_IDENTIFIER][0] === "undefined") {
-            throw new Error(FORMAT_ERROR_MESSAGE);
-        }
-        if (typeof req.body[GAME_NAME_FIELD] !== "string" || req.body[GAME_NAME_FIELD] === "") {
-            throw new Error(FORMAT_ERROR_MESSAGE);
-        }
     }
 
     private deleteTmpFiles(originalImageFile: string, modifiedImageFile: string): void {

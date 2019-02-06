@@ -3,7 +3,7 @@ import {expect} from "chai";
 import * as fs from "fs";
 import * as mockfs from "mock-fs";
 import * as os from "os";
-import {Bitmap} from "../../../../common/image/Bitmap/bitmap";
+import {Bitmap} from "../../../../common/image/bitmap/bitmap";
 import {BitmapFactory} from "./bitmap-factory";
 import {BitmapWriter} from "./bitmap-writer";
 

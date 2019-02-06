@@ -1,6 +1,6 @@
 import {injectable} from "inversify";
 import "reflect-metadata";
-import {Bitmap} from "../../../common/image/Bitmap/bitmap";
+import {Bitmap} from "../../../common/image/bitmap/bitmap";
 import {DIFFERENCE_MASK, DIFFERENT_PIXEL_COLOR, Mask, SAME_PIXEL_COLOR} from "../../../common/image/mask";
 import {create2dArray} from "../../../common/util/util";
 import {BitmapFactory} from "../images/bitmap/bitmap-factory";

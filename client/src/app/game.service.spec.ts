@@ -1,6 +1,6 @@
 import { HttpClientModule } from "@angular/common/http";
 import { async, TestBed } from "@angular/core/testing";
-import { Game } from "../../../common/Object/game";
+import { Game } from "../../../common/model/game";
 import { GameService } from "./game.service";
 
 describe("GameService", () => {

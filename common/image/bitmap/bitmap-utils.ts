@@ -20,6 +20,7 @@ export const COLOR_DEPTH_24BPP_BYTES: number = 3;
 export const HEADER_SIZE_BYTES: number = 54;
 
 export const BITMAP_FILE_EXTENSION: string = ".bmp";
+export const BITMAP_MEME_TYPE: string = "image/bmp";
 
 export var BITS_PER_BYTE = 8;
 

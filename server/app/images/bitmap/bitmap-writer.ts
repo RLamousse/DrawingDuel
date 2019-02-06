@@ -1,13 +1,13 @@
 import * as fs from "fs";
 import {injectable} from "inversify";
 import "reflect-metadata";
-import {Bitmap} from "../../../../common/image/Bitmap/bitmap";
+import {Bitmap} from "../../../../common/image/bitmap/bitmap";
 import {
     getBytesPerRowForWidth,
     getHeaderForDimension,
     getTotalBytesForDimension,
     COLOR_DEPTH_24BPP_BYTES
-} from "../../../../common/image/Bitmap/bitmap-utils";
+} from "../../../../common/image/bitmap/bitmap-utils";
 
 @injectable()
 export class BitmapWriter {

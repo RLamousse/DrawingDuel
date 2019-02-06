@@ -6,7 +6,7 @@ import { GameCreatorController } from "./controllers/game-creator.controller";
 import { UserController } from "./controllers/username.controller";
 import {BitmapWriter} from "./images/bitmap/bitmap-writer";
 import {Server} from "./server";
-import { UserNameService } from "./services/UserName.service";
+import { UsernameService } from "./services/username.service";
 import {BitmapDiffService} from "./services/bitmap-diff.service";
 import {DataBaseService} from "./services/data-base.service";
 import {DifferenceEvaluatorService} from "./services/difference-evaluator.service";
@@ -26,7 +26,7 @@ container.bind(Types.BitmapDiffController).to(BitmapDiffController);
 container.bind(Types.BitmapDiffService).to(BitmapDiffService);
 
 container.bind(Types.BitmapWriter).to(BitmapWriter);
-container.bind(Types.UserNameService).to(UserNameService).inSingletonScope();
+container.bind(Types.UserNameService).to(UsernameService).inSingletonScope();
 container.bind(Types.UserNameController).to(UserController);
 
 export { container };
