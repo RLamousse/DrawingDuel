@@ -1,6 +1,6 @@
 import {expect} from "chai";
 import * as fs from "fs";
-import {Bitmap} from "../../../common/image/Bitmap/bitmap";
+import {Bitmap} from "../../../common/image/bitmap/bitmap";
 import {BitmapFactory} from "../images/bitmap/bitmap-factory";
 import {BitmapWriter} from "../images/bitmap/bitmap-writer";
 import {BitmapDiffService} from "./bitmap-diff.service";

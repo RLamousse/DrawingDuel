@@ -2,13 +2,13 @@ import { Request, Response, Router} from "express";
 import * as HttpStatus from "http-status-codes";
 import { inject, injectable } from "inversify";
 import { UserValidationMessage } from "../../../common/communication/UserValidationMessage";
-import { UserNameService } from "../services/UserName.service";
+import { UsernameService } from "../services/username.service";
 import Types from "../types";
 
 @injectable()
 export class UserController {
 
-    public constructor(@inject(Types.UserNameService) private userService: UserNameService) { }
+    public constructor(@inject(Types.UserNameService) private userService: UsernameService) { }
 
     public get router(): Router {
         const router: Router = Router();
