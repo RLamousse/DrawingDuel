@@ -1,15 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from "@angular/core";
 
 @Component({
-  selector: 'app-play-view',
-  templateUrl: './play-view.component.html',
-  styleUrls: ['./play-view.component.css']
+  selector: "app-play-view",
+  templateUrl: "./play-view.component.html",
+  styleUrls: ["./play-view.component.css"],
 })
 export class PlayViewComponent implements OnInit {
 
-  constructor() { }
+  private chronoPlaceHolder: string = "00:00";
+  public constructor() {/*vide*/ }
 
-  ngOnInit() {
-  }
-
+  public ngOnInit(): void{}
 }
