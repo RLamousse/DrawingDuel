@@ -9,7 +9,7 @@ import { catchError } from "rxjs/operators";
 })
 export class FormPostService {
 
-  private readonly BASE_URL: string = "http://localhost:3000/api/image-diff";
+  private readonly BASE_URL: string = "http://localhost:3000/api/game-creator/create-simple-game";
   public constructor(private http: HttpClient) { }
 
   public basicPost(body: FormData | {}): Observable<Object> {

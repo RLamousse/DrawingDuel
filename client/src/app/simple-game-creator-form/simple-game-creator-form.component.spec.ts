@@ -7,6 +7,7 @@ import { MatDialogModule, MatDialogRef } from "@angular/material/dialog";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { MaterialFileInputModule } from "ngx-material-file-input";
+import FileValidator from "../file.validator";
 import { FormPostService } from "../form-post.service";
 import { SimpleGameCreatorFormComponent } from "./simple-game-creator-form.component";
 
@@ -85,7 +86,7 @@ describe("SimpleGameCreatorFormComponent", () => {
   it("should have an error if the file is too big for upload", async () => {
     const originalImage: AbstractControl = component.formDoc.controls["originalImage"];
     originalImage.setValue({
-      files: [new File(new Array(component.MAX_IMAGE_SIZE + 1).fill(0), "maxime.bmp", {type: "image/bmp"})],
+      files: [new File(new Array(FileValidator.MAX_IMAGE_SIZE + 1).fill(0), "maxime.bmp", {type: "image/bmp"})],
     });
     expect(originalImage.valid).toBeFalsy();
   });
@@ -93,7 +94,7 @@ describe("SimpleGameCreatorFormComponent", () => {
   it("should have an error if the file isn't the right dimensions", async () => {
     const originalImage: AbstractControl = component.formDoc.controls["originalImage"];
     originalImage.setValue({
-      files: [new File(new Array(component.MAX_IMAGE_SIZE - 1).fill(0), "maxime.bmp", {type: "image/bmp"})],
+      files: [new File(new Array(FileValidator.MAX_IMAGE_SIZE - 1).fill(0), "maxime.bmp", {type: "image/bmp"})],
     });
     expect(originalImage.valid).toBeFalsy();
   });
@@ -104,10 +105,10 @@ describe("SimpleGameCreatorFormComponent", () => {
     originalImage.clearAsyncValidators();
     modifiedImage.clearAsyncValidators();
     originalImage.setValue({
-      files: [new File(new Array(component.MAX_IMAGE_SIZE - 1).fill(0), "maxime.bmp", {type: "image/bmp"})],
+      files: [new File(new Array(FileValidator.MAX_IMAGE_SIZE - 1).fill(0), "maxime.bmp", {type: "image/bmp"})],
     });
     modifiedImage.setValue({
-      files: [new File(new Array(component.MAX_IMAGE_SIZE - 1).fill(0), "maxime.bmp", {type: "image/bmp"})],
+      files: [new File(new Array(FileValidator.MAX_IMAGE_SIZE - 1).fill(0), "maxime.bmp", {type: "image/bmp"})],
     });
     const name: AbstractControl = component.formDoc.controls["name"];
     name.setValue("12345");
