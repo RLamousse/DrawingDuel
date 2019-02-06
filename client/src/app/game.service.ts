@@ -36,14 +36,8 @@ export class GameService {
           if (game[i].bestSoloTimes.hasOwnProperty(j)) {
             game[i].bestSoloTimes[j].time = this.convertTimeScores(game[i].bestSoloTimes[j].time);
             game[i].bestMultiTimes[j].time = this.convertTimeScores(game[i].bestMultiTimes[j].time);
-          } else {
-
-            break;
           }
         }
-      } else {
-
-        break;
       }
     }
 
