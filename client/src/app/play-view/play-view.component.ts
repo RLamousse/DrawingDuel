@@ -7,8 +7,9 @@ import { Component, OnInit } from "@angular/core";
 })
 export class PlayViewComponent implements OnInit {
 
-  private chronoPlaceHolder: string = "00:00";
   public constructor() {/*vide*/ }
+  private chronoPlaceHolder: string = "00:00";
+  public gameName: string = "sup";
+  public ngOnInit(): void {/*vide*/ }
 
-  public ngOnInit(): void{}
 }
