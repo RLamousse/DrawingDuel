@@ -8,7 +8,7 @@ import {GAME_NAME_FIELD} from "../services/data-base.service";
 import { GameCreatorService } from "../services/game-creator.service";
 import Types from "../types";
 import {
-    assertFieldOfRequest,
+    assertFieldsOfRequest,
     assertRequestImageFilesFields,
     BITMAP_MULTER_FILTER,
     MODIFIED_IMAGE_FIELD_NAME,
@@ -42,7 +42,7 @@ export class GameCreatorController {
 
         router.post("/create-simple-game", this._cpUpload, async (req: Request, res: Response, next: NextFunction) => {
             try {
-                assertFieldOfRequest(req, GAME_NAME_FIELD);
+                assertFieldsOfRequest(req, GAME_NAME_FIELD);
                 assertRequestImageFilesFields(req);
 
                 res.json(await this.gameCreatorService.createSimpleGame(

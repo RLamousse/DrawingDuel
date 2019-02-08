@@ -11,5 +11,6 @@ export default  {
         BitmapDiffController: Symbol("BitmapDiffController"),
         BitmapDiffService: Symbol("BitmapDiffService"),
         BitmapWriter: Symbol("BitmapWriter"),
+        DiffValidatorController: Symbol("DiffValidatorController"),
         DiffValidatorService: Symbol("DiffValidatorService"),
 };

@@ -4,10 +4,10 @@ import {IDiffValidatorControllerRequest} from "../../../common/communication/req
 import {IDiffValidatorControllerResponse} from "../../../common/communication/response/diff-validator-controller.response";
 import {DiffValidatorService} from "../services/diff-validator.service";
 import Types from "../types";
-import {assertFieldOfRequest} from "./controller-utils";
+import {assertFieldsOfRequest} from "./controller-utils";
 
 @injectable()
-export class BitmapDiffController {
+export class DiffValidatorController {
 
     public constructor(@inject(Types.DiffValidatorService) private diffValidatorService: DiffValidatorService) {}
 
@@ -16,9 +16,8 @@ export class BitmapDiffController {
         router.post("/",
                     (req: Request, res: Response, next: NextFunction) => {
                     try {
-                        assertFieldOfRequest(req, "gameName", "coord");
+                        assertFieldsOfRequest(req, "gameName", "coord");
                         const body: IDiffValidatorControllerRequest = req.body;
-
                         const response: IDiffValidatorControllerResponse = {
                             validDifference: this.diffValidatorService.hasDifference(body["gameName"], body["coord"]),
                         };

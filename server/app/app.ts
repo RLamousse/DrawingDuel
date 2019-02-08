@@ -6,6 +6,7 @@ import { inject, injectable } from "inversify";
 import * as logger from "morgan";
 import {BitmapDiffController} from "./controllers/bitmap-diff.controller";
 import {DataBaseController} from "./controllers/data-base.controller";
+import {DiffValidatorController} from "./controllers/diff-validator.controller";
 import {GameCreatorController} from "./controllers/game-creator.controller";
 import { UserController } from "./controllers/username.controller";
 import Types from "./types";
@@ -19,7 +20,8 @@ export class Application {
     public constructor(@inject(Types.GameCreatorController) private gameCreatorController: GameCreatorController,
                        @inject(Types.DataBaseController) private dataBaseController: DataBaseController,
                        @inject(Types.UserNameController) private userController: UserController,
-                       @inject(Types.BitmapDiffController) private bitmapDiffController: BitmapDiffController) {
+                       @inject(Types.BitmapDiffController) private bitmapDiffController: BitmapDiffController,
+                       @inject(Types.DiffValidatorController) private diffValidatorController: DiffValidatorController) {
 
         this.app = express();
 
@@ -39,12 +41,11 @@ export class Application {
     }
 
     public bindRoutes(): void {
-        // Notre application utilise le routeur de notre API `Index`
         this.app.use("/api/usernames", this.userController.router);
         this.app.use("/api/image-diff", this.bitmapDiffController.router);
-        // Notre application utilise le routeur de notre API `Index`
         this.app.use("/api/game-creator", this.gameCreatorController.router);
         this.app.use("/api/data-base", this.dataBaseController.router);
+        this.app.use("/api/diff-validator", this.diffValidatorController.router);
         this.errorHandeling();
     }
 

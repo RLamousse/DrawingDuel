@@ -9,7 +9,7 @@ import { BitmapWriter } from "../images/bitmap/bitmap-writer";
 import { BitmapDiffService } from "../services/bitmap-diff.service";
 import Types from "../types";
 import {
-    assertFieldOfRequest,
+    assertFieldsOfRequest,
     assertRequestImageFilesFields,
     BITMAP_MULTER_FILTER,
     MODIFIED_IMAGE_FIELD_NAME, MULTER_BMP_FIELDS,
@@ -36,7 +36,7 @@ export class BitmapDiffController {
                     (req: Request, res: Response, next: NextFunction) => {
                     try {
                         const diffFileName: string = req.body[OUTPUT_FILE_NAME_FIELD_NAME];
-                        assertFieldOfRequest(req, OUTPUT_FILE_NAME_FIELD_NAME);
+                        assertFieldsOfRequest(req, OUTPUT_FILE_NAME_FIELD_NAME);
                         assertRequestImageFilesFields(req);
 
                         const originalBitmap: Bitmap = BitmapDiffController.createBitmapFromRequest(req.files,

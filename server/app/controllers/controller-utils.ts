@@ -33,8 +33,9 @@ export const assertRequestImageFilesFields: (req: Express.Request) => void = (re
     }
 };
 
-export const assertFieldOfRequest: (req: Request, ...fields: string[]) => void = (req: Request, ...fields: string[]): void => {
-    for (const field in fields) {
+export const assertFieldsOfRequest: (req: Request, ...fields: string[]) => void = (req: Request, ...fields: string[]): void => {
+    let field: string;
+    for (field of fields) {
         if (typeof req.body[field] !== "string" || req.body[field] === "") {
             throw new Error(FORMAT_ERROR_MESSAGE);
         }
