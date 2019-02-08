@@ -2,3 +2,30 @@
     margin: 25px;
     font-weight: bold;
 }
+.window {
+    width: 30%;
+    border: 1px black solid;
+    min-height: 30%;
+}
+img{
+    width: 640px;
+    height: 480px;
+    padding: 10px;
+    align-self: center;
+}
+
+.center {
+    margin: auto;
+    width: fit-content;
+    border: 3px solid green;
+    padding: 10px;
+}
+
+.centeredText {
+    text-align: center;
+    font-size: 16px;
+}
+
+.compteur{
+    margin: 10px;
+}

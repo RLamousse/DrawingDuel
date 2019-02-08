@@ -8,8 +8,8 @@ import { Component, OnInit } from "@angular/core";
 export class PlayViewComponent implements OnInit {
 
   public constructor() {/*vide*/ }
-  private chronoPlaceHolder: string = "00:00";
   public gameName: string = "sup";
+  public originalImage: string = "http://localhost:3000/tiger.bmp";
   public ngOnInit(): void {/*vide*/ }
 
 }
