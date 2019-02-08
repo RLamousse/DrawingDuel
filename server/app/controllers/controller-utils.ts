@@ -23,7 +23,7 @@ export const BITMAP_MULTER_FILTER:
 };
 export const MULTER_BMP_FIELDS: Field[] = [{name: ORIGINAL_IMAGE_FIELD_NAME, maxCount: 1}, {name: MODIFIED_IMAGE_FIELD_NAME, maxCount: 1}];
 
-export const assertRequestImageFilesFields = (req: Request): void => {
+export const assertRequestImageFilesFields: (req: Express.Request) => void = (req: Request): void => {
     if (typeof req.files[ORIGINAL_IMAGE_FIELD_NAME] === "undefined" ||
         typeof req.files[MODIFIED_IMAGE_FIELD_NAME] === "undefined" ||
         typeof req.files[ORIGINAL_IMAGE_FIELD_NAME][0] === "undefined" ||
@@ -32,7 +32,7 @@ export const assertRequestImageFilesFields = (req: Request): void => {
     }
 };
 
-export const assertFieldOfRequest = (req: Request, field: string): void => {
+export const assertFieldOfRequest: (req: Express.Request, field: string) => void = (req: Request, field: string): void => {
     if (typeof req.body[field] !== "string" || req.body[field] === "") {
         throw new Error(FORMAT_ERROR_MESSAGE);
     }

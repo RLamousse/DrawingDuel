@@ -1,24 +1,40 @@
 import { FormControl, ValidationErrors } from "@angular/forms";
-import { Dimension } from "../../../common/image/Bitmap/IDimension";
-import { getDimensionsFromBuffer } from "../../../common/image/Bitmap/bitmap-utils";
+import { Dimension } from "../../../common/image/bitmap/IDimension";
+import { getDimensionsFromBuffer } from "../../../common/image/bitmap/bitmap-utils";
 import FakeControl from "./fakeControl";
 
 export default class FileValidator {
   public static readonly MAX_IMAGE_SIZE: number = 1000000;
 
   // To test, we let objects with value.files attribute as params
-  public static async fileValidator(control: FormControl | FakeControl): Promise<ValidationErrors | null> {
+  public static async dimensionValidator(control: FormControl | FakeControl): Promise<ValidationErrors | null> {
+    if (control.value) {
+      const file: File = control.value.files[0];
+      const dimensionsOk: boolean = await FileValidator.checkFile(file);
+      if (!dimensionsOk) {
+        return { imageDimension: "L'image n'est pas de la bonne dimension" };
+      }
+    }
+
+    return null;
+  }
+
+  public static typeValidator(control: FormControl | FakeControl): ValidationErrors | null {
     if (control.value) {
       const file: File = control.value.files[0];
       if (file.type !== "image/bmp") {
         return { imageType: "L'image doit être de type bmp" };
       }
+    }
+
+    return null;
+  }
+
+  public static sizeValidator(control: FormControl | FakeControl): ValidationErrors | null {
+    if (control.value) {
+      const file: File = control.value.files[0];
       if (file.size > FileValidator.MAX_IMAGE_SIZE) {
         return { imageSize: `L'image est invalide (taille maximale de ${FileValidator.MAX_IMAGE_SIZE})` };
-      }
-      const dimensionsOk: boolean = await FileValidator.checkFile(file);
-      if (!dimensionsOk) {
-        return {imageDimension: "L'image n'est pas de la bonne dimension"};
       }
     }
 

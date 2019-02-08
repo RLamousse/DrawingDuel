@@ -1,4 +1,5 @@
 import { Component, Input } from "@angular/core";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "app-game",
@@ -8,7 +9,9 @@ import { Component, Input } from "@angular/core";
 
 export class GameComponent {
 
-  public constructor() {/*vide*/}
+  public constructor(
+    private router: Router,
+  ) {/*vide*/}
 
   @Input() public gameName: string = "test";
   @Input() public bestSoloTimes: { name: string, time: number }[];
@@ -16,4 +19,10 @@ export class GameComponent {
   @Input() public originalImage: string = "test";
   @Input() public rightButton: string;
   @Input() public leftButton: string;
+
+  protected leftButtonClick(): void {
+    if (this.leftButton === "jouer") {
+      this.router.navigate(["../play-view/"]).catch();
+    }
+  }
 }

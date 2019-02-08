@@ -1,6 +1,6 @@
 import { HttpClientModule } from "@angular/common/http";
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormsModule } from "@angular/forms";
 import { Observable } from "rxjs";
 import { Game } from "../../../../common/model/game";
@@ -12,13 +12,13 @@ describe("GameListComponent", () => {
   let component: GameListComponent;
   let fixture: ComponentFixture<GameListComponent>;
 
-  beforeEach(async(() => {
+  beforeEach((done) => {
     TestBed.configureTestingModule({
       declarations: [ GameListComponent, GameComponent],
       imports: [HttpClientModule],
-    })
-    .compileComponents();
-  }));
+    });
+    done();
+  });
   class MockGameService {
     private mockedGames: Game[] = [];
     public getGames(): Observable<Game[]> {

@@ -14,6 +14,7 @@ import { GameListComponent } from "./game-list/game-list.component";
 import { GameComponent } from "./game-list/game/game.component";
 import { GameService } from "./game.service";
 import { InitialViewComponent } from "./initial-view/initial-view.component";
+import { PlayViewComponent } from "./play-view/play-view.component";
 import { SimpleGameCreatorFormComponent } from "./simple-game-creator-form/simple-game-creator-form.component";
 import { UNListService } from "./username.service";
 import { VueAdminComponent } from "./vue-admin/vue-admin.component";
@@ -30,6 +31,7 @@ import { WindowEventHandlerDirective } from "./window-event-handler.directive";
     VueAdminComponent,
     Create3DGameComponent,
     SimpleGameCreatorFormComponent,
+    PlayViewComponent,
   ],
   imports: [
     BrowserModule,
