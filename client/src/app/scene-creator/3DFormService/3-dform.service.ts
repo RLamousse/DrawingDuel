@@ -3,7 +3,7 @@ import * as THREE from 'three';
 @Injectable()
 export class Form3DService {
 
-  private baseSize: number = 150;
+  private baseSize: number = 50;
   private maxSizeFactor = 150;
   private minSizeFactor = 50;
 
@@ -16,14 +16,58 @@ export class Form3DService {
     const cubeSide: number = this.sizeGenerator();
     const geometry = new THREE.BoxGeometry(cubeSide, cubeSide, cubeSide);
 
+    this.setColor(geometry);
+    const material = new THREE.MeshPhongMaterial({ vertexColors: THREE.FaceColors, overdraw: 0.5 });
+    return new THREE.Mesh(geometry, material);
+  }
+
+  public createSphere(): THREE.Mesh {
+    const sphereRadius: number = this.sizeGenerator()/2.0;
+    const geometry = new THREE.SphereGeometry(sphereRadius, 360, 360);
+
+    this.setColor(geometry);
+    const material = new THREE.MeshPhongMaterial({ vertexColors: THREE.FaceColors, overdraw: 0.5 });
+    return new THREE.Mesh(geometry, material);
+  }
+
+  public createCone(): THREE.Mesh {
+    const coneSize: number = this.sizeGenerator();
+    const geometry = new THREE.ConeGeometry(coneSize/2, coneSize, 360);
+
+    const hex = Math.random() * 0xffffff;
     for (let i = 0; i < geometry.faces.length; i += 2) {
-      const hex = Math.random() * 0xffffff;
       geometry.faces[i].color.setHex(hex);
       geometry.faces[i + 1].color.setHex(hex);
     }
-    geometry.boundingBox = new THREE.Box3(new THREE.Vector3(800,800,400));
-
-    const material = new THREE.MeshBasicMaterial({ vertexColors: THREE.FaceColors, overdraw: 0.5 });
+    const material = new THREE.MeshPhongMaterial({ vertexColors: THREE.FaceColors, overdraw: 0.5 });
     return new THREE.Mesh(geometry, material);
+  }
+
+  public createCylinder(): THREE.Mesh {
+    const cylinderSize: number = this.sizeGenerator();
+    const geometry = new THREE.CylinderGeometry(cylinderSize / 2, cylinderSize / 2, cylinderSize, 360);
+
+    this.setColor(geometry);
+    const material = new THREE.MeshPhongMaterial({ vertexColors: THREE.FaceColors, overdraw: 0.5 });
+    let cylinder = new THREE.Mesh(geometry, material);
+    cylinder.rotation.x = 0.5;
+    return cylinder;
+  }
+
+  public createPyramid(): THREE.Mesh {
+    const pyramidSize: number = this.sizeGenerator();
+    const geometry = new THREE.CylinderGeometry(0, pyramidSize / 2, pyramidSize, 3, 1);
+    this.setColor(geometry);
+    
+    const material = new THREE.MeshPhongMaterial({ vertexColors: THREE.FaceColors, overdraw: 0.5 });
+    return new THREE.Mesh(geometry, material);
+  }
+
+  private setColor(geo: THREE.Geometry): void {
+    const hex = Math.random() * 0xffffff;
+    for (let i = 0; i < geo.faces.length; i += 2) {
+      geo.faces[i].color.setHex(hex);
+      geo.faces[i + 1].color.setHex(hex);
+    }
   }
 }
