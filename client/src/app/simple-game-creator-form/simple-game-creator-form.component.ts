@@ -40,14 +40,18 @@ export class SimpleGameCreatorFormComponent extends AbstractForm implements OnIn
     });
   }
 
-  public onSubmit (): void {
+  public onSubmit(): void {
     const fd: FormData = new FormData();
     fd.append("gameName", this.formDoc.value.name);
     fd.append("originalImage", this.formDoc.value.originalImage.files[0]);
     fd.append("modifiedImage", this.formDoc.value.modifiedImage.files[0]);
-    this.formPost.basicPost(fd).subscribe((data) => {
-      alert((data as {message: string}).message);
-      this.exit(data);
-    });
+    this.formPost.basicPost(fd).subscribe(
+      (data) => {
+        // alert((data as { message: string }).message);
+        this.exit(data);
+      },
+      (error: Error) => {
+        console.error(`${error.name} : ${error.message}`);
+      });
   }
 }
