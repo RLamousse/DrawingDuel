@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { MatDialogRef } from "@angular/material/dialog";
+import { AbstractForm } from "../abstract-form";
 import FileValidator from "../file.validator";
 import { FormPostService } from "../form-post.service";
 
@@ -9,14 +10,15 @@ import { FormPostService } from "../form-post.service";
   templateUrl: "./simple-game-creator-form.component.html",
   styleUrls: ["./simple-game-creator-form.component.css"],
 })
-export class SimpleGameCreatorFormComponent implements OnInit {
+export class SimpleGameCreatorFormComponent extends AbstractForm implements OnInit {
 
   public formDoc: FormGroup;
   private readonly MIN_NAME_LENGTH: number = 5;
 
-  public constructor(private _fb: FormBuilder,
-                     public dialogRef: MatDialogRef<SimpleGameCreatorFormComponent>,
-                     private formPost: FormPostService) {
+  public constructor(_fb: FormBuilder,
+                     dialogRef: MatDialogRef<SimpleGameCreatorFormComponent>,
+                     formPost: FormPostService) {
+    super(_fb, dialogRef, formPost);
   }
 
   public ngOnInit(): void {
@@ -47,10 +49,5 @@ export class SimpleGameCreatorFormComponent implements OnInit {
       alert((data as {message: string}).message);
       this.exit(data);
     });
-  }
-
-  public exit(message: Object = {status: "cancelled"}): void {
-    this.formDoc.reset();
-    this.dialogRef.close(message);
   }
 }
