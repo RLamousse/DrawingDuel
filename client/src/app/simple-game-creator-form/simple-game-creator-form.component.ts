@@ -14,6 +14,7 @@ export class SimpleGameCreatorFormComponent extends AbstractForm implements OnIn
 
   public formDoc: FormGroup;
   private readonly MIN_NAME_LENGTH: number = 5;
+  protected disableButton: boolean = false;
 
   public constructor(_fb: FormBuilder,
                      dialogRef: MatDialogRef<SimpleGameCreatorFormComponent>,
@@ -41,6 +42,7 @@ export class SimpleGameCreatorFormComponent extends AbstractForm implements OnIn
   }
 
   public onSubmit(): void {
+    this.disableButton = true;
     const fd: FormData = new FormData();
     fd.append("gameName", this.formDoc.value.name);
     fd.append("originalImage", this.formDoc.value.originalImage.files[0]);
@@ -52,6 +54,8 @@ export class SimpleGameCreatorFormComponent extends AbstractForm implements OnIn
       },
       (error: Error) => {
         console.error(`${error.name} : ${error.message}`);
+        alert(error.message);
+        this.disableButton = false;
       });
   }
 }

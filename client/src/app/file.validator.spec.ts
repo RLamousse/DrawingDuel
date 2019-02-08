@@ -1,5 +1,5 @@
 import { BITMAP_HEADER_24BPP, HEADER_SIZE_BYTES } from "../../../common/image/bitmap/bitmap-utils";
-import FakeControl from "./fakeControl";
+import FakeControl from "./Interfaces/fakeControl";
 import FileValidator from "./file.validator";
 
 describe("FileValidator", () => {
