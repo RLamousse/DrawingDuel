@@ -20,6 +20,8 @@ import { VueAdminComponent } from "./vue-admin/vue-admin.component";
 import { WindowEventHandlerDirective } from "./window-event-handler.directive";
 import { PlayViewComponent } from './play-view/play-view.component';
 import { SceneCreatorComponent } from './scene-creator/scene-creator.component';
+import { SceneRendererService } from "./scene-creator/scene-renderer.service";
+import { Form3DService } from "./scene-creator/3DFormService/3-dform.service";
 
 @NgModule({
   declarations: [
@@ -50,7 +52,7 @@ import { SceneCreatorComponent } from './scene-creator/scene-creator.component';
     MaterialFileInputModule,
     MatDialogModule,
   ],
-  providers: [UNListService, FormPostService, GameService],
+  providers: [UNListService, FormPostService, GameService, SceneRendererService, Form3DService],
   bootstrap: [AppComponent],
   entryComponents: [SimpleGameCreatorFormComponent, Create3DGameComponent],
   schemas: [NO_ERRORS_SCHEMA],

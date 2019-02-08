@@ -21,6 +21,7 @@ export class Form3DService {
       geometry.faces[i].color.setHex(hex);
       geometry.faces[i + 1].color.setHex(hex);
     }
+    geometry.boundingBox = new THREE.Box3(new THREE.Vector3(800,800,400));
 
     const material = new THREE.MeshBasicMaterial({ vertexColors: THREE.FaceColors, overdraw: 0.5 });
     return new THREE.Mesh(geometry, material);

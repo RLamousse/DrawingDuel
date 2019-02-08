@@ -1,8 +1,11 @@
 import { Injectable } from '@angular/core';
 import * as THREE from 'three';
+import { Form3DService } from "./3DFormService/3-dform.service";
 
 @Injectable()
 export class SceneRendererService {
+
+  public constructor(private formService: Form3DService) { };
 
   private container: HTMLDivElement;
   private camera: THREE.PerspectiveCamera;
@@ -10,16 +13,16 @@ export class SceneRendererService {
   private scene: THREE.Scene;
   //private controls: THREE.FirstPersonControls;
 
-  private fieldOfView = 70;
-  private nearClippingPane = 1;
-  private farClippingPane = 1000;
+  private fieldOfView: number = 90;
+  private nearClippingPane: number = 1;
+  private farClippingPane: number = 1000;
 
-  private cameraX = 0;
-  private cameraY = 0;
-  private cameraZ = 400;
+  private cameraX: number = 0;
+  private cameraY: number = 0;
+  private cameraZ: number = 400;
 
   private setRenderer(): void {
-    this.renderer = new THREE.WebGLRenderer({ antialias: true });
+    this.renderer = new THREE.WebGLRenderer();
     this.renderer.setPixelRatio(devicePixelRatio);
     this.renderer.setSize(this.container.clientWidth, this.container.clientHeight);
     this.container.appendChild(this.renderer.domElement);
@@ -28,7 +31,13 @@ export class SceneRendererService {
   }
 
   private renderLoop(): void {
+    requestAnimationFrame(() => this.renderLoop());
     this.renderer.render(this.scene, this.camera);
+  }
+
+  private create3DObjects() {
+
+    this.scene.add(this.formService.createCube());
   }
 
   private setCamera(): void {
@@ -51,7 +60,7 @@ export class SceneRendererService {
   }
 
   private getAspectRatio() {
-    return this.container.clientWidth / this.container.clientHeight;
+    return (this.container.clientWidth) / (this.container.clientHeight);
   }
 
   public onResize() {
@@ -62,10 +71,10 @@ export class SceneRendererService {
   }
 
   public init(container: HTMLDivElement): void {
+    this.container = container;
     this.setScene();
     //this.controls = new THREE.FirstPersonControls(this.camera, this.container);
-
-    this.container = container;
+    this.create3DObjects();
     this.setRenderer();
   }
 }
