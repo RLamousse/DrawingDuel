@@ -4,30 +4,23 @@ import FileValidator from "./file.validator";
 
 describe("FileValidator", () => {
 
-  it("should return file isn't a bitmap", async (done) => {
+  it("should return file isn't a bitmap", () => {
     const fakeControl: FakeControl = {
       value: {
         files: [new File([""], "maxime", { type: "text/html" })],
       },
     };
-
-    return FileValidator.fileValidator(fakeControl).then((value) => {
-      expect(value).toEqual({ imageType: "L'image doit être de type bmp" });
-      done();
-    });
+    expect(FileValidator.typeValidator(fakeControl)).toEqual({ imageType: "L'image doit être de type bmp" });
   });
 
-  it("should return file is too big", async (done) => {
+  it("should return file is too big", () => {
     const fakeControl: FakeControl = {
       value: {
         files: [new File(new Array(FileValidator.MAX_IMAGE_SIZE + 1).fill(0), "maxime", { type: "image/bmp" })],
       },
     };
-
-    return FileValidator.fileValidator(fakeControl).then((value) => {
-      expect(value).toEqual({imageSize: `L'image est invalide (taille maximale de ${FileValidator.MAX_IMAGE_SIZE})`});
-      done();
-    });
+    expect(FileValidator.sizeValidator(fakeControl))
+    .toEqual({imageSize: `L'image est invalide (taille maximale de ${FileValidator.MAX_IMAGE_SIZE})`});
   });
 
   it("should return file isn't the right dimensions", async (done) => {
@@ -40,7 +33,7 @@ describe("FileValidator", () => {
       },
     };
 
-    return FileValidator.fileValidator(fakeControl).then((value) => {
+    return FileValidator.dimensionValidator(fakeControl).then((value) => {
       expect(value).toEqual({imageDimension: "L'image n'est pas de la bonne dimension"});
       done();
     });
