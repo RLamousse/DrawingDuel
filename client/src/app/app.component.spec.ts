@@ -7,16 +7,17 @@ import { AppComponent } from "./app.component";
 import { InitialViewComponent } from "./initial-view/initial-view.component";
 
 describe("AppComponent", () => {
-  beforeEach(async(() => {
-    return TestBed.configureTestingModule({
+  beforeEach((done) => {
+    TestBed.configureTestingModule({
       declarations: [
         AppComponent,
         InitialViewComponent,
       ],
       imports: [HttpClientModule, FormsModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    }).compileComponents();
-  }));
+    });
+    done();
+  });
 
   it("should create the app", async(() => {
     const fixture: ComponentFixture<AppComponent> = TestBed.createComponent(AppComponent);

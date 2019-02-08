@@ -79,16 +79,7 @@ export class GameCreatorService {
                 Math.random() * (this._MAX_GENERATED_SCORE - this._MIN_GENERATED_SCORE)).toFixed(0));
         }
 
-        scoreArray.sort((a: number, b: number) => {
-            if (a < b) {
-                return -1;
-            }
-            if (a > b) {
-                return 1;
-            } else {
-                return 0;
-            }
-        });
+        scoreArray.sort();
 
         return [{name: this._GENERATED_NAMES[2], time: scoreArray[2]},
                 {name: this._GENERATED_NAMES[1], time: scoreArray[1]},

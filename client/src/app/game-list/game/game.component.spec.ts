@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import {Router} from "@angular/router";
 import { GameComponent } from "./game.component";
 
 describe("GameComponent", () => {
@@ -8,6 +9,9 @@ describe("GameComponent", () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ GameComponent ],
+      providers: [
+         { provide: Router, useClass: class { public navigate: jasmine.Spy = jasmine.createSpy("navigate"); } },
+       ],
     });
     fixture = TestBed.createComponent(GameComponent);
     component = fixture.componentInstance;

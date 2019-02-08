@@ -110,7 +110,7 @@ server coverage:
 .lint:
   extends: .post test
   stage: post-test
-  script: yarn lint --fix
+  script: yarn lint
   allow_failure: true
 
 client lint:

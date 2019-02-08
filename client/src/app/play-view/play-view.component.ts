@@ -12,4 +12,7 @@ export class PlayViewComponent implements OnInit {
   public originalImage: string = "http://localhost:3000/tiger.bmp";
   public ngOnInit(): void {/*vide*/ }
 
+  ngOnInit() {
+  }
+
 }
