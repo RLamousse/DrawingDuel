@@ -6,7 +6,7 @@ import "reflect-metadata";
 import {Message} from "../../../common/communication/messages/message";
 import {IBitmapDiffControllerResponse} from "../../../common/communication/response/bitmap-diff-controller.response";
 import {BITMAP_MEME_TYPE} from "../../../common/image/bitmap/bitmap-utils";
-import {Game, TIMES_ARRAY_SIZE} from "../../../common/model/game";
+import {Game, GameType, TIMES_ARRAY_SIZE} from "../../../common/model/game";
 import {
     DIFFERENCE_ERROR_MESSAGE, FORM_DATA_CONTENT_TYPE, MODIFIED_IMAGE_FIELD_NAME,
     NAME_ERROR_MESSAGE, ORIGINAL_IMAGE_FIELD_NAME,
@@ -49,7 +49,7 @@ export class GameCreatorService {
         fs.writeFileSync(this._PATH_TO_IMAGES + gameName + this._LOCAL_PICTURE_IMAGES_END[1], modifiedImage.buffer);
 
         const GAME: Game = {
-            isSimpleGame: true,
+            gameType: GameType.SIMPLE,
             bestMultiTimes: this.createRandomScores(),
             bestSoloTimes: this.createRandomScores(),
             gameName: gameName,

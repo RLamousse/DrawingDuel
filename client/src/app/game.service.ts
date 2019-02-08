@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { of, Observable } from "rxjs";
 import { catchError } from "rxjs/operators";
-import { Game } from "../../../common/model/game";
+import {Game, GameType} from "../../../common/model/game";
 
 @Injectable({
   providedIn: "root",
@@ -46,10 +46,16 @@ export class GameService {
 
   public pushGames(gamesToPush: Game[]): void {
     for (const i in gamesToPush) {
-      if (String(gamesToPush[i].isSimpleGame) === "true") {
-        this.simpleGames.push(gamesToPush[i]);
-      } else {
-        this.freeGames.push(gamesToPush[i]);
+      switch (gamesToPush[i].gameType) {
+        case GameType.SIMPLE:
+          this.simpleGames.push(gamesToPush[i]);
+          break;
+        case GameType.FREE:
+          this.freeGames.push(gamesToPush[i]);
+          break;
+        default:
+          // NOP
+              break;
       }
     }
   }

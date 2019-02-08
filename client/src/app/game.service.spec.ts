@@ -1,6 +1,6 @@
 import { HttpClientModule } from "@angular/common/http";
 import { async, TestBed } from "@angular/core/testing";
-import { Game } from "../../../common/model/game";
+import {Game, GameType} from "../../../common/model/game";
 import { GameService } from "./game.service";
 
 describe("GameService", () => {
@@ -16,7 +16,7 @@ describe("GameService", () => {
       modifiedImage: "modName",
       bestSoloTimes: [{ name: "mockedUser1", time: 120 }],
       bestMultiTimes: [{ name: "mockedUser2", time: 23 }],
-      isSimpleGame: false,
+      gameType: GameType.FREE,
     },
     {
       gameName: "mockedFreeName",
@@ -24,7 +24,7 @@ describe("GameService", () => {
       modifiedImage: "modName",
       bestSoloTimes: [{ name: "mockedUser1", time: 120 }],
       bestMultiTimes: [{ name: "mockedUser2", time: 23 }],
-      isSimpleGame: true,
+      gameType: GameType.SIMPLE,
     },
   ];
 
@@ -34,7 +34,7 @@ describe("GameService", () => {
     modifiedImage: "modName",
     bestSoloTimes: [{ name: "mockedUser1", time: 120 }],
     bestMultiTimes: [{ name: "mockedUser2", time: 23 }],
-    isSimpleGame: true,
+    gameType: GameType.SIMPLE,
   }];
 
   const mockFreeGameList: Game[] = [{
@@ -43,7 +43,7 @@ describe("GameService", () => {
     modifiedImage: "modName",
     bestSoloTimes: [{ name: "mockedUser1", time: 120 }],
     bestMultiTimes: [{ name: "mockedUser2", time: 23 }],
-    isSimpleGame: false,
+    gameType: GameType.FREE,
   }];
 
   beforeEach(async(() => {
@@ -91,7 +91,7 @@ describe("GameService", () => {
       modifiedImage: "name2.bmp",
       bestSoloTimes: [],
       bestMultiTimes: [],
-      isSimpleGame: true,
+      gameType: GameType.SIMPLE,
     }];
     serviceGame.convertScoresObject(incompleteList);
     expect(incompleteList[0].gameName).toBe("incompleteList");
