@@ -7,6 +7,7 @@ import { MatDialogModule, MatDialogRef } from "@angular/material/dialog";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { MaterialFileInputModule } from "ngx-material-file-input";
+import { BITMAP_HEADER_24BPP, HEADER_SIZE_BYTES } from "../../../../common/image/bitmap/bitmap-utils";
 import FileValidator from "../file.validator";
 import { FormPostService } from "../form-post.service";
 import { SimpleGameCreatorFormComponent } from "./simple-game-creator-form.component";
@@ -92,9 +93,12 @@ describe("SimpleGameCreatorFormComponent", () => {
   });
 
   it("should have an error if the file isn't the right dimensions", async () => {
+    // tslint:disable-next-line:no-any
+    const fakeHeader: any[] = new Array(HEADER_SIZE_BYTES);
+    fakeHeader.unshift(...BITMAP_HEADER_24BPP);
     const originalImage: AbstractControl = component.formDoc.controls["originalImage"];
     originalImage.setValue({
-      files: [new File(new Array(FileValidator.MAX_IMAGE_SIZE - 1).fill(0), "maxime.bmp", {type: "image/bmp"})],
+      files: [new File(fakeHeader, "maxime.bmp", {type: "image/bmp"})],
     });
     expect(originalImage.valid).toBeFalsy();
   });

@@ -23,13 +23,13 @@ export class SimpleGameCreatorFormComponent implements OnInit {
     this.formDoc = this._fb.group({
       originalImage: [
         undefined,
-        [Validators.required],
-        FileValidator.fileValidator,
+        [Validators.required, FileValidator.sizeValidator, FileValidator.typeValidator],
+        FileValidator.dimensionValidator,
       ],
       modifiedImage: [
         undefined,
-        [Validators.required],
-        FileValidator.fileValidator,
+        [Validators.required, FileValidator.sizeValidator, FileValidator.typeValidator],
+        FileValidator.dimensionValidator,
       ],
       name: [
         undefined,
