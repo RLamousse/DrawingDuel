@@ -22,6 +22,8 @@ export class GameCreatorController {
     private readonly _cpUpload: e.RequestHandler;
 
     public constructor(@inject(Types.GameCreatorService) private gameCreatorService: GameCreatorService) {
+
+//TODO copy rightly named files in tmp, and tell that to the phillips too!
         this._storage = multer.diskStorage({
             destination: (req: Express.Request, file: Express.Multer.File, cb: (error: Error | null, destination: string) => void) => {
                 cb(null, os.tmpdir());
@@ -47,8 +49,8 @@ export class GameCreatorController {
 
                 res.json(await this.gameCreatorService.createSimpleGame(
                     req.body[GAME_NAME_FIELD],
-                    req.files[ORIGINAL_IMAGE_FIELD_NAME][0],
-                    req.files[MODIFIED_IMAGE_FIELD_NAME][0]));
+                    req.files[ORIGINAL_IMAGE_FIELD_NAME][0].path,
+                    req.files[MODIFIED_IMAGE_FIELD_NAME][0].path));
 
             } catch (error) {
                 next(error);
