@@ -3,10 +3,10 @@ import * as FormData from "form-data";
 import * as fs from "fs";
 import {inject, injectable} from "inversify";
 import "reflect-metadata";
-import {Message} from "../../../common/communication/message";
+import {Message} from "../../../common/communication/messages/message";
+import {IBitmapDiffControllerResponse} from "../../../common/communication/response/bitmap-diff-controller.response";
 import {BITMAP_MEME_TYPE} from "../../../common/image/bitmap/bitmap-utils";
 import {Game, TIMES_ARRAY_SIZE} from "../../../common/model/game";
-import {IBitmapDiffControllerResponse} from "../controllers/bitmap-diff.controller";
 import {
     DIFFERENCE_ERROR_MESSAGE, FORM_DATA_CONTENT_TYPE, MODIFIED_IMAGE_FIELD_NAME,
     NAME_ERROR_MESSAGE, ORIGINAL_IMAGE_FIELD_NAME,

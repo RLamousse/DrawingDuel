@@ -2,6 +2,7 @@ import {NextFunction, Request, Response, Router} from "express";
 import * as HttpStatus from "http-status-codes";
 import { inject, injectable } from "inversify";
 import multer = require("multer");
+import {IBitmapDiffControllerResponse} from "../../../common/communication/response/bitmap-diff-controller.response";
 import { Bitmap } from "../../../common/image/bitmap/bitmap";
 import { BitmapFactory } from "../images/bitmap/bitmap-factory";
 import { BitmapWriter } from "../images/bitmap/bitmap-writer";
@@ -83,9 +84,4 @@ export class BitmapDiffController {
         }
     }
 
-}
-
-export interface IBitmapDiffControllerResponse {
-    fileName: string;
-    filePath: string;
 }
