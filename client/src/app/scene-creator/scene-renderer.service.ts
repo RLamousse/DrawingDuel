@@ -25,15 +25,13 @@ export class SceneRendererService {
   private cameraY: number = 0;
   private cameraZ: number = 100;
 
-  private obj3DToCreate: number = 100;
+  private obj3DToCreate: number = 200;
 
   private setRenderer(): void {
     this.renderer = new THREE.WebGLRenderer();
     this.renderer.setClearColor(0x0b7b90);
     this.renderer.setPixelRatio(devicePixelRatio);
     this.renderer.setSize(this.container.clientWidth, this.container.clientHeight);
-    this.renderer.shadowMap.type = THREE.BasicShadowMap;
-    this.renderer.shadowMap.enabled = true;
     this.container.appendChild(this.renderer.domElement);
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
 
@@ -59,23 +57,28 @@ export class SceneRendererService {
       switch (randomObject) {
         case objectGemoetry.sphere: {
           object = this.formService.createSphere();
-          object.position.set(this.getRandomValue(0, 10), this.getRandomValue(0,10), this.getRandomValue(this.nearClippingPane, this.farClippingPane));
-          this.scene.add(object);
           break;
         }
         case objectGemoetry.cube: {
+          object = this.formService.createCube();
           break;
         }
         case objectGemoetry.cone: {
+          object = this.formService.createCone();
           break;
         }
         case objectGemoetry.cylinder: {
+          object = this.formService.createSphere();
           break;
         }
         case objectGemoetry.pyramid: {
+          object = this.formService.createPyramid();
           break;
         }
-          }
+      }
+      object.position.set(this.getRandomValue(-200, 200), this.getRandomValue(-200, 200), this.getRandomValue(-200, 200));
+      object.rotation.set(this.getRandomValue(0, 360), this.getRandomValue(0, 360), this.getRandomValue(0, 360));
+      this.scene.add(object);
     }
   }
 
