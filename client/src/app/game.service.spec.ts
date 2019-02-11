@@ -1,15 +1,15 @@
 import { HttpClientModule } from "@angular/common/http";
 import { async, TestBed } from "@angular/core/testing";
-import {Game, GameType} from "../../../common/model/game";
+import {IGame, GameType} from "../../../common/model/IGame";
 import { GameService } from "./game.service";
 
 describe("GameService", () => {
   let serviceGame: GameService;
   let spyService: jasmine.SpyObj<GameService>;
 
-  const emptyMockedGameList: Game[] = [];
+  const emptyMockedGameList: IGame[] = [];
 
-  const mockMixGameList: Game[] = [
+  const mockMixGameList: IGame[] = [
     {
       gameName: "mockedSimpleName",
       originalImage: "oriName",
@@ -28,7 +28,7 @@ describe("GameService", () => {
     },
   ];
 
-  const mockSimpleGameList: Game[] = [{
+  const mockSimpleGameList: IGame[] = [{
     gameName: "mockedName",
     originalImage: "oriName",
     modifiedImage: "modName",
@@ -37,7 +37,7 @@ describe("GameService", () => {
     gameType: GameType.SIMPLE,
   }];
 
-  const mockFreeGameList: Game[] = [{
+  const mockFreeGameList: IGame[] = [{
     gameName: "mockedName",
     originalImage: "oriName",
     modifiedImage: "modName",
@@ -85,7 +85,7 @@ describe("GameService", () => {
   });
 
   it("should return and modify originalImage if no time inside list", () => {
-    const incompleteList: Game[] = [{
+    const incompleteList: IGame[] = [{
       gameName: "incompleteList",
       originalImage: "name1.bmp",
       modifiedImage: "name2.bmp",

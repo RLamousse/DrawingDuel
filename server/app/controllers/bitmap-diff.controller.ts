@@ -4,6 +4,7 @@ import { inject, injectable } from "inversify";
 import multer = require("multer");
 import {IBitmapDiffControllerResponse} from "../../../common/communication/response/bitmap-diff-controller.response";
 import { Bitmap } from "../../../common/image/bitmap/bitmap";
+import {bufferToNumberArray} from "../../../common/util/util";
 import { BitmapFactory } from "../images/bitmap/bitmap-factory";
 import { BitmapWriter } from "../images/bitmap/bitmap-writer";
 import { BitmapDiffService } from "../services/bitmap-diff.service";
@@ -47,12 +48,11 @@ export class BitmapDiffController {
                                                                                                     "m-" + diffFileName);
 
                         const diffBitmap: Bitmap = this.bitmapDiffService.getDiff(diffFileName, originalBitmap, modifiedBitmap);
-                        const bitmapDiffPath: string = this.bitmapWriter.write(diffBitmap);
                         res.status((diffBitmap ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR));
 
                         const response: IBitmapDiffControllerResponse = {
                             fileName: diffFileName,
-                            filePath: bitmapDiffPath,
+                            diffImageBuffer: bufferToNumberArray(this.bitmapWriter.getBitmapBytes(diffBitmap)),
                         };
                         res.json(response);
                     } catch (error) {

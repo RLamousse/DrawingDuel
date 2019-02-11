@@ -33,7 +33,7 @@ describe("A service that creates a game", () => {
     it("should throw a name error if the game name  is already in the data base", async () => {
         const MOCK: MockAdapter = new AxiosAdapter(Axios);
 
-        MOCK.onGet("http://localhost:3000/api/data-base/get-game/?gameName=nonExistingGameTest")
+        MOCK.onGet("http://localhost:3000/api/data-base/games/nonExistingGameTest")
             .reply(HttpStatus.OK);
 
         try {
@@ -51,7 +51,7 @@ describe("A service that creates a game", () => {
 
         const MOCK: MockAdapter = new AxiosAdapter(Axios);
 
-        MOCK.onGet("http://localhost:3000/api/data-base/get-game/?gameName=someGameTest")
+        MOCK.onGet("http://localhost:3000/api/data-base/games/someGameTest")
             .reply(HttpStatus.INTERNAL_SERVER_ERROR, {message: NOT_EXISTING_GAME_MESSAGE_ERROR});
 
         MOCK.onGet("http://localhost:3000/api/image-diff/")
@@ -74,7 +74,7 @@ describe("A service that creates a game", () => {
 
         const MOCK: MockAdapter = new AxiosAdapter(Axios);
 
-        MOCK.onGet("http://localhost:3000/api/data-base/get-game/?gameName=someGameTest")
+        MOCK.onGet("http://localhost:3000/api/data-base/games/someGameTest")
             .reply(HttpStatus.INTERNAL_SERVER_ERROR, {message: NOT_EXISTING_GAME_MESSAGE_ERROR});
 
         MOCK.onGet("http://localhost:3000/api/image-diff/")
@@ -97,7 +97,7 @@ describe("A service that creates a game", () => {
 
         const MOCK: MockAdapter = new AxiosAdapter(Axios);
 
-        MOCK.onGet("http://localhost:3000/api/data-base/get-game/?gameName=someGameTest")
+        MOCK.onGet("http://localhost:3000/api/data-base/game/someGameTest")
             .reply(500, {message: NOT_EXISTING_GAME_MESSAGE_ERROR});
 
         MOCK.onGet("http://localhost:3000/api/image-diff/")
@@ -106,7 +106,7 @@ describe("A service that creates a game", () => {
                                    filePath: PATH_TO_TMP + FILES_TO_COPY[2],
             });
 
-        MOCK.onPost("http://localhost:3000/api/data-base/add-game")
+        MOCK.onPost("http://localhost:3000/api/data-base/games")
             .reply(HttpStatus.OK);
 
         expect((await GAME_CREATOR_SERVICE.createSimpleGame(

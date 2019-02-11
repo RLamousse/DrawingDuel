@@ -3,3 +3,7 @@ export function create2dArray<T>(width: number, height: number, filledWith: T): 
         .fill(filledWith)
         .map(() => new Array(width).fill(filledWith));
 }
+
+export function bufferToNumberArray(buffer: Buffer): number[] {
+    return Array.from(new Uint8Array(buffer.buffer))
+}

@@ -1,6 +1,6 @@
-import {Game, GameType} from "../../../common/model/game";
+import {IGame, GameType} from "../../../common/model/IGame";
 
-export const MOCKMIXGAMELIST: Game[] = [
+export const MOCKMIXGAMELIST: IGame[] = [
     {
       gameName: "mockedSimpleGameName1",
       originalImage: "tiger.bmp",

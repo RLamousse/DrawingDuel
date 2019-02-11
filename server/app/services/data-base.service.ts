@@ -2,7 +2,7 @@ import { injectable } from "inversify";
 import {Collection, Db, InsertOneWriteOpResult, MongoClient, MongoError} from "mongodb";
 import "reflect-metadata";
 import {Message} from "../../../common/communication/messages/message";
-import {Game} from "../../../common/model/game";
+import {IGame} from "../../../common/model/IGame";
 import {GAME_FORMAT_ERROR_MESSAGE, USERNAME_FORMAT_ERROR_MESSAGE} from "../controllers/data-base.controller";
 
 export const ALREADY_EXISTING_USER_MESSAGE_ERROR: string = "ERROR: the specified usename already exists!";
@@ -27,7 +27,7 @@ export class DataBaseService {
 
     private _dataBase: Db;
     private _users: Collection<string>;
-    private _games: Collection<Game>;
+    private _games: Collection<IGame>;
 
     public constructor() {
         MongoClient.connect(this.DB_URL, {useNewUrlParser : true}, (err: MongoError, client: MongoClient) => {
@@ -106,7 +106,7 @@ export class DataBaseService {
         }
     }
 
-    public async addGame(game: Game): Promise<Message> {
+    public async addGame(game: IGame): Promise<Message> {
         this.testGameStructure(game);
         if (await this.containsGame(game.gameName)) {
             throw new Error(ALREADY_EXISTING_GAME_MESSAGE_ERROR);
@@ -131,9 +131,9 @@ export class DataBaseService {
         }
     }
 
-    public async getGames(): Promise<Game[]> {
-        return new Promise<Game[]>((resolve: (value?: Game[] | PromiseLike<Game[]>) => void, reject: (reason?: Error) => void) => {
-            this._games.find().toArray((error: MongoError, res: Game[]) => {
+    public async getGames(): Promise<IGame[]> {
+        return new Promise<IGame[]>((resolve: (value?: IGame[] | PromiseLike<IGame[]>) => void, reject: (reason?: Error) => void) => {
+            this._games.find().toArray((error: MongoError, res: IGame[]) => {
                 if (error) {
                     reject( new Error(DATA_BASE_MESSAGE_ERROR));
                 }
@@ -142,13 +142,13 @@ export class DataBaseService {
         });
     }
 
-    public async getGame(gameName: string): Promise<Game> {
+    public async getGame(gameName: string): Promise<IGame> {
         if (typeof gameName !== "string" || gameName === "") {
             throw new Error(USERNAME_FORMAT_ERROR_MESSAGE);
         }
 
-        return new Promise<Game>((resolve: (value?: Game | PromiseLike<Game>) => void, reject: (reason?: Error) => void) => {
-            this._games.find({[GAME_NAME_FIELD] : {$eq : gameName}}).toArray((error: MongoError, res: Game[]) => {
+        return new Promise<IGame>((resolve: (value?: IGame | PromiseLike<IGame>) => void, reject: (reason?: Error) => void) => {
+            this._games.find({[GAME_NAME_FIELD] : {$eq : gameName}}).toArray((error: MongoError, res: IGame[]) => {
                 if (error) {
                     reject( new Error(DATA_BASE_MESSAGE_ERROR));
                 } else if (res.length === 0) {
@@ -159,7 +159,7 @@ export class DataBaseService {
         });
     }
 
-    public testGameStructure(game: Game): void {
+    public testGameStructure(game: IGame): void {
         try {
             game.gameName = game.gameName;
         } catch (error) {

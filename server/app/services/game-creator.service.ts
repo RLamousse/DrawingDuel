@@ -5,8 +5,9 @@ import {inject, injectable} from "inversify";
 import "reflect-metadata";
 import {Message} from "../../../common/communication/messages/message";
 import {IBitmapDiffControllerResponse} from "../../../common/communication/response/bitmap-diff-controller.response";
+import {Bitmap} from "../../../common/image/bitmap/bitmap";
 import {BITMAP_MEME_TYPE} from "../../../common/image/bitmap/bitmap-utils";
-import {Game, GameType, TIMES_ARRAY_SIZE} from "../../../common/model/game";
+import {IGame, GameType, TIMES_ARRAY_SIZE} from "../../../common/model/IGame";
 import {
     DIFFERENCE_ERROR_MESSAGE, FORM_DATA_CONTENT_TYPE, MODIFIED_IMAGE_FIELD_NAME,
     NAME_ERROR_MESSAGE, ORIGINAL_IMAGE_FIELD_NAME,
@@ -16,7 +17,6 @@ import {BitmapFactory} from "../images/bitmap/bitmap-factory";
 import Types from "../types";
 import {
     ALREADY_EXISTING_GAME_MESSAGE_ERROR, GAME_FIELD,
-    GAME_NAME_FIELD,
     NOT_EXISTING_GAME_MESSAGE_ERROR
 } from "./data-base.service";
 import {DifferenceEvaluatorService} from "./difference-evaluator.service";
@@ -41,14 +41,14 @@ export class GameCreatorService {
         const bitmapDiffImage: IBitmapDiffControllerResponse = await this.getDiffImage(originalImageFile, modifiedImageFile);
         this.testNumberOfDifference(bitmapDiffImage);
 
-        return this.generateGame(gameName, originalImageFile, modifiedImageFile);
+        return this.generateGame(gameName, originalImageFile, modifiedImageFile, Buffer.from(bitmapDiffImage.diffImageBuffer));
     }
 
-    private async generateGame(gameName: string, originalImage: Buffer, modifiedImage: Buffer): Promise<Message> {
+    private async generateGame(gameName: string, originalImage: Buffer, modifiedImage: Buffer, diffImageBuffer: Buffer): Promise<Message> {
         fs.writeFileSync(this._PATH_TO_IMAGES + gameName + this._LOCAL_PICTURE_IMAGES_END[0], originalImage.buffer);
         fs.writeFileSync(this._PATH_TO_IMAGES + gameName + this._LOCAL_PICTURE_IMAGES_END[1], modifiedImage.buffer);
 
-        const GAME: Game = {
+        const GAME: IGame = {
             gameType: GameType.SIMPLE,
             bestMultiTimes: this.createRandomScores(),
             bestSoloTimes: this.createRandomScores(),
@@ -57,8 +57,8 @@ export class GameCreatorService {
             originalImage: this._PATH_TO_IMAGES + modifiedImage + this._LOCAL_PICTURE_IMAGES_END[1],
         };
         try {
-            await Axios.post<Game>("http://localhost:3000/api/data-base/add-game",
-                                   {data: {[GAME_FIELD]: GAME}});
+            await Axios.post<IGame>("http://localhost:3000/api/data-base/games",
+                                    {data: {[GAME_FIELD]: GAME}});
         } catch (error) {
             if (error.response.data.message === ALREADY_EXISTING_GAME_MESSAGE_ERROR) {
                 throw new Error(NAME_ERROR_MESSAGE);
@@ -89,7 +89,7 @@ export class GameCreatorService {
     private async testNameExistance(gameName: string): Promise<void> {
 
         try {
-            await Axios.get<Game>("http://localhost:3000/api/data-base/get-game/?" + GAME_NAME_FIELD + "=" + gameName);
+            await Axios.get<IGame>("http://localhost:3000/api/data-base/games/" + gameName);
         } catch (error) {
             if (error.response.data.message !== NOT_EXISTING_GAME_MESSAGE_ERROR) {
                 throw new Error("dataBase: " + error.response.data.message);
@@ -103,9 +103,8 @@ export class GameCreatorService {
     private testNumberOfDifference(diffImage: IBitmapDiffControllerResponse): void {
         let diffNumber: number;
         try {
-            diffNumber = this.differenceEvaluatorService.getNDifferences(
-                BitmapFactory.createBitmap(diffImage.fileName,
-                                           fs.readFileSync(diffImage.filePath)).pixels);
+            const diffBitmap: Bitmap = BitmapFactory.createBitmap(diffImage.fileName, Buffer.from(diffImage.diffImageBuffer));
+            diffNumber = this.differenceEvaluatorService.getNDifferences(diffBitmap.pixels);
         } catch (error) {
             throw new Error("bmp diff counting: " + error.message);
         }

@@ -1,6 +1,6 @@
 
 import { Component, Input, OnInit } from "@angular/core";
-import { Game } from "../../../../common/model/game";
+import { IGame } from "../../../../common/model/IGame";
 import { GameService } from "../game.service";
 import { MOCKMIXGAMELIST } from "../mockGames";
 
@@ -17,7 +17,7 @@ export class GameListComponent implements OnInit {
   public constructor(private gameService: GameService) {/*vide*/}
 
   public ngOnInit(): void {
-    this.gameService.getGames().subscribe((gamesToModify: Game[]) => {
+    this.gameService.getGames().subscribe((gamesToModify: IGame[]) => {
       this.gameService.convertScoresObject(gamesToModify);
       this.gameService.pushGames(gamesToModify);
       this.gameService.convertScoresObject(MOCKMIXGAMELIST);
