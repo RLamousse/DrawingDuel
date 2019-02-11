@@ -14,18 +14,18 @@ export class DiffValidatorController {
     public get router(): Router {
         const router: Router = Router();
         router.post("/",
-                    (req: Request, res: Response, next: NextFunction) => {
-                    try {
-                        assertFieldsOfRequest(req, "gameName", "coord");
-                        const body: IDiffValidatorControllerRequest = req.body;
-                        const response: IDiffValidatorControllerResponse = {
-                            validDifference: this.diffValidatorService.hasDifference(body["gameName"], body["coord"]),
-                        };
-                        res.json(response);
-                    } catch (error) {
-                        return next(error);
-                    }
-            });
+                    async (req: Request, res: Response, next: NextFunction) => {
+                        try {
+                            assertFieldsOfRequest(req, "gameName", "coord");
+                            const body: IDiffValidatorControllerRequest = req.body;
+                            const response: IDiffValidatorControllerResponse = {
+                                validDifference: await this.diffValidatorService.hasDifference(body["gameName"], body["coord"]),
+                            };
+                            res.json(response);
+                        } catch (error) {
+                            return next(error);
+                        }
+                    });
 
         return router;
     }

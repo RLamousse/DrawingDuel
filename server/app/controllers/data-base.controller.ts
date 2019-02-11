@@ -3,6 +3,7 @@ import e = require("express");
 import { inject, injectable } from "inversify";
 import {DataBaseService, GAME_FIELD, GAME_NAME_FIELD, USER_NAME_FIELD} from "../services/data-base.service";
 import Types from "../types";
+import {executeSafely} from "./controller-utils";
 
 export const USERNAME_FORMAT_ERROR_MESSAGE: string = "ERROR: the username has the wrong format!";
 export const GAME_NAME_FORMAT_ERROR_MESSAGE: string = "ERROR: the game name has the wrong format!";
@@ -16,63 +17,45 @@ export class DataBaseController {
     public get router(): Router {
         const router: Router = Router();
 
-        router.post("/add-user", async (req: Request, res: Response, next: NextFunction) => {
-            try {
+        router.post("/users", async (req: Request, res: Response, next: NextFunction) => {
+            executeSafely(next, async () => {
                 this.testUserName(req);
                 res.json(await this.dataBaseService.addUser(req.query[USER_NAME_FIELD]));
-            } catch (error) {
-                next(error);
-            }
-
+            });
         });
 
-        router.delete("/delete-user", async (req: Request, res: Response, next: NextFunction) => {
-            try {
+        router.delete("/users/:userId", async (req: Request, res: Response, next: NextFunction) => {
+            executeSafely(next, async () => {
                 this.testUserName(req);
-                res.json(await this.dataBaseService.deleteUser(req.query[USER_NAME_FIELD]));
-            } catch (error) {
-                next(error);
-            }
-
+                res.json(await this.dataBaseService.deleteUser(req.query["userId"]));
+            });
         });
 
-        router.delete("/delete-game", async (req: Request, res: Response, next: NextFunction) => {
-            try {
-                this.testGameName(req);
-                res.json(await this.dataBaseService.deleteGame(req.query[GAME_NAME_FIELD]));
-            } catch (error) {
-                next(error);
-            }
-
-        });
-
-        router.post("/add-game", async (req: Request, res: Response, next: NextFunction) => {
-            try {
+        router.post("/games", async (req: Request, res: Response, next: NextFunction) => {
+            executeSafely(next, async () => {
                 this.testGame(req);
                 res.json(await this.dataBaseService.addGame(req.body[GAME_FIELD]));
-            } catch (error) {
-                next(error);
-            }
-
+            });
         });
 
-        router.get("/get-games", async (req: Request, res: Response, next: NextFunction) => {
-            try {
-                res.json(await this.dataBaseService.getGames());
-            } catch (error) {
-                next(error);
-            }
-
-        });
-
-        router.get("/get-game", async (req: Request, res: Response, next: NextFunction) => {
-            try {
+        router.delete("/games/:id", async (req: Request, res: Response, next: NextFunction) => {
+            executeSafely(next, async () => {
                 this.testGameName(req);
-                res.json(await this.dataBaseService.getGame(req.query.gameName));
-            } catch (error) {
-                next(error);
-            }
+                res.json(await this.dataBaseService.deleteGame(req.query["id"]));
+            });
+        });
 
+        router.get("/games", async (req: Request, res: Response, next: NextFunction) => {
+            executeSafely(next, async () => {
+                res.json(await this.dataBaseService.getGames());
+            });
+        });
+
+        router.get("/games/:gameName", async (req: Request, res: Response, next: NextFunction) => {
+            executeSafely(next, async () => {
+                this.testGameName(req);
+                res.json(await this.dataBaseService.getGame(req.query["gameName"]));
+            });
         });
 
         return router;
