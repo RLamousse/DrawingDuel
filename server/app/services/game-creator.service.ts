@@ -33,18 +33,28 @@ export class GameCreatorService {
     private readonly _GENERATED_NAMES: string[] = ["normie", "hardTryer4269", "xXx_D4B0W5_xXx"];
     private readonly _LOCAL_PICTURE_IMAGES_END: string[] = ["-originalImage.bmp", "-modifiedImage.bmp"];
     private readonly _PATH_TO_IMAGES: string = "public/";
+    private readonly SUCCESS_MESSAGE: Message = {title: "Game created", body: "The game was successfully created!"};
 
     public async createSimpleGame(gameName: string, originalImageFile: Buffer, modifiedImageFile: Buffer): Promise<Message> {
 
         await this.testNameExistance(gameName);
 
         const bitmapDiffImage: IBitmapDiffControllerResponse = await this.getDiffImage(originalImageFile, modifiedImageFile);
-        this.testNumberOfDifference(bitmapDiffImage);
+        this.testSimpleGameNumberOfDifference(bitmapDiffImage);
 
-        return this.generateGame(gameName, originalImageFile, modifiedImageFile);
+        return this.generateSimpleGame(gameName, originalImageFile, modifiedImageFile);
     }
 
-    private async generateGame(gameName: string, originalImage: Buffer, modifiedImage: Buffer): Promise<Message> {
+    public async createFreeGame(gameName: string, originalScene: Buffer, modifiedScene: Buffer): Promise<Message> {
+
+        await this.testNameExistance(gameName);
+
+        this.testfreeGameNumberOfDiffs(originalScene, modifiedScene);
+
+        return this.generateFreeGame(gameName, originalScene, modifiedScene);
+    }
+
+    private async generateSimpleGame(gameName: string, originalImage: Buffer, modifiedImage: Buffer): Promise<Message> {
         fs.writeFileSync(this._PATH_TO_IMAGES + gameName + this._LOCAL_PICTURE_IMAGES_END[0], originalImage.buffer);
         fs.writeFileSync(this._PATH_TO_IMAGES + gameName + this._LOCAL_PICTURE_IMAGES_END[1], modifiedImage.buffer);
 
@@ -67,7 +77,7 @@ export class GameCreatorService {
             }
         }
 
-        return {title: "Game created", body: "The game was successfully created!"};
+        return this.SUCCESS_MESSAGE;
 
     }
 
@@ -100,7 +110,7 @@ export class GameCreatorService {
         throw new Error(NAME_ERROR_MESSAGE);
     }
 
-    private testNumberOfDifference(diffImage: IBitmapDiffControllerResponse): void {
+    private testSimpleGameNumberOfDifference(diffImage: IBitmapDiffControllerResponse): void {
         let diffNumber: number;
         try {
             diffNumber = this.differenceEvaluatorService.getNDifferences(
@@ -130,5 +140,34 @@ export class GameCreatorService {
         } catch (error) {
             throw new Error("game diff: " + error.response.data.message);
         }
+    }
+
+    private testfreeGameNumberOfDiffs(originalScene: Buffer, modifiedScene: Buffer): void {
+
+    }
+
+    private async generateFreeGame(gameName: string, originalScene: Buffer, modifiedScene: Buffer): Promise<Message> {
+        //TODO insert new way to write files(directly in mongodb)
+
+        //TODO new version of game
+        const GAME: Game = {
+            isSimpleGame: true,
+            bestMultiTimes: this.createRandomScores(),
+            bestSoloTimes: this.createRandomScores(),
+            gameName: gameName,
+            modifiedImage: this._PATH_TO_IMAGES + gameName + this._LOCAL_PICTURE_IMAGES_END[0],
+            originalImage: this._PATH_TO_IMAGES + modifiedImage + this._LOCAL_PICTURE_IMAGES_END[1],
+        };
+        try {
+            await Axios.post<Game>("http://localhost:3000/api/data-base/add-game",
+                {data: {[GAME_FIELD]: GAME}});
+        } catch (error) {
+            if (error.response.data.message === ALREADY_EXISTING_GAME_MESSAGE_ERROR) {
+                throw new Error(NAME_ERROR_MESSAGE);
+            }
+            throw new Error("dataBase: " + error.response.data.message);
+        }
+
+        return this.SUCCESS_MESSAGE;
     }
 }
