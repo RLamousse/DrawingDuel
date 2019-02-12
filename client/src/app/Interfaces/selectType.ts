@@ -3,20 +3,32 @@ export interface SelectType {
     viewValue: string;
 }
 
+export const AVAILABLE_OBJECT_TYPES: SelectType[] = [
+    {
+      viewValue: "Sphère", value: "sphere",
+    },
+    {
+      viewValue: "Cube", value: "cube",
+    },
+    {
+      viewValue: "Cône", value: "cone",
+    },
+    {
+        viewValue: "Cylindre", value: "cylinder",
+    },
+    {
+        viewValue: "Pyramide b. triangulaire", value: "pyr-tri",
+    },
+];
+
 export const AVAILABLE_MODIF_TYPES: SelectType[] = [
-    {
-      viewValue: "Sphère", value: "sphere-0",
-    },
-    {
-      viewValue: "Cube", value: "cube-1",
-    },
-    {
-      viewValue: "Cône", value: "cone-2",
-    },
-    {
-        viewValue: "Cylindre", value: "cylinder-3",
-    },
-    {
-        viewValue: "Pyramide b. triangulaire", value: "pyr-tri-4",
-    },
+  {
+    viewValue: "Ajout", value: "add",
+  },
+  {
+    viewValue: "Suppression", value: "remove",
+  },
+  {
+    viewValue: "Changement de couleur", value: "change-color",
+  },
 ];
