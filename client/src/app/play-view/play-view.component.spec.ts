@@ -1,14 +1,14 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { PlayViewComponent } from './play-view.component';
+import { PlayViewComponent } from "./play-view.component";
 
-describe('PlayViewComponent', () => {
+describe("PlayViewComponent", () => {
   let component: PlayViewComponent;
   let fixture: ComponentFixture<PlayViewComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PlayViewComponent ]
+      declarations: [ PlayViewComponent ],
     })
     .compileComponents();
   }));
@@ -19,7 +19,7 @@ describe('PlayViewComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

@@ -1,11 +1,11 @@
-import { TestBed } from '@angular/core/testing';
+import { TestBed } from "@angular/core/testing";
 
-import { SceneRendererService } from './scene-renderer.service';
+import { SceneRendererService } from "./scene-renderer.service";
 
-describe('SceneRendererService', () => {
+describe("SceneRendererService", () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
-  it('should be created', () => {
+  it("should be created", () => {
     const service: SceneRendererService = TestBed.get(SceneRendererService);
     expect(service).toBeTruthy();
   });

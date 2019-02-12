@@ -1,71 +1,87 @@
-import { Injectable } from '@angular/core';
-import * as THREE from 'three';
+import { Injectable } from "@angular/core";
+import * as THREE from "three";
 @Injectable()
 export class Form3DService {
-  
+
   private baseSize: number = 20;
-  private maxSizeFactor = 150;
-  private minSizeFactor = 50;
+  private maxSizeFactor: number = 150;
+  private minSizeFactor: number = 50;
+  private segments: number = 32;
+  private radiusFactor: number = 2;
+  private material: THREE.MeshPhongMaterial;
 
   private sizeGenerator(): number {
+    const percentFactor: number = 100;
 
-    return (Math.floor(Math.random() * (this.maxSizeFactor - this.minSizeFactor + 1) + 50) / 100 * this.baseSize);
+    return (Math.floor(Math.random() * (this.maxSizeFactor - this.minSizeFactor + 1) + this.minSizeFactor) / percentFactor * this.baseSize);
   }
 
-  public createCube(): THREE.Mesh{
+  public createCube(): THREE.Mesh {
     const cubeSide: number = this.sizeGenerator();
-    const geometry = new THREE.BoxGeometry(cubeSide, cubeSide, cubeSide);
-
+    const geometry: THREE.BoxGeometry = new THREE.BoxGeometry(cubeSide, cubeSide, cubeSide);
     this.setColor(geometry);
-    const material = new THREE.MeshPhongMaterial({ vertexColors: THREE.FaceColors});
-    return new THREE.Mesh(geometry, material);
+    this.material = new THREE.MeshPhongMaterial({ vertexColors: THREE.FaceColors });
+
+    return new THREE.Mesh(geometry, this.material);
   }
 
   public createSphere(): THREE.Mesh {
-    const sphereRadius: number = this.sizeGenerator()/2.0;
-    const geometry = new THREE.SphereGeometry(sphereRadius, 32, 32);
-
+    const sphereRadius: number = this.sizeGenerator() / this.radiusFactor;
+    const geometry: THREE.SphereGeometry = new THREE.SphereGeometry(sphereRadius, this.segments, this.segments);
     this.setColor(geometry);
-    const material = new THREE.MeshPhongMaterial({ vertexColors: THREE.FaceColors});
-    return new THREE.Mesh(geometry, material);
+    this.material = new THREE.MeshPhongMaterial({ vertexColors: THREE.FaceColors });
+
+    return new THREE.Mesh(geometry, this.material);
   }
 
   public createCone(): THREE.Mesh {
     const coneSize: number = this.sizeGenerator();
-    const geometry = new THREE.ConeGeometry(coneSize/2, coneSize, 32);
+    const geometry: THREE.ConeGeometry = new THREE.ConeGeometry(
+      coneSize / this.radiusFactor,
+      coneSize,
+      this.segments,
+    );
+    this.setColor(geometry);
+    this.material = new THREE.MeshPhongMaterial({ vertexColors: THREE.FaceColors });
 
-    const hex = Math.random() * 0xffffff;
-    for (let i = 0; i < geometry.faces.length; i += 2) {
-      geometry.faces[i].color.setHex(hex);
-      geometry.faces[i + 1].color.setHex(hex);
-    }
-    const material = new THREE.MeshPhongMaterial({ vertexColors: THREE.FaceColors});
-    return new THREE.Mesh(geometry, material);
+    return new THREE.Mesh(geometry, this.material);
   }
 
   public createCylinder(): THREE.Mesh {
     const cylinderSize: number = this.sizeGenerator();
-    const geometry = new THREE.CylinderGeometry(cylinderSize / 2, cylinderSize / 2, cylinderSize, 32);
-
+    const geometry: THREE.CylinderGeometry = new THREE.CylinderGeometry(
+      cylinderSize / this.radiusFactor,
+      cylinderSize / this.radiusFactor,
+      cylinderSize,
+      this.segments,
+    );
     this.setColor(geometry);
-    const material = new THREE.MeshPhongMaterial({ vertexColors: THREE.FaceColors});
-    let cylinder = new THREE.Mesh(geometry, material);
-    cylinder.rotation.x = 0.5;
-    return cylinder;
+    this.material = new THREE.MeshPhongMaterial({ vertexColors: THREE.FaceColors });
+
+    return new THREE.Mesh(geometry, this.material);
   }
 
   public createPyramid(): THREE.Mesh {
     const pyramidSize: number = this.sizeGenerator();
-    const geometry = new THREE.CylinderGeometry(0, pyramidSize / 2, pyramidSize, 3, 1);
+    const baseSides: number = 3;
+    const geometry: THREE.CylinderGeometry = new THREE.CylinderGeometry(
+      0,
+      pyramidSize / this.radiusFactor,
+      pyramidSize,
+      baseSides,
+      1,
+    );
     this.setColor(geometry);
-    
-    const material = new THREE.MeshPhongMaterial({ vertexColors: THREE.FaceColors});
-    return new THREE.Mesh(geometry, material);
+    this.material = new THREE.MeshPhongMaterial({ vertexColors: THREE.FaceColors });
+
+    return new THREE.Mesh(geometry, this.material);
   }
 
   private setColor(geo: THREE.Geometry): void {
-    const hex = Math.random() * 0xffffff;
-    for (let i = 0; i < geo.faces.length; i += 2) {
+    const mask: number = 0xFFFFFF;
+    const hex: number = Math.random() * mask;
+    const frontFacesStep: number = 2;
+    for (let i: number = 0; i < geo.faces.length; i += frontFacesStep) {
       geo.faces[i].color.setHex(hex);
       geo.faces[i + 1].color.setHex(hex);
     }
