@@ -7,7 +7,7 @@ describe("Create3DGameComponent", () => {
   let component: Create3DGameComponent;
   let fixture: ComponentFixture<Create3DGameComponent>;
 
-  beforeEach(async(() => {
+  beforeEach((done) => {
     TestBed.configureTestingModule({
       declarations: [ Create3DGameComponent ],
       providers: [{provide: MAT_DIALOG_DATA, useValue: {}}, {provide: MatDialogRef, useValue: {}}],

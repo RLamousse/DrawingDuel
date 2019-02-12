@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { PlayViewComponent } from "./play-view.component";
 
@@ -6,12 +6,12 @@ describe("PlayViewComponent", () => {
   let component: PlayViewComponent;
   let fixture: ComponentFixture<PlayViewComponent>;
 
-  beforeEach(async(() => {
+  beforeEach((done) => {
     TestBed.configureTestingModule({
       declarations: [ PlayViewComponent ],
-    })
-    .compileComponents();
-  }));
+    });
+    done();
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(PlayViewComponent);

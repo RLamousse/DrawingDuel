@@ -7,9 +7,8 @@ import { Component, OnInit } from "@angular/core";
 })
 export class PlayViewComponent implements OnInit {
 
-  public constructor() { }
+  public constructor() { /* to implement */ }
 
-  public ngOnInit() {
-  }
+  public ngOnInit(): void { /* to implement */ }
 
 }

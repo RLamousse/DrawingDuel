@@ -1,4 +1,5 @@
-﻿import { expect } from "chai";
+// tslint:disable:typedef
+import { expect } from "chai";
 import * as Httpstatus from "http-status-codes";
 import * as request from "supertest";
 import { Application } from "../app";
@@ -11,17 +12,17 @@ const mockedUsernameService = {
 };
 
 const errorResponse = (errorMessage: string) => {
-    return {
-        status: "error",
-        error: errorMessage,
-    };
+        return {
+            status: "error",
+            error: errorMessage,
+        };
 };
 
 const okResponse = (username: string, available: boolean) => {
-    return {
-        username: username,
-        available: available,
-    };
+        return {
+            username: username,
+            available: available,
+        };
 };
 
 describe("username controller", () => {
