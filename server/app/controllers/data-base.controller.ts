@@ -17,6 +17,10 @@ export class DataBaseController {
     public get router(): Router {
         const router: Router = Router();
 
+        // ┌──┬───────┬──┐
+        // │  │ USERS │  │
+        // └──┴───────┴──┘
+
         router.post("/users", async (req: Request, res: Response, next: NextFunction) => {
             executeSafely(next, async () => {
                 this.testUserName(req);
@@ -30,6 +34,10 @@ export class DataBaseController {
                 res.json(await this.dataBaseService.deleteUser(req.query["userId"]));
             });
         });
+
+        // ┌──┬───────┬──┐
+        // │  │ GAMES │  │
+        // └──┴───────┴──┘
 
         router.post("/games", async (req: Request, res: Response, next: NextFunction) => {
             executeSafely(next, async () => {
@@ -55,6 +63,44 @@ export class DataBaseController {
             executeSafely(next, async () => {
                 this.testGameName(req);
                 res.json(await this.dataBaseService.getGame(req.query["gameName"]));
+            });
+        });
+
+
+        // ┌──┬────────┬──┐
+        // │  │ IMAGES │  │
+        // └──┴────────┴──┘
+        router.post("/images", async (req: Request, res: Response, next: NextFunction) => {
+            executeSafely(next, async () => {
+                this.testGame(req);
+                res.json(await this.dataBaseService.addImage(req.body));
+            });
+        });
+
+        router.delete("/images/:id", async (req: Request, res: Response, next: NextFunction) => {
+            executeSafely(next, async () => {
+                this.testGameName(req);
+                res.json(await this.dataBaseService.deleteImage(req.query["id"]));
+            });
+        });
+
+        router.get("/images", async (req: Request, res: Response, next: NextFunction) => {
+            executeSafely(next, async () => {
+                res.json(await this.dataBaseService.getImages());
+            });
+        });
+
+        router.get("/images/:gameName", async (req: Request, res: Response, next: NextFunction) => {
+            executeSafely(next, async () => {
+                this.testGameName(req);
+                res.json(await this.dataBaseService.getImage(req.query["imageName"]));
+            });
+        });
+
+        router.post("/game-images", async (req: Request, res: Response, next: NextFunction) => {
+            executeSafely(next, async () => {
+                this.testGame(req);
+                res.json(await this.dataBaseService.addImages(req.body));
             });
         });
 
