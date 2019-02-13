@@ -2,11 +2,13 @@ import { injectable } from "inversify";
 import {Collection, Db, InsertOneWriteOpResult, MongoClient, MongoError} from "mongodb";
 import "reflect-metadata";
 import {Message} from "../../../common/communication/messages/message";
+import {IBitmapImage} from "../../../common/model/IBitmapImage";
 import {IGame} from "../../../common/model/IGame";
 import {GAME_FORMAT_ERROR_MESSAGE, USERNAME_FORMAT_ERROR_MESSAGE} from "../controllers/data-base.controller";
 
 export const ALREADY_EXISTING_USER_MESSAGE_ERROR: string = "ERROR: the specified usename already exists!";
 export const ALREADY_EXISTING_GAME_MESSAGE_ERROR: string = "ERROR: a game with the same name already exists!";
+export const ALREADY_EXISTING_IMAGE_MESSAGE_ERROR: string = "ERROR: an image with the same name already exists!";
 export const NOT_EXISTING_USER_MESSAGE_ERROR: string = "ERROR: the specified usename does no exist!";
 export const NOT_EXISTING_GAME_MESSAGE_ERROR: string = "ERROR: the specified game does no exist!";
 export const DATA_BASE_MESSAGE_ERROR: string = "ERROR: something went wrong with the database!";
@@ -28,6 +30,7 @@ export class DataBaseService {
     private _dataBase: Db;
     private _users: Collection<string>;
     private _games: Collection<IGame>;
+    private _images: Collection<IBitmapImage>;
 
     public constructor() {
         MongoClient.connect(this.DB_URL, {useNewUrlParser : true}, (err: MongoError, client: MongoClient) => {
@@ -35,6 +38,7 @@ export class DataBaseService {
                 this._dataBase = client.db(this.DB_DB);
                 this._users = this._dataBase.collection("users");
                 this._games = this._dataBase.collection("games");
+                this._images = this._dataBase.collection("images");
             } else {
                 throw(err);
             }
@@ -131,6 +135,14 @@ export class DataBaseService {
         }
     }
 
+    private async containsImage(imageName: string): Promise<boolean> {
+        try {
+            return ((await this._images.countDocuments( {[GAME_NAME_FIELD] : {$eq : imageName}})) !== 0);
+        } catch (error) {
+            throw new Error(DATA_BASE_MESSAGE_ERROR);
+        }
+    }
+
     public async getGames(): Promise<IGame[]> {
         return new Promise<IGame[]>((resolve: (value?: IGame[] | PromiseLike<IGame[]>) => void, reject: (reason?: Error) => void) => {
             this._games.find().toArray((error: MongoError, res: IGame[]) => {
@@ -176,5 +188,21 @@ export class DataBaseService {
             throw new Error(GAME_FORMAT_ERROR_MESSAGE);
         }
 
+    }
+
+    public async addImage(image: IBitmapImage) {
+        if (await this.containsImage(image.name)) {
+            throw new Error(ALREADY_EXISTING_IMAGE_MESSAGE_ERROR);
+        } else {
+            return new Promise<Message>((resolve: (value?: Message | PromiseLike<Message>) => void, reject: (reason?: Error) => void) => {
+
+                this._images.insertOne( image, (error: MongoError, res: InsertOneWriteOpResult) => {
+                    if (error) {
+                        reject( new Error(DATA_BASE_MESSAGE_ERROR));
+                    }
+                    resolve({title: "Image added", body: "Image " + image.name + " successfully added"});
+                });
+            });
+        }
     }
 }
