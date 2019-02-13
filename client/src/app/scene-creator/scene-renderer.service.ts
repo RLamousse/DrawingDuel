@@ -179,7 +179,6 @@ export class SceneRendererService {
   public onResize(): void {
     this.camera.aspect = this.getAspectRatio();
     this.camera.updateProjectionMatrix();
-
     this.renderer.setSize(this.container.clientWidth, this.container.clientHeight);
   }
 

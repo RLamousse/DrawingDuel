@@ -33,6 +33,11 @@ describe("SceneCreatorComponent", () => {
     expect(mockedService.called).toEqual("onResize");
   });
 
+  it("should call onResize when windoe:resize event is happening", () => {
+    window.dispatchEvent(new Event("resize"));
+    expect(mockedService.called).toEqual("onResize");
+  });
+
   it("should call the service method when ngAfterViewInit is called", () => {
     component.ngAfterViewInit();
     expect(mockedService.called).toEqual("init");
