@@ -14,7 +14,6 @@ export class SimpleGameCreatorFormComponent extends AbstractForm implements OnIn
 
   public formDoc: FormGroup;
   private readonly MIN_NAME_LENGTH: number = 5;
-  protected disableButton: boolean = false;
 
   public constructor(_fb: FormBuilder,
                      dialogRef: MatDialogRef<SimpleGameCreatorFormComponent>,

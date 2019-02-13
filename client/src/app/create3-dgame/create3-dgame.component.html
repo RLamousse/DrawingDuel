@@ -10,40 +10,39 @@
 
   <section class="example-section">
     <h3>Types d'objets dans la scène</h3>
-      <mat-checkbox
-        *ngFor="let objType of objectTypes"
-        class="example-margin"
-        (change)="onChange($event, 'objectTypes', objType.value)"
-      >
-        {{objType.viewValue}}
-      </mat-checkbox>
+    <mat-checkbox *ngFor="let objType of objectTypes" class="example-margin"
+      (change)="onCheckboxChange($event, 'objectTypes', objType.value)">
+      {{objType.viewValue}}
+    </mat-checkbox>
+    <mat-error *ngIf="checkboxes['objectTypes'].size === 0">
+      Choisir minimum 1 option
+    </mat-error>
   </section>
-
-  <mat-slider 
-    thumbLabel
-    min="10"
-    max="200"
-    step="1"
-    value="10">
-  </mat-slider>
 
   <section class="example-section">
-      <h3>Types de modifications dans la scène</h3>
-      <mat-checkbox 
-        *ngFor="let modType of modTypes"
-        class="example-margin"
-        ng-required="checkboxes['modificationTypes'].size===0"
-        (change)="onChange($event, 'modificationTypes', modType.value)"
-      >
-        {{modType.viewValue}}
-      </mat-checkbox>
+    <h3>Nombre d'objets dans la scène</h3>
+    <span> Valeur : {{ matslider.value }} </span>
+    <mat-slider #matslider thumbLabel min="10" max="200" step="1" value="50" (change)="onSliderChange($event)">
+    </mat-slider>
   </section>
 
-  
+  <section class="example-section">
+    <h3>Types de modifications dans la scène</h3>
+    <mat-checkbox *ngFor="let modType of modTypes" class="example-margin"
+      ng-required="checkboxes['modificationTypes'].size===0"
+      (change)="onCheckboxChange($event, 'modificationTypes', modType.value)">
+      {{modType.viewValue}}
+    </mat-checkbox>
+    <mat-error *ngIf="checkboxes['modificationTypes'].size === 0">
+      Choisir minimum 1 option
+    </mat-error>
+  </section>
+
+
 
   <div>
     <button id="form-submit" type="form-submit" name="submit" mat-button
-      [disabled]="!formDoc.valid || disableButton">Envoyer</button>
+      [disabled]="!formDoc.valid || disableButton || !checboxesValid()">Envoyer</button>
     <button id="form-reset" type="reset" mat-button color="warn" (click)="exit()">Annuler</button>
   </div>
 </form>

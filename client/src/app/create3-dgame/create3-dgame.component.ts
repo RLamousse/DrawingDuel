@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
-import { MatCheckboxChange, MatDialogRef } from "@angular/material";
+import { MatCheckboxChange, MatDialogRef, MatSliderChange } from "@angular/material";
 import { AVAILABLE_MODIF_TYPES, AVAILABLE_OBJECT_TYPES, SelectType } from "../Interfaces/selectType";
 import { AbstractForm } from "../abstract-form";
 import { FormPostService } from "../form-post.service";
@@ -18,7 +18,9 @@ export class Create3DGameComponent extends AbstractForm implements OnInit {
   protected checkboxes: {
     objectTypes: Set<string>,
     modificationTypes: Set<string>,
+    valid(): boolean,
   };
+  protected sliderValue: number = 10;
 
   public constructor(_fb: FormBuilder,
                      dialogRef: MatDialogRef<Create3DGameComponent>,
@@ -27,6 +29,7 @@ export class Create3DGameComponent extends AbstractForm implements OnInit {
     this.checkboxes = {
       objectTypes: new Set(),
       modificationTypes: new Set(),
+      valid: this.checboxesValid,
     };
   }
 
@@ -39,11 +42,43 @@ export class Create3DGameComponent extends AbstractForm implements OnInit {
     });
   }
 
-  protected onChange (e: MatCheckboxChange, selectType: "objectTypes" | "modificationTypes", selectName: string): void {
+  protected onCheckboxChange (e: MatCheckboxChange, selectType: "objectTypes" | "modificationTypes", selectName: string): void {
     if (e.checked) {
       this.checkboxes[selectType].add(selectName);
     } else {
       this.checkboxes[selectType].delete(selectName);
     }
+  }
+
+  protected checboxesValid (): boolean {
+    return (
+      this.checkboxes.objectTypes.size !== 0 &&
+      this.checkboxes.modificationTypes.size !== 0
+    );
+  }
+
+  protected onSliderChange (e: MatSliderChange): void {
+    this.sliderValue = e.value ? e.value : 0;
+  }
+
+  protected onSubmit (): void {
+    this.disableButton = true;
+    const objectTypes: string[] = Array.from(this.checkboxes.objectTypes);
+    const modificationTypes: string[] = Array.from(this.checkboxes.modificationTypes);
+    const fd: FormData = new FormData();
+    fd.append("gameName", this.formDoc.value.name);
+    fd.append("objectTypes", JSON.stringify(objectTypes));
+    fd.append("modificationTypes", JSON.stringify(modificationTypes));
+    fd.append("objectQuantity", this.sliderValue.toString());
+    this.formPost.basicPost(fd).subscribe(
+      (data) => {
+        // alert((data as { message: string }).message);
+        this.exit(data);
+      },
+      (error: Error) => {
+        console.error(`${error.name} : ${error.message}`);
+        alert(error.message);
+        this.disableButton = false;
+      });
   }
 }

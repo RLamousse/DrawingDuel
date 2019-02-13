@@ -4,6 +4,7 @@ import { FormPostService } from "./form-post.service";
 
 export class AbstractForm {
   public formDoc: FormGroup;
+  protected disableButton: boolean = false;
 
   public constructor(protected _fb: FormBuilder,
                      protected dialogRef: MatDialogRef<AbstractForm>,
