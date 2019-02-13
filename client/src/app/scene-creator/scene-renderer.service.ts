@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core";
 import * as THREE from "three";
 import { Form3DService } from "./3DFormService/3-dform.service";
-// import { OrbitControls } from 'three-orbitcontrols-ts';
 require("three-first-person-controls")(THREE);
+
 @Injectable()
 export class SceneRendererService {
 
@@ -30,8 +30,8 @@ export class SceneRendererService {
   private cameraY: number = 0;
   private cameraZ: number = 100;
 
-  private obj3DToCreate: number = 100;
-  private objects: THREE.Mesh[] = [];
+  public obj3DToCreate: number = 100;
+  public objects: THREE.Mesh[] = [];
   private minDistCenterObject: number = 43;
   private PI: number = Math.PI;
   private maxRotationAngle: number = 2 * this.PI;
