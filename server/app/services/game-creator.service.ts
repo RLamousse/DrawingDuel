@@ -1,5 +1,6 @@
 import Axios, {AxiosResponse} from "axios";
 import * as FormData from "form-data";
+import * as THREE from "three";
 import * as fs from "fs";
 import {inject, injectable} from "inversify";
 import "reflect-metadata";
@@ -45,13 +46,13 @@ export class GameCreatorService {
         return this.generateSimpleGame(gameName, originalImageFile, modifiedImageFile);
     }
 
-    public async createFreeGame(gameName: string, originalScene: Buffer, modifiedScene: Buffer): Promise<Message> {
+    public async createFreeGame(gameName: string, originalScene: THREE.Scene, modifiedScene: THREE.Scene): Promise<Message> {
 
         await this.testNameExistance(gameName);
 
-        this.testfreeGameNumberOfDiffs(originalScene, modifiedScene);
+        this.testFreeGameNumberOfDiffs(<THREE.Mesh[]>originalScene.children, <THREE.Mesh[]>modifiedScene.children);
 
-        return this.generateFreeGame(gameName, originalScene, modifiedScene);
+        return await this.generateFreeGame(gameName, originalScene, modifiedScene);
     }
 
     private async generateSimpleGame(gameName: string, originalImage: Buffer, modifiedImage: Buffer): Promise<Message> {
@@ -113,7 +114,7 @@ export class GameCreatorService {
     private testSimpleGameNumberOfDifference(diffImage: IBitmapDiffControllerResponse): void {
         let diffNumber: number;
         try {
-            diffNumber = this.differenceEvaluatorService.getNDifferences(
+            diffNumber = this.differenceEvaluatorService.getSimpleNDifferences(
                 BitmapFactory.createBitmap(diffImage.fileName,
                                            fs.readFileSync(diffImage.filePath)).pixels);
         } catch (error) {
@@ -142,22 +143,31 @@ export class GameCreatorService {
         }
     }
 
-    private testfreeGameNumberOfDiffs(originalScene: Buffer, modifiedScene: Buffer): void {
+    private testFreeGameNumberOfDiffs(originalScene: THREE.Mesh[], modifiedScene: THREE.Mesh[]): void {
 
+        let diffNumber: number;
+        try {
+            diffNumber = this.differenceEvaluatorService.getFreeNDifferences(originalScene, modifiedScene);
+        } catch (error) {
+            throw new Error("diff counting: " + error.message);
+        }
+        if (diffNumber !== EXPECTED_DIFF_NUMBER) {
+            throw new Error(DIFFERENCE_ERROR_MESSAGE);
+        }
     }
 
-    private async generateFreeGame(gameName: string, originalScene: Buffer, modifiedScene: Buffer): Promise<Message> {
-        //TODO insert new way to write files(directly in mongodb)
+    private async generateFreeGame(gameName: string, originalScene: THREE.Scene, modifiedScene: THREE.Scene): Promise<Message> {
 
         //TODO new version of game
         const GAME: Game = {
-            isSimpleGame: true,
+            isSimpleGame: false,
             bestMultiTimes: this.createRandomScores(),
             bestSoloTimes: this.createRandomScores(),
             gameName: gameName,
-            modifiedImage: this._PATH_TO_IMAGES + gameName + this._LOCAL_PICTURE_IMAGES_END[0],
-            originalImage: this._PATH_TO_IMAGES + modifiedImage + this._LOCAL_PICTURE_IMAGES_END[1],
+            modifiedImage: JSON.stringify(originalScene),
+            originalImage: JSON.stringify(modifiedScene),//TODO enlever ce code en prevision des refacor de rivest, est la juste pour que ca compile!!
         };
+        //TODO insert new way to write files(directly in mongodb)
         try {
             await Axios.post<Game>("http://localhost:3000/api/data-base/add-game",
                 {data: {[GAME_FIELD]: GAME}});

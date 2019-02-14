@@ -9,10 +9,10 @@ import { GameCreatorService } from "../services/game-creator.service";
 import Types from "../types";
 import {
     assertFieldOfRequest,
-    assertRequestImageFilesFields,
+    assertRequestImageFilesFields, assertRequestSceneFields,
     BITMAP_MULTER_FILTER,
-    MODIFIED_IMAGE_FIELD_NAME,
-    MULTER_BMP_FIELDS, ORIGINAL_IMAGE_FIELD_NAME
+    MODIFIED_IMAGE_FIELD_NAME, MODIFIED_SCENE_FIELD_NAME,
+    MULTER_BMP_FIELDS, ORIGINAL_IMAGE_FIELD_NAME, ORIGINAL_SCENE_FIELD_NAME
 } from "./controller-utils";
 
 @injectable()
@@ -49,6 +49,24 @@ export class GameCreatorController {
                     req.body[GAME_NAME_FIELD],
                     req.files[ORIGINAL_IMAGE_FIELD_NAME][0],
                     req.files[MODIFIED_IMAGE_FIELD_NAME][0]));
+
+            } catch (error) {
+                next(error);
+            } finally {
+                this.deleteTmpFiles(req.files[ORIGINAL_IMAGE_FIELD_NAME][0].path,
+                                    req.files[MODIFIED_IMAGE_FIELD_NAME][0].path);
+            }
+        });
+
+        router.post("/create-free-game", async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                assertFieldOfRequest(req, GAME_NAME_FIELD);
+                assertRequestSceneFields(req);
+
+                res.json(await this.gameCreatorService.createFreeGame(
+                    req.body[GAME_NAME_FIELD],
+                    req.body[ORIGINAL_SCENE_FIELD_NAME],
+                    req.body[MODIFIED_SCENE_FIELD_NAME]));
 
             } catch (error) {
                 next(error);

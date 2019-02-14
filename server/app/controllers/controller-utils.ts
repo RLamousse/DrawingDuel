@@ -1,11 +1,14 @@
 import {Request} from "express";
 import {Field} from "multer";
+import * as THREE from "three";
 
 export const REQUIRED_IMAGE_HEIGHT: number = 480;
 export const REQUIRED_IMAGE_WIDTH: number = 640;
 export const OUTPUT_FILE_NAME_FIELD_NAME: string = "name";
 export const ORIGINAL_IMAGE_FIELD_NAME: string = "originalImage";
 export const MODIFIED_IMAGE_FIELD_NAME: string = "modifiedImage";
+export const ORIGINAL_SCENE_FIELD_NAME: string = "originalScene";
+export const MODIFIED_SCENE_FIELD_NAME: string = "modifiedScene";
 export const EXPECTED_FILES_FORMAT: string = "image/bmp";
 export const FORM_DATA_CONTENT_TYPE: { "Content-Type": string } = {"Content-Type": "multipart/form-data" };
 export const DIFFERENCE_ERROR_MESSAGE: string = "Error: The images that you sent don't have seven difference!";
@@ -29,6 +32,13 @@ export const assertRequestImageFilesFields: (req: Express.Request) => void = (re
         typeof req.files[MODIFIED_IMAGE_FIELD_NAME] === "undefined" ||
         typeof req.files[ORIGINAL_IMAGE_FIELD_NAME][0] === "undefined" ||
         typeof req.files[MODIFIED_IMAGE_FIELD_NAME][0] === "undefined") {
+            throw new Error(FORMAT_ERROR_MESSAGE);
+    }
+};
+
+export const assertRequestSceneFields: (req: Express.Request) => void = (req: Request): void => {
+    if (!(req.body[ORIGINAL_SCENE_FIELD_NAME] instanceof THREE.Scene) ||
+        !(req.body[MODIFIED_SCENE_FIELD_NAME]  instanceof THREE.Scene)) {
             throw new Error(FORMAT_ERROR_MESSAGE);
     }
 };
