@@ -1,9 +1,9 @@
 import { injectable } from "inversify";
-import {Collection, Db, MongoClient, MongoError} from "mongodb";
+import {Db, MongoClient, MongoError} from "mongodb";
 import "reflect-metadata";
-import {Message} from "../../../common/communication/messages/message";
-import {IBitmapImage} from "../../../common/model/IBitmapImage";
-import {IGame} from "../../../common/model/IGame";
+import {GamesCollectionService} from "./db/games.collection.service";
+import {ImagesCollectionService} from "./db/images.collection.service";
+import {UsersCollectionService} from "./db/users.collection.service";
 
 export const USER_NAME_FIELD: string = "userName";
 
@@ -19,20 +19,32 @@ export class DataBaseService {
         + this.DB_HOST + ":" + this.DB_PORT + "/" + this.DB_DB;
 
     private _dataBase: Db;
-    private _users: Collection<string>;
-    private _games: Collection<IGame>;
-    private _images: Collection<IBitmapImage>;
+    private _users: UsersCollectionService;
+    private _games: GamesCollectionService;
+    private _images: ImagesCollectionService;
 
     public constructor() {
         MongoClient.connect(this.DB_URL, {useNewUrlParser : true}, (err: MongoError, client: MongoClient) => {
             if (!err) {
                 this._dataBase = client.db(this.DB_DB);
-                this._users = this._dataBase.collection("users");
-                this._games = this._dataBase.collection("games");
-                this._images = this._dataBase.collection("images");
+                this._users = new UsersCollectionService(this._dataBase.collection("users"));
+                this._games = new GamesCollectionService(this._dataBase.collection("games"));
+                this._images = new ImagesCollectionService(this._dataBase.collection("images"));
             } else {
                 throw(err);
             }
         });
+    }
+
+    public get users(): UsersCollectionService {
+        return this._users;
+    }
+
+    public get games(): GamesCollectionService {
+        return this._games;
+    }
+
+    public get images(): ImagesCollectionService {
+        return this._images;
     }
 }
