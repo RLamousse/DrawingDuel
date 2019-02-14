@@ -1,16 +1,19 @@
 import { injectable } from "inversify";
+import * as THREE from "three";
 import "reflect-metadata";
 import {create2dArray} from "../../../common/util/util";
+import {Vector3} from "three";
+import {Material} from "three";
 
-export const ARGUMENT_ERROR_MESSAGE: string = "Error: the argument has the wrong format! Must be a number[][].";
+export const ARGUMENT_ERROR_MESSAGE: string = "Error: the argument has the wrong format!";
 export const EMPTY_ARRAY_ERROR_MESSAGE: string = "Error: the given array is empty!";
 
 @injectable()
 export class DifferenceEvaluatorService {
 
-    public getNDifferences(pixels: number[][]): number {
+    public getSimpleNDifferences(pixels: number[][]): number {
 
-        this.validateData(pixels);
+        this.validateSimpleData(pixels);
 
         // this algorithm is the two-pass algorithm and a set of connected labelled zones is connected by a disjoint-set data structure
         // the algorithm does not consider edge connections
@@ -34,7 +37,28 @@ export class DifferenceEvaluatorService {
         return this.calculateTotalZones(PARENT_TABLE);
     }
 
-    private validateData(pixels: number[][]): void {
+    public getFreeNDifferences(originalScene: THREE.Mesh[], modifiedScene: THREE.Mesh[]): number {
+
+        this.validateFreeData(originalScene, modifiedScene);
+
+        const diffs: Map<Vector3, Material | Material[]> = new Map<Vector3, Material | Material[]>();
+
+        for (const ORIGINAL_MESH of originalScene) {
+            diffs.set(ORIGINAL_MESH.position, ORIGINAL_MESH.material);
+        }
+
+        for (const MODIFIED_MESH of modifiedScene) {
+            if (!diffs.has(MODIFIED_MESH.position)) {
+                diffs.set(MODIFIED_MESH.position, MODIFIED_MESH.material);
+            } else if (diffs.get(MODIFIED_MESH.position) === MODIFIED_MESH.material) {
+                diffs.delete(MODIFIED_MESH.position);
+            }
+        }
+
+        return diffs.size;
+    }
+
+    private validateSimpleData(pixels: number[][]): void {
         // local variable needed because pixels cannot be directly passed to isArray function
         const TMP_ARRAY: number[][] = pixels;
         if (!Array.isArray(TMP_ARRAY)) {
@@ -120,5 +144,17 @@ export class DifferenceEvaluatorService {
 
         // this assignation makes the average complexity of the find function lower than O(m∙log(n))
         return parentTable[value] = this.findRoot(parentTable[value], parentTable);
+    }
+
+    private validateFreeData(originalScene: THREE.Mesh[], modifiedScene: THREE.Mesh[]) {
+        if(!(originalScene instanceof Array) || !(modifiedScene instanceof Array)){
+            throw new Error(ARGUMENT_ERROR_MESSAGE);
+        }
+        const EVERY_VALUE: THREE.Mesh[] = originalScene.concat(modifiedScene);
+        for (const MESH of EVERY_VALUE){
+            if (!(MESH instanceof THREE.Mesh)) {
+                throw new Error(ARGUMENT_ERROR_MESSAGE);
+            }
+        }
     }
 }

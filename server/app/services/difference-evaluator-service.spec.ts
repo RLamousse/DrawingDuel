@@ -23,66 +23,66 @@ describe("A service that counts non-white connected pixels in a bmp", () => {
     });
 
     it("Should calculate 0 zones", () => {
-        expect(DIFFERENCE_EVALUATOR_SERVICE.getNDifferences(TEST_FILE_ARRAYS[0]))
+        expect(DIFFERENCE_EVALUATOR_SERVICE.getSimpleNDifferences(TEST_FILE_ARRAYS[0]))
             .to.equal(0);
     });
 
     it("Should calculate 1 zone", () => {
-        expect(DIFFERENCE_EVALUATOR_SERVICE.getNDifferences(TEST_FILE_ARRAYS[1]))
+        expect(DIFFERENCE_EVALUATOR_SERVICE.getSimpleNDifferences(TEST_FILE_ARRAYS[1]))
             .to.equal(1);
     });
 
     it("Should calculate 6 zones", () => {
-        expect(DIFFERENCE_EVALUATOR_SERVICE.getNDifferences(TEST_FILE_ARRAYS[2]))
+        expect(DIFFERENCE_EVALUATOR_SERVICE.getSimpleNDifferences(TEST_FILE_ARRAYS[2]))
             .to.equal(6);
     });
 
     it("Should calculate 7 zones", () => {
-        expect(DIFFERENCE_EVALUATOR_SERVICE.getNDifferences(TEST_FILE_ARRAYS[3]))
+        expect(DIFFERENCE_EVALUATOR_SERVICE.getSimpleNDifferences(TEST_FILE_ARRAYS[3]))
             .to.equal(7);
     });
 
     it("Should calculate 8 zones", () => {
-        expect(DIFFERENCE_EVALUATOR_SERVICE.getNDifferences(TEST_FILE_ARRAYS[4]))
+        expect(DIFFERENCE_EVALUATOR_SERVICE.getSimpleNDifferences(TEST_FILE_ARRAYS[4]))
             .to.equal(8);
     });
 
     it("Should calculate 16 zone from an extremely random drawing", () => {
-        expect(DIFFERENCE_EVALUATOR_SERVICE.getNDifferences(TEST_FILE_ARRAYS[5]))
+        expect(DIFFERENCE_EVALUATOR_SERVICE.getSimpleNDifferences(TEST_FILE_ARRAYS[5]))
             .to.equal(16);
     });
 
     it("Should throw a format error if the input is not an array(string)", () => {
         // @ts-ignore
-        expect(() => DIFFERENCE_EVALUATOR_SERVICE.getNDifferences("abs"))
+        expect(() => DIFFERENCE_EVALUATOR_SERVICE.getSimpleNDifferences("abs"))
             .to.throw(ARGUMENT_ERROR_MESSAGE);
     });
 
     it("Should throw a format error if the input is not an array(undefined)", () => {
         // @ts-ignore
-        expect(() => DIFFERENCE_EVALUATOR_SERVICE.getNDifferences(null))
+        expect(() => DIFFERENCE_EVALUATOR_SERVICE.getSimpleNDifferences(null))
             .to.throw(ARGUMENT_ERROR_MESSAGE);
     });
 
     it("Should throw a format error if the input is not an array of numbers(strings)", () => {
         // @ts-ignore
-        expect(() => DIFFERENCE_EVALUATOR_SERVICE.getNDifferences([[""]]))
+        expect(() => DIFFERENCE_EVALUATOR_SERVICE.getSimpleNDifferences([[""]]))
             .to.throw(ARGUMENT_ERROR_MESSAGE);
     });
 
     it("Should throw a format error if the input is not an array of numbers(undefined)", () => {
         // @ts-ignore
-        expect(() => DIFFERENCE_EVALUATOR_SERVICE.getNDifferences([[null]]))
+        expect(() => DIFFERENCE_EVALUATOR_SERVICE.getSimpleNDifferences([[null]]))
             .to.throw(ARGUMENT_ERROR_MESSAGE);
     });
 
     it("Should throw an empty array error if the input is an empty array", () => {
-        expect(() => DIFFERENCE_EVALUATOR_SERVICE.getNDifferences([]))
+        expect(() => DIFFERENCE_EVALUATOR_SERVICE.getSimpleNDifferences([]))
             .to.throw(EMPTY_ARRAY_ERROR_MESSAGE);
     });
 
     it("Should throw an empty array error if the input is an array of empty arrays", () => {
-        expect(() => DIFFERENCE_EVALUATOR_SERVICE.getNDifferences([[]]))
+        expect(() => DIFFERENCE_EVALUATOR_SERVICE.getSimpleNDifferences([[]]))
             .to.throw(EMPTY_ARRAY_ERROR_MESSAGE);
     });
 });
