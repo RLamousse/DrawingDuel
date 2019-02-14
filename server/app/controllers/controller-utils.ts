@@ -1,6 +1,7 @@
 import {Request} from "express";
 import {Field} from "multer";
 import * as THREE from "three";
+import {Message} from "../../../common/communication/message";
 
 export const REQUIRED_IMAGE_HEIGHT: number = 480;
 export const REQUIRED_IMAGE_WIDTH: number = 640;
@@ -11,7 +12,8 @@ export const ORIGINAL_SCENE_FIELD_NAME: string = "originalScene";
 export const MODIFIED_SCENE_FIELD_NAME: string = "modifiedScene";
 export const EXPECTED_FILES_FORMAT: string = "image/bmp";
 export const FORM_DATA_CONTENT_TYPE: { "Content-Type": string } = {"Content-Type": "multipart/form-data" };
-export const DIFFERENCE_ERROR_MESSAGE: string = "Error: The images that you sent don't have seven difference!";
+export const GAME_CREATION_SUCCESS_MESSAGE: Message = {title: "Game created", body: "The game was successfully created!"};
+export const DIFFERENCE_ERROR_MESSAGE: string = "Error: The data that you sent doesn't have seven differences!";
 export const FORMAT_ERROR_MESSAGE: string = "Error: Request sent by the client had the wrong format!";
 export const NAME_ERROR_MESSAGE: string = "Error: The game name that you sent already exists!";
 export const BMP_ERROR_MESSAGE: string = "Error: Sent files are not in bmp format!";
