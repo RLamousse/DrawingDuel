@@ -5,8 +5,6 @@ import {GamesCollectionService} from "./db/games.collection.service";
 import {ImagesCollectionService} from "./db/images.collection.service";
 import {UsersCollectionService} from "./db/users.collection.service";
 
-export const USER_NAME_FIELD: string = "userName";
-
 @injectable()
 export class DataBaseService {
 
