@@ -56,10 +56,10 @@ export class DataBaseController {
             });
         });
 
-
         // ┌──┬────────┬──┐
         // │  │ IMAGES │  │
         // └──┴────────┴──┘
+
         router.post("/images", async (req: Request, res: Response, next: NextFunction) => {
             executeSafely(next, async () => {
                 res.json(await this.dataBaseService.images.create(req.body));

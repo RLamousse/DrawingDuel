@@ -151,7 +151,7 @@ export class GameCreatorService {
             requestFormData.append(ORIGINAL_IMAGE_FIELD_NAME, originalImageFile, {contentType: BITMAP_MEME_TYPE});
             requestFormData.append(MODIFIED_IMAGE_FIELD_NAME, modifiedImageFile, {contentType: BITMAP_MEME_TYPE});
 
-            const response: AxiosResponse<IBitmapDiffControllerResponse> = await Axios.get<IBitmapDiffControllerResponse>(
+            const response: AxiosResponse<IBitmapDiffControllerResponse> = await Axios.post<IBitmapDiffControllerResponse>(
                 "http://localhost:3000/api/image-diff/",
                 { data: requestFormData, headers: FORM_DATA_CONTENT_TYPE},
             );
