@@ -1,13 +1,11 @@
 import { NextFunction, Request, Response, Router } from "express";
 import e = require("express");
 import { inject, injectable } from "inversify";
-import {DataBaseService, GAME_FIELD, GAME_NAME_FIELD, USER_NAME_FIELD} from "../services/data-base.service";
+import {DataBaseService, USER_NAME_FIELD} from "../services/data-base.service";
 import Types from "../types";
 import {executeSafely} from "./controller-utils";
 
 export const USERNAME_FORMAT_ERROR_MESSAGE: string = "ERROR: the username has the wrong format!";
-export const GAME_NAME_FORMAT_ERROR_MESSAGE: string = "ERROR: the game name has the wrong format!";
-export const GAME_FORMAT_ERROR_MESSAGE: string = "ERROR: the game has the wrong format!";
 
 @injectable()
 export class DataBaseController {
