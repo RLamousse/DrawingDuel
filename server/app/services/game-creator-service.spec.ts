@@ -8,7 +8,7 @@ import * as fs from "fs";
 import * as HttpStatus from "http-status-codes";
 import * as os from "os";
 import {DIFFERENCE_ERROR_MESSAGE, NAME_ERROR_MESSAGE} from "../controllers/controller-utils";
-import {NOT_EXISTING_GAME_MESSAGE_ERROR} from "./data-base.service";
+import {NON_EXISTING_GAME_ERROR_MESSAGE} from "./db/games.collection.service";
 import {DifferenceEvaluatorService} from "./difference-evaluator.service";
 import { GameCreatorService } from "./game-creator.service";
 
@@ -52,7 +52,7 @@ describe("A service that creates a game", () => {
         const MOCK: MockAdapter = new AxiosAdapter(Axios);
 
         MOCK.onGet("http://localhost:3000/api/data-base/games/someGameTest")
-            .reply(HttpStatus.INTERNAL_SERVER_ERROR, {message: NOT_EXISTING_GAME_MESSAGE_ERROR});
+            .reply(HttpStatus.INTERNAL_SERVER_ERROR, {message: NON_EXISTING_GAME_ERROR_MESSAGE});
 
         MOCK.onGet("http://localhost:3000/api/image-diff/")
             .reply(HttpStatus.OK, {status: "ok",
@@ -75,7 +75,7 @@ describe("A service that creates a game", () => {
         const MOCK: MockAdapter = new AxiosAdapter(Axios);
 
         MOCK.onGet("http://localhost:3000/api/data-base/games/someGameTest")
-            .reply(HttpStatus.INTERNAL_SERVER_ERROR, {message: NOT_EXISTING_GAME_MESSAGE_ERROR});
+            .reply(HttpStatus.INTERNAL_SERVER_ERROR, {message: NON_EXISTING_GAME_ERROR_MESSAGE});
 
         MOCK.onGet("http://localhost:3000/api/image-diff/")
             .reply(HttpStatus.OK, {status: "ok",
@@ -98,7 +98,7 @@ describe("A service that creates a game", () => {
         const MOCK: MockAdapter = new AxiosAdapter(Axios);
 
         MOCK.onGet("http://localhost:3000/api/data-base/game/someGameTest")
-            .reply(500, {message: NOT_EXISTING_GAME_MESSAGE_ERROR});
+            .reply(500, {message: NON_EXISTING_GAME_ERROR_MESSAGE});
 
         MOCK.onGet("http://localhost:3000/api/image-diff/")
             .reply(HttpStatus.OK, {status: "ok",

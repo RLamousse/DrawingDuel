@@ -17,10 +17,7 @@ import {
 } from "../controllers/controller-utils";
 import {BitmapFactory} from "../images/bitmap/bitmap-factory";
 import Types from "../types";
-import {
-    ALREADY_EXISTING_GAME_MESSAGE_ERROR, GAME_FIELD,
-    NOT_EXISTING_GAME_MESSAGE_ERROR
-} from "./data-base.service";
+import {ALREADY_EXISTING_GAME_MESSAGE_ERROR, NON_EXISTING_GAME_ERROR_MESSAGE} from "./db/games.collection.service";
 import {DifferenceEvaluatorService} from "./difference-evaluator.service";
 
 export const EXPECTED_DIFF_NUMBER: number = 7;
@@ -62,7 +59,7 @@ export class GameCreatorService {
         } catch (error) {
             if (error.response.data.message === ALREADY_EXISTING_GAME_MESSAGE_ERROR) {
                 throw new Error(NAME_ERROR_MESSAGE);
-            } else if (error.response.data.message !== NOT_EXISTING_GAME_MESSAGE_ERROR) {
+            } else if (error.response.data.message !== NON_EXISTING_GAME_ERROR_MESSAGE) {
                 throw new Error("dataBase: " + error.response.data.message);
             }
         }
@@ -71,7 +68,7 @@ export class GameCreatorService {
     }
 
     private async uploadGame(gameName: string, images: IBitmapImage[]) {
-        const GAME: IGame = {
+        const game: IGame = {
             gameType: GameType.SIMPLE,
             bestMultiTimes: this.createRandomScores(),
             bestSoloTimes: this.createRandomScores(),
@@ -82,7 +79,7 @@ export class GameCreatorService {
             diffImage: images[2].name,
         };
 
-        await Axios.post<IGame>("http://localhost:3000/api/data-base/games", {data: {[GAME_FIELD]: GAME}});
+        await Axios.post<IGame>("http://localhost:3000/api/data-base/games", {data: game});
     }
 
     private async uploadImages(originalImage: Buffer,
@@ -125,7 +122,7 @@ export class GameCreatorService {
         try {
             await Axios.get<IGame>("http://localhost:3000/api/data-base/games/" + gameName);
         } catch (error) {
-            if (error.response.data.message !== NOT_EXISTING_GAME_MESSAGE_ERROR) {
+            if (error.response.data.message !== NON_EXISTING_GAME_ERROR_MESSAGE) {
                 throw new Error("dataBase: " + error.response.data.message);
             }
 

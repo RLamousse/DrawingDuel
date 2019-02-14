@@ -4,7 +4,7 @@ import * as fs from "fs";
 import { inject, injectable } from "inversify";
 import * as multer from "multer";
 import * as os from "os";
-import {GAME_NAME_FIELD} from "../services/data-base.service";
+import {GAME_NAME_FIELD} from "../../../common/communication/requests/game-creator.controller.request";
 import { GameCreatorService } from "../services/game-creator.service";
 import Types from "../types";
 import {
