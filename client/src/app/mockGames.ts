@@ -1,10 +1,11 @@
-import {IGame, GameType} from "../../../common/model/IGame";
+import {GameType, IGame} from "../../../common/model/IGame";
 
 export const MOCKMIXGAMELIST: IGame[] = [
     {
       gameName: "mockedSimpleGameName1",
       originalImage: "tiger.bmp",
       modifiedImage: "tiger.bmp",
+      diffImage: "tiger-diff.bmp",
       bestSoloTimes: [{ name: "mockedUser1", time: 1200 },
                       { name: "mockedUser2", time: 1450 },
                       { name: "mockedUser3", time: 1600 }],
@@ -17,6 +18,7 @@ export const MOCKMIXGAMELIST: IGame[] = [
         gameName: "mockedSimpleGameName2",
         originalImage: "tiger.bmp",
         modifiedImage: "tiger.bmp",
+        diffImage: "tiger-diff.bmp",
         bestSoloTimes: [{ name: "mockedUser1", time: 1200 },
                         { name: "mockedUser2", time: 1450 },
                         { name: "mockedUser3", time: 1600 }],
@@ -29,6 +31,8 @@ export const MOCKMIXGAMELIST: IGame[] = [
         gameName: "mockedSimpleName3",
         originalImage: "tiger.bmp",
         modifiedImage: "tiger.bmp",
+        diffImage: "tiger-diff.bmp",
+
         bestSoloTimes: [{ name: "mockedUser1", time: 1200 },
                         { name: "mockedUser2", time: 1450 },
                         { name: "mockedUser3", time: 1600 }],

@@ -45,13 +45,13 @@ export class GameService {
   }
 
   public pushGames(gamesToPush: IGame[]): void {
-    for (const i in gamesToPush) {
-      switch (gamesToPush[i].gameType) {
+    for (const game of gamesToPush) {
+      switch (game.gameType) {
         case GameType.SIMPLE:
-          this.simpleGames.push(gamesToPush[i]);
+          this.simpleGames.push(game);
           break;
         case GameType.FREE:
-          this.freeGames.push(gamesToPush[i]);
+          this.freeGames.push(game);
           break;
         default:
           // NOP
