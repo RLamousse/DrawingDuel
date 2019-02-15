@@ -1,14 +1,22 @@
-import { injectable } from "inversify";
+import {injectable} from "inversify";
 import "reflect-metadata";
 import {create2dArray} from "../../../common/util/util";
+import {IPoint} from "../../../common/model/IPoint";
 
 export const ARGUMENT_ERROR_MESSAGE: string = "Error: the argument has the wrong format! Must be a number[][].";
 export const EMPTY_ARRAY_ERROR_MESSAGE: string = "Error: the given array is empty!";
 
+export interface SimpleDifferenceData {
+    diffsCount: number;
+    diffZonesMap: Map<IPoint, number>;
+}
+
 @injectable()
 export class DifferenceEvaluatorService {
 
-    public getNDifferences(pixels: number[][]): number {
+    constructor () {}
+
+    public getNDifferences(pixels: number[][]): SimpleDifferenceData {
 
         this.validateData(pixels);
 
@@ -31,7 +39,8 @@ export class DifferenceEvaluatorService {
             }
         }
 
-        return this.calculateTotalZones(PARENT_TABLE);
+        //TODO generate colored diff image
+        return {diffsCount: this.calculateTotalZones(PARENT_TABLE), diffZonesMap: this.generateDiffZonesMap(PARENT_TABLE, ARRAY_OF_LABELS)};
     }
 
     private validateData(pixels: number[][]): void {
@@ -120,5 +129,20 @@ export class DifferenceEvaluatorService {
 
         // this assignation makes the average complexity of the find function lower than O(m∙log(n))
         return parentTable[value] = this.findRoot(parentTable[value], parentTable);
+    }
+
+    private generateDiffZonesMap(parentTable: Map<number, number>, arrayOfLabels: number[][]): Map<{x: number, y: number}, number> {
+        const DIFF_ZONES_MAP: Map<{x: number, y: number}, number> = new Map<{x: number, y: number}, number>();
+
+        for (let i: number = 0; i < arrayOfLabels.length; i++) {
+            for (let j: number = 0; j < arrayOfLabels[0].length; j++) {
+                if (arrayOfLabels[i][j]) {
+                    DIFF_ZONES_MAP.set({x: i, y: j}, parentTable[arrayOfLabels[i][j]]);
+                }
+            }
+        }
+
+        return DIFF_ZONES_MAP;
+
     }
 }

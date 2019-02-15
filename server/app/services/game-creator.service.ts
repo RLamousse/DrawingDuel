@@ -9,7 +9,6 @@ import {BITMAP_MEME_TYPE} from "../../../common/image/bitmap/bitmap-utils";
 import {IBitmapImage} from "../../../common/model/IBitmapImage";
 import {GameType, IGame, TIMES_ARRAY_SIZE} from "../../../common/model/IGame";
 import {IRecordTime} from "../../../common/model/IRecordTime";
-import {bufferToNumberArray} from "../../../common/util/util";
 import {
     DIFFERENCE_ERROR_MESSAGE, MODIFIED_IMAGE_FIELD_NAME,
     NAME_ERROR_MESSAGE, ORIGINAL_IMAGE_FIELD_NAME,
@@ -19,7 +18,8 @@ import {BitmapFactory} from "../images/bitmap/bitmap-factory";
 import Types from "../types";
 import {ALREADY_EXISTING_GAME_MESSAGE_ERROR, NON_EXISTING_GAME_ERROR_MESSAGE} from "./db/games.collection.service";
 import {ALREADY_EXISTING_IMAGE_MESSAGE_ERROR} from "./db/images.collection.service";
-import {DifferenceEvaluatorService} from "./difference-evaluator.service";
+import {DifferenceEvaluatorService, SimpleDifferenceData} from "./difference-evaluator.service";
+import {bufferToNumberArray} from "../../../common/util/util";
 
 export const EXPECTED_DIFF_NUMBER: number = 7;
 
@@ -38,15 +38,15 @@ export class GameCreatorService {
         await this.testNameExistance(gameName);
 
         const bitmapDiffImageBuffer: Buffer = await this.getDiffImage(originalImageFile, modifiedImageFile);
-        this.testNumberOfDifference(bitmapDiffImageBuffer); // TODO
+        const differenceData: SimpleDifferenceData = this.testNumberOfDifference(bitmapDiffImageBuffer);
 
-        return this.generateGame(gameName, originalImageFile, modifiedImageFile);
+        return this.generateGame(gameName, originalImageFile, modifiedImageFile, differenceData);
     }
 
-    private async generateGame(gameName: string, originalImage: Buffer, modifiedImage: Buffer): Promise<Message> {
+    private async generateGame(gameName: string, originalImage: Buffer, modifiedImage: Buffer, diffMapData: SimpleDifferenceData): Promise<Message> {
         try {
             const images: IBitmapImage[] = await this.uploadImages(originalImage, modifiedImage, gameName);
-            await this.uploadGame(gameName, images);
+            await this.uploadGame(gameName, images, diffMapData);
         } catch (error) {
             if (error.response.data.message === ALREADY_EXISTING_GAME_MESSAGE_ERROR) {
                 throw new Error(NAME_ERROR_MESSAGE);
@@ -58,7 +58,7 @@ export class GameCreatorService {
         return {title: "Game created", body: "The game was successfully created!"};
     }
 
-    private async uploadGame(gameName: string, images: IBitmapImage[]) {
+    private async uploadGame(gameName: string, images: IBitmapImage[], diffData: SimpleDifferenceData) {
         const game: IGame = {
             gameType: GameType.SIMPLE,
             bestMultiTimes: this.createRandomScores(),
@@ -66,7 +66,7 @@ export class GameCreatorService {
             gameName: gameName,
             originalImage: images[0].name,
             modifiedImage: images[1].name,
-            diffImage: images[2].name,
+            diffData: diffData
         };
 
         await Axios.post<IGame>("http://localhost:3000/api/data-base/games", game);
@@ -127,17 +127,18 @@ export class GameCreatorService {
         throw new Error(NAME_ERROR_MESSAGE);
     }
 
-    private testNumberOfDifference(diffImage: Buffer): void {
-        let diffNumber: number;
+    private testNumberOfDifference(diffImage: Buffer): SimpleDifferenceData {
+        let diffData: SimpleDifferenceData;
         try {
             const diffBitmap: Bitmap = BitmapFactory.createBitmap("diffImage", diffImage);
-            diffNumber = this.differenceEvaluatorService.getNDifferences(diffBitmap.pixels);
+            diffData = this.differenceEvaluatorService.getNDifferences(diffBitmap.pixels);
         } catch (error) {
             throw new Error("bmp diff counting: " + error.message);
         }
-        if (diffNumber !== EXPECTED_DIFF_NUMBER) {
+        if (diffData.diffsCount !== EXPECTED_DIFF_NUMBER) {
             throw new Error(DIFFERENCE_ERROR_MESSAGE);
         }
+        return diffData;
     }
 
     private async getDiffImage(originalImageFile: Buffer, modifiedImageFile: Buffer): Promise<Buffer> {
