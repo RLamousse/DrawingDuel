@@ -8,10 +8,13 @@ export class SceneRendererService {
 
   public constructor(private formService: Form3DService) { }
 
-  private container: HTMLDivElement;
+  private originalContainer: HTMLDivElement;
+  private modifiedContainer: HTMLDivElement;
   private camera: THREE.PerspectiveCamera;
-  private renderer: THREE.WebGLRenderer;
+  private rendererOri: THREE.WebGLRenderer;
+  private rendererMod: THREE.WebGLRenderer;
   private scene: THREE.Scene;
+  private modifiedScene: THREE.Scene;
 
   private fpControls: THREE.FirstPersonControls;
   private mvmSpeed: number = 50;
@@ -30,24 +33,29 @@ export class SceneRendererService {
   private cameraY: number = 0;
   private cameraZ: number = 100;
 
-  public obj3DToCreate: number = 100;
+  public obj3DToCreate: number = 2;
   public objects: THREE.Mesh[] = [];
+  public modifiedObjects: THREE.Mesh[] = [];
   private minDistCenterObject: number = 43;
-  private PI: number = Math.PI;
-  private maxRotationAngle: number = 2 * this.PI;
 
   private gameEnvX: number = 300;
   private gameEnvY: number = 300;
   private gameEnvZ: number = 300;
 
   private setRenderer(): void {
-    this.renderer = new THREE.WebGLRenderer();
-    this.renderer.setClearColor(this.backGroundColor);
-    this.renderer.setPixelRatio(devicePixelRatio);
-    this.renderer.setSize(this.container.clientWidth, this.container.clientHeight);
-    this.container.appendChild(this.renderer.domElement);
+    this.rendererOri = new THREE.WebGLRenderer();
+    this.rendererOri.setClearColor(this.backGroundColor);
+    this.rendererOri.setPixelRatio(devicePixelRatio);
+    this.rendererOri.setSize(this.originalContainer.clientWidth, this.originalContainer.clientHeight);
+    this.originalContainer.appendChild(this.rendererOri.domElement);
 
-    this.fpControls = new THREE.FirstPersonControls(this.camera, this.renderer.domElement);
+    this.rendererMod = new THREE.WebGLRenderer();
+    this.rendererMod.setClearColor(this.backGroundColor);
+    this.rendererMod.setPixelRatio(devicePixelRatio);
+    this.rendererMod.setSize(this.modifiedContainer.clientWidth, this.modifiedContainer.clientHeight);
+    this.modifiedContainer.appendChild(this.rendererMod.domElement);
+
+    this.fpControls = new THREE.FirstPersonControls(this.camera, this.rendererOri.domElement);
     this.fpControls.movementSpeed = this.mvmSpeed;
     this.fpControls.lookSpeed = this.lkSpeed;
 
@@ -56,7 +64,8 @@ export class SceneRendererService {
 
   private renderLoop(): void {
     requestAnimationFrame(() => this.renderLoop());
-    this.renderer.render(this.scene, this.camera);
+    this.rendererOri.render(this.scene, this.camera);
+    this.rendererMod.render(this.modifiedScene, this.camera);
     this.fpControls.update(this.updateTime);
   }
 
@@ -67,6 +76,7 @@ export class SceneRendererService {
   private create3DObjects(): void {
 
     let object: THREE.Mesh;
+    const MAXROTATIONANGLE: number = 2 * Math.PI;
     for (let i: number = 0; i < this.obj3DToCreate; ++i) {
       object = this.generate3DObject();
       object.position.set(
@@ -75,13 +85,62 @@ export class SceneRendererService {
         this.getRandomValue(-this.gameEnvZ, this.gameEnvZ),
       );
       object.rotation.set(
-        this.getRandomValue(0, this.maxRotationAngle),
-        this.getRandomValue(0, this.maxRotationAngle),
-        this.getRandomValue(0, this.maxRotationAngle),
+        this.getRandomValue(0, MAXROTATIONANGLE),
+        this.getRandomValue(0, MAXROTATIONANGLE),
+        this.getRandomValue(0, MAXROTATIONANGLE),
       );
       object = this.handleCollision(object);
       this.objects.push(object);
-      this.scene.add(object);
+    }
+    this.generateOriginalScene();
+    this.generateDifferences();
+  }
+
+  private generateOriginalScene(): void {
+    for (let i of this.objects) {
+      this.scene.add(i);
+    }
+  }
+  public generateDifferences(): void {
+    /*for (let i of objSource) {
+      i = this.handleCollision(i);
+    }*/
+    this.modifiedObjects = this.objects.map((mesh)=> mesh.clone());
+    //this.modifiedObjects = this.objects;
+    enum modificationType { remove, add, colorChange }
+    //const maxModificationType: number = 2;
+    const numberModifications: number = 7;
+    for (let i: number = 0; i < numberModifications; i++) {
+      const indexObjects: number = this.getRandomValue(0, this.modifiedObjects.length);
+      //const randomModification: number = this.getRandomValue(0, maxModificationType);
+      switch (modificationType.add) {
+        case modificationType.remove: {
+          this.modifiedObjects.splice(indexObjects, 1);
+          break;
+        }
+        case modificationType.add: {
+          let object: THREE.Mesh = this.generate3DObject();
+          object = this.handleCollision(object);
+          this.modifiedObjects.push(object);
+          break;
+        }
+        case modificationType.colorChange: {
+          //this.formService.setColor(objects[indexObjects].geometry);
+          break;
+        }
+        default: {
+          break;
+        }
+      }
+    }
+    this.generateModifiedScene();
+  }
+
+  private generateModifiedScene(): void {
+    //const objs: THREE.Mesh[] = this.generateDifferences(this.objects, this.modifObjects);
+    for (let objectIndex of this.modifiedObjects) {
+      //objectIndex = this.handleCollision(objectIndex);
+      this.modifiedScene.add(objectIndex);
     }
   }
 
@@ -147,9 +206,11 @@ export class SceneRendererService {
     this.lighting = new THREE.DirectionalLight(WHITELIGHT, 1);
     this.lighting.position.set(0, 1, 1);
     this.scene.add(this.lighting);
+    this.modifiedScene.add(this.lighting);
 
     this.ambiantLight = new THREE.AmbientLight(HOTLIGHT);
     this.scene.add(this.ambiantLight);
+    this.modifiedScene.add(this.ambiantLight);
   }
 
   private setCamera(): void {
@@ -168,22 +229,25 @@ export class SceneRendererService {
 
   private setScene(): void {
     this.scene = new THREE.Scene();
+    this.modifiedScene = new THREE.Scene();
     this.setCamera();
     this.setLighting();
   }
 
   private getAspectRatio(): number {
-    return (this.container.clientWidth) / (this.container.clientHeight);
+    return (this.originalContainer.clientWidth) / (this.originalContainer.clientHeight);
   }
 
   public onResize(): void {
     this.camera.aspect = this.getAspectRatio();
     this.camera.updateProjectionMatrix();
-    this.renderer.setSize(this.container.clientWidth, this.container.clientHeight);
+    this.rendererOri.setSize(this.originalContainer.clientWidth, this.originalContainer.clientHeight);
+    this.rendererMod.setSize(this.modifiedContainer.clientWidth, this.modifiedContainer.clientHeight);
   }
 
-  public init(container: HTMLDivElement): void {
-    this.container = container;
+  public init(oriCont: HTMLDivElement, modCont: HTMLDivElement): void {
+    this.originalContainer = oriCont;
+    this.modifiedContainer = modCont;
     this.setScene();
     this.create3DObjects();
     this.setRenderer();

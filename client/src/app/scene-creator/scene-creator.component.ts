@@ -10,12 +10,19 @@ export class SceneCreatorComponent implements AfterViewInit {
 
   public constructor(private renderService: SceneRendererService) { }
 
-  private get container(): HTMLDivElement {
-    return this.containerRef.nativeElement;
+  private get originalContainer(): HTMLDivElement {
+    return this.originalRef.nativeElement;
   }
 
-  @ViewChild("container")
-  private containerRef: ElementRef;
+  private get modifiedContainer(): HTMLDivElement {
+    return this.modifiedRef.nativeElement;
+  }
+
+  @ViewChild("originalView")
+  private originalRef: ElementRef;
+
+  @ViewChild("modifiedView")
+  private modifiedRef: ElementRef;
 
   @HostListener("window:resize", ["$event"])
   public onResize(): void {
@@ -23,7 +30,7 @@ export class SceneCreatorComponent implements AfterViewInit {
   }
 
   public ngAfterViewInit(): void {
-    this.renderService.init(this.container);
+    this.renderService.init(this.originalContainer, this.modifiedContainer);
   }
 
 }
