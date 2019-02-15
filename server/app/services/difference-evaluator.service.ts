@@ -44,14 +44,18 @@ export class DifferenceEvaluatorService {
         const diffs: Map<Vector3, Material | Material[]> = new Map<Vector3, Material | Material[]>();
 
         for (const ORIGINAL_MESH of originalScene) {
-            diffs.set(ORIGINAL_MESH.position, ORIGINAL_MESH.material);
+            if (ORIGINAL_MESH instanceof THREE.Mesh) {
+                diffs.set(ORIGINAL_MESH.position, ORIGINAL_MESH.material);
+            }
         }
 
         for (const MODIFIED_MESH of modifiedScene) {
-            if (!diffs.has(MODIFIED_MESH.position)) {
-                diffs.set(MODIFIED_MESH.position, MODIFIED_MESH.material);
-            } else if (diffs.get(MODIFIED_MESH.position) === MODIFIED_MESH.material) {
-                diffs.delete(MODIFIED_MESH.position);
+            if (MODIFIED_MESH instanceof THREE.Mesh) {
+                if (!diffs.has(MODIFIED_MESH.position)) {
+                    diffs.set(MODIFIED_MESH.position, MODIFIED_MESH.material);
+                } else if (diffs.get(MODIFIED_MESH.position) === MODIFIED_MESH.material) {
+                    diffs.delete(MODIFIED_MESH.position);
+                }
             }
         }
 
