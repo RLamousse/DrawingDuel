@@ -1,4 +1,4 @@
-import { BITMAP_HEADER_24BPP, HEADER_SIZE_BYTES } from "../../../common/image/bitmap/bitmap-utils";
+import { BITMAP_HEADER_24BPP, HEADER_SIZE_BYTES, VALID_640x480_BITMAP_HEADER_24BPP } from "../../../common/image/bitmap/bitmap-utils";
 import FakeControl from "./Interfaces/fakeControl";
 import FileValidator from "./file.validator";
 
@@ -35,6 +35,22 @@ describe("FileValidator", () => {
 
     return FileValidator.dimensionValidator(fakeControl).then((value) => {
       expect(value).toEqual({imageDimension: "L'image n'est pas de la bonne dimension"});
+      done();
+    });
+  });
+
+  it("should return all is fine with a good bmp header", async (done) => {
+    // tslint:disable-next-line:no-any
+    const fakeHeader: any[] = new Array(HEADER_SIZE_BYTES);
+    fakeHeader.unshift(...VALID_640x480_BITMAP_HEADER_24BPP);
+    const fakeControl: FakeControl = {
+      value: {
+        files: [new File(fakeHeader, "maxime", { type: "image/bmp" })],
+      },
+    };
+
+    return FileValidator.dimensionValidator(fakeControl).then((value) => {
+      expect(value).toBeNull();
       done();
     });
   });
