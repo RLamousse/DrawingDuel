@@ -1,6 +1,9 @@
 import { NextFunction, Request, Response, Router } from "express";
+import * as Httpstatus from "http-status-codes";
 import { inject, injectable } from "inversify";
+import {IGame} from "../../../common/model/IGame";
 import {DataBaseService} from "../services/data-base.service";
+import {NON_EXISTING_GAME_ERROR_MESSAGE} from "../services/db/games.collection.service";
 import Types from "../types";
 import {executeSafely} from "./controller-utils";
 
@@ -40,7 +43,7 @@ export class DataBaseController {
 
         router.delete("/games/:id", async (req: Request, res: Response, next: NextFunction) => {
             executeSafely(next, async () => {
-                res.json(await this.dataBaseService.games.delete(req.query["id"]));
+                res.json(await this.dataBaseService.games.delete(req.params["id"]));
             });
         });
 
@@ -52,7 +55,16 @@ export class DataBaseController {
 
         router.get("/games/:gameName", async (req: Request, res: Response, next: NextFunction) => {
             executeSafely(next, async () => {
-                res.json(await this.dataBaseService.games.getFromId(req.query["gameName"]));
+                this.dataBaseService.games
+                    .getFromId(req.params["gameName"])
+                    .then((value: IGame) => {
+                        res.json(value);
+                    }).catch((reason: Error) => {
+                       if (reason.message === NON_EXISTING_GAME_ERROR_MESSAGE) {
+                           res.status(Httpstatus.NOT_FOUND);
+                           res.json(reason);
+                       }
+                    });
             });
         });
 

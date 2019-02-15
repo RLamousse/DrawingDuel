@@ -74,11 +74,12 @@ export abstract class CollectionService<T> {
         return new Promise<T>((resolve: (value?: T | PromiseLike<T>) => void, reject: (reason?: Error) => void) => {
             this._collection.find({[this.idFieldName] : {$eq : id}}).toArray((error: MongoError, res: T[]) => {
                 if (error) {
-                    reject(new Error(DATA_BASE_MESSAGE_ERROR));
+                    return reject(new Error(DATA_BASE_MESSAGE_ERROR));
                 } else if (res.length === 0) {
-                    reject(new Error(errorMessage));
+                    return reject(new Error(errorMessage));
                 }
-                resolve(res[0]);
+
+                return resolve(res[0]);
             });
         });
     }

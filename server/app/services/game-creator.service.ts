@@ -1,5 +1,6 @@
 import Axios, {AxiosResponse} from "axios";
 import * as FormData from "form-data";
+import * as Httpstatus from "http-status-codes";
 import {inject, injectable} from "inversify";
 import "reflect-metadata";
 import {Message} from "../../../common/communication/messages/message";
@@ -11,7 +12,7 @@ import {GameType, IGame, TIMES_ARRAY_SIZE} from "../../../common/model/IGame";
 import {IRecordTime} from "../../../common/model/IRecordTime";
 import {bufferToNumberArray} from "../../../common/util/util";
 import {
-    DIFFERENCE_ERROR_MESSAGE, FORM_DATA_CONTENT_TYPE, MODIFIED_IMAGE_FIELD_NAME,
+    DIFFERENCE_ERROR_MESSAGE, MODIFIED_IMAGE_FIELD_NAME,
     NAME_ERROR_MESSAGE, ORIGINAL_IMAGE_FIELD_NAME,
     OUTPUT_FILE_NAME_FIELD_NAME
 } from "../controllers/controller-utils";
@@ -73,7 +74,6 @@ export class GameCreatorService {
             bestMultiTimes: this.createRandomScores(),
             bestSoloTimes: this.createRandomScores(),
             gameName: gameName,
-            // TODO Relation
             originalImage: images[0].name,
             modifiedImage: images[1].name,
             diffImage: images[2].name,
@@ -94,10 +94,11 @@ export class GameCreatorService {
                 name: gameName + this.GAME_IMAGES_KEYS_SUFFIX[i] + BITMAP_FILE_EXTENSION,
                 data: bufferToNumberArray(imageData[i]),
             };
+
+            await Axios.post<IBitmapImage>("http://localhost:3000/api/data-base/images", {data: image});
+
             images.push(image);
         }
-
-        await Axios.post<IBitmapImage>("http://localhost:3000/api/data-base/images", {data: images});
 
         return images;
     }
@@ -122,7 +123,7 @@ export class GameCreatorService {
         try {
             await Axios.get<IGame>("http://localhost:3000/api/data-base/games/" + gameName);
         } catch (error) {
-            if (error.response.data.message !== NON_EXISTING_GAME_ERROR_MESSAGE) {
+            if (error.response.status !== Httpstatus.NOT_FOUND) {
                 throw new Error("dataBase: " + error.response.data.message);
             }
 
@@ -148,12 +149,12 @@ export class GameCreatorService {
         try {
             const requestFormData: FormData = new FormData();
             requestFormData.append(OUTPUT_FILE_NAME_FIELD_NAME, "image-diff-" + Date.now() + ".bmp");
-            requestFormData.append(ORIGINAL_IMAGE_FIELD_NAME, originalImageFile, {contentType: BITMAP_MEME_TYPE});
-            requestFormData.append(MODIFIED_IMAGE_FIELD_NAME, modifiedImageFile, {contentType: BITMAP_MEME_TYPE});
-
+            requestFormData.append(ORIGINAL_IMAGE_FIELD_NAME, originalImageFile, {contentType: BITMAP_MEME_TYPE, filename: "original.bmp"});
+            requestFormData.append(MODIFIED_IMAGE_FIELD_NAME, modifiedImageFile, {contentType: BITMAP_MEME_TYPE, filename: "modified.bmp"});
             const response: AxiosResponse<IBitmapDiffControllerResponse> = await Axios.post<IBitmapDiffControllerResponse>(
                 "http://localhost:3000/api/image-diff/",
-                { data: requestFormData, headers: FORM_DATA_CONTENT_TYPE},
+                requestFormData,
+                { headers: requestFormData.getHeaders()},
             );
 
             return response.data;
