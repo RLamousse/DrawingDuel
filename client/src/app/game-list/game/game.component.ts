@@ -22,7 +22,7 @@ export class GameComponent {
 
   protected leftButtonClick(): void {
     if (this.leftButton === "jouer") {
-      this.router.navigate(["../play-view/"]).catch();
+      this.router.navigate(["/play-view/"], {queryParams: { string: this.gameName }});
     }
   }
 }

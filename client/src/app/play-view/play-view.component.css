@@ -1,7 +1,9 @@
-.scoreTable{
-    margin: 25px;
-    font-weight: bold;
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+
+body{
+    background-color: lightblue;
 }
+
 .window {
     width: 30%;
     border: 1px black solid;
@@ -10,15 +12,17 @@
 img{
     width: 640px;
     height: 480px;
-    padding: 10px;
-    align-self: center;
+    position: center;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 .center {
     margin: auto;
-    width: fit-content;
+    width: 1320px;
     border: 3px solid green;
     padding: 10px;
+    font: 25px arial serif;
 }
 
 .centeredText {
@@ -28,4 +32,13 @@ img{
 
 .compteur{
     margin: 10px;
+    font: 20px arial serif;
+}
+
+.eventNotif{
+    margin: auto;
+    width: 1320px;
+    border: 3px solid green;
+    padding: 10px;
+    min-height: 300px;
 }
