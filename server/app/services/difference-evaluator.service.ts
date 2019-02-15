@@ -1,22 +1,24 @@
 import {injectable} from "inversify";
 import "reflect-metadata";
-import {create2dArray} from "../../../common/util/util";
 import {IPoint} from "../../../common/model/IPoint";
+import {create2dArray} from "../../../common/util/util";
 
 export const ARGUMENT_ERROR_MESSAGE: string = "Error: the argument has the wrong format! Must be a number[][].";
 export const EMPTY_ARRAY_ERROR_MESSAGE: string = "Error: the given array is empty!";
 
-export interface SimpleDifferenceData {
+export interface ISimpleDifferenceData {
     diffsCount: number;
-    diffZonesMap: Map<IPoint, number>;
+    diffZonesMap: IDiffZonesMap;
 }
+
+export interface IDiffZonesMap extends Map<IPoint, number> {}
 
 @injectable()
 export class DifferenceEvaluatorService {
 
     constructor () {}
 
-    public getNDifferences(pixels: number[][]): SimpleDifferenceData {
+    public getNDifferences(pixels: number[][]): ISimpleDifferenceData {
 
         this.validateData(pixels);
 

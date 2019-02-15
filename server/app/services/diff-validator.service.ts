@@ -3,14 +3,15 @@ import {injectable} from "inversify";
 import "reflect-metadata";
 import {IGame} from "../../../common/model/IGame";
 import {IPoint} from "../../../common/model/IPoint";
-import {SimpleDifferenceData} from "./difference-evaluator.service";
+import {IDiffZonesMap} from "./difference-evaluator.service";
 
 @injectable()
 export class DiffValidatorService {
     public async hasDifference(gameName: string, point: IPoint): Promise<boolean> {
         const game: IGame = await this.getGame(gameName);
-        const diffData: SimpleDifferenceData = game.diffData;
-        return diffData.diffZonesMap.has(point);
+        const diffData: IDiffZonesMap = game.diffData;
+
+        return diffData.has(point);
     }
 
     private async getGame(gameName: string): Promise<IGame> {

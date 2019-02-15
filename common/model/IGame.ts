@@ -1,12 +1,12 @@
 import {IRecordTime} from "./IRecordTime";
-import {SimpleDifferenceData} from "../../server/app/services/difference-evaluator.service";
+import {IDiffZonesMap} from "../../server/app/services/difference-evaluator.service";
 
 export interface IGame {
     gameType: GameType,
     gameName: string,
     originalImage: string,
     modifiedImage: string,
-    diffData: SimpleDifferenceData,
+    diffData: IDiffZonesMap,
     bestSoloTimes: IRecordTime[],
     bestMultiTimes: IRecordTime[],
 }

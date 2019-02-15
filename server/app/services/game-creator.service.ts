@@ -1,11 +1,11 @@
 import Axios, {AxiosResponse} from "axios";
 import * as FormData from "form-data";
+import * as Httpstatus from "http-status-codes";
 import {inject, injectable} from "inversify";
 import "reflect-metadata";
 import {Message} from "../../../common/communication/messages/message";
 import {Bitmap} from "../../../common/image/bitmap/bitmap";
 import {BITMAP_MEME_TYPE} from "../../../common/image/bitmap/bitmap-utils";
-import {IBitmapImage} from "../../../common/model/IBitmapImage";
 import {GameType, IGame, TIMES_ARRAY_SIZE} from "../../../common/model/IGame";
 import {IRecordTime} from "../../../common/model/IRecordTime";
 import {
@@ -16,36 +16,39 @@ import {
 import {BitmapFactory} from "../images/bitmap/bitmap-factory";
 import Types from "../types";
 import {ALREADY_EXISTING_GAME_MESSAGE_ERROR, NON_EXISTING_GAME_ERROR_MESSAGE} from "./db/games.collection.service";
-import {ALREADY_EXISTING_IMAGE_MESSAGE_ERROR} from "./db/images.collection.service";
-import {DifferenceEvaluatorService, SimpleDifferenceData} from "./difference-evaluator.service";
-import {bufferToNumberArray} from "../../../common/util/util";
+import {DifferenceEvaluatorService, IDiffZonesMap, ISimpleDifferenceData} from "./difference-evaluator.service";
+import {ImageUploadService} from "./image-upload.service";
 
 export const EXPECTED_DIFF_NUMBER: number = 7;
 
 @injectable()
 export class GameCreatorService {
 
-    public constructor(@inject(Types.DifferenceEvaluatorService) private differenceEvaluatorService: DifferenceEvaluatorService) {}
+    public constructor(
+        @inject(Types.DifferenceEvaluatorService) private differenceEvaluatorService: DifferenceEvaluatorService,
+        @inject(Types.ImageUploadService) private imageUploadService: ImageUploadService) {}
 
     private readonly _MIN_GENERATED_SCORE: number = 20;
     private readonly _MAX_GENERATED_SCORE: number = 120;
     private readonly _GENERATED_NAMES: string[] = ["normie", "hardTryer4269", "xXx_D4B0W5_xXx"];
-    private readonly GAME_IMAGES_KEYS_SUFFIX: string[] = ["-originalImage.bmp", "-modifiedImage.bmp", "-diffImage.bmp"];
 
     public async createSimpleGame(gameName: string, originalImageFile: Buffer, modifiedImageFile: Buffer): Promise<Message> {
 
         await this.testNameExistance(gameName);
 
         const bitmapDiffImageBuffer: Buffer = await this.getDiffImage(originalImageFile, modifiedImageFile);
-        const differenceData: SimpleDifferenceData = this.testNumberOfDifference(bitmapDiffImageBuffer);
+        const differenceData: ISimpleDifferenceData = this.testNumberOfDifference(bitmapDiffImageBuffer);
 
-        return this.generateGame(gameName, originalImageFile, modifiedImageFile, differenceData);
+        return this.generateGame(gameName, originalImageFile, modifiedImageFile, differenceData.diffZonesMap);
     }
 
-    private async generateGame(gameName: string, originalImage: Buffer, modifiedImage: Buffer, diffMapData: SimpleDifferenceData): Promise<Message> {
+    private async generateGame(gameName: string,
+                               originalImage: Buffer,
+                               modifiedImage: Buffer,
+                               diffMapData: IDiffZonesMap): Promise<Message> {
         try {
-            const images: IBitmapImage[] = await this.uploadImages(originalImage, modifiedImage, gameName);
-            await this.uploadGame(gameName, images, diffMapData);
+            const imagesUrls: string[] = await this.uploadImages(originalImage, modifiedImage);
+            await this.uploadGame(gameName, imagesUrls, diffMapData);
         } catch (error) {
             if (error.response.data.message === ALREADY_EXISTING_GAME_MESSAGE_ERROR) {
                 throw new Error(NAME_ERROR_MESSAGE);
@@ -57,44 +60,28 @@ export class GameCreatorService {
         return {title: "Game created", body: "The game was successfully created!"};
     }
 
-    private async uploadGame(gameName: string, images: IBitmapImage[], diffData: SimpleDifferenceData) {
+    private async uploadGame(gameName: string, imagesUrls: string[], diffData: IDiffZonesMap): Promise<void> {
         const game: IGame = {
             gameType: GameType.SIMPLE,
             bestMultiTimes: this.createRandomScores(),
             bestSoloTimes: this.createRandomScores(),
             gameName: gameName,
-            originalImage: images[0].name,
-            modifiedImage: images[1].name,
-            diffData: diffData
+            originalImage: imagesUrls[0],
+            modifiedImage: imagesUrls[1],
+            diffData: diffData,
         };
 
         await Axios.post<IGame>("http://localhost:3000/api/data-base/games", game);
     }
 
-    private async uploadImages(originalImage: Buffer,
-                               modifiedImage: Buffer,
-                               gameName: string): Promise<IBitmapImage[]> {
+    private async uploadImages(...imageBuffers: Buffer[]): Promise<string[]> {
 
-        const images: IBitmapImage[] = [];
-        const imageData: Buffer[] = [originalImage, modifiedImage];
-        for (let i: number = 0; i < this.GAME_IMAGES_KEYS_SUFFIX.length; i++) {
-            const image: IBitmapImage = {
-                name: gameName + this.GAME_IMAGES_KEYS_SUFFIX[i],
-                data: bufferToNumberArray(imageData[i]),
-            };
-
-            await Axios.post<IBitmapImage>("http://localhost:3000/api/data-base/images", image)
-                .catch((error: any) => {
-                    if (error.message !== ALREADY_EXISTING_IMAGE_MESSAGE_ERROR) {
-                        throw error;
-                    }
-                })
-                .then((response: AxiosResponse<IBitmapImage>) => {
-                    images.push(response.data);
-                });
+        const imagesUrls: string[] = [];
+        for (const image of imageBuffers) {
+            imagesUrls.push(await this.imageUploadService.uploadImage(image));
         }
 
-        return images;
+        return imagesUrls;
     }
 
     private createRandomScores(): IRecordTime[] {
@@ -117,7 +104,7 @@ export class GameCreatorService {
         try {
             await Axios.get<IGame>("http://localhost:3000/api/data-base/games/" + gameName);
         } catch (error) {
-            if (error.response.data.message !== NON_EXISTING_GAME_ERROR_MESSAGE) {
+            if (error.response.status !== Httpstatus.NOT_FOUND) {
                 throw new Error("dataBase: " + error.response.data.message);
             }
 
@@ -126,8 +113,8 @@ export class GameCreatorService {
         throw new Error(NAME_ERROR_MESSAGE);
     }
 
-    private testNumberOfDifference(diffImage: Buffer): SimpleDifferenceData {
-        let diffData: SimpleDifferenceData;
+    private testNumberOfDifference(diffImage: Buffer): ISimpleDifferenceData {
+        let diffData: ISimpleDifferenceData;
         try {
             const diffBitmap: Bitmap = BitmapFactory.createBitmap("diffImage", diffImage);
             diffData = this.differenceEvaluatorService.getNDifferences(diffBitmap.pixels);
@@ -137,6 +124,7 @@ export class GameCreatorService {
         if (diffData.diffsCount !== EXPECTED_DIFF_NUMBER) {
             throw new Error(DIFFERENCE_ERROR_MESSAGE);
         }
+
         return diffData;
     }
 

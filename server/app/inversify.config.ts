@@ -12,6 +12,7 @@ import {DataBaseService} from "./services/data-base.service";
 import {DiffValidatorService} from "./services/diff-validator.service";
 import {DifferenceEvaluatorService} from "./services/difference-evaluator.service";
 import {GameCreatorService} from "./services/game-creator.service";
+import {ImageUploadService} from "./services/image-upload.service";
 import { UsernameService } from "./services/username.service";
 import Types from "./types";
 
@@ -22,6 +23,7 @@ container.bind(Types.Application).to(Application);
 
 container.bind(Types.GameCreatorController).to(GameCreatorController);
 container.bind(Types.GameCreatorService).to(GameCreatorService);
+container.bind(Types.ImageUploadService).to(ImageUploadService);
 
 container.bind(Types.DataBaseController).to(DataBaseController);
 container.bind(Types.DataBaseService).to(DataBaseService);
