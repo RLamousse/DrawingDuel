@@ -40,6 +40,9 @@ describe("FileValidator", () => {
   });
 
   it("should return all is fine with a good bmp header", async (done) => {
+
+    // Tester la fonction getDimensionFromBuffer
+
     // tslint:disable-next-line:no-any
     const fakeHeader: any[] = new Array(HEADER_SIZE_BYTES);
     fakeHeader.unshift(...VALID_640x480_BITMAP_HEADER_24BPP);

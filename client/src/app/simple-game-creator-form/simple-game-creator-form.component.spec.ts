@@ -108,7 +108,7 @@ describe("SimpleGameCreatorFormComponent", () => {
     fakeHeader.unshift(...VALID_640x480_BITMAP_HEADER_24BPP);
     const originalImage: AbstractControl = component.formDoc.controls["originalImage"];
     originalImage.setValue({
-      files: [new File(fakeHeader, "maxime.bmp", {type: "image/bmp"})],
+      files: [new File([...VALID_640x480_BITMAP_HEADER_24BPP], "maxime.bmp", {type: "image/bmp"})],
     });
     const modifiedImage: AbstractControl = component.formDoc.controls["modifiedImage"];
     modifiedImage.setValue({
