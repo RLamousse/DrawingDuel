@@ -17,6 +17,8 @@ export class GameListComponent implements OnInit {
   public constructor(private gameService: GameService) {/*vide*/}
 
   public ngOnInit(): void {
+    this.gameService.freeGames = [];
+    this.gameService.simpleGames = [];
     this.gameService.getGames().subscribe((gamesToModify: Game[]) => {
       this.gameService.convertScoresObject(gamesToModify);
       this.gameService.pushGames(gamesToModify);
@@ -24,4 +26,5 @@ export class GameListComponent implements OnInit {
       this.gameService.pushGames(MOCKMIXGAMELIST);
     });
   }
+
 }
