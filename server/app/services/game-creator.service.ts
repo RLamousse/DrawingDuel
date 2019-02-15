@@ -1,6 +1,5 @@
 import Axios, {AxiosResponse} from "axios";
 import * as FormData from "form-data";
-import * as Httpstatus from "http-status-codes";
 import {inject, injectable} from "inversify";
 import "reflect-metadata";
 import {Message} from "../../../common/communication/messages/message";
@@ -118,7 +117,7 @@ export class GameCreatorService {
         try {
             await Axios.get<IGame>("http://localhost:3000/api/data-base/games/" + gameName);
         } catch (error) {
-            if (error.response.status !== Httpstatus.NOT_FOUND) {
+            if (error.response.data.message !== NON_EXISTING_GAME_ERROR_MESSAGE) {
                 throw new Error("dataBase: " + error.response.data.message);
             }
 
