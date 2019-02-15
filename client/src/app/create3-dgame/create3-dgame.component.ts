@@ -13,15 +13,16 @@ import { FormPostService } from "../form-post.service";
 export class Create3DGameComponent extends AbstractForm implements OnInit {
 
   private readonly MIN_NAME_LENGTH: number = 5;
+
   protected modTypes: SelectType[] = AVAILABLE_MODIF_TYPES;
   protected objectTypes: SelectType[] = AVAILABLE_OBJECT_TYPES;
-  protected checkboxes: {
+  protected sliderValue: number = 10;
+
+  public checkboxes: {
     objectTypes: Set<string>,
     modificationTypes: Set<string>,
     valid(): boolean,
   };
-  protected sliderValue: number = 10;
-
   public constructor(_fb: FormBuilder,
                      dialogRef: MatDialogRef<Create3DGameComponent>,
                      formPost: FormPostService) {
@@ -50,7 +51,7 @@ export class Create3DGameComponent extends AbstractForm implements OnInit {
     }
   }
 
-  protected checboxesValid (): boolean {
+  public checboxesValid (): boolean {
     return (
       this.checkboxes.objectTypes.size !== 0 &&
       this.checkboxes.modificationTypes.size !== 0
