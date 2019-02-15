@@ -32,6 +32,7 @@ export class GameService {
     for (const i in game) {
       if (game.hasOwnProperty(i)) {
         game[i].originalImage = this.buildHttpAdress(game[i].originalImage);
+        game[i].modifiedImage = this.buildHttpAdress(game[i].modifiedImage);
         for (const j in game[i].bestSoloTimes) {
           if (game[i].bestSoloTimes.hasOwnProperty(j)) {
             game[i].bestSoloTimes[j].time = this.convertTimeScores(game[i].bestSoloTimes[j].time);

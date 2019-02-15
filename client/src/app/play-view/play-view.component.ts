@@ -12,10 +12,13 @@ export class PlayViewComponent implements OnInit {
   private route: ActivatedRoute, ) {/*vide*/ }
 
   public gameName: string;
-  public originalImage: string = "http://localhost:3000/tiger.bmp";
+  public originalImage: string;
+  public modifiedImage: string;
   public ngOnInit(): void {
     this.route.queryParams.subscribe((params) => {
-      this.gameName = params["string"];
+      this.gameName = params["gameName"];
+      this.originalImage = params["originalImage"];
+      this.modifiedImage = params["modifiedImage"];
     });
   }
 }

@@ -17,12 +17,15 @@ export class GameComponent {
   @Input() public bestSoloTimes: { name: string, time: number }[];
   @Input() public bestMultiTimes: { name: string, time: number }[];
   @Input() public originalImage: string = "test";
+  @Input() public modifiedImage: string = "test";
   @Input() public rightButton: string;
   @Input() public leftButton: string;
 
   protected leftButtonClick(): void {
     if (this.leftButton === "jouer") {
-      this.router.navigate(["/play-view/"], {queryParams: { string: this.gameName }});
+      this.router.navigate(["/play-view/"], {queryParams: {
+        gameName: this.gameName, originalImage: this.originalImage, modifiedImage: this.modifiedImage },
+      });
     }
   }
 }
