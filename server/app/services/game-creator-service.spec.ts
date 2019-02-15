@@ -7,8 +7,6 @@ import { expect } from "chai";
 import * as fs from "fs";
 import * as HttpStatus from "http-status-codes";
 import * as os from "os";
-import {IBitmapDiffControllerResponse} from "../../../common/communication/response/bitmap-diff-controller.response";
-import {bufferToNumberArray} from "../../../common/util/util";
 import {DIFFERENCE_ERROR_MESSAGE, NAME_ERROR_MESSAGE} from "../controllers/controller-utils";
 import {NON_EXISTING_GAME_ERROR_MESSAGE} from "./db/games.collection.service";
 import {DifferenceEvaluatorService} from "./difference-evaluator.service";
@@ -56,12 +54,8 @@ describe("A service that creates a game", () => {
         MOCK.onGet("http://localhost:3000/api/data-base/games/someGameTest")
             .reply(HttpStatus.INTERNAL_SERVER_ERROR, {message: NON_EXISTING_GAME_ERROR_MESSAGE});
 
-        const imageDiffResponse: IBitmapDiffControllerResponse = {
-            fileName: "someGameTest.bmp",
-            diffImageBuffer: bufferToNumberArray(fs.readFileSync("test/test_files_for_game_creator_service/6diff-modified.bmp")),
-        };
         MOCK.onPost("http://localhost:3000/api/image-diff/")
-            .reply(HttpStatus.OK, imageDiffResponse);
+            .reply(HttpStatus.OK, fs.readFileSync("test/test_files_for_game_creator_service/6diff-modified.bmp"));
         try {
             await GAME_CREATOR_SERVICE.createSimpleGame( "someGameTest",
                                                          fs.readFileSync("test/test_files_for_game_creator_service/original.bmp"),
@@ -80,12 +74,8 @@ describe("A service that creates a game", () => {
         MOCK.onGet("http://localhost:3000/api/data-base/games/someGameTest")
             .reply(HttpStatus.INTERNAL_SERVER_ERROR, {message: NON_EXISTING_GAME_ERROR_MESSAGE});
 
-        const imageDiffResponse: IBitmapDiffControllerResponse = {
-            fileName: "someGameTest.bmp",
-            diffImageBuffer: bufferToNumberArray(fs.readFileSync("test/test_files_for_game_creator_service/8diff-modified.bmp")),
-        };
         MOCK.onPost("http://localhost:3000/api/image-diff/")
-            .reply(HttpStatus.OK, imageDiffResponse);
+            .reply(HttpStatus.OK, fs.readFileSync("test/test_files_for_game_creator_service/8diff-modified.bmp"));
         try {
             await GAME_CREATOR_SERVICE.createSimpleGame( "someGameTest",
                                                          fs.readFileSync("test/test_files_for_game_creator_service/original.bmp"),
@@ -104,12 +94,8 @@ describe("A service that creates a game", () => {
         MOCK.onGet("http://localhost:3000/api/data-base/games/someGameTest")
             .reply(HttpStatus.INTERNAL_SERVER_ERROR, {message: NON_EXISTING_GAME_ERROR_MESSAGE});
 
-        const imageDiffResponse: IBitmapDiffControllerResponse = {
-            fileName: "someGameTest.bmp",
-            diffImageBuffer: bufferToNumberArray(fs.readFileSync("test/test_files_for_game_creator_service/7diff-modified.bmp")),
-        };
         MOCK.onPost("http://localhost:3000/api/image-diff/")
-            .reply(HttpStatus.OK, imageDiffResponse);
+            .reply(HttpStatus.OK, fs.readFileSync("test/test_files_for_game_creator_service/7diff-modified.bmp"));
 
         MOCK.onPost("http://localhost:3000/api/data-base/games")
             .reply(HttpStatus.OK);

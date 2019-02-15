@@ -2,7 +2,6 @@
 import { expect } from "chai";
 import * as HttpStatus from "http-status-codes";
 import * as request from "supertest";
-import {IBitmapDiffControllerResponse} from "../../../common/communication/response/bitmap-diff-controller.response";
 import {Bitmap} from "../../../common/image/bitmap/bitmap";
 import { Application } from "../app";
 import { container } from "../inversify.config";
@@ -108,11 +107,7 @@ describe("Bitmap diff controller", () => {
             .attach("modifiedImage", "./test/test_bitmaps/pika.m.bmp")
             .expect(HttpStatus.OK)
             .then((response) => {
-                const expected: IBitmapDiffControllerResponse = {
-                    fileName: "testDiff7",
-                    diffImageBuffer: [0],
-                };
-                expect(response.body).to.deep.equal(expected);
+                expect(response.body).to.deep.equal(Buffer.from([0]));
             });
     });
 });

@@ -1,9 +1,11 @@
 import { NextFunction, Request, Response, Router } from "express";
 import * as Httpstatus from "http-status-codes";
 import { inject, injectable } from "inversify";
+import {Message} from "../../../common/communication/messages/message";
 import {IGame} from "../../../common/model/IGame";
 import {DataBaseService} from "../services/data-base.service";
 import {NON_EXISTING_GAME_ERROR_MESSAGE} from "../services/db/games.collection.service";
+import {ALREADY_EXISTING_IMAGE_MESSAGE_ERROR} from "../services/db/images.collection.service";
 import Types from "../types";
 import {executeSafely} from "./controller-utils";
 
@@ -62,8 +64,10 @@ export class DataBaseController {
                     }).catch((reason: Error) => {
                        if (reason.message === NON_EXISTING_GAME_ERROR_MESSAGE) {
                            res.status(Httpstatus.NOT_FOUND);
-                           res.json(reason);
+                       } else {
+                           res.status(Httpstatus.INTERNAL_SERVER_ERROR);
                        }
+                       res.json(reason);
                     });
             });
         });
@@ -74,7 +78,16 @@ export class DataBaseController {
 
         router.post("/images", async (req: Request, res: Response, next: NextFunction) => {
             executeSafely(next, async () => {
-                res.json(await this.dataBaseService.images.create(req.body));
+                await this.dataBaseService.images.create(req.body)
+                    .then((value: Message) => {
+                        res.json(value);
+                    }).catch((reason: Error) => {
+                        if (reason.message === ALREADY_EXISTING_IMAGE_MESSAGE_ERROR) {
+                            return res.status(Httpstatus.OK);
+                        }
+
+                        return res.status(Httpstatus.INTERNAL_SERVER_ERROR);
+                    });
             });
         });
 

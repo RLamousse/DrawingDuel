@@ -2,9 +2,8 @@ import {NextFunction, Request, Response, Router} from "express";
 import * as HttpStatus from "http-status-codes";
 import { inject, injectable } from "inversify";
 import multer = require("multer");
-import {IBitmapDiffControllerResponse} from "../../../common/communication/response/bitmap-diff-controller.response";
 import { Bitmap } from "../../../common/image/bitmap/bitmap";
-import {bufferToNumberArray} from "../../../common/util/util";
+import {BITMAP_MEME_TYPE} from "../../../common/image/bitmap/bitmap-utils";
 import { BitmapFactory } from "../images/bitmap/bitmap-factory";
 import { BitmapWriter } from "../images/bitmap/bitmap-writer";
 import { BitmapDiffService } from "../services/bitmap-diff.service";
@@ -48,13 +47,11 @@ export class BitmapDiffController {
                                                                                                     "m-" + diffFileName);
 
                         const diffBitmap: Bitmap = this.bitmapDiffService.getDiff(diffFileName, originalBitmap, modifiedBitmap);
-                        res.status((diffBitmap ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR));
+                        const bitmapBytes = this.bitmapWriter.getBitmapBytes(diffBitmap);
 
-                        const response: IBitmapDiffControllerResponse = {
-                            fileName: diffFileName,
-                            diffImageBuffer: bufferToNumberArray(this.bitmapWriter.getBitmapBytes(diffBitmap)),
-                        };
-                        res.json(response);
+                        res.status((diffBitmap ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR));
+                        res.contentType(BITMAP_MEME_TYPE);
+                        res.send(bitmapBytes);
                     } catch (error) {
                         return next(error);
                     }

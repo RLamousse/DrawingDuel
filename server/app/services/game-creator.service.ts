@@ -4,9 +4,8 @@ import * as Httpstatus from "http-status-codes";
 import {inject, injectable} from "inversify";
 import "reflect-metadata";
 import {Message} from "../../../common/communication/messages/message";
-import {IBitmapDiffControllerResponse} from "../../../common/communication/response/bitmap-diff-controller.response";
 import {Bitmap} from "../../../common/image/bitmap/bitmap";
-import {BITMAP_FILE_EXTENSION, BITMAP_MEME_TYPE} from "../../../common/image/bitmap/bitmap-utils";
+import {BITMAP_MEME_TYPE} from "../../../common/image/bitmap/bitmap-utils";
 import {IBitmapImage} from "../../../common/model/IBitmapImage";
 import {GameType, IGame, TIMES_ARRAY_SIZE} from "../../../common/model/IGame";
 import {IRecordTime} from "../../../common/model/IRecordTime";
@@ -19,6 +18,7 @@ import {
 import {BitmapFactory} from "../images/bitmap/bitmap-factory";
 import Types from "../types";
 import {ALREADY_EXISTING_GAME_MESSAGE_ERROR, NON_EXISTING_GAME_ERROR_MESSAGE} from "./db/games.collection.service";
+import {ALREADY_EXISTING_IMAGE_MESSAGE_ERROR} from "./db/images.collection.service";
 import {DifferenceEvaluatorService} from "./difference-evaluator.service";
 
 export const EXPECTED_DIFF_NUMBER: number = 7;
@@ -37,26 +37,16 @@ export class GameCreatorService {
 
         await this.testNameExistance(gameName);
 
-        const bitmapDiffImage: IBitmapDiffControllerResponse = await this.getDiffImage(originalImageFile, modifiedImageFile);
-        this.testNumberOfDifference(bitmapDiffImage);
+        const bitmapDiffImageBuffer: Buffer = await this.getDiffImage(originalImageFile, modifiedImageFile);
+        this.testNumberOfDifference(bitmapDiffImageBuffer); // TODO
 
-        return this.generateGame(gameName, originalImageFile, modifiedImageFile, Buffer.from(bitmapDiffImage.diffImageBuffer));
+        return this.generateGame(gameName, originalImageFile, modifiedImageFile);
     }
 
-    private async generateGame(gameName: string, originalImage: Buffer, modifiedImage: Buffer, diffImageBuffer: Buffer): Promise<Message> {
-        /*
-        TODO
-        Create game:
-        Step 1: Upload images
-        Step 2: Get images objectID
-        Step 3: Create game with ID as properties
-        Step 4: Upload game
-         */
-
+    private async generateGame(gameName: string, originalImage: Buffer, modifiedImage: Buffer): Promise<Message> {
         try {
-            const images: IBitmapImage[] = await this.uploadImages(originalImage, modifiedImage, diffImageBuffer, gameName);
+            const images: IBitmapImage[] = await this.uploadImages(originalImage, modifiedImage, gameName);
             await this.uploadGame(gameName, images);
-
         } catch (error) {
             if (error.response.data.message === ALREADY_EXISTING_GAME_MESSAGE_ERROR) {
                 throw new Error(NAME_ERROR_MESSAGE);
@@ -79,25 +69,30 @@ export class GameCreatorService {
             diffImage: images[2].name,
         };
 
-        await Axios.post<IGame>("http://localhost:3000/api/data-base/games", {data: game});
+        await Axios.post<IGame>("http://localhost:3000/api/data-base/games", game);
     }
 
     private async uploadImages(originalImage: Buffer,
                                modifiedImage: Buffer,
-                               diffImageBuffer: Buffer,
                                gameName: string): Promise<IBitmapImage[]> {
 
         const images: IBitmapImage[] = [];
-        const imageData: Buffer[] = [originalImage, modifiedImage, diffImageBuffer];
+        const imageData: Buffer[] = [originalImage, modifiedImage];
         for (let i: number = 0; i < this.GAME_IMAGES_KEYS_SUFFIX.length; i++) {
             const image: IBitmapImage = {
-                name: gameName + this.GAME_IMAGES_KEYS_SUFFIX[i] + BITMAP_FILE_EXTENSION,
+                name: gameName + this.GAME_IMAGES_KEYS_SUFFIX[i],
                 data: bufferToNumberArray(imageData[i]),
             };
 
-            await Axios.post<IBitmapImage>("http://localhost:3000/api/data-base/images", {data: image});
-
-            images.push(image);
+            await Axios.post<IBitmapImage>("http://localhost:3000/api/data-base/images", image)
+                .catch((error: any) => {
+                    if (error.message !== ALREADY_EXISTING_IMAGE_MESSAGE_ERROR) {
+                        throw error;
+                    }
+                })
+                .then((response: AxiosResponse<IBitmapImage>) => {
+                    images.push(response.data);
+                });
         }
 
         return images;
@@ -132,10 +127,10 @@ export class GameCreatorService {
         throw new Error(NAME_ERROR_MESSAGE);
     }
 
-    private testNumberOfDifference(diffImage: IBitmapDiffControllerResponse): void {
+    private testNumberOfDifference(diffImage: Buffer): void {
         let diffNumber: number;
         try {
-            const diffBitmap: Bitmap = BitmapFactory.createBitmap(diffImage.fileName, Buffer.from(diffImage.diffImageBuffer));
+            const diffBitmap: Bitmap = BitmapFactory.createBitmap("diffImage", diffImage);
             diffNumber = this.differenceEvaluatorService.getNDifferences(diffBitmap.pixels);
         } catch (error) {
             throw new Error("bmp diff counting: " + error.message);
@@ -145,19 +140,22 @@ export class GameCreatorService {
         }
     }
 
-    private async getDiffImage(originalImageFile: Buffer, modifiedImageFile: Buffer): Promise<IBitmapDiffControllerResponse> {
+    private async getDiffImage(originalImageFile: Buffer, modifiedImageFile: Buffer): Promise<Buffer> {
         try {
             const requestFormData: FormData = new FormData();
             requestFormData.append(OUTPUT_FILE_NAME_FIELD_NAME, "image-diff-" + Date.now() + ".bmp");
             requestFormData.append(ORIGINAL_IMAGE_FIELD_NAME, originalImageFile, {contentType: BITMAP_MEME_TYPE, filename: "original.bmp"});
             requestFormData.append(MODIFIED_IMAGE_FIELD_NAME, modifiedImageFile, {contentType: BITMAP_MEME_TYPE, filename: "modified.bmp"});
-            const response: AxiosResponse<IBitmapDiffControllerResponse> = await Axios.post<IBitmapDiffControllerResponse>(
+            const response: AxiosResponse<ArrayBuffer> = await Axios.post<ArrayBuffer>(
                 "http://localhost:3000/api/image-diff/",
                 requestFormData,
-                { headers: requestFormData.getHeaders()},
+                {
+                    headers: requestFormData.getHeaders(),
+                    responseType: "arraybuffer",
+                },
             );
 
-            return response.data;
+            return Buffer.from(response.data);
         } catch (error) {
             throw new Error("game diff: " + error.response.data.message);
         }
