@@ -1,4 +1,5 @@
 import { Component, OnInit } from "@angular/core";
+import { ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: "app-play-view",
@@ -7,8 +8,14 @@ import { Component, OnInit } from "@angular/core";
 })
 export class PlayViewComponent implements OnInit {
 
-  public constructor() {/*vide*/ }
-  public gameName: string = "sup";
+  public constructor(
+  private route: ActivatedRoute, ) {/*vide*/ }
+
+  public gameName: string;
   public originalImage: string = "http://localhost:3000/tiger.bmp";
-  public ngOnInit(): void {/*vide*/ }
+  public ngOnInit(): void {
+    this.route.queryParams.subscribe((params) => {
+      this.gameName = params["string"];
+    });
+  }
 }
