@@ -7,6 +7,7 @@ import {
 } from "@angular/material";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import "hammerjs";
 import { FormPostService } from "../form-post.service";
 import { Create3DGameComponent } from "./create3-dgame.component";
 
