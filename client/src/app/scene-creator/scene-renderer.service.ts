@@ -5,14 +5,14 @@ require("three-first-person-controls")(THREE);
 @Injectable()
 export class SceneRendererService {
 
-  private originalContainer: HTMLDivElement;
-  private modifiedContainer: HTMLDivElement;
+  public originalContainer: HTMLDivElement;
+  public modifiedContainer: HTMLDivElement;
   private camera: THREE.PerspectiveCamera;
   private rendererOri: THREE.WebGLRenderer;
   private rendererMod: THREE.WebGLRenderer;
   public scene: THREE.Scene;
   public modifiedScene: THREE.Scene;
-  private screenshot: boolean = true;
+  // private screenshot: boolean = true;
 
   private fpControls: THREE.FirstPersonControls;
   private mvmSpeed: number = 10;
@@ -27,10 +27,6 @@ export class SceneRendererService {
   private cameraX: number = 0;
   private cameraY: number = 0;
   private cameraZ: number = 100;
-
-  public obj3DToCreate: number = 100;
-  public objects: THREE.Mesh[] = [];
-  public modifiedObjects: THREE.Mesh[] = [];
 
   private setRenderer(): void {
     this.rendererOri = new THREE.WebGLRenderer({ preserveDrawingBuffer: true });
@@ -89,12 +85,16 @@ export class SceneRendererService {
   }
 
   public loadScenes(original: THREE.Scene, modified: THREE.Scene): void {
+    if (this.originalContainer === undefined || this.modifiedContainer === undefined) {
+      const errorMsg: string = "La composante n'a pas ete initialise!";
+      throw (new Error(errorMsg));
+    }
     this.scene = original;
     this.modifiedScene = modified;
     this.renderLoop();
   }
 
-  public getSreenshots(original: THREE.Scene, modified: THREE.Scene): void {
+  /*public getSreenshots(original: THREE.Scene, modified: THREE.Scene): void {
     this.screenshot = true;
     if (this.screenshot) {
       const saveFile = (strData: string, filename: string) => {
@@ -124,5 +124,5 @@ export class SceneRendererService {
       }
       this.screenshot = false;
     }
-  }
+  }*/
 }
