@@ -1,19 +1,18 @@
 import {injectable} from "inversify";
 import "reflect-metadata";
+import {ISimpleDifferenceData} from "../../../common/model/game/differences/simple-difference-data";
+import {IPoint} from "../../../common/model/point";
 import {create2dArray} from "../../../common/util/util";
-import {IPoint} from "../../../common/model/IPoint";
 
 export const ARGUMENT_ERROR_MESSAGE: string = "Error: the argument has the wrong format! Must be a number[][].";
 export const EMPTY_ARRAY_ERROR_MESSAGE: string = "Error: the given array is empty!";
 
-export type SimpleDifferenceData = Map<number, IPoint[]>;
-
 @injectable()
 export class DifferenceEvaluatorService {
 
-    constructor () {}
+    public constructor () {}
 
-    public getNDifferences(pixels: number[][]): SimpleDifferenceData {
+    public getNDifferences(pixels: number[][]): ISimpleDifferenceData {
 
         this.validateData(pixels);
 
@@ -113,8 +112,8 @@ export class DifferenceEvaluatorService {
         return parentTable[value] = this.findRoot(parentTable[value], parentTable);
     }
 
-    private generateDiffZonesMap(parentTable: Map<number, number>, arrayOfLabels: number[][]): SimpleDifferenceData {
-        const DIFF_ZONES_MAP: SimpleDifferenceData = new Map<number, IPoint[]>();
+    private generateDiffZonesMap(parentTable: Map<number, number>, arrayOfLabels: number[][]): ISimpleDifferenceData {
+        const DIFF_ZONES_MAP: ISimpleDifferenceData = new Map<number, IPoint[]>();
 
         for (let i: number = 0; i < arrayOfLabels.length; i++) {
             for (let j: number = 0; j < arrayOfLabels[0].length; j++) {
@@ -123,7 +122,7 @@ export class DifferenceEvaluatorService {
                         // @ts-ignore
                         DIFF_ZONES_MAP.get(this.findRoot(arrayOfLabels[i][j], parentTable)).push({x: i, y: j});
                     } else {
-                        DIFF_ZONES_MAP.set(this.findRoot(arrayOfLabels[i][j], parentTable),[{x: i, y: j}]);
+                        DIFF_ZONES_MAP.set(this.findRoot(arrayOfLabels[i][j], parentTable), [{x: i, y: j}]);
                     }
                 }
             }

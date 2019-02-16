@@ -1,7 +1,7 @@
 import {injectable} from "inversify";
 import "reflect-metadata";
 import {Message} from "../../../../common/communication/messages/message";
-import {IGame} from "../../../../common/model/IGame";
+import {Game} from "../../../../common/model/game/game";
 import {CollectionService} from "./collection.service";
 
 export const NON_EXISTING_GAME_ERROR_MESSAGE: string = "ERROR: the specified game does not exist!";
@@ -10,16 +10,16 @@ export const GAME_FORMAT_ERROR_MESSAGE: string = "ERROR: the game has the wrong 
 export const ALREADY_EXISTING_GAME_MESSAGE_ERROR: string = "ERROR: a game with the same name already exists!";
 
 @injectable()
-export class GamesCollectionService extends CollectionService<IGame> {
+export class GamesCollectionService extends CollectionService<Game> {
 
-    private static validateGame(game: IGame): void {
-        if (game.gameName === "" || game.originalImage === "" || game.modifiedImage === "") {
-            throw new Error(GAME_FORMAT_ERROR_MESSAGE);
-        }
-    }
+    // private static validateGame(game: SimpleGame): void {
+    //     if (game.gameName === "" || game.originalImage === "" || game.modifiedImage === "") {
+    //         throw new Error(GAME_FORMAT_ERROR_MESSAGE);
+    //     }
+    // }
 
-    public async create(data: IGame): Promise<Message> {
-        GamesCollectionService.validateGame(data);
+    public async create(data: Game): Promise<Message> {
+        // GamesCollectionService.validateGame(data);
 
         if (await this.contains(data.gameName)) {
             throw new Error(ALREADY_EXISTING_GAME_MESSAGE_ERROR);
@@ -37,13 +37,13 @@ export class GamesCollectionService extends CollectionService<IGame> {
         }
     }
 
-    public async getFromId(id: string): Promise<IGame> {
+    public async getFromId(id: string): Promise<Game> {
         CollectionService.assertId(id);
 
         return this.getDocument(id, NON_EXISTING_GAME_ERROR_MESSAGE);
     }
 
-    public creationSuccessMessage(data: IGame): Message {
+    public creationSuccessMessage(data: Game): Message {
         return {
             title: "Game added",
             body: "Game " + data.gameName + " successfully added",

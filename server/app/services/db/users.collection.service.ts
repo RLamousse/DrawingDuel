@@ -1,7 +1,7 @@
 import {injectable} from "inversify";
 import "reflect-metadata";
 import {Message} from "../../../../common/communication/messages/message";
-import {IUser} from "../../../../common/model/IUser";
+import {IUser} from "../../../../common/model/user";
 import {CollectionService} from "./collection.service";
 
 export const USER_NAME_FIELD: string = "name";

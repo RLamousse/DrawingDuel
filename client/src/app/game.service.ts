@@ -2,14 +2,14 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { of, Observable } from "rxjs";
 import { catchError } from "rxjs/operators";
-import {IGame, GameType} from "../../../common/model/IGame";
+import {Game, GameType} from "../../../common/model/game/game";
 
 @Injectable({
   providedIn: "root",
 })
 export class GameService {
-  public simpleGames: IGame[] = [];
-  public freeGames: IGame[] = [];
+  public simpleGames: Game[] = [];
+  public freeGames: Game[] = [];
   public readonly BASE_URL: string = "http://localhost:3000/api/data-base/games/";
   public constructor(private http: HttpClient) { }
 
@@ -28,7 +28,7 @@ export class GameService {
     return (ADRESS + imageAdress);
   }
 
-  public convertScoresObject(game: IGame[]): IGame[] {
+  public convertScoresObject(game: Game[]): Game[] {
     for (const i in game) {
       if (game.hasOwnProperty(i)) {
         game[i].originalImage = this.buildHttpAdress(game[i].originalImage);
@@ -44,7 +44,7 @@ export class GameService {
     return game;
   }
 
-  public pushGames(gamesToPush: IGame[]): void {
+  public pushGames(gamesToPush: Game[]): void {
     for (const game of gamesToPush) {
       switch (game.gameType) {
         case GameType.SIMPLE:
@@ -60,9 +60,9 @@ export class GameService {
     }
   }
 
-  public getGames(): Observable<IGame[]> {
-    return this.http.get<IGame[]>(this.BASE_URL).pipe(
-      catchError(this.handleError<IGame[]>("basicGet")),
+  public getGames(): Observable<Game[]> {
+    return this.http.get<Game[]>(this.BASE_URL).pipe(
+      catchError(this.handleError<Game[]>("basicGet")),
     );
   }
 

@@ -6,8 +6,10 @@ import "reflect-metadata";
 import {Message} from "../../../common/communication/messages/message";
 import {Bitmap} from "../../../common/image/bitmap/bitmap";
 import {BITMAP_MEME_TYPE} from "../../../common/image/bitmap/bitmap-utils";
-import {GameType, IGame, TIMES_ARRAY_SIZE} from "../../../common/model/IGame";
-import {IRecordTime} from "../../../common/model/IRecordTime";
+import {ISimpleDifferenceData} from "../../../common/model/game/differences/simple-difference-data";
+import {Game, TIMES_ARRAY_SIZE} from "../../../common/model/game/game";
+import {IRecordTime} from "../../../common/model/game/record-time";
+import {SimpleGame} from "../../../common/model/game/simple-game";
 import {
     DIFFERENCE_ERROR_MESSAGE, MODIFIED_IMAGE_FIELD_NAME,
     NAME_ERROR_MESSAGE, ORIGINAL_IMAGE_FIELD_NAME,
@@ -16,7 +18,7 @@ import {
 import {BitmapFactory} from "../images/bitmap/bitmap-factory";
 import Types from "../types";
 import {ALREADY_EXISTING_GAME_MESSAGE_ERROR, NON_EXISTING_GAME_ERROR_MESSAGE} from "./db/games.collection.service";
-import {DifferenceEvaluatorService, IDiffZonesMap, ISimpleDifferenceData} from "./difference-evaluator.service";
+import {DifferenceEvaluatorService} from "./difference-evaluator.service";
 import {ImageUploadService} from "./image-upload.service";
 
 export const EXPECTED_DIFF_NUMBER: number = 7;
@@ -39,16 +41,16 @@ export class GameCreatorService {
         const bitmapDiffImageBuffer: Buffer = await this.getDiffImage(originalImageFile, modifiedImageFile);
         const differenceData: ISimpleDifferenceData = this.testNumberOfDifference(bitmapDiffImageBuffer);
 
-        return this.generateGame(gameName, originalImageFile, modifiedImageFile, differenceData.diffZonesMap);
+        return this.generateGame(gameName, originalImageFile, modifiedImageFile, differenceData);
     }
 
     private async generateGame(gameName: string,
                                originalImage: Buffer,
                                modifiedImage: Buffer,
-                               diffMapData: IDiffZonesMap): Promise<Message> {
+                               differenceData: ISimpleDifferenceData): Promise<Message> {
         try {
             const imagesUrls: string[] = await this.uploadImages(originalImage, modifiedImage);
-            await this.uploadGame(gameName, imagesUrls, diffMapData);
+            await this.uploadGame(gameName, imagesUrls, differenceData);
         } catch (error) {
             if (error.response.data.message === ALREADY_EXISTING_GAME_MESSAGE_ERROR) {
                 throw new Error(NAME_ERROR_MESSAGE);
@@ -60,18 +62,14 @@ export class GameCreatorService {
         return {title: "Game created", body: "The game was successfully created!"};
     }
 
-    private async uploadGame(gameName: string, imagesUrls: string[], diffData: IDiffZonesMap): Promise<void> {
-        const game: IGame = {
-            gameType: GameType.SIMPLE,
-            bestMultiTimes: this.createRandomScores(),
-            bestSoloTimes: this.createRandomScores(),
-            gameName: gameName,
-            originalImage: imagesUrls[0],
-            modifiedImage: imagesUrls[1],
-            diffData: diffData,
-        };
-
-        await Axios.post<IGame>("http://localhost:3000/api/data-base/games", game);
+    private async uploadGame(gameName: string, imagesUrls: string[], differenceData: ISimpleDifferenceData): Promise<void> {
+        const game: SimpleGame = new SimpleGame(
+            gameName,
+            differenceData,
+            this.createRandomScores(), this.createRandomScores(),
+            imagesUrls[0], imagesUrls[1],
+        );
+        await Axios.post<Game>("http://localhost:3000/api/data-base/games", game);
     }
 
     private async uploadImages(...imageBuffers: Buffer[]): Promise<string[]> {
@@ -102,7 +100,7 @@ export class GameCreatorService {
     private async testNameExistance(gameName: string): Promise<void> {
 
         try {
-            await Axios.get<IGame>("http://localhost:3000/api/data-base/games/" + gameName);
+            await Axios.get<Game>("http://localhost:3000/api/data-base/games/" + gameName);
         } catch (error) {
             if (error.response.status !== Httpstatus.NOT_FOUND) {
                 throw new Error("dataBase: " + error.response.data.message);

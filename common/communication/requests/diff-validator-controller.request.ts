@@ -1,4 +1,4 @@
-import {IPoint} from "../../model/IPoint";
+import {IPoint} from "../../model/point";
 
 export interface IDiffValidatorControllerRequest {
     gameName: string;

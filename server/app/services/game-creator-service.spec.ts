@@ -11,10 +11,10 @@ import {DIFFERENCE_ERROR_MESSAGE, NAME_ERROR_MESSAGE} from "../controllers/contr
 import {NON_EXISTING_GAME_ERROR_MESSAGE} from "./db/games.collection.service";
 import {DifferenceEvaluatorService} from "./difference-evaluator.service";
 import { GameCreatorService } from "./game-creator.service";
-import {ImageUploadService} from "./image-upload.service";
+// import {ImageUploadService} from "./image-upload.service";
 
 const PATH_TO_TMP: string = os.tmpdir();
-const GAME_CREATOR_SERVICE: GameCreatorService = new GameCreatorService(new DifferenceEvaluatorService(), new ImageUploadService());
+const GAME_CREATOR_SERVICE: GameCreatorService = new GameCreatorService(new DifferenceEvaluatorService(), /*new ImageUploadService()*/);
 const FILES_TO_COPY: String[] = ["original.bmp", "6diff-modified.bmp", "7diff-modified.bmp", "8diff-modified.bmp"];
 
 describe("A service that creates a game", () => {

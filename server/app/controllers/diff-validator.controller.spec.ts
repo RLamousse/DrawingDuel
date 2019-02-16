@@ -3,7 +3,7 @@ import { expect } from "chai";
 import * as HttpStatus from "http-status-codes";
 import * as request from "supertest";
 import {IDiffValidatorControllerRequest} from "../../../common/communication/requests/diff-validator-controller.request";
-import {ORIGIN} from "../../../common/model/IPoint";
+import {ORIGIN} from "../../../common/model/point";
 import { Application } from "../app";
 import { container } from "../inversify.config";
 import types from "../types";

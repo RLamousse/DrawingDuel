@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response, Router } from "express";
 import * as Httpstatus from "http-status-codes";
 import { inject, injectable } from "inversify";
-import {IGame} from "../../../common/model/IGame";
+import {Game} from "../../../common/model/game/game";
 import {DataBaseService} from "../services/data-base.service";
 import {NON_EXISTING_GAME_ERROR_MESSAGE} from "../services/db/games.collection.service";
 import Types from "../types";
@@ -57,7 +57,7 @@ export class DataBaseController {
             executeSafely(next, async () => {
                 this.dataBaseService.games
                     .getFromId(req.params["gameName"])
-                    .then((value: IGame) => {
+                    .then((value: Game) => {
                         res.json(value);
                     }).catch((reason: Error) => {
                        if (reason.message === NON_EXISTING_GAME_ERROR_MESSAGE) {
