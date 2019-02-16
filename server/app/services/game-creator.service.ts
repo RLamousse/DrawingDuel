@@ -134,7 +134,7 @@ export class GameCreatorService {
         } catch (error) {
             throw new Error("bmp diff counting: " + error.message);
         }
-        if (diffData.diffsCount !== EXPECTED_DIFF_NUMBER) {
+        if (diffData.size !== EXPECTED_DIFF_NUMBER) {
             throw new Error(DIFFERENCE_ERROR_MESSAGE);
         }
         return diffData;

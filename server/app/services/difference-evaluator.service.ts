@@ -6,10 +6,7 @@ import {IPoint} from "../../../common/model/IPoint";
 export const ARGUMENT_ERROR_MESSAGE: string = "Error: the argument has the wrong format! Must be a number[][].";
 export const EMPTY_ARRAY_ERROR_MESSAGE: string = "Error: the given array is empty!";
 
-export interface SimpleDifferenceData {
-    diffsCount: number;
-    diffZonesMap: Map<number, IPoint[]>;
-}
+export type SimpleDifferenceData = Map<number, IPoint[]>;
 
 @injectable()
 export class DifferenceEvaluatorService {
@@ -39,8 +36,7 @@ export class DifferenceEvaluatorService {
             }
         }
 
-        //TODO generate colored diff image
-        return {diffsCount: this.calculateTotalZones(PARENT_TABLE), diffZonesMap: this.generateDiffZonesMap(PARENT_TABLE, ARRAY_OF_LABELS)};
+        return this.generateDiffZonesMap(PARENT_TABLE, ARRAY_OF_LABELS);
     }
 
     private validateData(pixels: number[][]): void {
@@ -108,20 +104,6 @@ export class DifferenceEvaluatorService {
         }
     }
 
-    // Counts the total of zones in the drawing
-    private calculateTotalZones(TRANSLATE_TABLE: Map<number, number>): number {
-
-        let totalZones: number = 0;
-        for (const KEY in TRANSLATE_TABLE) {
-            // adds a zone to the counter if it has not any parent(equals to 0)
-            if (TRANSLATE_TABLE.hasOwnProperty(KEY) && !TRANSLATE_TABLE[KEY]) {
-                totalZones++;
-            }
-        }
-
-        return totalZones;
-    }
-
     private findRoot(value: number, parentTable: Map<number, number>): number {
         if (!parentTable[value]) {
             return value;
@@ -131,17 +113,17 @@ export class DifferenceEvaluatorService {
         return parentTable[value] = this.findRoot(parentTable[value], parentTable);
     }
 
-    private generateDiffZonesMap(parentTable: Map<number, number>, arrayOfLabels: number[][]): Map<number, IPoint[]> {
-        const DIFF_ZONES_MAP: Map<number, IPoint[]> = new Map<number, IPoint[]>();
+    private generateDiffZonesMap(parentTable: Map<number, number>, arrayOfLabels: number[][]): SimpleDifferenceData {
+        const DIFF_ZONES_MAP: SimpleDifferenceData = new Map<number, IPoint[]>();
 
         for (let i: number = 0; i < arrayOfLabels.length; i++) {
             for (let j: number = 0; j < arrayOfLabels[0].length; j++) {
                 if (arrayOfLabels[i][j]) {
-                    if (DIFF_ZONES_MAP.has(parentTable[arrayOfLabels[i][j]])) {
+                    if (DIFF_ZONES_MAP.has(this.findRoot(arrayOfLabels[i][j], parentTable))) {
                         // @ts-ignore
-                        DIFF_ZONES_MAP.get(parentTable[arrayOfLabels[i][j]]).push({x: i, y: j});
+                        DIFF_ZONES_MAP.get(this.findRoot(arrayOfLabels[i][j], parentTable)).push({x: i, y: j});
                     } else {
-                        DIFF_ZONES_MAP.set(parentTable[arrayOfLabels[i][j]],[{x: i, y: j}]);
+                        DIFF_ZONES_MAP.set(this.findRoot(arrayOfLabels[i][j], parentTable),[{x: i, y: j}]);
                     }
                 }
             }
