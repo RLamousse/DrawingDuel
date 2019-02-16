@@ -5,8 +5,6 @@ require("three-first-person-controls")(THREE);
 @Injectable()
 export class SceneRendererService {
 
-  public constructor() { }
-
   private originalContainer: HTMLDivElement;
   private modifiedContainer: HTMLDivElement;
   private camera: THREE.PerspectiveCamera;
@@ -90,38 +88,39 @@ export class SceneRendererService {
     this.setRenderer();
   }
 
-  public loadScenes(original: THREE.Scene, modified: THREE.Scene) {
+  public loadScenes(original: THREE.Scene, modified: THREE.Scene): void {
     this.scene = original;
     this.modifiedScene = modified;
     this.renderLoop();
   }
 
-  public getSreenshots(original: THREE.Scene, modified: THREE.Scene) {
+  public getSreenshots(original: THREE.Scene, modified: THREE.Scene): void {
     this.screenshot = true;
     if (this.screenshot) {
-      let saveFile = (strData: string, filename: string) => {
-        let link: HTMLAnchorElement = document.createElement('a');
-        if (typeof link.download === 'string') {
+      const saveFile = (strData: string, filename: string) => {
+        const link: HTMLAnchorElement = document.createElement("a");
+        if (typeof link.download === "string") {
           document.body.appendChild(link);
           link.download = filename;
           link.href = strData;
           link.click();
           document.body.removeChild(link);
         } else {
-          //location.replace(uri);
+          // location.replace(uri);
         }
-      }
+      };
       try {
-        var strMime: string = "image/jpeg";
-        let imgData = this.rendererOri.domElement.toDataURL(strMime);
-        var strDownloadMime = "image/octet-stream";
+        const strMime: string = "image/jpeg";
+        let imgData: string = this.rendererOri.domElement.toDataURL(strMime);
+        const strDownloadMime: string = "image/octet-stream";
         saveFile(imgData.replace(strMime, strDownloadMime), "test1.jpg");
         this.camera.translateZ(-700);
         imgData = this.rendererOri.domElement.toDataURL(strMime);
         saveFile(imgData.replace(strMime, strDownloadMime), "test2.jpg");
       } catch (e) {
-        console.log(e);
-        return;
+          throw (e);
+
+          return;
       }
       this.screenshot = false;
     }

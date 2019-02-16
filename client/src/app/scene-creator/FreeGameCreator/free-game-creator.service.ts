@@ -1,10 +1,10 @@
-import { Injectable } from '@angular/core';
-import { Form3DService } from "../3DFormService/3-dform.service";
+import { Injectable } from "@angular/core";
 import * as THREE from "three";
+import { Form3DService } from "../3DFormService/3-dform.service";
 @Injectable()
 export class FreeGameCreatorService {
 
-  constructor(private formService: Form3DService) { }
+  public constructor(private formService: Form3DService) { }
 
   public scene: THREE.Scene;
   public modifiedScene: THREE.Scene;
@@ -54,7 +54,9 @@ export class FreeGameCreatorService {
   private generateScenes(): void {
 
     let object: THREE.Mesh;
-    const MAXROTATIONANGLE: number = 2 * Math.PI;
+    const PI: number = Math.PI;
+    const FACTOR: number = 2;
+    const MAXROTATIONANGLE: number = PI * FACTOR;
     for (let i: number = 0; i < this.obj3DToCreate; ++i) {
       object = this.generate3DObject();
       object.position.set(
@@ -75,7 +77,7 @@ export class FreeGameCreatorService {
   }
 
   private generateOriginalScene(): void {
-    for (let i of this.objects) {
+    for (const i of this.objects) {
       this.scene.add(i);
     }
   }
@@ -99,7 +101,7 @@ export class FreeGameCreatorService {
           break;
         }
         case modificationType.colorChange: {
-          //this.formService.setColor(objects[indexObjects].geometry);
+          // this.formService.setColor(objects[indexObjects].geometry);
           break;
         }
         default: {
@@ -111,7 +113,7 @@ export class FreeGameCreatorService {
   }
 
   private generateModifiedScene(): void {
-    for (let objectIndex of this.modifiedObjects) {
+    for (const objectIndex of this.modifiedObjects) {
       this.modifiedScene.add(objectIndex);
     }
   }
@@ -125,27 +127,21 @@ export class FreeGameCreatorService {
     switch (randomObject) {
       case objectGeometry.sphere: {
         createdObject = this.formService.createSphere();
-        break;
-      }
+        break; }
       case objectGeometry.cube: {
         createdObject = this.formService.createCube();
-        break;
-      }
+        break; }
       case objectGeometry.cone: {
         createdObject = this.formService.createCone();
-        break;
-      }
+        break; }
       case objectGeometry.cylinder: {
         createdObject = this.formService.createCylinder();
-        break;
-      }
+        break; }
       case objectGeometry.pyramid: {
         createdObject = this.formService.createPyramid();
-        break;
-      }
+        break; }
       default: {
-        createdObject = new THREE.Mesh();
-      }
+        createdObject = new THREE.Mesh(); }
     }
 
     return createdObject;
