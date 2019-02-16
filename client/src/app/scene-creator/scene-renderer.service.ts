@@ -57,34 +57,6 @@ export class SceneRendererService {
     this.rendererOri.render(this.scene, this.camera);
     this.rendererMod.render(this.modifiedScene, this.camera);
     this.fpControls.update(this.updateTime);
-
-    if (this.screenshot) {
-      let saveFile = (strData: string, filename: string) =>{
-        var link = document.createElement('a');
-        if (typeof link.download === 'string') {
-          document.body.appendChild(link);
-          link.download = filename;
-          link.href = strData;
-          link.click();
-          document.body.removeChild(link);
-        } else {
-          //location.replace(uri);
-        }
-      }
-      try {
-        var strMime: string = "image/jpeg";
-        let imgData = this.rendererOri.domElement.toDataURL(strMime);
-        var strDownloadMime = "image/octet-stream";
-        saveFile(imgData.replace(strMime, strDownloadMime), "test1.jpg");
-        this.camera.translateZ(-700);
-        imgData = this.rendererOri.domElement.toDataURL(strMime);
-        saveFile(imgData.replace(strMime, strDownloadMime), "test2.jpg");
-      } catch (e) {
-        console.log(e);
-        return;
-      }
-      this.screenshot = false;
-    }
   }
   private setCamera(): void {
     const aspectRatio: number = this.getAspectRatio();
@@ -119,9 +91,39 @@ export class SceneRendererService {
   }
 
   public loadScenes(original: THREE.Scene, modified: THREE.Scene) {
-    this.screenshot = true;
     this.scene = original;
     this.modifiedScene = modified;
     this.renderLoop();
+  }
+
+  public getSreenshots(original: THREE.Scene, modified: THREE.Scene) {
+    this.screenshot = true;
+    if (this.screenshot) {
+      let saveFile = (strData: string, filename: string) => {
+        let link: HTMLAnchorElement = document.createElement('a');
+        if (typeof link.download === 'string') {
+          document.body.appendChild(link);
+          link.download = filename;
+          link.href = strData;
+          link.click();
+          document.body.removeChild(link);
+        } else {
+          //location.replace(uri);
+        }
+      }
+      try {
+        var strMime: string = "image/jpeg";
+        let imgData = this.rendererOri.domElement.toDataURL(strMime);
+        var strDownloadMime = "image/octet-stream";
+        saveFile(imgData.replace(strMime, strDownloadMime), "test1.jpg");
+        this.camera.translateZ(-700);
+        imgData = this.rendererOri.domElement.toDataURL(strMime);
+        saveFile(imgData.replace(strMime, strDownloadMime), "test2.jpg");
+      } catch (e) {
+        console.log(e);
+        return;
+      }
+      this.screenshot = false;
+    }
   }
 }
