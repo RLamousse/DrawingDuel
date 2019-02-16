@@ -6,31 +6,15 @@ import AxiosAdapter from "axios-mock-adapter";
 import { expect } from "chai";
 import * as fs from "fs";
 import * as HttpStatus from "http-status-codes";
-import * as os from "os";
 import {DIFFERENCE_ERROR_MESSAGE, NAME_ERROR_MESSAGE} from "../controllers/controller-utils";
 import {NON_EXISTING_GAME_ERROR_MESSAGE} from "./db/games.collection.service";
 import {DifferenceEvaluatorService} from "./difference-evaluator.service";
 import { GameCreatorService } from "./game-creator.service";
 import {ImageUploadService} from "./image-upload.service";
 
-
-const PATH_TO_TMP: string = os.tmpdir();
 const GAME_CREATOR_SERVICE: GameCreatorService = new GameCreatorService(new DifferenceEvaluatorService(), new ImageUploadService());
-const FILES_TO_COPY: String[] = ["original.bmp", "6diff-modified.bmp", "7diff-modified.bmp", "8diff-modified.bmp"];
 
 describe("A service that creates a game", () => {
-
-    before(() => {
-        for (const FILE of FILES_TO_COPY) {
-            // fs.createReadStream("./test/test_files_for_game_creator_service/" + FILE)
-            //     .pipe(fs.createWriteStream(PATH_TO_TMP + FILE));
-            fs.copyFile("./test/test_files_for_game_creator_service/" + FILE, PATH_TO_TMP + FILE, (err: Error) => {
-                if (err) {
-                    throw err;
-                }
-            });
-        }
-    });
 
     it("should throw a name error if the game name  is already in the data base", async () => {
         const MOCK: MockAdapter = new AxiosAdapter(Axios);
@@ -94,7 +78,7 @@ describe("A service that creates a game", () => {
         const MOCK: MockAdapter = new AxiosAdapter(Axios);
 
         MOCK.onGet("http://localhost:3000/api/data-base/games/someGameTest")
-            .reply(HttpStatus.INTERNAL_SERVER_ERROR, {message: NON_EXISTING_GAME_ERROR_MESSAGE});
+            .reply(HttpStatus.NOT_FOUND, {message: NON_EXISTING_GAME_ERROR_MESSAGE});
 
         MOCK.onPost("http://localhost:3000/api/image-diff/")
             .reply(HttpStatus.OK, fs.readFileSync("test/test_files_for_game_creator_service/7diff-modified.bmp"));
@@ -106,13 +90,5 @@ describe("A service that creates a game", () => {
             "someGameTest",
             fs.readFileSync("test/test_files_for_game_creator_service/original.bmp"),
             fs.readFileSync("test/test_files_for_game_creator_service/7diff-modified.bmp"))).title).to.be.equal("Game created");
-    });
-
-    after(() => {
-        for (const FILE of FILES_TO_COPY) {
-            fs.unlink(PATH_TO_TMP + FILE, (error: Error) => {
-                if (error) { throw error; }
-            });
-        }
     });
 });
