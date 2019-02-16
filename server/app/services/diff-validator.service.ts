@@ -11,7 +11,7 @@ export class DiffValidatorService {
         const game: IGame = await this.getGame(gameName);
         const diffData: SimpleDifferenceData = game.diffData;
 
-        let it = diffData.diffZonesMap.entries();
+        let it = diffData.entries();
         let result = it.next();
         while (!result.done) {
             if (result.value[1].indexOf(point) >= 0) {
