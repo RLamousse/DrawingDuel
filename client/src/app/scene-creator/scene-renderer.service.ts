@@ -33,7 +33,7 @@ export class SceneRendererService {
   private cameraY: number = 0;
   private cameraZ: number = 100;
 
-  public obj3DToCreate: number = 2;
+  public obj3DToCreate: number = 25;
   public objects: THREE.Mesh[] = [];
   public modifiedObjects: THREE.Mesh[] = [];
   private minDistCenterObject: number = 43;
@@ -102,38 +102,39 @@ export class SceneRendererService {
     }
   }
   public generateDifferences(): void {
-    /*for (let i of objSource) {
-      i = this.handleCollision(i);
-    }*/
-    this.modifiedObjects = this.objects.map((mesh)=> mesh.clone());
-    //this.modifiedObjects = this.objects;
-    enum modificationType { remove, add, colorChange }
-    //const maxModificationType: number = 2;
+    this.modifiedObjects = this.objects.map((mesh) => mesh.clone());
     const numberModifications: number = 7;
     for (let i: number = 0; i < numberModifications; i++) {
-      const indexObjects: number = this.getRandomValue(0, this.modifiedObjects.length);
-      //const randomModification: number = this.getRandomValue(0, maxModificationType);
-      switch (modificationType.add) {
-        case modificationType.remove: {
-          this.modifiedObjects.splice(indexObjects, 1);
-          break;
-        }
-        case modificationType.add: {
-          let object: THREE.Mesh = this.generate3DObject();
-          object = this.handleCollision(object);
-          this.modifiedObjects.push(object);
-          break;
-        }
-        case modificationType.colorChange: {
-          //this.formService.setColor(objects[indexObjects].geometry);
-          break;
-        }
-        default: {
-          break;
-        }
-      }
+      this.randomDifference();
     }
     this.generateModifiedScene();
+  }
+
+  private randomDifference(): void {
+    enum modificationType { remove, add, colorChange }
+    const maxModificationType: number = 2;
+    const randomModification: number = this.getRandomValue(0, maxModificationType);
+    const indexObjects: number = this.getRandomValue(0, this.modifiedObjects.length);
+    switch (randomModification) {
+      case modificationType.remove: {
+        this.modifiedObjects.splice(indexObjects, 1);
+        break;
+      }
+      case modificationType.add: {
+        let object: THREE.Mesh = this.generate3DObject();
+        object = this.handleCollision(object);
+        this.modifiedObjects.push(object);
+        break;
+      }
+      case modificationType.colorChange: {
+        const mask: number = 0xFFFFFF;
+        this.modifiedObjects[0].material = new THREE.MeshPhongMaterial({ color: (Math.random() * mask) });
+        break;
+      }
+      default: {
+        break;
+      }
+    }
   }
 
   private generateModifiedScene(): void {
@@ -176,9 +177,9 @@ export class SceneRendererService {
   private handleCollision(object: THREE.Mesh): THREE.Mesh {
     let collision: boolean = true;
     let distanceVec: THREE.Vector3;
-    if (this.objects.length !== 0) {
+    if (this.modifiedObjects.length !== 0) {
       while (collision) {
-        for (const i of this.objects) {
+        for (const i of this.modifiedObjects) {
           distanceVec = new THREE.Vector3(
             i.position.x - object.position.x,
             i.position.y - object.position.y,
