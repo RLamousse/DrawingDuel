@@ -10,7 +10,17 @@ export class DiffValidatorService {
     public async hasDifference(gameName: string, point: IPoint): Promise<boolean> {
         const game: IGame = await this.getGame(gameName);
         const diffData: SimpleDifferenceData = game.diffData;
-        return diffData.diffZonesMap.has(point);
+
+        let it = diffData.diffZonesMap.entries();
+        let result = it.next();
+        while (!result.done) {
+            if (result.value[1].indexOf(point) >= 0) {
+                break;
+            }
+            result = it.next();
+        }
+        // TODO find way to return the array of linked points too
+        return result.done;
     }
 
     private async getGame(gameName: string): Promise<IGame> {

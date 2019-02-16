@@ -8,7 +8,7 @@ export const EMPTY_ARRAY_ERROR_MESSAGE: string = "Error: the given array is empt
 
 export interface SimpleDifferenceData {
     diffsCount: number;
-    diffZonesMap: Map<IPoint, number>;
+    diffZonesMap: Map<number, IPoint[]>;
 }
 
 @injectable()
@@ -131,13 +131,18 @@ export class DifferenceEvaluatorService {
         return parentTable[value] = this.findRoot(parentTable[value], parentTable);
     }
 
-    private generateDiffZonesMap(parentTable: Map<number, number>, arrayOfLabels: number[][]): Map<{x: number, y: number}, number> {
-        const DIFF_ZONES_MAP: Map<{x: number, y: number}, number> = new Map<{x: number, y: number}, number>();
+    private generateDiffZonesMap(parentTable: Map<number, number>, arrayOfLabels: number[][]): Map<number, IPoint[]> {
+        const DIFF_ZONES_MAP: Map<number, IPoint[]> = new Map<number, IPoint[]>();
 
         for (let i: number = 0; i < arrayOfLabels.length; i++) {
             for (let j: number = 0; j < arrayOfLabels[0].length; j++) {
                 if (arrayOfLabels[i][j]) {
-                    DIFF_ZONES_MAP.set({x: i, y: j}, parentTable[arrayOfLabels[i][j]]);
+                    if (DIFF_ZONES_MAP.has(parentTable[arrayOfLabels[i][j]])) {
+                        // @ts-ignore
+                        DIFF_ZONES_MAP.get(parentTable[arrayOfLabels[i][j]]).push({x: i, y: j});
+                    } else {
+                        DIFF_ZONES_MAP.set(parentTable[arrayOfLabels[i][j]],[{x: i, y: j}]);
+                    }
                 }
             }
         }
