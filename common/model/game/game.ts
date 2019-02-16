@@ -14,8 +14,8 @@ export abstract class Game {
         this.bestMultiTimes = bestMultiTimes;
     }
 
-    public isValid(): boolean {
-        return this.gameName === "";
+    public static validate(game: any): boolean {
+        return game.gameName !== "";
     }
 }
 

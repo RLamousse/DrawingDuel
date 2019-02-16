@@ -11,10 +11,11 @@ import {DIFFERENCE_ERROR_MESSAGE, NAME_ERROR_MESSAGE} from "../controllers/contr
 import {NON_EXISTING_GAME_ERROR_MESSAGE} from "./db/games.collection.service";
 import {DifferenceEvaluatorService} from "./difference-evaluator.service";
 import { GameCreatorService } from "./game-creator.service";
-// import {ImageUploadService} from "./image-upload.service";
+import {ImageUploadService} from "./image-upload.service";
+
 
 const PATH_TO_TMP: string = os.tmpdir();
-const GAME_CREATOR_SERVICE: GameCreatorService = new GameCreatorService(new DifferenceEvaluatorService(), /*new ImageUploadService()*/);
+const GAME_CREATOR_SERVICE: GameCreatorService = new GameCreatorService(new DifferenceEvaluatorService(), new ImageUploadService());
 const FILES_TO_COPY: String[] = ["original.bmp", "6diff-modified.bmp", "7diff-modified.bmp", "8diff-modified.bmp"];
 
 describe("A service that creates a game", () => {
@@ -53,7 +54,7 @@ describe("A service that creates a game", () => {
         const MOCK: MockAdapter = new AxiosAdapter(Axios);
 
         MOCK.onGet("http://localhost:3000/api/data-base/games/someGameTest")
-            .reply(HttpStatus.INTERNAL_SERVER_ERROR, {message: NON_EXISTING_GAME_ERROR_MESSAGE});
+            .reply(HttpStatus.NOT_FOUND, {message: NON_EXISTING_GAME_ERROR_MESSAGE});
 
         MOCK.onPost("http://localhost:3000/api/image-diff/")
             .reply(HttpStatus.OK, fs.readFileSync("test/test_files_for_game_creator_service/6diff-modified.bmp"));
@@ -73,7 +74,7 @@ describe("A service that creates a game", () => {
         const MOCK: MockAdapter = new AxiosAdapter(Axios);
 
         MOCK.onGet("http://localhost:3000/api/data-base/games/someGameTest")
-            .reply(HttpStatus.INTERNAL_SERVER_ERROR, {message: NON_EXISTING_GAME_ERROR_MESSAGE});
+            .reply(HttpStatus.NOT_FOUND, {message: NON_EXISTING_GAME_ERROR_MESSAGE});
 
         MOCK.onPost("http://localhost:3000/api/image-diff/")
             .reply(HttpStatus.OK, fs.readFileSync("test/test_files_for_game_creator_service/8diff-modified.bmp"));

@@ -14,8 +14,11 @@ export class SimpleGame extends Game {
         this.diffData = diffData;
     }
 
-    public static Valid(): boolean {
-        return super.isValid() && this.originalImage !== "" && this.modifiedImage !== "";
+    public static validate(game: Game): boolean {
+        return game instanceof SimpleGame &&
+            Game.validate(game) &&
+            game.originalImage !== "" &&
+            game.modifiedImage !== "";
     }
 
     public toJSON(): any {
