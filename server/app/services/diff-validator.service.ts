@@ -3,15 +3,24 @@ import {injectable} from "inversify";
 import "reflect-metadata";
 import {IGame} from "../../../common/model/IGame";
 import {IPoint} from "../../../common/model/IPoint";
-import {IDiffZonesMap} from "./difference-evaluator.service";
+import {SimpleDifferenceData} from "./difference-evaluator.service";
 
 @injectable()
 export class DiffValidatorService {
     public async hasDifference(gameName: string, point: IPoint): Promise<boolean> {
         const game: IGame = await this.getGame(gameName);
-        const diffData: IDiffZonesMap = game.diffData;
+        const diffData: SimpleDifferenceData = game.diffData;
 
-        return diffData.has(point);
+        let it = diffData.entries();
+        let result = it.next();
+        while (!result.done) {
+            if (result.value[1].indexOf(point) >= 0) {
+                break;
+            }
+            result = it.next();
+        }
+        // TODO find way to return the array of linked points too
+        return result.done;
     }
 
     private async getGame(gameName: string): Promise<IGame> {
