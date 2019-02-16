@@ -15,7 +15,7 @@ export class FreeGameCreatorService {
   private modifiedAmbiantLight: THREE.AmbientLight;
 
   public obj3DToCreate: number = 100;
-  private objects: THREE.Mesh[] = [];
+  public objects: THREE.Mesh[] = [];
   public modifiedObjects: THREE.Mesh[] = [];
   private minDistCenterObject: number = 43;
 

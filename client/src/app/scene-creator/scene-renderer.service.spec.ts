@@ -1,7 +1,6 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import * as THREE from "three";
-import { Form3DService } from "./3DFormService/3-dform.service";
 import { SceneRendererService } from "./scene-renderer.service";
 
 describe("SceneRendererService", () => {
@@ -31,7 +30,7 @@ describe("SceneRendererService", () => {
   let fixture: ComponentFixture<MockComponent>;
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [SceneRendererService, Form3DService],
+      providers: [SceneRendererService],
       declarations: [MockComponent],
     });
     fixture = TestBed.createComponent(MockComponent);

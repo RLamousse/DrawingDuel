@@ -22,6 +22,7 @@ import { SimpleGameCreatorFormComponent } from "./simple-game-creator-form/simpl
 import { UNListService } from "./username.service";
 import { VueAdminComponent } from "./vue-admin/vue-admin.component";
 import { WindowEventHandlerDirective } from "./window-event-handler.directive";
+import { FreeGameCreatorService } from "./scene-creator/FreeGameCreator/free-game-creator.service";
 
 @NgModule({
   declarations: [
@@ -52,7 +53,7 @@ import { WindowEventHandlerDirective } from "./window-event-handler.directive";
     MaterialFileInputModule,
     MatDialogModule,
   ],
-  providers: [UNListService, FormPostService, GameService, SceneRendererService, Form3DService],
+  providers: [UNListService, FormPostService, GameService, SceneRendererService, Form3DService, FreeGameCreatorService],
   bootstrap: [AppComponent],
   entryComponents: [SimpleGameCreatorFormComponent, Create3DGameComponent],
   schemas: [NO_ERRORS_SCHEMA],
