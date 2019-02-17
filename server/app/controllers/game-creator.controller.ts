@@ -70,9 +70,6 @@ export class GameCreatorController {
 
             } catch (error) {
                 next(error);
-            } finally {
-                this.deleteTmpFiles(req.files[ORIGINAL_IMAGE_FIELD_NAME][0].path,
-                                    req.files[MODIFIED_IMAGE_FIELD_NAME][0].path);
             }
         });
 

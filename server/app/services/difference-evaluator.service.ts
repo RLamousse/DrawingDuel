@@ -1,9 +1,7 @@
 import { injectable } from "inversify";
 import * as THREE from "three";
 import "reflect-metadata";
-import {create2dArray} from "../../../common/util/util";
-import {Vector3} from "three";
-import {Material} from "three";
+import {create2dArray, deepCompare, customIndexOf} from "../../../common/util/util";
 
 export const ARGUMENT_ERROR_MESSAGE: string = "Error: the argument has the wrong format!";
 export const EMPTY_ARRAY_ERROR_MESSAGE: string = "Error: the given array is empty!";
@@ -41,25 +39,28 @@ export class DifferenceEvaluatorService {
 
         this.validateFreeData(originalScene, modifiedScene);
 
-        const diffs: Map<Vector3, Material | Material[]> = new Map<Vector3, Material | Material[]>();
+        const diffs: THREE.Mesh[] = [];
 
         for (const ORIGINAL_MESH of originalScene) {
             if (ORIGINAL_MESH instanceof THREE.Mesh) {
-                diffs.set(ORIGINAL_MESH.position, ORIGINAL_MESH.material);
+                diffs.push(ORIGINAL_MESH);
             }
         }
 
         for (const MODIFIED_MESH of modifiedScene) {
             if (MODIFIED_MESH instanceof THREE.Mesh) {
-                if (!diffs.has(MODIFIED_MESH.position)) {
-                    diffs.set(MODIFIED_MESH.position, MODIFIED_MESH.material);
-                } else if (diffs.get(MODIFIED_MESH.position) === MODIFIED_MESH.material) {
-                    diffs.delete(MODIFIED_MESH.position);
+                const foundIndex = customIndexOf(diffs, MODIFIED_MESH, (elementToFind: THREE.Mesh, elementInArray: THREE.Mesh) => {
+                    return deepCompare(elementToFind.position, elementInArray.position);
+                });
+                if (foundIndex === -1) {
+                    diffs.push(MODIFIED_MESH);
+                } else if (deepCompare(diffs[foundIndex].material, MODIFIED_MESH.material)) {
+                    diffs.splice(foundIndex, 1);
                 }
             }
         }
 
-        return diffs.size;
+        return diffs.length;
     }
 
     private validateSimpleData(pixels: number[][]): void {
