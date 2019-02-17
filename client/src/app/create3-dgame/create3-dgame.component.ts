@@ -76,12 +76,11 @@ export class Create3DGameComponent extends AbstractForm implements OnInit {
     this.createScenes(objectTypes, modificationTypes);
     const fd: FormData = new FormData();
     fd.append("gameName", this.formDoc.value.name);
-    fd.append("objectTypes", JSON.stringify(objectTypes));
-    fd.append("modificationTypes", JSON.stringify(modificationTypes));
-    fd.append("objectQuantity", this.sliderValue.toString());
-    this.formPost.basicPost(fd).subscribe(
+    fd.append("originalScene", JSON.stringify(this.freeGameCreator.scene));
+    fd.append("modifiedScene", JSON.stringify(this.freeGameCreator.modifiedScene));
+    // CHANGE ME I'M A DUMMY ROUTE
+    this.formPost.basicPost("api/game-creator/create-free-game", fd).subscribe(
       (data) => {
-        // alert((data as { message: string }).message);
         this.exit(data);
       },
       (error: Error) => {
@@ -93,11 +92,8 @@ export class Create3DGameComponent extends AbstractForm implements OnInit {
 
   private createScenes(objects: ObjectGeometry[], modifications: ModificationType[]): void {
     this.freeGameCreator.modificationTypes = modifications;
-    console.log(modifications);
-    console.log(objects);
     this.freeGameCreator.objectTypes = objects;
     this.freeGameCreator.obj3DToCreate = this.sliderValue;
     this.freeGameCreator.createScenes();
-
   }
 }
