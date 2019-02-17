@@ -26,6 +26,7 @@ describe("A service that creates a game", () => {
         mockedDifferenceEvaluatorServiceMock = mock(DifferenceEvaluatorService);
         mockedImageUploadService = mock(ImageUploadService);
 
+        when(mockedDifferenceEvaluatorServiceMock.getNDifferences(anything())).thenReturn(createdMockedDiffData(EXPECTED_DIFF_NUMBER));
         when(mockedImageUploadService.uploadImage(anything())).thenResolve("");
     });
 
@@ -90,6 +91,96 @@ describe("A service that creates a game", () => {
         return expect.fail();
     });
 
+    it("should throw on diff image microservice call error", async () => {
+        axiosMock.onGet("http://localhost:3000/api/data-base/games/someGameTest")
+            .reply(HttpStatus.NOT_FOUND, {message: NON_EXISTING_GAME_ERROR_MESSAGE});
+
+        axiosMock.onPost("http://localhost:3000/api/image-diff/")
+            .reply(HttpStatus.INTERNAL_SERVER_ERROR, {message: "error"});
+
+        return getMockedService()
+                .createSimpleGame(
+                    "someGameTest",
+                    fs.readFileSync("test/test_files_for_game_creator_service/original.bmp"),
+                    fs.readFileSync("test/test_files_for_game_creator_service/7diff-modified.bmp"))
+                .catch((reason: Error) => {
+                    expect(reason.message).to.eql("game diff: error");
+                });
+    });
+
+    it("should throw on differenceEvaluatorService call error", async () => {
+        axiosMock.onGet("http://localhost:3000/api/data-base/games/someGameTest")
+            .reply(HttpStatus.NOT_FOUND, {message: NON_EXISTING_GAME_ERROR_MESSAGE});
+
+        axiosMock.onPost("http://localhost:3000/api/image-diff/")
+            .reply(HttpStatus.OK, fs.readFileSync("test/test_files_for_game_creator_service/7diff-modified.bmp"));
+
+        when(mockedDifferenceEvaluatorServiceMock.getNDifferences(anything())).thenThrow(new Error("error"));
+
+        return getMockedService()
+            .createSimpleGame(
+                "someGameTest",
+                fs.readFileSync("test/test_files_for_game_creator_service/original.bmp"),
+                fs.readFileSync("test/test_files_for_game_creator_service/7diff-modified.bmp"))
+            .catch((reason: Error) => {
+                expect(reason.message).to.eql("bmp diff counting: error");
+            });
+    });
+
+    it("should throw on db get game call error", async () => {
+        axiosMock.onGet("http://localhost:3000/api/data-base/games/someGameTest")
+            .reply(HttpStatus.INTERNAL_SERVER_ERROR, {message: "error"});
+
+        return getMockedService()
+            .createSimpleGame(
+                "someGameTest",
+                fs.readFileSync("test/test_files_for_game_creator_service/original.bmp"),
+                fs.readFileSync("test/test_files_for_game_creator_service/7diff-modified.bmp"))
+            .catch((reason: Error) => {
+                expect(reason.message).to.eql("dataBase: error");
+            });
+    });
+
+    it("should throw on ImageUploadService call error", async () => {
+        axiosMock.onGet("http://localhost:3000/api/data-base/games/someGameTest")
+            .reply(HttpStatus.NOT_FOUND, {message: NON_EXISTING_GAME_ERROR_MESSAGE});
+
+        axiosMock.onPost("http://localhost:3000/api/image-diff/")
+            .reply(HttpStatus.OK, fs.readFileSync("test/test_files_for_game_creator_service/7diff-modified.bmp"));
+
+        when(mockedImageUploadService.uploadImage(anything())).thenThrow(new Error("error"));
+
+        return getMockedService()
+            .createSimpleGame(
+                "someGameTest",
+                fs.readFileSync("test/test_files_for_game_creator_service/original.bmp"),
+                fs.readFileSync("test/test_files_for_game_creator_service/7diff-modified.bmp"))
+            .catch((reason: Error) => {
+                expect(reason.message).to.eql("dataBase: error");
+            });
+    });
+
+    it("should throw on db create game call error", async () => {
+
+        axiosMock.onGet("http://localhost:3000/api/data-base/games/someGameTest")
+            .reply(HttpStatus.NOT_FOUND, {message: NON_EXISTING_GAME_ERROR_MESSAGE});
+
+        axiosMock.onPost("http://localhost:3000/api/image-diff/")
+            .reply(HttpStatus.OK, fs.readFileSync("test/test_files_for_game_creator_service/7diff-modified.bmp"));
+
+        axiosMock.onPost("http://localhost:3000/api/data-base/games")
+            .reply(HttpStatus.INTERNAL_SERVER_ERROR, new Error("error"));
+
+        return getMockedService()
+            .createSimpleGame(
+                "someGameTest",
+                fs.readFileSync("test/test_files_for_game_creator_service/original.bmp"),
+                fs.readFileSync("test/test_files_for_game_creator_service/7diff-modified.bmp"))
+            .catch((reason: Error) => {
+                expect(reason.message).to.eql("dataBase: Unable to create game: error");
+            });
+    });
+
     it("should return a success message if everything is good", async () => {
 
         axiosMock.onGet("http://localhost:3000/api/data-base/games/someGameTest")
@@ -103,11 +194,12 @@ describe("A service that creates a game", () => {
 
         when(mockedDifferenceEvaluatorServiceMock.getNDifferences(anything())).thenReturn(createdMockedDiffData(EXPECTED_DIFF_NUMBER));
 
-        expect((await getMockedService()
+        return expect((await getMockedService()
             .createSimpleGame(
             "someGameTest",
             fs.readFileSync("test/test_files_for_game_creator_service/original.bmp"),
-            fs.readFileSync("test/test_files_for_game_creator_service/7diff-modified.bmp"))).title).to.be.equal("Game created");
+            fs.readFileSync("test/test_files_for_game_creator_service/7diff-modified.bmp"))).title)
+            .to.be.equal("Game created");
     });
 
     const createdMockedDiffData = (diffCount: number) => {
