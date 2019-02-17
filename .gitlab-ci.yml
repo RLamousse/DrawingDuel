@@ -85,8 +85,6 @@ test server:
 # ╚══════════════════╝
 
 .post test:
-  only:
-    - merge_requests
 
 # Coverage job template
 .coverage:
@@ -111,6 +109,8 @@ client coverage:
     - cd client
     - npm ci
   only:
+    refs:
+      - merge_requests
     changes:
       - .gitlab-ci.yml
       - client/**/*
@@ -126,6 +126,8 @@ server coverage:
     - cd server
     - npm ci
   only:
+    refs:
+      - merge_requests
     changes:
       - .gitlab-ci.yml
       - server/**/*
@@ -146,6 +148,8 @@ client lint:
     - cd client
     - npm ci
   only:
+    refs:
+      - merge_requests
     changes:
       - .gitlab-ci.yml
       - client/**/*
@@ -160,6 +164,8 @@ server lint:
     - cd server
     - npm ci
   only:
+    refs:
+      - merge_requests
     changes:
       - .gitlab-ci.yml
       - server/**/*
