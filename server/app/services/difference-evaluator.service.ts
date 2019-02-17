@@ -10,8 +10,6 @@ export const EMPTY_ARRAY_ERROR_MESSAGE: string = "Error: the given array is empt
 @injectable()
 export class DifferenceEvaluatorService {
 
-    public constructor () {}
-
     public getNDifferences(pixels: number[][]): ISimpleDifferenceData {
 
         this.validateData(pixels);

@@ -12,8 +12,7 @@ export class ImageUploadService {
 
     public async uploadImage(imageData: Buffer): Promise<string> {
         return this.client.Image.upload(imageData)
-            // tslint:disable-next-line:no-any Imgur response
-            .then((res: any) => {
+            .then((res: APIResponse<ImageResponse>) => {
                 return res.data.link;
             })
             // tslint:disable-next-line:no-any Imgur response

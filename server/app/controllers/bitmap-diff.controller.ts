@@ -11,7 +11,7 @@ import Types from "../types";
 import {
     assertFieldsOfRequest,
     assertRequestImageFilesFields,
-    BITMAP_MULTER_FILTER,
+    executeSafely, BITMAP_MULTER_FILTER,
     MODIFIED_IMAGE_FIELD_NAME, MULTER_BMP_FIELDS,
     ORIGINAL_IMAGE_FIELD_NAME, OUTPUT_FILE_NAME_FIELD_NAME, REQUIRED_IMAGE_HEIGHT, REQUIRED_IMAGE_WIDTH
 } from "./controller-utils";
@@ -34,7 +34,7 @@ export class BitmapDiffController {
         router.post("/",
                     this._multer.fields(MULTER_BMP_FIELDS),
                     (req: Request, res: Response, next: NextFunction) => {
-                    try {
+                    executeSafely(next, () => {
                         const diffFileName: string = req.body[OUTPUT_FILE_NAME_FIELD_NAME];
                         assertFieldsOfRequest(req, OUTPUT_FILE_NAME_FIELD_NAME);
                         assertRequestImageFilesFields(req);
@@ -47,14 +47,12 @@ export class BitmapDiffController {
                                                                                                     "m-" + diffFileName);
 
                         const diffBitmap: Bitmap = this.bitmapDiffService.getDiff(diffFileName, originalBitmap, modifiedBitmap);
-                        const bitmapBytes = this.bitmapWriter.getBitmapBytes(diffBitmap);
+                        const bitmapBytes: Buffer = this.bitmapWriter.getBitmapBytes(diffBitmap);
 
                         res.status((diffBitmap ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR));
                         res.contentType(BITMAP_MEME_TYPE);
                         res.send(bitmapBytes);
-                    } catch (error) {
-                        return next(error);
-                    }
+                    });
             });
 
         return router;
