@@ -2,7 +2,7 @@ import {injectable} from "inversify";
 import "reflect-metadata";
 import {Message} from "../../../../common/communication/messages/message";
 import {Game} from "../../../../common/model/game/game";
-import {SimpleGame} from "../../../../common/model/game/simple-game";
+import SimpleGame from "../../../../common/model/game/simple-game";
 import {CollectionService} from "./collection.service";
 
 export const NON_EXISTING_GAME_ERROR_MESSAGE: string = "ERROR: the specified game does not exist!";
@@ -14,7 +14,9 @@ export const ALREADY_EXISTING_GAME_MESSAGE_ERROR: string = "ERROR: a game with t
 export class GamesCollectionService extends CollectionService<Game> {
 
     public async create(data: Game): Promise<Message> {
-        SimpleGame.validate(data);
+        if (!SimpleGame.validate(data)) {
+            throw new Error(GAME_FORMAT_ERROR_MESSAGE);
+        }
 
         if (await this.contains(data.gameName)) {
             throw new Error(ALREADY_EXISTING_GAME_MESSAGE_ERROR);

@@ -5,7 +5,7 @@ import {Game} from "../../../common/model/game/game";
 import {DataBaseService} from "../services/data-base.service";
 import {NON_EXISTING_GAME_ERROR_MESSAGE} from "../services/db/games.collection.service";
 import Types from "../types";
-import {executeSafely} from "./controller-utils";
+import {executePromiseSafely} from "./controller-utils";
 
 @injectable()
 export class DataBaseController {
@@ -20,13 +20,13 @@ export class DataBaseController {
         // └──┴───────┴──┘
 
         router.post("/users", async (req: Request, res: Response, next: NextFunction) => {
-            executeSafely(next, async () => {
+            executePromiseSafely(next, async () => {
                 res.json(await this.dataBaseService.users.create(req.body));
             });
         });
 
         router.delete("/users/:userId", async (req: Request, res: Response, next: NextFunction) => {
-            executeSafely(next, async () => {
+            executePromiseSafely(next, async () => {
                 res.json(await this.dataBaseService.users.delete(req.params["userId"]));
             });
         });
@@ -36,25 +36,25 @@ export class DataBaseController {
         // └──┴───────┴──┘
 
         router.post("/games", async (req: Request, res: Response, next: NextFunction) => {
-            executeSafely(next, async () => {
+            executePromiseSafely(next, async () => {
                 res.json(await this.dataBaseService.games.create(req.body));
             });
         });
 
         router.delete("/games/:id", async (req: Request, res: Response, next: NextFunction) => {
-            executeSafely(next, async () => {
+            executePromiseSafely(next, async () => {
                 res.json(await this.dataBaseService.games.delete(req.params["id"]));
             });
         });
 
         router.get("/games", async (req: Request, res: Response, next: NextFunction) => {
-            executeSafely(next, async () => {
+            executePromiseSafely(next, async () => {
                 res.json(await this.dataBaseService.games.getAll());
             });
         });
 
         router.get("/games/:gameName", async (req: Request, res: Response, next: NextFunction) => {
-            executeSafely(next, async () => {
+            executePromiseSafely(next, async () => {
                 this.dataBaseService.games
                     .getFromId(req.params["gameName"])
                     .then((value: Game) => {
