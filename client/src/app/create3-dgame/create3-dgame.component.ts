@@ -93,8 +93,6 @@ export class Create3DGameComponent extends AbstractForm implements OnInit {
 
   private createScenes(objects: ObjectGeometry[], modifications: ModificationType[]): void {
     this.freeGameCreator.modificationTypes = modifications;
-    console.log(modifications);
-    console.log(objects);
     this.freeGameCreator.objectTypes = objects;
     this.freeGameCreator.obj3DToCreate = this.sliderValue;
     this.freeGameCreator.createScenes();
