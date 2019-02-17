@@ -48,7 +48,7 @@ export class DifferenceEvaluatorService {
         }
         for (const MODIFIED_MESH of modifiedScene) {
             if (MODIFIED_MESH instanceof THREE.Mesh) {
-                const foundIndex = customIndexOf(diffs, MODIFIED_MESH, (elementToFind: THREE.Mesh, elementInArray: THREE.Mesh) => {
+                const foundIndex: number = customIndexOf(diffs, MODIFIED_MESH, (elementToFind: THREE.Mesh, elementInArray: THREE.Mesh) => {
                     return deepCompare(elementToFind.position, elementInArray.position);
                 });
                 if (foundIndex === -1) {
