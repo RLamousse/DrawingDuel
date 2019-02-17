@@ -35,7 +35,7 @@ describe("UserNameService", () => {
         await service.checkAvailability({ username: "Maddie", available: false });
 
         return service.releaseUsername("Maddie").then((response: UserValidationMessage) => {
-            expect(response).to.eql({ username: "Maddie", available: false });
+            expect(response).to.eql({ username: "Maddie", available: true });
         });
     });
 
