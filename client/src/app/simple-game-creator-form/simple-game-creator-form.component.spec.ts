@@ -102,15 +102,22 @@ describe("SimpleGameCreatorFormComponent", () => {
     expect(originalImage.valid).toBeFalsy();
   });
 
+  /**
+     * We clear the dimension validator since we test if it works with this header
+     * in its own test file. We only want to see if this will pass if every other Validator
+     * is ok
+  */
   it("should let submit if everything ok", async () => {
     // tslint:disable-next-line:no-any
     const fakeHeader: any[] = new Array(HEADER_SIZE_BYTES);
     fakeHeader.unshift(...VALID_640x480_BITMAP_HEADER_24BPP);
     const originalImage: AbstractControl = component.formDoc.controls["originalImage"];
+    originalImage.clearAsyncValidators();
     originalImage.setValue({
       files: [new File(fakeHeader, "maxime.bmp", {type: "image/bmp"})],
     });
     const modifiedImage: AbstractControl = component.formDoc.controls["modifiedImage"];
+    modifiedImage.clearAsyncValidators();
     modifiedImage.setValue({
       files: [new File(fakeHeader, "maxime.bmp", {type: "image/bmp"})],
     });
