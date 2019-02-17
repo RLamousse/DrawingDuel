@@ -8,6 +8,7 @@ import {
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import "hammerjs";
+import { ModificationType, ObjectGeometry } from "../FreeGameCreatorInterface/free-game-enum";
 import { FormPostService } from "../form-post.service";
 import { Create3DGameComponent } from "./create3-dgame.component";
 
@@ -72,13 +73,13 @@ describe("Create3DGameComponent", () => {
   });
 
   it("should have an error if one set of checkboxes is empty", async () => {
-    component.checkboxes.modificationTypes.add("dummy");
+    component.checkboxes.modificationTypes.add(ModificationType.add);
     expect(component.checboxesValid()).toBeFalsy();
   });
 
   it("should have an error if one set of checkboxes is empty", async () => {
-    component.checkboxes.modificationTypes.add("dummy");
-    component.checkboxes.objectTypes.add("dummy");
+    component.checkboxes.modificationTypes.add(ModificationType.add);
+    component.checkboxes.objectTypes.add(ObjectGeometry.cube);
     const name: AbstractControl = component.formDoc.controls["name"];
     name.setValue("12345");
     expect(component.formDoc.valid && component.checboxesValid()).toBeTruthy();
