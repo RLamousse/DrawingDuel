@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import {ActivatedRoute, Router} from "@angular/router";
-import { Observable } from "rxjs";
 import { PlayViewComponent } from "./play-view.component";
 
 describe("PlayViewComponent", () => {
@@ -15,7 +14,7 @@ describe("PlayViewComponent", () => {
         {
           provide: ActivatedRoute,
           useValue: {params: {
-            subscribe: (fn: (value: Params) => void) => fn({
+            subscribe: (fn: (value:/* WTFFFFFFF*/) => void) => fn({
                 tab: 0,
             }),
         }, } , },
