@@ -8,9 +8,9 @@ import Types from "../types";
 import {
     assertFieldsOfRequest,
     assertRequestImageFilesFields,
-    executeSafely, BITMAP_MULTER_FILTER,
+    BITMAP_MULTER_FILTER,
     MODIFIED_IMAGE_FIELD_NAME,
-    MULTER_BMP_FIELDS, ORIGINAL_IMAGE_FIELD_NAME
+    MULTER_BMP_FIELDS, ORIGINAL_IMAGE_FIELD_NAME, executePromiseSafely
 } from "./controller-utils";
 
 @injectable()
@@ -29,7 +29,7 @@ export class GameCreatorController {
         const router: Router = Router();
 
         router.post("/create-simple-game", this._cpUpload, async (req: Request, res: Response, next: NextFunction) => {
-            executeSafely(next, async () => {
+            executePromiseSafely(next, async () => {
                 assertFieldsOfRequest(req, GAME_NAME_FIELD);
                 assertRequestImageFilesFields(req);
 

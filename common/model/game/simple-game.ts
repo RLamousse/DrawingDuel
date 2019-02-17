@@ -7,7 +7,13 @@ export default class SimpleGame extends Game {
     readonly modifiedImage: string;
     readonly diffData: ISimpleDifferenceData;
 
-    constructor(gameName: string, diffData: ISimpleDifferenceData, bestSoloTimes: IRecordTime[], bestMultiTimes: IRecordTime[], originalImage: string, modifiedImage: string) {
+    constructor(gameName: string,
+                diffData: ISimpleDifferenceData,
+                bestSoloTimes: IRecordTime[],
+                bestMultiTimes: IRecordTime[],
+                originalImage: string,
+                modifiedImage: string
+    ) {
         super(gameName, diffData, bestSoloTimes, bestMultiTimes);
         this.originalImage = originalImage;
         this.modifiedImage = modifiedImage;
