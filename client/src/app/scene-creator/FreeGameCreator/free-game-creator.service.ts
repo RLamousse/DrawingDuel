@@ -9,13 +9,16 @@ export class FreeGameCreatorService {
 
   public scene: THREE.Scene;
   public modifiedScene: THREE.Scene;
+  public objectTypes: string[];
+  public modificationTypes: string[];
+  public obj3DToCreate: number;
 
   private originalLighting: THREE.DirectionalLight;
   private originalAmbiantLight: THREE.AmbientLight;
   private modifiedLighting: THREE.DirectionalLight;
   private modifiedAmbiantLight: THREE.AmbientLight;
 
-  public obj3DToCreate: number = 100;
+
   public objects: THREE.Mesh[] = [];
   public modifiedObjects: THREE.Mesh[] = [];
   private minDistCenterObject: number = 43;
@@ -84,28 +87,31 @@ export class FreeGameCreatorService {
   }
   private generateDifferences(): void {
     this.modifiedObjects = this.objects.map((mesh) => mesh.clone());
-    enum modificationType { remove, add, colorChange }
-    const maxModificationType: number = 2;
+    enum modificationType { remove, add, changeColor }
+    const maxModificationType: number = this.modificationTypes.length -1;
     const numberModifications: number = 7;
     for (let i: number = 0; i < numberModifications; i++) {
       const indexObjects: number = this.getRandomValue(0, this.modifiedObjects.length);
       const randomModification: number = this.getRandomValue(0, maxModificationType);
-      switch (randomModification) {
-        case modificationType.remove: {
+      switch (this.modificationTypes[randomModification]) {
+        case modificationType.remove.toString(): {
           this.modifiedObjects.splice(indexObjects, 1);
+          console.log("remove");
           break;
         }
-        case modificationType.add: {
+        case modificationType.add.toString(): {
           let object: THREE.Mesh = this.generate3DObject();
           object = this.handleCollision(object);
           this.modifiedObjects.push(object);
+          console.log("add")
           break;
         }
-        case modificationType.colorChange: {
+        case modificationType.changeColor.toString(): {
           // this.formService.setColor(objects[indexObjects].geometry);
           break;
         }
         default: {
+          console.log("default");
           break;
         }
       }
@@ -119,7 +125,7 @@ export class FreeGameCreatorService {
     }
   }
 
-  public generate3DObject(): THREE.Mesh {
+  private generate3DObject(): THREE.Mesh {
     enum objectGeometry { sphere, cube, cone, cylinder, pyramid }
     let randomObject: number;
     let createdObject: THREE.Mesh;
@@ -148,7 +154,7 @@ export class FreeGameCreatorService {
     return createdObject;
   }
 
-  public handleCollision(object: THREE.Mesh): THREE.Mesh {
+  private handleCollision(object: THREE.Mesh): THREE.Mesh {
     let collision: boolean = true;
     let distanceVec: THREE.Vector3;
     if (this.objects.length !== 0) {

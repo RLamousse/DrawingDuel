@@ -4,6 +4,7 @@ import { MatCheckboxChange, MatDialogRef, MatSliderChange } from "@angular/mater
 import { AVAILABLE_MODIF_TYPES, AVAILABLE_OBJECT_TYPES, SelectType } from "../Interfaces/selectType";
 import { AbstractForm } from "../abstract-form";
 import { FormPostService } from "../form-post.service";
+import { FreeGameCreatorService } from "../scene-creator/FreeGameCreator/free-game-creator.service";
 
 @Component({
   selector: "app-create3-dgame",
@@ -23,9 +24,12 @@ export class Create3DGameComponent extends AbstractForm implements OnInit {
     modificationTypes: Set<string>,
     valid(): boolean,
   };
-  public constructor(_fb: FormBuilder,
-                     dialogRef: MatDialogRef<Create3DGameComponent>,
-                     formPost: FormPostService) {
+  public constructor(
+    _fb: FormBuilder,
+    dialogRef: MatDialogRef<Create3DGameComponent>,
+    formPost: FormPostService,
+    private freeGameCreator: FreeGameCreatorService,
+  ) {
     super(_fb, dialogRef, formPost);
     this.checkboxes = {
       objectTypes: new Set(),
@@ -66,6 +70,7 @@ export class Create3DGameComponent extends AbstractForm implements OnInit {
     this.disableButton = true;
     const objectTypes: string[] = Array.from(this.checkboxes.objectTypes);
     const modificationTypes: string[] = Array.from(this.checkboxes.modificationTypes);
+    this.createScenes(objectTypes, modificationTypes);
     const fd: FormData = new FormData();
     fd.append("gameName", this.formDoc.value.name);
     fd.append("objectTypes", JSON.stringify(objectTypes));
@@ -81,5 +86,15 @@ export class Create3DGameComponent extends AbstractForm implements OnInit {
         alert(error.message);
         this.disableButton = false;
       });
+  }
+
+  private createScenes(objects: string[], modifications: string[]): void {
+    this.freeGameCreator.modificationTypes = modifications;
+    console.log(modifications);
+    console.log(objects);
+    this.freeGameCreator.objectTypes = objects;
+    this.freeGameCreator.obj3DToCreate = this.sliderValue;
+    this.freeGameCreator.createScenes();
+
   }
 }
