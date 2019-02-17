@@ -47,7 +47,7 @@ export abstract class CollectionService<T> {
         }
     }
 
-    protected createDocument(data: T): Promise<Message> {
+    protected async createDocument(data: T): Promise<Message> {
         return new Promise<Message>((resolve: (value?: Message | PromiseLike<Message>) => void, reject: (reason?: Error) => void) => {
 
             this._collection.insertOne(data, (error: MongoError) => {
@@ -59,7 +59,7 @@ export abstract class CollectionService<T> {
         });
     }
 
-    protected deleteDocument(id: string): Promise<Message> {
+    protected async deleteDocument(id: string): Promise<Message> {
         return new Promise<Message>((resolve: (value?: Message | PromiseLike<Message>) => void, reject: (reason?: Error) => void) => {
             this._collection.deleteOne({[this.idFieldName]: {$eq: id}}, (error: MongoError) => {
                 if (error) {
@@ -70,7 +70,7 @@ export abstract class CollectionService<T> {
         });
     }
 
-    protected getDocument(id: string, errorMessage: string): Promise<T> {
+    protected async getDocument(id: string, errorMessage: string): Promise<T> {
         return new Promise<T>((resolve: (value?: T | PromiseLike<T>) => void, reject: (reason?: Error) => void) => {
             this._collection.find({[this.idFieldName] : {$eq : id}}).toArray((error: MongoError, res: T[]) => {
                 if (error) {

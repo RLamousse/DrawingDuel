@@ -47,7 +47,7 @@ export class BitmapDiffController {
                                                                                                     "m-" + diffFileName);
 
                         const diffBitmap: Bitmap = this.bitmapDiffService.getDiff(diffFileName, originalBitmap, modifiedBitmap);
-                        const bitmapBytes = this.bitmapWriter.getBitmapBytes(diffBitmap);
+                        const bitmapBytes: Buffer = this.bitmapWriter.getBitmapBytes(diffBitmap);
 
                         res.status((diffBitmap ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR));
                         res.contentType(BITMAP_MEME_TYPE);

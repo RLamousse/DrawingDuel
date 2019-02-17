@@ -2,7 +2,7 @@ import {ISimpleDifferenceData} from "./differences/simple-difference-data";
 import {Game} from "./game";
 import {IRecordTime} from "./record-time";
 
-export class SimpleGame extends Game {
+export default class SimpleGame extends Game {
     readonly originalImage: string;
     readonly modifiedImage: string;
     readonly diffData: ISimpleDifferenceData;
