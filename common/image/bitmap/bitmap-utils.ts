@@ -46,7 +46,8 @@ export const BITMAP_HEADER_24BPP: number[] = [
 ];
 
 // 54 bytes
-export const VALID_640x480_BITMAP_HEADER_24BPP: number[] = [
+// For testing purposes I need it to be any
+export const VALID_640x480_BITMAP_HEADER_24BPP: any[] = [
     // BMP HEADER
     0x42, 0x4D, // ID (0x42, 0x4D)
     0x38, 0x10, 0x0E, 0x20, // Size of BMP file
