@@ -7,6 +7,7 @@ import { expect } from "chai";
 import * as fs from "fs";
 import * as HttpStatus from "http-status-codes";
 import {anything, instance, mock, when} from "ts-mockito";
+import {ISimpleDifferenceData} from "../../../common/model/game/differences/simple-difference-data";
 import {IPoint, ORIGIN} from "../../../common/model/point";
 import {DIFFERENCE_ERROR_MESSAGE, NAME_ERROR_MESSAGE} from "../controllers/controller-utils";
 import {NON_EXISTING_GAME_ERROR_MESSAGE} from "./db/games.collection.service";
@@ -19,6 +20,22 @@ describe("A service that creates a game", () => {
     let axiosMock: MockAdapter;
     let mockedDifferenceEvaluatorServiceMock: DifferenceEvaluatorService;
     let mockedImageUploadService: ImageUploadService;
+
+    const createdMockedDiffData: (diffCount: number) => ISimpleDifferenceData = (diffCount: number) => {
+        const mockedDifferenceData: Map<number, IPoint[]> = new Map();
+        for (let i: number = 0; i < diffCount; i++) {
+            mockedDifferenceData.set(i, [ORIGIN]);
+        }
+
+        return mockedDifferenceData;
+    };
+
+    const getMockedService: () => GameCreatorService = () => {
+        return new GameCreatorService(
+            instance(mockedDifferenceEvaluatorServiceMock),
+            instance(mockedImageUploadService),
+        );
+    };
 
     beforeEach(() => {
         axiosMock = new AxiosAdapter(Axios);
@@ -201,20 +218,4 @@ describe("A service that creates a game", () => {
             fs.readFileSync("test/test_files_for_game_creator_service/7diff-modified.bmp"))).title)
             .to.be.equal("Game created");
     });
-
-    const createdMockedDiffData = (diffCount: number) => {
-        const mockedDifferenceData: Map<number, IPoint[]> = new Map();
-        for (let i: number = 0; i < diffCount; i++) {
-            mockedDifferenceData.set(i, [ORIGIN]);
-        }
-
-        return mockedDifferenceData;
-    };
-
-    const getMockedService = () => {
-        return new GameCreatorService(
-            instance(mockedDifferenceEvaluatorServiceMock),
-            instance(mockedImageUploadService),
-        );
-    } ;
 });

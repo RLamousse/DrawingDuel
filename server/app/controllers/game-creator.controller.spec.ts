@@ -2,7 +2,7 @@
 import { expect } from "chai";
 import * as HttpStatus from "http-status-codes";
 import * as request from "supertest";
-import {anything, anyString, instance, when, mock} from "ts-mockito";
+import {anything, anyString, instance, mock, when} from "ts-mockito";
 import {Message} from "../../../common/communication/messages/message";
 import { Application } from "../app";
 import { container } from "../inversify.config";

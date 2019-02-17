@@ -11,7 +11,7 @@ import Types from "../types";
 import {
     assertFieldsOfRequest,
     assertRequestImageFilesFields,
-    BITMAP_MULTER_FILTER, executeSafely,
+    executeSafely, BITMAP_MULTER_FILTER,
     MODIFIED_IMAGE_FIELD_NAME, MULTER_BMP_FIELDS,
     ORIGINAL_IMAGE_FIELD_NAME, OUTPUT_FILE_NAME_FIELD_NAME, REQUIRED_IMAGE_HEIGHT, REQUIRED_IMAGE_WIDTH
 } from "./controller-utils";
