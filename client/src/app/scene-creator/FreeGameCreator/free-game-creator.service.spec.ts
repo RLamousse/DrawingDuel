@@ -1,39 +1,41 @@
 import { TestBed } from "@angular/core/testing";
+import * as THREE from "three";
 import { Form3DService } from "../3DFormService/3-dform.service";
 import { FreeGameCreatorService } from "./free-game-creator.service";
-import * as THREE from "three";
 
-const mocked3DObject: THREE.Mesh = new THREE.Mesh(new THREE.BoxGeometry(10, 10, 10), new THREE.Material());
+/* tslint:disable:no-magic-numbers */
+class MockedForm3DService {
+  public createCube(): THREE.Mesh { return new THREE.Mesh(new THREE.BoxGeometry(10, 10, 10), new THREE.Material()); }
+  public createSphere(): THREE.Mesh { return new THREE.Mesh(new THREE.BoxGeometry(10, 10, 10), new THREE.Material()); }
+  public createPyramid(): THREE.Mesh { return new THREE.Mesh(new THREE.BoxGeometry(10, 10, 10), new THREE.Material()); }
+  public createCone(): THREE.Mesh { return new THREE.Mesh(new THREE.BoxGeometry(10, 10, 10), new THREE.Material()); }
+  public createCylinder(): THREE.Mesh { return new THREE.Mesh(new THREE.BoxGeometry(10, 10, 10), new THREE.Material()); }
+}
 
-const mockedForm3DService = {
-  createCube: () => { return mocked3DObject },
-  createSphere: () => { return mocked3DObject },
-  createPyramid: () => { return mocked3DObject },
-  createCone: () => { return mocked3DObject },
-  createCylinder: () => { return mocked3DObject },
-};
+const mockedInstance: MockedForm3DService = new MockedForm3DService();
 
 describe("FreeGameCreatorService", () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
         FreeGameCreatorService,
-        { provide: Form3DService, useValue: mockedForm3DService }
+        { provide: Form3DService, useValue: mockedInstance },
       ],
     });
   });
 
   it("should be created", () => {
     const service: FreeGameCreatorService = TestBed.get(FreeGameCreatorService);
-    expect(service).toBeTruthy();
+    expect(service).toBeDefined();
   });
 
   // Test createScenes
   it("should not have undefined scenes after createScenes is called", () => {
     const service: FreeGameCreatorService = TestBed.get(FreeGameCreatorService);
+    service.obj3DToCreate = 10;
     service.createScenes();
-    expect(service.scene).toBeUndefined();
-    expect(service.modifiedScene).toBeUndefined();
+    expect(service.scene).toBeDefined();
+    expect(service.modifiedScene).toBeDefined();
   });
 
   it("have an objects array of the size of object to create", () => {

@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import * as THREE from "three";
 import { Form3DService } from "../3DFormService/3-dform.service";
+
 @Injectable()
 export class FreeGameCreatorService {
 
@@ -55,8 +56,8 @@ export class FreeGameCreatorService {
 
     let object: THREE.Mesh;
     const PI: number = Math.PI;
-    const FACTOR: number = 2;
-    const MAXROTATIONANGLE: number = PI * FACTOR;
+    const FACTOR2: number = 2;
+    const MAXROTATIONANGLE: number = PI * FACTOR2;
     for (let i: number = 0; i < this.obj3DToCreate; ++i) {
       object = this.generate3DObject();
       object.position.set(
@@ -118,7 +119,7 @@ export class FreeGameCreatorService {
     }
   }
 
-  private generate3DObject(): THREE.Mesh {
+  public generate3DObject(): THREE.Mesh {
     enum objectGeometry { sphere, cube, cone, cylinder, pyramid }
     let randomObject: number;
     let createdObject: THREE.Mesh;
@@ -147,7 +148,7 @@ export class FreeGameCreatorService {
     return createdObject;
   }
 
-  private handleCollision(object: THREE.Mesh): THREE.Mesh {
+  public handleCollision(object: THREE.Mesh): THREE.Mesh {
     let collision: boolean = true;
     let distanceVec: THREE.Vector3;
     if (this.objects.length !== 0) {
