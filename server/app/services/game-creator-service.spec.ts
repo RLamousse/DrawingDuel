@@ -20,8 +20,6 @@ describe("A service that creates a game", () => {
 
     before(() => {
         for (const FILE of FILES_TO_COPY) {
-            // fs.createReadStream("./test/test_files_for_game_creator_service/" + FILE)
-            //     .pipe(fs.createWriteStream(PATH_TO_TMP + FILE));
             fs.copyFile("./test/test_files_for_game_creator_service/" + FILE, PATH_TO_TMP + FILE, (err: Error) => {
                 if (err) {
                     throw err;
@@ -38,8 +36,8 @@ describe("A service that creates a game", () => {
 
         try {
             await GAME_CREATOR_SERVICE.createSimpleGame( "nonExistingGameTest",
-                                                         fs.readFileSync("test/test_files_for_game_creator_service/original.bmp"),
-                                                         fs.readFileSync("test/test_files_for_game_creator_service/7diff-modified.bmp"));
+                                                         "test/test_files_for_game_creator_service/original.bmp",
+                                                         "test/test_files_for_game_creator_service/7diff-modified.bmp");
         } catch (error) {
             return expect(error.message).to.be.equal(NAME_ERROR_MESSAGE);
         }
@@ -54,15 +52,15 @@ describe("A service that creates a game", () => {
         MOCK.onGet("http://localhost:3000/api/data-base/get-game/?gameName=someGameTest")
             .reply(HttpStatus.INTERNAL_SERVER_ERROR, {message: NOT_EXISTING_GAME_MESSAGE_ERROR});
 
-        MOCK.onGet("http://localhost:3000/api/image-diff/")
+        MOCK.onPost("http://localhost:3000/api/image-diff/")
             .reply(HttpStatus.OK, {status: "ok",
                                    fileName: "original.bmp",
                                    filePath: "./test/test_files_for_game_creator_service/" + FILES_TO_COPY[1],
             });
         try {
             await GAME_CREATOR_SERVICE.createSimpleGame( "someGameTest",
-                                                         fs.readFileSync("test/test_files_for_game_creator_service/original.bmp"),
-                                                         fs.readFileSync("test/test_files_for_game_creator_service/6diff-modified.bmp"));
+                                                         "test/test_files_for_game_creator_service/original.bmp",
+                                                         "test/test_files_for_game_creator_service/6diff-modified.bmp");
         } catch (error) {
             return expect(error.message).to.be.equal(DIFFERENCE_ERROR_MESSAGE);
         }
@@ -77,15 +75,15 @@ describe("A service that creates a game", () => {
         MOCK.onGet("http://localhost:3000/api/data-base/get-game/?gameName=someGameTest")
             .reply(HttpStatus.INTERNAL_SERVER_ERROR, {message: NOT_EXISTING_GAME_MESSAGE_ERROR});
 
-        MOCK.onGet("http://localhost:3000/api/image-diff/")
+        MOCK.onPost("http://localhost:3000/api/image-diff/")
             .reply(HttpStatus.OK, {status: "ok",
                                    fileName: "original.bmp",
                                    filePath: "./test/test_files_for_game_creator_service/" + FILES_TO_COPY[3],
             });
         try {
             await GAME_CREATOR_SERVICE.createSimpleGame( "someGameTest",
-                                                         fs.readFileSync("test/test_files_for_game_creator_service/original.bmp"),
-                                                         fs.readFileSync("test/test_files_for_game_creator_service/8diff-modified.bmp"));
+                                                         "test/test_files_for_game_creator_service/original.bmp",
+                                                         "test/test_files_for_game_creator_service/8diff-modified.bmp");
         } catch (error) {
             return expect(error.message).to.be.equal(DIFFERENCE_ERROR_MESSAGE);
         }
@@ -100,7 +98,7 @@ describe("A service that creates a game", () => {
         MOCK.onGet("http://localhost:3000/api/data-base/get-game/?gameName=someGameTest")
             .reply(500, {message: NOT_EXISTING_GAME_MESSAGE_ERROR});
 
-        MOCK.onGet("http://localhost:3000/api/image-diff/")
+        MOCK.onPost("http://localhost:3000/api/image-diff/")
             .reply(HttpStatus.OK, {status: "ok",
                                    fileName: "original.bmp",
                                    filePath: PATH_TO_TMP + FILES_TO_COPY[2],
@@ -111,11 +109,12 @@ describe("A service that creates a game", () => {
 
         expect((await GAME_CREATOR_SERVICE.createSimpleGame(
             "someGameTest",
-            fs.readFileSync("test/test_files_for_game_creator_service/original.bmp"),
-            fs.readFileSync("test/test_files_for_game_creator_service/7diff-modified.bmp"))).title).to.be.equal("Game created");
+            "test/test_files_for_game_creator_service/original.bmp",
+            "test/test_files_for_game_creator_service/7diff-modified.bmp")).title).to.be.equal("Game created");
     });
 
     after(() => {
+        //TODO delete generaterd files if any
         for (const FILE of FILES_TO_COPY) {
             fs.unlink(PATH_TO_TMP + FILE, (error: Error) => {
                 if (error) { throw error; }

@@ -1,7 +1,7 @@
 import { HttpClientModule } from "@angular/common/http";
 import { NgModule, NO_ERRORS_SCHEMA } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { MatButtonModule, MatFormFieldModule, MatIconModule, MatInputModule, MatSelectModule } from "@angular/material";
+import { MatButtonModule, MatCheckboxModule, MatFormFieldModule, MatIconModule, MatInputModule, MatSliderModule } from "@angular/material";
 import { MatDialogModule } from "@angular/material/dialog";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
@@ -44,7 +44,6 @@ import { WindowEventHandlerDirective } from "./window-event-handler.directive";
     FormsModule,
     ReactiveFormsModule,
     MatButtonModule,
-    MatSelectModule,
     MatIconModule,
     MatInputModule,
     MatFormFieldModule,
@@ -52,6 +51,8 @@ import { WindowEventHandlerDirective } from "./window-event-handler.directive";
     AppRoutingModule,
     MaterialFileInputModule,
     MatDialogModule,
+    MatSliderModule,
+    MatCheckboxModule,
   ],
   providers: [UNListService, FormPostService, GameService, SceneRendererService, Form3DService, FreeGameCreatorService],
   bootstrap: [AppComponent],
