@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { MatCheckboxChange, MatDialogRef, MatSliderChange } from "@angular/material";
+import { ModificationType, ObjectGeometry } from "../FreeGameCreatorInterface/free-game-enum";
 import { AVAILABLE_MODIF_TYPES, AVAILABLE_OBJECT_TYPES, SelectType } from "../Interfaces/selectType";
 import { AbstractForm } from "../abstract-form";
 import { FormPostService } from "../form-post.service";
@@ -15,13 +16,13 @@ export class Create3DGameComponent extends AbstractForm implements OnInit {
 
   private readonly MIN_NAME_LENGTH: number = 5;
 
-  protected modTypes: SelectType[] = AVAILABLE_MODIF_TYPES;
-  protected objectTypes: SelectType[] = AVAILABLE_OBJECT_TYPES;
+  protected modTypes: SelectType<ModificationType>[] = AVAILABLE_MODIF_TYPES;
+  protected objectTypes: SelectType<ObjectGeometry>[] = AVAILABLE_OBJECT_TYPES;
   protected sliderValue: number = 10;
 
   public checkboxes: {
-    objectTypes: Set<string>,
-    modificationTypes: Set<string>,
+    objectTypes: Set<ObjectGeometry>,
+    modificationTypes: Set<ModificationType>,
     valid(): boolean,
   };
   public constructor(
@@ -32,8 +33,8 @@ export class Create3DGameComponent extends AbstractForm implements OnInit {
   ) {
     super(_fb, dialogRef, formPost);
     this.checkboxes = {
-      objectTypes: new Set(),
-      modificationTypes: new Set(),
+      objectTypes: new Set<ObjectGeometry>(),
+      modificationTypes: new Set<ModificationType>(),
       valid: this.checboxesValid,
     };
   }
@@ -47,29 +48,31 @@ export class Create3DGameComponent extends AbstractForm implements OnInit {
     });
   }
 
-  protected onCheckboxChange (e: MatCheckboxChange, selectType: "objectTypes" | "modificationTypes", selectName: string): void {
+  protected onCheckboxChange(e: MatCheckboxChange,
+                             selectType: "objectTypes" | "modificationTypes",
+                             selectName: ObjectGeometry | ModificationType): void {
     if (e.checked) {
-      this.checkboxes[selectType].add(selectName);
+      (this.checkboxes[selectType] as Set<ObjectGeometry | ModificationType>).add(selectName);
     } else {
-      this.checkboxes[selectType].delete(selectName);
+      (this.checkboxes[selectType] as Set<ObjectGeometry | ModificationType>).delete(selectName);
     }
   }
 
-  public checboxesValid (): boolean {
+  public checboxesValid(): boolean {
     return (
       this.checkboxes.objectTypes.size !== 0 &&
       this.checkboxes.modificationTypes.size !== 0
     );
   }
 
-  protected onSliderChange (e: MatSliderChange): void {
+  protected onSliderChange(e: MatSliderChange): void {
     this.sliderValue = e.value ? e.value : 0;
   }
 
-  protected onSubmit (): void {
+  protected onSubmit(): void {
     this.disableButton = true;
-    const objectTypes: string[] = Array.from(this.checkboxes.objectTypes);
-    const modificationTypes: string[] = Array.from(this.checkboxes.modificationTypes);
+    const objectTypes: ObjectGeometry[] = Array.from(this.checkboxes.objectTypes);
+    const modificationTypes: ModificationType[] = Array.from(this.checkboxes.modificationTypes);
     this.createScenes(objectTypes, modificationTypes);
     const fd: FormData = new FormData();
     fd.append("gameName", this.formDoc.value.name);
@@ -88,7 +91,7 @@ export class Create3DGameComponent extends AbstractForm implements OnInit {
       });
   }
 
-  private createScenes(objects: string[], modifications: string[]): void {
+  private createScenes(objects: ObjectGeometry[], modifications: ModificationType[]): void {
     this.freeGameCreator.modificationTypes = modifications;
     console.log(modifications);
     console.log(objects);

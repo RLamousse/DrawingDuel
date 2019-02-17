@@ -1,4 +1,5 @@
 import { Injectable } from "@angular/core";
+import { ModificationType, ObjectGeometry } from "src/app/FreeGameCreatorInterface/free-game-enum";
 import * as THREE from "three";
 import { Form3DService } from "../3DFormService/3-dform.service";
 
@@ -9,15 +10,14 @@ export class FreeGameCreatorService {
 
   public scene: THREE.Scene;
   public modifiedScene: THREE.Scene;
-  public objectTypes: string[];
-  public modificationTypes: string[];
+  public objectTypes: ObjectGeometry[];
+  public modificationTypes: ModificationType[];
   public obj3DToCreate: number;
 
   private originalLighting: THREE.DirectionalLight;
   private originalAmbiantLight: THREE.AmbientLight;
   private modifiedLighting: THREE.DirectionalLight;
   private modifiedAmbiantLight: THREE.AmbientLight;
-
 
   public objects: THREE.Mesh[] = [];
   public modifiedObjects: THREE.Mesh[] = [];
@@ -85,28 +85,30 @@ export class FreeGameCreatorService {
       this.scene.add(i);
     }
   }
+  // tslint:disable-next-line:max-func-body-length
   private generateDifferences(): void {
     this.modifiedObjects = this.objects.map((mesh) => mesh.clone());
-    enum modificationType { remove, add, changeColor }
-    const maxModificationType: number = this.modificationTypes.length -1;
+    // enum modificationType { remove, add, changeColor }
+    const maxModificationType: number = this.modificationTypes.length - 1;
     const numberModifications: number = 7;
     for (let i: number = 0; i < numberModifications; i++) {
       const indexObjects: number = this.getRandomValue(0, this.modifiedObjects.length);
       const randomModification: number = this.getRandomValue(0, maxModificationType);
       switch (this.modificationTypes[randomModification]) {
-        case modificationType.remove.toString(): {
+        case ModificationType.remove: {
           this.modifiedObjects.splice(indexObjects, 1);
+          // tslint:disable-next-line:no-console
           console.log("remove");
           break;
         }
-        case modificationType.add.toString(): {
+        case ModificationType.add: {
           let object: THREE.Mesh = this.generate3DObject();
           object = this.handleCollision(object);
           this.modifiedObjects.push(object);
-          console.log("add")
+          console.log("add");
           break;
         }
-        case modificationType.changeColor.toString(): {
+        case ModificationType.changeColor: {
           // this.formService.setColor(objects[indexObjects].geometry);
           break;
         }

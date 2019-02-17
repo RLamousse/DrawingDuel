@@ -1,3 +1,3 @@
-﻿export enum modificationType { remove, add, changeColor }
+﻿export enum ModificationType { remove, add, changeColor }
 
-export enum objectGeometry { sphere, cube, cone, cylinder, pyramid }
+export enum ObjectGeometry { sphere, cube, cone, cylinder, pyramid }
