@@ -9,7 +9,7 @@ import {BITMAP_MEME_TYPE} from "../../../common/image/bitmap/bitmap-utils";
 import {ISimpleDifferenceData} from "../../../common/model/game/differences/simple-difference-data";
 import {Game, TIMES_ARRAY_SIZE} from "../../../common/model/game/game";
 import {IRecordTime} from "../../../common/model/game/record-time";
-import {SimpleGame} from "../../../common/model/game/simple-game";
+import SimpleGame from "../../../common/model/game/simple-game";
 import {
     DIFFERENCE_ERROR_MESSAGE, MODIFIED_IMAGE_FIELD_NAME,
     NAME_ERROR_MESSAGE, ORIGINAL_IMAGE_FIELD_NAME,

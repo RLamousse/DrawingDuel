@@ -6,26 +6,39 @@ import AxiosAdapter from "axios-mock-adapter";
 import { expect } from "chai";
 import * as fs from "fs";
 import * as HttpStatus from "http-status-codes";
+import {anything, instance, mock, when} from "ts-mockito";
+import {IPoint, ORIGIN} from "../../../common/model/point";
 import {DIFFERENCE_ERROR_MESSAGE, NAME_ERROR_MESSAGE} from "../controllers/controller-utils";
 import {NON_EXISTING_GAME_ERROR_MESSAGE} from "./db/games.collection.service";
 import {DifferenceEvaluatorService} from "./difference-evaluator.service";
-import { GameCreatorService } from "./game-creator.service";
+import {EXPECTED_DIFF_NUMBER, GameCreatorService} from "./game-creator.service";
 import {ImageUploadService} from "./image-upload.service";
-
-const GAME_CREATOR_SERVICE: GameCreatorService = new GameCreatorService(new DifferenceEvaluatorService(), new ImageUploadService());
 
 describe("A service that creates a game", () => {
 
-    it("should throw a name error if the game name  is already in the data base", async () => {
-        const MOCK: MockAdapter = new AxiosAdapter(Axios);
+    let axiosMock: MockAdapter;
+    let mockedDifferenceEvaluatorServiceMock: DifferenceEvaluatorService;
+    let mockedImageUploadService: ImageUploadService;
 
-        MOCK.onGet("http://localhost:3000/api/data-base/games/nonExistingGameTest")
+    beforeEach(() => {
+        axiosMock = new AxiosAdapter(Axios);
+
+        mockedDifferenceEvaluatorServiceMock = mock(DifferenceEvaluatorService);
+        mockedImageUploadService = mock(ImageUploadService);
+
+        when(mockedImageUploadService.uploadImage(anything())).thenResolve("");
+    });
+
+    it("should throw a name error if the game name is already in the data base", async () => {
+
+        axiosMock.onGet("http://localhost:3000/api/data-base/games/nonExistingGameTest")
             .reply(HttpStatus.OK);
 
         try {
-            await GAME_CREATOR_SERVICE.createSimpleGame( "nonExistingGameTest",
-                                                         fs.readFileSync("test/test_files_for_game_creator_service/original.bmp"),
-                                                         fs.readFileSync("test/test_files_for_game_creator_service/7diff-modified.bmp"));
+            await getMockedService()
+                .createSimpleGame( "nonExistingGameTest",
+                                   fs.readFileSync("test/test_files_for_game_creator_service/original.bmp"),
+                                   fs.readFileSync("test/test_files_for_game_creator_service/7diff-modified.bmp"));
         } catch (error) {
             return expect(error.message).to.be.equal(NAME_ERROR_MESSAGE);
         }
@@ -35,17 +48,19 @@ describe("A service that creates a game", () => {
 
     it("should throw a difference error if there are less than 7 differences", async () => {
 
-        const MOCK: MockAdapter = new AxiosAdapter(Axios);
-
-        MOCK.onGet("http://localhost:3000/api/data-base/games/someGameTest")
+        axiosMock.onGet("http://localhost:3000/api/data-base/games/someGameTest")
             .reply(HttpStatus.NOT_FOUND, {message: NON_EXISTING_GAME_ERROR_MESSAGE});
 
-        MOCK.onPost("http://localhost:3000/api/image-diff/")
+        axiosMock.onPost("http://localhost:3000/api/image-diff/")
             .reply(HttpStatus.OK, fs.readFileSync("test/test_files_for_game_creator_service/6diff-modified.bmp"));
+
+        when(mockedDifferenceEvaluatorServiceMock.getNDifferences(anything())).thenReturn(createdMockedDiffData(EXPECTED_DIFF_NUMBER - 1));
+
         try {
-            await GAME_CREATOR_SERVICE.createSimpleGame( "someGameTest",
-                                                         fs.readFileSync("test/test_files_for_game_creator_service/original.bmp"),
-                                                         fs.readFileSync("test/test_files_for_game_creator_service/6diff-modified.bmp"));
+            await getMockedService()
+                .createSimpleGame( "someGameTest",
+                                   fs.readFileSync("test/test_files_for_game_creator_service/original.bmp"),
+                                   fs.readFileSync("test/test_files_for_game_creator_service/6diff-modified.bmp"));
         } catch (error) {
             return expect(error.message).to.be.equal(DIFFERENCE_ERROR_MESSAGE);
         }
@@ -55,17 +70,19 @@ describe("A service that creates a game", () => {
 
     it("should throw a difference error if there are more than 7 differences", async () => {
 
-        const MOCK: MockAdapter = new AxiosAdapter(Axios);
-
-        MOCK.onGet("http://localhost:3000/api/data-base/games/someGameTest")
+        axiosMock.onGet("http://localhost:3000/api/data-base/games/someGameTest")
             .reply(HttpStatus.NOT_FOUND, {message: NON_EXISTING_GAME_ERROR_MESSAGE});
 
-        MOCK.onPost("http://localhost:3000/api/image-diff/")
+        axiosMock.onPost("http://localhost:3000/api/image-diff/")
             .reply(HttpStatus.OK, fs.readFileSync("test/test_files_for_game_creator_service/8diff-modified.bmp"));
+
+        when(mockedDifferenceEvaluatorServiceMock.getNDifferences(anything())).thenReturn(createdMockedDiffData(EXPECTED_DIFF_NUMBER + 1));
+
         try {
-            await GAME_CREATOR_SERVICE.createSimpleGame( "someGameTest",
-                                                         fs.readFileSync("test/test_files_for_game_creator_service/original.bmp"),
-                                                         fs.readFileSync("test/test_files_for_game_creator_service/8diff-modified.bmp"));
+            await getMockedService()
+                .createSimpleGame( "someGameTest",
+                                   fs.readFileSync("test/test_files_for_game_creator_service/original.bmp"),
+                                   fs.readFileSync("test/test_files_for_game_creator_service/8diff-modified.bmp"));
         } catch (error) {
             return expect(error.message).to.be.equal(DIFFERENCE_ERROR_MESSAGE);
         }
@@ -75,20 +92,37 @@ describe("A service that creates a game", () => {
 
     it("should return a success message if everything is good", async () => {
 
-        const MOCK: MockAdapter = new AxiosAdapter(Axios);
-
-        MOCK.onGet("http://localhost:3000/api/data-base/games/someGameTest")
+        axiosMock.onGet("http://localhost:3000/api/data-base/games/someGameTest")
             .reply(HttpStatus.NOT_FOUND, {message: NON_EXISTING_GAME_ERROR_MESSAGE});
 
-        MOCK.onPost("http://localhost:3000/api/image-diff/")
+        axiosMock.onPost("http://localhost:3000/api/image-diff/")
             .reply(HttpStatus.OK, fs.readFileSync("test/test_files_for_game_creator_service/7diff-modified.bmp"));
 
-        MOCK.onPost("http://localhost:3000/api/data-base/games")
+        axiosMock.onPost("http://localhost:3000/api/data-base/games")
             .reply(HttpStatus.OK);
 
-        expect((await GAME_CREATOR_SERVICE.createSimpleGame(
+        when(mockedDifferenceEvaluatorServiceMock.getNDifferences(anything())).thenReturn(createdMockedDiffData(EXPECTED_DIFF_NUMBER));
+
+        expect((await getMockedService()
+            .createSimpleGame(
             "someGameTest",
             fs.readFileSync("test/test_files_for_game_creator_service/original.bmp"),
             fs.readFileSync("test/test_files_for_game_creator_service/7diff-modified.bmp"))).title).to.be.equal("Game created");
     });
+
+    const createdMockedDiffData = (diffCount: number) => {
+        const mockedDifferenceData: Map<number, IPoint[]> = new Map();
+        for (let i: number = 0; i < diffCount; i++) {
+            mockedDifferenceData.set(i, [ORIGIN]);
+        }
+
+        return mockedDifferenceData;
+    };
+
+    const getMockedService = () => {
+        return new GameCreatorService(
+            instance(mockedDifferenceEvaluatorServiceMock),
+            instance(mockedImageUploadService),
+        );
+    } ;
 });
