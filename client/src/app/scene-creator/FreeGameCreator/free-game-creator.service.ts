@@ -28,11 +28,12 @@ export class FreeGameCreatorService {
   private gameEnvZ: number = 300;
 
   public createScenes(): void {
+    this.objects = [];
+    this.modifiedObjects = [];
     this.scene = new THREE.Scene();
     this.modifiedScene = new THREE.Scene();
     this.setLighting();
     this.generateScenes();
-
   }
 
   private getRandomValue(min: number, max: number): number {
@@ -73,7 +74,7 @@ export class FreeGameCreatorService {
         this.getRandomValue(0, MAXROTATIONANGLE),
         this.getRandomValue(0, MAXROTATIONANGLE),
       );
-      object = this.handleCollision(object);
+      object = this.handleCollision(object, this.objects);
       this.objects.push(object);
     }
     this.generateOriginalScene();
@@ -88,28 +89,41 @@ export class FreeGameCreatorService {
 
   private generateDifferences(): void {
     this.modifiedObjects = this.objects.map((mesh) => mesh.clone());
-    const maxModificationType: number = this.modificationTypes.length - 1;
     const numberModifications: number = 7;
-    for (let i: number = 0; i < numberModifications; i++) {
-      const indexObjects: number = this.getRandomValue(0, this.modifiedObjects.length);
+    const indexes: Set<number> = new Set();
+    while (indexes.size !== numberModifications) {
+      indexes.add(this.getRandomValue(0, this.modifiedObjects.length - 1));
+    }
+    this.randomDifference(indexes);
+    this.generateModifiedScene();
+  }
+
+  private randomDifference(table: Set<number>): void {
+    const maxModificationType: number = this.modificationTypes.length - 1;
+    const arrayIndexes: number[] = Array.from(table).sort().reverse();
+    for (const index of arrayIndexes) {
       const randomModification: number = this.getRandomValue(0, maxModificationType);
       switch (this.modificationTypes[randomModification]) {
         case ModificationType.remove: {
-          this.modifiedObjects.splice(indexObjects, 1);
-          break; }
+          this.modifiedObjects.splice(index, 1);
+          break;
+        }
         case ModificationType.add: {
           let object: THREE.Mesh = this.generate3DObject();
-          object = this.handleCollision(object);
+          object = this.handleCollision(object, this.modifiedObjects);
           this.modifiedObjects.push(object);
-          break; }
+          break;
+        }
         case ModificationType.changeColor: {
-          // this.formService.setColor(objects[indexObjects].geometry);
-          break; }
+          const mask: number = 0xFFFFFF;
+          this.modifiedObjects[index].material = new THREE.MeshPhongMaterial({ color: (Math.random() * mask) });
+          break;
+        }
         default: {
-          break; }
+          break;
+        }
       }
     }
-    this.generateModifiedScene();
   }
 
   private generateModifiedScene(): void {
@@ -146,12 +160,12 @@ export class FreeGameCreatorService {
     return createdObject;
   }
 
-  private handleCollision(object: THREE.Mesh): THREE.Mesh {
+  private handleCollision(object: THREE.Mesh, list: THREE.Mesh[]): THREE.Mesh {
     let collision: boolean = true;
     let distanceVec: THREE.Vector3;
-    if (this.objects.length !== 0) {
+    if (list.length !== 0) {
       while (collision) {
-        for (const i of this.objects) {
+        for (const i of list) {
           distanceVec = new THREE.Vector3(
             i.position.x - object.position.x,
             i.position.y - object.position.y,
