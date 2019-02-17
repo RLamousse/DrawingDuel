@@ -12,7 +12,7 @@ export class FreeGameCreatorService {
   public modifiedScene: THREE.Scene;
   public objectTypes: ObjectGeometry[];
   public modificationTypes: ModificationType[];
-  public obj3DToCreate: number;
+  public obj3DToCreate: number = 50;
 
   private originalLighting: THREE.DirectionalLight;
   private originalAmbiantLight: THREE.AmbientLight;

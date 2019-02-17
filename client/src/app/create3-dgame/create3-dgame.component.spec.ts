@@ -8,9 +8,22 @@ import {
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import "hammerjs";
+import * as THREE from "three";
 import { ModificationType, ObjectGeometry } from "../FreeGameCreatorInterface/free-game-enum";
 import { FormPostService } from "../form-post.service";
+import { FreeGameCreatorService } from "../scene-creator/FreeGameCreator/free-game-creator.service";
 import { Create3DGameComponent } from "./create3-dgame.component";
+
+class MockedFreeGameCreator {
+  public scene: THREE.Scene;
+  public modifiedScene: THREE.Scene;
+  public createScenes(): void {
+    this.scene = new THREE.Scene();
+    this.modifiedScene = new THREE.Scene();
+  }
+}
+
+const mockedFreeGameCreator: MockedFreeGameCreator = new MockedFreeGameCreator();
 
 describe("Create3DGameComponent", () => {
   let component: Create3DGameComponent;
@@ -32,7 +45,11 @@ describe("Create3DGameComponent", () => {
         MatSliderModule,
         MatCheckboxModule,
       ],
-      providers: [FormPostService, { provide: MatDialogRef, useValue: {} }],
+      providers: [
+        FormPostService,
+        { provide: MatDialogRef, useValue: {} },
+        { provide: FreeGameCreatorService, useValue: mockedFreeGameCreator },
+      ],
     });
     done();
   });
