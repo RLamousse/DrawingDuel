@@ -85,10 +85,9 @@ export class FreeGameCreatorService {
       this.scene.add(i);
     }
   }
-  // tslint:disable-next-line:max-func-body-length
+
   private generateDifferences(): void {
     this.modifiedObjects = this.objects.map((mesh) => mesh.clone());
-    // enum modificationType { remove, add, changeColor }
     const maxModificationType: number = this.modificationTypes.length - 1;
     const numberModifications: number = 7;
     for (let i: number = 0; i < numberModifications; i++) {
@@ -97,25 +96,17 @@ export class FreeGameCreatorService {
       switch (this.modificationTypes[randomModification]) {
         case ModificationType.remove: {
           this.modifiedObjects.splice(indexObjects, 1);
-          // tslint:disable-next-line:no-console
-          console.log("remove");
-          break;
-        }
+          break; }
         case ModificationType.add: {
           let object: THREE.Mesh = this.generate3DObject();
           object = this.handleCollision(object);
           this.modifiedObjects.push(object);
-          console.log("add");
-          break;
-        }
+          break; }
         case ModificationType.changeColor: {
           // this.formService.setColor(objects[indexObjects].geometry);
-          break;
-        }
+          break; }
         default: {
-          console.log("default");
-          break;
-        }
+          break; }
       }
     }
     this.generateModifiedScene();
@@ -128,25 +119,24 @@ export class FreeGameCreatorService {
   }
 
   private generate3DObject(): THREE.Mesh {
-    enum objectGeometry { sphere, cube, cone, cylinder, pyramid }
     let randomObject: number;
     let createdObject: THREE.Mesh;
     const maxTypeObject: number = 4;
     randomObject = this.getRandomValue(0, maxTypeObject);
-    switch (randomObject) {
-      case objectGeometry.sphere: {
+    switch (this.objectTypes[randomObject]) {
+      case ObjectGeometry.sphere: {
         createdObject = this.formService.createSphere();
         break; }
-      case objectGeometry.cube: {
+      case ObjectGeometry.cube: {
         createdObject = this.formService.createCube();
         break; }
-      case objectGeometry.cone: {
+      case ObjectGeometry.cone: {
         createdObject = this.formService.createCone();
         break; }
-      case objectGeometry.cylinder: {
+      case ObjectGeometry.cylinder: {
         createdObject = this.formService.createCylinder();
         break; }
-      case objectGeometry.pyramid: {
+      case ObjectGeometry.pyramid: {
         createdObject = this.formService.createPyramid();
         break; }
       default: {
