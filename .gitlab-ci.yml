@@ -85,11 +85,11 @@ test server:
 # ╚══════════════════╝
 
 .post test:
+  stage: post-test
 
 # Coverage job template
 .coverage:
   extends: .post test
-  stage: post-test
   script: yarn coverage
   coverage: /Lines\s+:\s*(\d+(?:\.\d*)?%)\s+\(\s+\d+\/\d+\s+\)/
   artifacts:
@@ -135,7 +135,6 @@ server coverage:
 # Lint report job template
 .lint:
   extends: .post test
-  stage: post-test
   script: yarn lint
 
 client lint:
