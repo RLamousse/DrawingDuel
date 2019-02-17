@@ -36,7 +36,6 @@ export class Application {
         this.app.use(express.static("public"));
         this.app.use(bodyParser.json({limit: "10mb"}));
         this.app.use(bodyParser.urlencoded({ extended: true}));
-        this.app.use(bodyParser());
         this.app.use(cookieParser());
         this.app.use(cors());
     }

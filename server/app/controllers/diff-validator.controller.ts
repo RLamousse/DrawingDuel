@@ -4,7 +4,7 @@ import {IDiffValidatorControllerRequest} from "../../../common/communication/req
 import {IDiffValidatorControllerResponse} from "../../../common/communication/response/diff-validator-controller.response";
 import {DiffValidatorService} from "../services/diff-validator.service";
 import Types from "../types";
-import {assertFieldsOfRequest} from "./controller-utils";
+import {assertFieldsOfRequest, executePromiseSafely} from "./controller-utils";
 
 @injectable()
 export class DiffValidatorController {
@@ -15,16 +15,14 @@ export class DiffValidatorController {
         const router: Router = Router();
         router.post("/",
                     async (req: Request, res: Response, next: NextFunction) => {
-                        try {
+                        executePromiseSafely(next, async () => {
                             assertFieldsOfRequest(req, "gameName", "coord");
                             const body: IDiffValidatorControllerRequest = req.body;
                             const response: IDiffValidatorControllerResponse = {
-                                validDifference: await this.diffValidatorService.hasDifference(body["gameName"], body["coord"]),
+                                validDifference: await this.diffValidatorService.hasDifference(body.gameName, body.coord),
                             };
                             res.json(response);
-                        } catch (error) {
-                            return next(error);
-                        }
+                        });
                     });
 
         return router;
