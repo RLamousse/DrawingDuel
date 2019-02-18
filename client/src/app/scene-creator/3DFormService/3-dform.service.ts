@@ -9,6 +9,7 @@ export class Form3DService {
   private segments: number = 32;
   private radiusFactor: number = 2;
   private material: THREE.MeshPhongMaterial;
+  private colorMask: number = 0xFFFFFF;
 
   private sizeGenerator(): number {
     const percentFactor: number = 100;
@@ -19,8 +20,7 @@ export class Form3DService {
   public createCube(): THREE.Mesh {
     const cubeSide: number = this.sizeGenerator();
     const geometry: THREE.BoxGeometry = new THREE.BoxGeometry(cubeSide, cubeSide, cubeSide);
-    this.setColor(geometry);
-    this.material = new THREE.MeshPhongMaterial({ vertexColors: THREE.FaceColors });
+    this.material = new THREE.MeshPhongMaterial({ color: (Math.random() * this.colorMask) });
 
     return new THREE.Mesh(geometry, this.material);
   }
@@ -28,8 +28,7 @@ export class Form3DService {
   public createSphere(): THREE.Mesh {
     const sphereRadius: number = this.sizeGenerator() / this.radiusFactor;
     const geometry: THREE.SphereGeometry = new THREE.SphereGeometry(sphereRadius, this.segments, this.segments);
-    this.setColor(geometry);
-    this.material = new THREE.MeshPhongMaterial({ vertexColors: THREE.FaceColors });
+    this.material = new THREE.MeshPhongMaterial({ color: (Math.random() * this.colorMask) });
 
     return new THREE.Mesh(geometry, this.material);
   }
@@ -41,8 +40,7 @@ export class Form3DService {
       coneSize,
       this.segments,
     );
-    this.setColor(geometry);
-    this.material = new THREE.MeshPhongMaterial({ vertexColors: THREE.FaceColors });
+    this.material = new THREE.MeshPhongMaterial({ color: (Math.random() * this.colorMask) });
 
     return new THREE.Mesh(geometry, this.material);
   }
@@ -55,8 +53,7 @@ export class Form3DService {
       cylinderSize,
       this.segments,
     );
-    this.setColor(geometry);
-    this.material = new THREE.MeshPhongMaterial({ vertexColors: THREE.FaceColors });
+    this.material = new THREE.MeshPhongMaterial({ color: (Math.random() * this.colorMask) });
 
     return new THREE.Mesh(geometry, this.material);
   }
@@ -71,19 +68,8 @@ export class Form3DService {
       baseSides,
       1,
     );
-    this.setColor(geometry);
-    this.material = new THREE.MeshPhongMaterial({ vertexColors: THREE.FaceColors });
+    this.material = new THREE.MeshPhongMaterial({ color: (Math.random() * this.colorMask) });
 
     return new THREE.Mesh(geometry, this.material);
-  }
-
-  private setColor(geo: THREE.Geometry): void {
-    const mask: number = 0xFFFFFF;
-    const hex: number = Math.random() * mask;
-    const frontFacesStep: number = 2;
-    for (let i: number = 0; i < geo.faces.length; i += frontFacesStep) {
-      geo.faces[i].color.setHex(hex);
-      geo.faces[i + 1].color.setHex(hex);
-    }
   }
 }
