@@ -2,11 +2,11 @@
 import { expect } from "chai";
 import * as HttpStatus from "http-status-codes";
 import * as request from "supertest";
-import {Bitmap} from "../../../common/image/bitmap/bitmap";
+import { Bitmap } from "../../../common/image/bitmap/bitmap";
 import { Application } from "../app";
 import { container } from "../inversify.config";
 import types from "../types";
-import {BMP_ERROR_MESSAGE, FORMAT_ERROR_MESSAGE} from "./controller-utils";
+import { BMP_ERROR_MESSAGE, FORMAT_ERROR_MESSAGE } from "./controller-utils";
 
 const errorResponse = (errorMessage: string) => {
     return {
