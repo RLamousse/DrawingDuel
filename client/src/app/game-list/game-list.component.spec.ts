@@ -3,7 +3,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormsModule } from "@angular/forms";
 import { Observable } from "rxjs";
-import { Game } from "../../../../common/model/game/game";
+import {ISimpleGame} from "../../../../common/model/game/simple-game";
 import { GameService } from "../game.service";
 import { GameListComponent } from "./game-list.component";
 import { GameComponent } from "./game/game.component";
@@ -20,9 +20,9 @@ describe("GameListComponent", () => {
     done();
   });
   class MockGameService {
-    private mockedGames: Game[] = [];
-    public getGames(): Observable<Game[]> {
-      return Observable.create(this.mockedGames);
+    private mockedSimpleGames: ISimpleGame[] = [];
+    public getGames(): Observable<ISimpleGame[]> {
+      return Observable.create(this.mockedSimpleGames);
     }
   }
 

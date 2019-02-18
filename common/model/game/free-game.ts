@@ -1,5 +1,11 @@
-import {IGame} from "./game";
+import {IGame, instanceOfGame} from "./game";
 
-export default interface IFreeGame extends IGame {
+export interface IFreeGame extends IGame {
 
 }
+
+export const instanceOfFreeGame = (object: any): object is IFreeGame =>
+    instanceOfGame(object) &&
+    'originalImage' in object &&
+    'modifiedImage' in object &&
+    'diffData' in object;
