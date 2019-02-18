@@ -37,19 +37,19 @@ describe("A service validating if there is a difference at a coord for a game", 
         axiosMock = new AxiosAdapter(Axios);
     });
 
-    it("should throw if the point is out of bounds (x < 0)", () => {
+    it("should throw if the point is out of bounds (x < 0)", async () => {
         return diffValidatorService.hasDifference("game", {x: -1, y: 0})
             .catch((reason: Error) => {
                 expect(reason.message).to.equal(INVALID_POINT_ERROR_MESSAGE);
             });
     });
-    it("should throw if the point is out of bounds (y < 0)", () => {
+    it("should throw if the point is out of bounds (y < 0)", async () => {
         return diffValidatorService.hasDifference("game", {x: 0, y: -1})
             .catch((reason: Error) => {
                 expect(reason.message).to.equal(INVALID_POINT_ERROR_MESSAGE);
             });
     });
-    it("should throw if the specified gameName is not valid", () => {
+    it("should throw if the specified gameName is not valid", async () => {
         axiosMock.onGet("http://localhost:3000/api/data-base/games/simple/notAValidGame")
             .reply(HttpStatus.NOT_FOUND, {message: NON_EXISTING_GAME_ERROR_MESSAGE});
 
@@ -58,7 +58,7 @@ describe("A service validating if there is a difference at a coord for a game", 
                 expect(reason.message).to.equal(NON_EXISTING_GAME_ERROR_MESSAGE);
             });
     });
-    it("should return an empty list when the point is not part of a difference group", () => {
+    it("should return an empty list when the point is not part of a difference group", async () => {
         axiosMock.onGet("http://localhost:3000/api/data-base/games/simple/game")
             .reply(HttpStatus.OK, mockedSimpleGame);
 
@@ -67,7 +67,7 @@ describe("A service validating if there is a difference at a coord for a game", 
                 return expect(value).to.be.false;
             });
     });
-    it("should return a difference group", () => {
+    it("should return a difference group", async () => {
         axiosMock.onGet("http://localhost:3000/api/data-base/games/simple/game")
             .reply(HttpStatus.OK, mockedSimpleGame);
 
