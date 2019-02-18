@@ -1,7 +1,7 @@
 import {injectable} from "inversify";
 import "reflect-metadata";
 import {Message} from "../../../../common/communication/messages/message";
-import ISimpleGame from "../../../../common/model/game/simple-game";
+import {ISimpleGame} from "../../../../common/model/game/simple-game";
 import {CollectionService} from "./collection.service";
 
 export const NON_EXISTING_GAME_ERROR_MESSAGE: string = "ERROR: the specified game does not exist!";
