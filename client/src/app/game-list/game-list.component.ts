@@ -1,8 +1,8 @@
 
 import { Component, Input, OnInit } from "@angular/core";
-import {IGame} from "../../../../common/model/game/game";
+import { ISimpleGame } from "../../../../common/model/game/simple-game";
 import { GameService } from "../game.service";
-import { MOCKED_SIMPLE_GAMES } from "../mockGames";
+import { MOCKED_FREE_GAMES, MOCKED_SIMPLE_GAMES } from "../mockGames";
 
 @Component({
   selector: "app-game-list",
@@ -17,11 +17,13 @@ export class GameListComponent implements OnInit {
   public constructor(private gameService: GameService) {/*vide*/}
 
   public ngOnInit(): void {
-    this.gameService.getSimpleGames().subscribe((gamesToModify: IGame[]) => {
+    this.gameService.getSimpleGames().subscribe((gamesToModify: ISimpleGame[]) => {
       this.gameService.convertScoresObject(gamesToModify);
       this.gameService.pushGames(gamesToModify);
       this.gameService.convertScoresObject(MOCKED_SIMPLE_GAMES);
       this.gameService.pushGames(MOCKED_SIMPLE_GAMES);
+      this.gameService.convertScoresObject(MOCKED_FREE_GAMES);
+      this.gameService.pushGames(MOCKED_FREE_GAMES);
     });
   }
 }

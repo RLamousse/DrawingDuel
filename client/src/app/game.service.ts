@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { of, Observable } from "rxjs";
 import { catchError } from "rxjs/operators";
-import {IFreeGame, instanceOfFreeGame} from "../../../common/model/game/free-game";
+import {/*instanceOfFreeGame,*/ IFreeGame} from "../../../common/model/game/free-game";
 import {IGame} from "../../../common/model/game/game";
 import {instanceOfSimpleGame, ISimpleGame} from "../../../common/model/game/simple-game";
 
@@ -43,7 +43,7 @@ export class GameService {
     for (const game of gamesToPush) {
       if (instanceOfSimpleGame(game)) {
         this.simpleGames.push(game);
-      } else if (instanceOfFreeGame(game)) {
+      } else /*if (instanceOfFreeGame(game))*/ { // feature still in progress
         this.freeGames.push(game);
       }
     }

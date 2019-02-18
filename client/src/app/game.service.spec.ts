@@ -16,19 +16,16 @@ describe("GameService", () => {
       gameName: "mockedSimpleName",
       originalImage: "oriName",
       modifiedImage: "modName",
-      bestSoloTimes: [{ name: "mockedUser1", time: 120 }],
-      bestMultiTimes: [{ name: "mockedUser2", time: 23 }],
-      diffData: [],
-    } as ISimpleGame,
-    {
-      gameName: "mockedFreeName",
-      originalImage: "oriName",
-      modifiedImage: "modName",
       diffImage: "diffName",
       bestSoloTimes: [{ name: "mockedUser1", time: 120 }],
       bestMultiTimes: [{ name: "mockedUser2", time: 23 }],
       diffData: [],
     } as ISimpleGame,
+    {
+      gameName: "mockedName",
+      bestSoloTimes: [{ name: "mockedUser1", time: 120 }],
+      bestMultiTimes: [{ name: "mockedUser2", time: 23 }],
+    } as IFreeGame,
   ];
 
   const mockSimpleGameList: ISimpleGame[] = [{
@@ -95,7 +92,7 @@ describe("GameService", () => {
     }];
     serviceGame.convertScoresObject(incompleteList);
     expect(incompleteList[0].gameName).toBe("incompleteList");
-    expect(incompleteList[0].originalImage).toBe("http://localhost:3000/name1.bmp");
+    expect(incompleteList[0].originalImage).toBe("name1.bmp");
     expect(incompleteList[0].modifiedImage).toBe("name2.bmp");
     expect(incompleteList[0].bestSoloTimes.length).toBe(0);
     expect(incompleteList[0].bestMultiTimes.length).toBe(0);
@@ -115,6 +112,7 @@ describe("GameService", () => {
     serviceGame.simpleGames = [];
     serviceGame.pushGames(mockFreeGameList);
     expect(serviceGame.freeGames.length).not.toBe(0);
+    expect(serviceGame.freeGames[0]).toBe(mockFreeGameList[0]);
     expect(serviceGame.simpleGames.length).toBe(0);
   });
 
@@ -124,13 +122,14 @@ describe("GameService", () => {
     serviceGame.pushGames(mockSimpleGameList);
     expect(serviceGame.freeGames.length).toBe(0);
     expect(serviceGame.simpleGames.length).not.toBe(0);
+    expect(serviceGame.simpleGames[0]).toBe(mockSimpleGameList[0]);
   });
 
-  it("should only have games both its list", () => {
+  it("should have games both its list", () => {
     serviceGame.freeGames = [];
     serviceGame.simpleGames = [];
     serviceGame.pushGames(mockMixGameList);
-    expect(serviceGame.freeGames.length).not.toBe(0);
     expect(serviceGame.simpleGames.length).not.toBe(0);
+    expect(serviceGame.freeGames.length).not.toBe(0);
   });
 });
