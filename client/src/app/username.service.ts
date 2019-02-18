@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { of, Observable } from "rxjs";
 import { catchError } from "rxjs/operators";
-import { UserValidationMessage } from "../../../common/communication/UserValidationMessage";
+import { UserValidationMessage } from "../../../common/communication/messages/user-validation-message";
 
 @Injectable()
 export class UNListService {

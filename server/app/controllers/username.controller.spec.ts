@@ -39,7 +39,7 @@ describe("username controller", () => {
             .post("/api/usernames/add")
             .expect(Httpstatus.INTERNAL_SERVER_ERROR)
             .then((response) => {
-                expect(response.body).to.deep.equal(
+                expect(response.body).to.eql(
                     errorResponse("Error: no username to add was included in the request"));
             });
     });
@@ -50,7 +50,7 @@ describe("username controller", () => {
             .send("mockedString")
             .expect(Httpstatus.OK)
             .then((response) => {
-                expect(response.body).to.deep.equal(
+                expect(response.body).to.eql(
                     okResponse("validUsernameAdd", true));
             });
     });
@@ -61,7 +61,7 @@ describe("username controller", () => {
             .post("/api/usernames/release")
             .expect(Httpstatus.INTERNAL_SERVER_ERROR)
             .then((response) => {
-                expect(response.body).to.deep.equal(
+                expect(response.body).to.eql(
                     errorResponse("Error: no username to release included in the request"));
             });
     });
@@ -72,7 +72,7 @@ describe("username controller", () => {
             .send("mockedString")
             .expect(Httpstatus.OK)
             .then((response) => {
-                expect(response.body).to.deep.equal(
+                expect(response.body).to.eql(
                     okResponse("validUsernameRelease", true));
             });
     });
