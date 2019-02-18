@@ -13,8 +13,8 @@ export class DiffValidatorController {
 
     public get router(): Router {
         const router: Router = Router();
-        router.post("/",
-                    async (req: Request, res: Response, next: NextFunction) => {
+        router.get("/",
+                   async (req: Request, res: Response, next: NextFunction) => {
                         executePromiseSafely(next, async () => {
                             assertFieldsOfRequest(req, "gameName", "coord");
                             const body: IDiffValidatorControllerRequest = req.body;

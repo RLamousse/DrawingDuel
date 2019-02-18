@@ -6,10 +6,9 @@ import "reflect-metadata";
 import {Message} from "../../../common/communication/messages/message";
 import {Bitmap} from "../../../common/image/bitmap/bitmap";
 import {BITMAP_MEME_TYPE} from "../../../common/image/bitmap/bitmap-utils";
-import {ISimpleDifferenceData} from "../../../common/model/game/differences/simple-difference-data";
-import {Game, TIMES_ARRAY_SIZE} from "../../../common/model/game/game";
+import {TIMES_ARRAY_SIZE} from "../../../common/model/game/game";
 import {IRecordTime} from "../../../common/model/game/record-time";
-import SimpleGame from "../../../common/model/game/simple-game";
+import ISimpleGame, {ISimpleDifferenceData} from "../../../common/model/game/simple-game";
 import {
     DIFFERENCE_ERROR_MESSAGE, MODIFIED_IMAGE_FIELD_NAME,
     NAME_ERROR_MESSAGE, ORIGINAL_IMAGE_FIELD_NAME,
@@ -17,7 +16,7 @@ import {
 } from "../controllers/controller-utils";
 import {BitmapFactory} from "../images/bitmap/bitmap-factory";
 import Types from "../types";
-import {NON_EXISTING_GAME_ERROR_MESSAGE} from "./db/games.collection.service";
+import {NON_EXISTING_GAME_ERROR_MESSAGE} from "./db/simple-games.collection.service";
 import {DifferenceEvaluatorService} from "./difference-evaluator.service";
 import {ImageUploadService} from "./image-upload.service";
 
@@ -36,7 +35,7 @@ export class GameCreatorService {
 
     private static async testNameExistence(gameName: string): Promise<void> {
         try {
-            await Axios.get<Game>("http://localhost:3000/api/data-base/games/" + gameName);
+            await Axios.get<ISimpleGame>("http://localhost:3000/api/data-base/games/simple/" + gameName);
         } catch (error) {
             if (error.response.status !== Httpstatus.NOT_FOUND) {
                 throw new Error("dataBase: " + error.response.data.message);
@@ -99,13 +98,15 @@ export class GameCreatorService {
     }
 
     private async uploadGame(gameName: string, imagesUrls: string[], differenceData: ISimpleDifferenceData): Promise<void> {
-        const game: SimpleGame = new SimpleGame(
-            gameName,
-            differenceData,
-            this.createRandomScores(), this.createRandomScores(),
-            imagesUrls[0], imagesUrls[1],
-        );
-        await Axios.post<Game>("http://localhost:3000/api/data-base/games", game)
+        const game: ISimpleGame = {
+            gameName: gameName,
+            bestSoloTimes: this.createRandomScores(),
+            bestMultiTimes: this.createRandomScores(),
+            originalImage: imagesUrls[0],
+            modifiedImage: imagesUrls[1],
+            diffData: differenceData,
+        };
+        await Axios.post<ISimpleGame>("http://localhost:3000/api/data-base/games/simple/", game)
             // tslint:disable-next-line:no-any Generic error response
             .catch((reason: any) => {
                 throw new Error("Unable to create game: " + reason.response.data.message);
@@ -145,7 +146,7 @@ export class GameCreatorService {
         } catch (error) {
             throw new Error("bmp diff counting: " + error.message);
         }
-        if (diffData.size !== EXPECTED_DIFF_NUMBER) {
+        if (diffData.length !== EXPECTED_DIFF_NUMBER) {
             throw new Error(DIFFERENCE_ERROR_MESSAGE);
         }
 

@@ -1,35 +1,10 @@
-import {ISimpleDifferenceData} from "./differences/simple-difference-data";
-import {Game} from "./game";
-import {IRecordTime} from "./record-time";
+import {IPoint} from "../point";
+import {IGame} from "./game";
 
-export default class SimpleGame extends Game {
-    readonly originalImage: string;
-    readonly modifiedImage: string;
-    readonly diffData: ISimpleDifferenceData;
+export type ISimpleDifferenceData = [number, IPoint[]][];
 
-    constructor(gameName: string,
-                diffData: ISimpleDifferenceData,
-                bestSoloTimes: IRecordTime[],
-                bestMultiTimes: IRecordTime[],
-                originalImage: string,
-                modifiedImage: string
-    ) {
-        super(gameName, diffData, bestSoloTimes, bestMultiTimes);
-        this.originalImage = originalImage;
-        this.modifiedImage = modifiedImage;
-        this.diffData = diffData;
-    }
-
-    public static validate(game: Game): boolean {
-        return game instanceof SimpleGame &&
-            Game.validate(game) &&
-            game.originalImage !== "" &&
-            game.modifiedImage !== "";
-    }
-
-    public toJSON(): any {
-        return Object.assign({}, this, {
-            diffData: Array.from(this.diffData.entries())
-        });
-    }
+export default interface ISimpleGame extends IGame {
+    originalImage: string;
+    modifiedImage: string;
+    diffData: ISimpleDifferenceData;
 }

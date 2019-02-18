@@ -33,7 +33,7 @@ describe("Diff validator controller", () => {
 
     it("should send an error if the game name is missing", async () => {
         return request(app)
-            .post("/api/diff-validator")
+            .get("/api/diff-validator")
             .send({coord: ORIGIN})
             .expect(HttpStatus.INTERNAL_SERVER_ERROR)
             .then((response) => {
@@ -43,7 +43,7 @@ describe("Diff validator controller", () => {
 
     it("should send an error if the clicked coord is missing", async () => {
         return request(app)
-            .post("/api/diff-validator")
+            .get("/api/diff-validator")
             .send({gameName: "ayylmao"})
             .expect(HttpStatus.INTERNAL_SERVER_ERROR)
             .then((response) => {
@@ -61,7 +61,7 @@ describe("Diff validator controller", () => {
         };
 
         return request(app)
-            .post("/api/diff-validator")
+            .get("/api/diff-validator")
             .send(body)
             .expect(HttpStatus.OK)
             .then((response) => {

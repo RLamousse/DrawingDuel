@@ -1,8 +1,7 @@
 import {injectable} from "inversify";
 import "reflect-metadata";
 import {Message} from "../../../../common/communication/messages/message";
-import {Game} from "../../../../common/model/game/game";
-import SimpleGame from "../../../../common/model/game/simple-game";
+import ISimpleGame from "../../../../common/model/game/simple-game";
 import {CollectionService} from "./collection.service";
 
 export const NON_EXISTING_GAME_ERROR_MESSAGE: string = "ERROR: the specified game does not exist!";
@@ -11,10 +10,17 @@ export const GAME_FORMAT_ERROR_MESSAGE: string = "ERROR: the game has the wrong 
 export const ALREADY_EXISTING_GAME_MESSAGE_ERROR: string = "ERROR: a game with the same name already exists!";
 
 @injectable()
-export class GamesCollectionService extends CollectionService<Game> {
+export class SimpleGamesCollectionService extends CollectionService<ISimpleGame> {
 
-    public async create(data: Game): Promise<Message> {
-        if (!SimpleGame.validate(data)) {
+    public static validate(game: ISimpleGame): boolean {
+        return game.diffData !== undefined &&
+            game.originalImage !== "" &&
+            game.modifiedImage !== "" &&
+            game.gameName !== "";
+    }
+
+    public async create(data: ISimpleGame): Promise<Message> {
+        if (!SimpleGamesCollectionService.validate(data)) {
             throw new Error(GAME_FORMAT_ERROR_MESSAGE);
         }
 
@@ -34,23 +40,23 @@ export class GamesCollectionService extends CollectionService<Game> {
         }
     }
 
-    public async getFromId(id: string): Promise<Game> {
+    public async getFromId(id: string): Promise<ISimpleGame> {
         CollectionService.assertId(id);
 
         return this.getDocument(id, NON_EXISTING_GAME_ERROR_MESSAGE);
     }
 
-    public creationSuccessMessage(data: Game): Message {
+    public creationSuccessMessage(data: ISimpleGame): Message {
         return {
-            title: "Game added",
-            body: "Game " + data.gameName + " successfully added",
+            title: "Simple game added",
+            body: "Simple game " + data.gameName + " successfully added",
         };
     }
 
     public deletionSuccessMessage(id: string): Message {
         return {
-            title: "Game deleted",
-            body: "Game " + id + " successfully deleted!",
+            title: "Simple game deleted",
+            body: "Simple game " + id + " successfully deleted!",
         };
     }
 
