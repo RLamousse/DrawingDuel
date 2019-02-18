@@ -25,32 +25,32 @@ describe("Difference evaluator service", () => {
         });
 
         it("Should calculate 0 zones", () => {
-            expect(DIFFERENCE_EVALUATOR_SERVICE.getSimpleNDifferences(TEST_FILE_ARRAYS[0]))
+            expect(DIFFERENCE_EVALUATOR_SERVICE.getSimpleNDifferences(TEST_FILE_ARRAYS[0]).length)
                 .to.equal(0);
         });
 
         it("Should calculate 1 zone", () => {
-            expect(DIFFERENCE_EVALUATOR_SERVICE.getSimpleNDifferences(TEST_FILE_ARRAYS[1]))
+            expect(DIFFERENCE_EVALUATOR_SERVICE.getSimpleNDifferences(TEST_FILE_ARRAYS[1]).length)
                 .to.equal(1);
         });
 
         it("Should calculate 6 zones", () => {
-            expect(DIFFERENCE_EVALUATOR_SERVICE.getSimpleNDifferences(TEST_FILE_ARRAYS[2]))
+            expect(DIFFERENCE_EVALUATOR_SERVICE.getSimpleNDifferences(TEST_FILE_ARRAYS[2]).length)
                 .to.equal(6);
         });
 
         it("Should calculate 7 zones", () => {
-            expect(DIFFERENCE_EVALUATOR_SERVICE.getSimpleNDifferences(TEST_FILE_ARRAYS[3]))
+            expect(DIFFERENCE_EVALUATOR_SERVICE.getSimpleNDifferences(TEST_FILE_ARRAYS[3]).length)
                 .to.equal(7);
         });
 
         it("Should calculate 8 zones", () => {
-            expect(DIFFERENCE_EVALUATOR_SERVICE.getSimpleNDifferences(TEST_FILE_ARRAYS[4]))
+            expect(DIFFERENCE_EVALUATOR_SERVICE.getSimpleNDifferences(TEST_FILE_ARRAYS[4]).length)
                 .to.equal(8);
         });
 
         it("Should calculate 16 zone from an extremely random drawing", () => {
-            expect(DIFFERENCE_EVALUATOR_SERVICE.getSimpleNDifferences(TEST_FILE_ARRAYS[5]))
+            expect(DIFFERENCE_EVALUATOR_SERVICE.getSimpleNDifferences(TEST_FILE_ARRAYS[5]).length)
                 .to.equal(16);
         });
 

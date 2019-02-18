@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { of, Observable } from "rxjs";
 import { catchError } from "rxjs/operators";
-import { Game } from "../../../common/model/game";
+import {Game, GameType} from "../../../common/model/game/game";
 
 @Injectable({
   providedIn: "root",
@@ -10,7 +10,7 @@ import { Game } from "../../../common/model/game";
 export class GameService {
   public simpleGames: Game[] = [];
   public freeGames: Game[] = [];
-  public readonly BASE_URL: string = "http://localhost:3000/api/data-base/get-games";
+  public readonly BASE_URL: string = "http://localhost:3000/api/data-base/games/";
   public constructor(private http: HttpClient) { }
 
   private convertTimeScores(seconds: number): number {
@@ -45,11 +45,17 @@ export class GameService {
   }
 
   public pushGames(gamesToPush: Game[]): void {
-    for (const i in gamesToPush) {
-      if (String(gamesToPush[i].isSimpleGame) === "true") {
-        this.simpleGames.push(gamesToPush[i]);
-      } else {
-        this.freeGames.push(gamesToPush[i]);
+    for (const game of gamesToPush) {
+      switch (game.gameType) {
+        case GameType.SIMPLE:
+          this.simpleGames.push(game);
+          break;
+        case GameType.FREE:
+          this.freeGames.push(game);
+          break;
+        default:
+          // NOP
+              break;
       }
     }
   }

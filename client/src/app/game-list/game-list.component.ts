@@ -1,6 +1,6 @@
 
 import { Component, Input, OnInit } from "@angular/core";
-import { Game } from "../../../../common/model/game";
+import { Game } from "../../../../common/model/game/game";
 import { GameService } from "../game.service";
 import { MOCKMIXGAMELIST } from "../mockGames";
 

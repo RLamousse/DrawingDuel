@@ -1,7 +1,7 @@
-import {Request} from "express";
+import {NextFunction, Request} from "express";
 import {Field} from "multer";
 import * as THREE from "three";
-import {Message} from "../../../common/communication/message";
+import {Message} from "../../../common/communication/messages/message";
 
 export const REQUIRED_IMAGE_HEIGHT: number = 480;
 export const REQUIRED_IMAGE_WIDTH: number = 640;
@@ -11,9 +11,8 @@ export const MODIFIED_IMAGE_FIELD_NAME: string = "modifiedImage";
 export const ORIGINAL_SCENE_FIELD_NAME: string = "originalScene";
 export const MODIFIED_SCENE_FIELD_NAME: string = "modifiedScene";
 export const EXPECTED_FILES_FORMAT: string = "image/bmp";
-export const FORM_DATA_CONTENT_TYPE: { "Content-Type": string } = {"Content-Type": "multipart/form-data" };
-export const GAME_CREATION_SUCCESS_MESSAGE: Message = {title: "Game created", body: "The game was successfully created!"};
 export const DIFFERENCE_ERROR_MESSAGE: string = "Error: The data that you sent doesn't have seven differences!";
+export const GAME_CREATION_SUCCESS_MESSAGE: Message = {title: "Game created", body: "The game was successfully created!"};
 export const FORMAT_ERROR_MESSAGE: string = "Error: Request sent by the client had the wrong format!";
 export const NAME_ERROR_MESSAGE: string = "Error: The game name that you sent already exists!";
 export const BMP_ERROR_MESSAGE: string = "Error: Sent files are not in bmp format!";
@@ -45,8 +44,24 @@ export const assertRequestSceneFields: (req: Express.Request) => void = (req: Re
     }
 };
 
-export const assertFieldOfRequest: (req: Express.Request, field: string) => void = (req: Request, field: string): void => {
-    if (typeof req.body[field] !== "string" || req.body[field] === "") {
-        throw new Error(FORMAT_ERROR_MESSAGE);
+export const assertFieldsOfRequest: (req: Request, ...fields: string[]) => void = (req: Request, ...fields: string[]): void => {
+    let field: string;
+    for (field of fields) {
+        if (typeof req.body[field] === "undefined" || req.body[field] === "") {
+            throw new Error(FORMAT_ERROR_MESSAGE);
+        }
     }
+};
+
+export const executeSafely: (next: NextFunction, func: () => void) => void = (next: NextFunction, func: () => void): void => {
+    try {
+        func();
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const executePromiseSafely: (next: NextFunction, func: () => Promise<void>) => void =
+    (next: NextFunction, func: () => Promise<void>): void => {
+        func().catch((reason: Error) => next(reason));
 };

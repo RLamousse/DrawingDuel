@@ -1,7 +1,9 @@
-import { injectable } from "inversify";
+import {injectable} from "inversify";
 import * as THREE from "three";
 import "reflect-metadata";
 import {create2dArray, deepCompare, customIndexOf} from "../../../common/util/util";
+import {ISimpleDifferenceData} from "../../../common/model/game/simple-game";
+import {IPoint} from "../../../common/model/point";
 
 export const ARGUMENT_ERROR_MESSAGE: string = "Error: the argument has the wrong format!";
 export const EMPTY_ARRAY_ERROR_MESSAGE: string = "Error: the given array is empty!";
@@ -9,7 +11,7 @@ export const EMPTY_ARRAY_ERROR_MESSAGE: string = "Error: the given array is empt
 @injectable()
 export class DifferenceEvaluatorService {
 
-    public getSimpleNDifferences(pixels: number[][]): number {
+    public getSimpleNDifferences(pixels: number[][]): ISimpleDifferenceData {
 
         this.validateSimpleData(pixels);
 
@@ -32,7 +34,7 @@ export class DifferenceEvaluatorService {
             }
         }
 
-        return this.calculateTotalZones(PARENT_TABLE);
+        return this.generateDiffZonesMap(PARENT_TABLE, ARRAY_OF_LABELS);
     }
 
     public getFreeNDifferences(originalScene: THREE.Mesh[], modifiedScene: THREE.Mesh[]): number {
@@ -127,20 +129,6 @@ export class DifferenceEvaluatorService {
         }
     }
 
-    // Counts the total of zones in the drawing
-    private calculateTotalZones(TRANSLATE_TABLE: Map<number, number>): number {
-
-        let totalZones: number = 0;
-        for (const KEY in TRANSLATE_TABLE) {
-            // adds a zone to the counter if it has not any parent(equals to 0)
-            if (TRANSLATE_TABLE.hasOwnProperty(KEY) && !TRANSLATE_TABLE[KEY]) {
-                totalZones++;
-            }
-        }
-
-        return totalZones;
-    }
-
     private findRoot(value: number, parentTable: Map<number, number>): number {
         if (!parentTable[value]) {
             return value;
@@ -179,5 +167,24 @@ export class DifferenceEvaluatorService {
                                (<THREE.MeshPhongMaterial>mesh2.material).color);
         }
         return false;
+    }
+
+    private generateDiffZonesMap(parentTable: Map<number, number>, arrayOfLabels: number[][]): ISimpleDifferenceData {
+        const DIFF_ZONES_MAP: Map<number, IPoint[]> = new Map<number, IPoint[]>();
+
+        for (let i: number = 0; i < arrayOfLabels.length; i++) {
+            for (let j: number = 0; j < arrayOfLabels[0].length; j++) {
+                if (arrayOfLabels[i][j]) {
+                    if (DIFF_ZONES_MAP.has(this.findRoot(arrayOfLabels[i][j], parentTable))) {
+                        // @ts-ignore
+                        DIFF_ZONES_MAP.get(this.findRoot(arrayOfLabels[i][j], parentTable)).push({x: i, y: j});
+                    } else {
+                        DIFF_ZONES_MAP.set(this.findRoot(arrayOfLabels[i][j], parentTable), [{x: i, y: j}]);
+                    }
+                }
+            }
+        }
+
+        return Array.from(DIFF_ZONES_MAP.entries());
     }
 }
