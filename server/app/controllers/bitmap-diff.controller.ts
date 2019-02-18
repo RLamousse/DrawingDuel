@@ -3,7 +3,7 @@ import * as HttpStatus from "http-status-codes";
 import { inject, injectable } from "inversify";
 import multer = require("multer");
 import { Bitmap } from "../../../common/image/bitmap/bitmap";
-import {BITMAP_MEME_TYPE} from "../../../common/image/bitmap/bitmap-utils";
+import { BITMAP_MEME_TYPE } from "../../../common/image/bitmap/bitmap-utils";
 import { BitmapFactory } from "../images/bitmap/bitmap-factory";
 import { BitmapWriter } from "../images/bitmap/bitmap-writer";
 import { BitmapDiffService } from "../services/bitmap-diff.service";

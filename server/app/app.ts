@@ -6,7 +6,6 @@ import { inject, injectable } from "inversify";
 import * as logger from "morgan";
 import {BitmapDiffController} from "./controllers/bitmap-diff.controller";
 import {DataBaseController} from "./controllers/data-base.controller";
-import {DiffValidatorController} from "./controllers/diff-validator.controller";
 import {GameCreatorController} from "./controllers/game-creator.controller";
 import { UserController } from "./controllers/username.controller";
 import Types from "./types";
@@ -20,8 +19,7 @@ export class Application {
     public constructor(@inject(Types.GameCreatorController) private gameCreatorController: GameCreatorController,
                        @inject(Types.DataBaseController) private dataBaseController: DataBaseController,
                        @inject(Types.UserNameController) private userController: UserController,
-                       @inject(Types.BitmapDiffController) private bitmapDiffController: BitmapDiffController,
-                       @inject(Types.DiffValidatorController) private diffValidatorController: DiffValidatorController) {
+                       @inject(Types.BitmapDiffController) private bitmapDiffController: BitmapDiffController) {
 
         this.app = express();
 
@@ -34,7 +32,7 @@ export class Application {
         // Middlewares configuration
         this.app.use(logger("dev"));
         this.app.use(express.static("public"));
-        this.app.use(bodyParser.json({limit: "10mb"}));
+        this.app.use(bodyParser.json());
         this.app.use(bodyParser.urlencoded({ extended: true}));
         this.app.use(cookieParser());
         this.app.use(cors());
@@ -45,7 +43,6 @@ export class Application {
         this.app.use("/api/image-diff", this.bitmapDiffController.router);
         this.app.use("/api/game-creator", this.gameCreatorController.router);
         this.app.use("/api/data-base", this.dataBaseController.router);
-        this.app.use("/api/diff-validator", this.diffValidatorController.router);
         this.errorHandeling();
     }
 
