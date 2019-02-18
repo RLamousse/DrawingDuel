@@ -43,7 +43,7 @@ export const MOCKED_SIMPLE_GAMES: ISimpleGame[] = [
 
 export const MOCKED_FREE_GAMES: IFreeGame[] = [
     {
-      gameName: "mockedSimpleGameName1",
+      gameName: "mockedFreeGameName1",
       bestSoloTimes: [{ name: "mockedUser1", time: 1200 },
                       { name: "mockedUser2", time: 1450 },
                       { name: "mockedUser3", time: 1600 }],
@@ -52,7 +52,7 @@ export const MOCKED_FREE_GAMES: IFreeGame[] = [
                        { name: "mockedUser3", time: 1600 }],
     },
     {
-        gameName: "mockedSimpleGameName2",
+        gameName: "mockedFreeGameName2",
         bestSoloTimes: [{ name: "mockedUser1", time: 1200 },
                         { name: "mockedUser2", time: 1450 },
                         { name: "mockedUser3", time: 1600 }],
@@ -61,7 +61,7 @@ export const MOCKED_FREE_GAMES: IFreeGame[] = [
                          { name: "mockedUser3", time: 1600 }],
     },
     {
-        gameName: "mockedSimpleName3",
+        gameName: "mockedFreeName3",
         bestSoloTimes: [{ name: "mockedUser1", time: 1200 },
                         { name: "mockedUser2", time: 1450 },
                         { name: "mockedUser3", time: 1600 }],
