@@ -1,7 +1,12 @@
 import Axios, {AxiosResponse} from "axios";
 import {injectable} from "inversify";
 import "reflect-metadata";
-import ISimpleGame, {ISimpleDifferenceData} from "../../../common/model/game/simple-game";
+import {
+    DIFFERENCE_CLUSTER_ID_INDEX,
+    DIFFERENCE_CLUSTER_POINTS_INDEX,
+    ISimpleDifferenceData,
+    ISimpleGame
+} from "../../../common/model/game/simple-game";
 import {IPoint} from "../../../common/model/point";
 
 export const INVALID_POINT_ERROR_MESSAGE: string = "Invalid point: out of bounds";
@@ -16,6 +21,12 @@ export class DiffValidatorService {
     }
 
     private static getDifferenceGroup(diffData: ISimpleDifferenceData, point: IPoint): number|undefined {
+        for (const diffGroup of diffData) {
+            if (diffGroup[DIFFERENCE_CLUSTER_POINTS_INDEX].findIndex((x: IPoint) => x.x === point.x && x.y === point.y) >= 0) {
+                return diffGroup[DIFFERENCE_CLUSTER_ID_INDEX];
+            }
+        }
+
         return undefined;
     }
 

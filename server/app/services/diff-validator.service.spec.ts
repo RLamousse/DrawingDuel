@@ -4,7 +4,7 @@ import MockAdapter from "axios-mock-adapter";
 import AxiosAdapter from "axios-mock-adapter";
 import {expect} from "chai";
 import * as HttpStatus from "http-status-codes";
-import ISimpleGame, {ISimpleDifferenceData} from "../../../common/model/game/simple-game";
+import {ISimpleDifferenceData, ISimpleGame} from "../../../common/model/game/simple-game";
 import {IPoint, ORIGIN} from "../../../common/model/point";
 import {NON_EXISTING_GAME_ERROR_MESSAGE} from "./db/simple-games.collection.service";
 import {DiffValidatorService, INVALID_POINT_ERROR_MESSAGE} from "./diff-validator.service";
