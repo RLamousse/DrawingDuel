@@ -1,10 +1,5 @@
-import {IDifferenceData} from "./differences/difference-data";
-import {Game} from "./game";
-import {IRecordTime} from "./record-time";
+import {IGame} from "./game";
 
-export default class FreeGame extends Game {
+export default interface IFreeGame extends IGame {
 
-    constructor(gameName: string, diffData: IDifferenceData, bestSoloTimes: IRecordTime[], bestMultiTimes: IRecordTime[]) {
-        super(gameName, diffData, bestSoloTimes, bestMultiTimes);
-    }
 }

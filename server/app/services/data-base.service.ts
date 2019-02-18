@@ -1,7 +1,7 @@
 import { injectable } from "inversify";
 import {Db, MongoClient, MongoError} from "mongodb";
 import "reflect-metadata";
-import {GamesCollectionService} from "./db/games.collection.service";
+import {SimpleGamesCollectionService} from "./db/simple-games.collection.service";
 import {UsersCollectionService} from "./db/users.collection.service";
 
 @injectable()
@@ -17,14 +17,14 @@ export class DataBaseService {
 
     private _dataBase: Db;
     private _users: UsersCollectionService;
-    private _games: GamesCollectionService;
+    private _simpleGames: SimpleGamesCollectionService;
 
     public constructor() {
         MongoClient.connect(this.DB_URL, {useNewUrlParser : true}, (err: MongoError, client: MongoClient) => {
             if (!err) {
                 this._dataBase = client.db(this.DB_DB);
                 this._users = new UsersCollectionService(this._dataBase.collection("users"));
-                this._games = new GamesCollectionService(this._dataBase.collection("games"));
+                this._simpleGames = new SimpleGamesCollectionService(this._dataBase.collection("simpleGames"));
             } else {
                 throw(err);
             }
@@ -35,7 +35,7 @@ export class DataBaseService {
         return this._users;
     }
 
-    public get games(): GamesCollectionService {
-        return this._games;
+    public get simpleGames(): SimpleGamesCollectionService {
+        return this._simpleGames;
     }
 }

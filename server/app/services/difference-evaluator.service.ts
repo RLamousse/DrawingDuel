@@ -1,6 +1,6 @@
 import {injectable} from "inversify";
 import "reflect-metadata";
-import {ISimpleDifferenceData} from "../../../common/model/game/differences/simple-difference-data";
+import {ISimpleDifferenceData} from "../../../common/model/game/simple-game";
 import {IPoint} from "../../../common/model/point";
 import {create2dArray} from "../../../common/util/util";
 
@@ -111,7 +111,7 @@ export class DifferenceEvaluatorService {
     }
 
     private generateDiffZonesMap(parentTable: Map<number, number>, arrayOfLabels: number[][]): ISimpleDifferenceData {
-        const DIFF_ZONES_MAP: ISimpleDifferenceData = new Map<number, IPoint[]>();
+        const DIFF_ZONES_MAP: Map<number, IPoint[]> = new Map<number, IPoint[]>();
 
         for (let i: number = 0; i < arrayOfLabels.length; i++) {
             for (let j: number = 0; j < arrayOfLabels[0].length; j++) {
@@ -126,7 +126,6 @@ export class DifferenceEvaluatorService {
             }
         }
 
-        return DIFF_ZONES_MAP;
-
+        return Array.from(DIFF_ZONES_MAP.entries());
     }
 }
