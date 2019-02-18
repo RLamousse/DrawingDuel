@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response, Router } from "express";
 import * as Httpstatus from "http-status-codes";
 import { inject, injectable } from "inversify";
-import ISimpleGame from "../../../common/model/game/simple-game";
+import {ISimpleGame} from "../../../common/model/game/simple-game";
 import {DataBaseService} from "../services/data-base.service";
 import {NON_EXISTING_GAME_ERROR_MESSAGE} from "../services/db/simple-games.collection.service";
 import Types from "../types";
