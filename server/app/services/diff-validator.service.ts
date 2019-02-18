@@ -2,7 +2,7 @@ import Axios, {AxiosResponse} from "axios";
 import {injectable} from "inversify";
 import "reflect-metadata";
 import {
-    DIFFERENCE_CLUSTER_ID_INDEX,
+    DifferenceCluster,
     DIFFERENCE_CLUSTER_POINTS_INDEX,
     ISimpleDifferenceData,
     ISimpleGame
@@ -10,6 +10,7 @@ import {
 import {IPoint} from "../../../common/model/point";
 
 export const INVALID_POINT_ERROR_MESSAGE: string = "Invalid point: out of bounds";
+export const NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE: string = "There is no difference at the specified point";
 
 @injectable()
 export class DiffValidatorService {
@@ -20,24 +21,28 @@ export class DiffValidatorService {
         }
     }
 
-    private static getDifferenceGroup(diffData: ISimpleDifferenceData, point: IPoint): number|undefined {
-        for (const diffGroup of diffData) {
-            if (diffGroup[DIFFERENCE_CLUSTER_POINTS_INDEX].findIndex((x: IPoint) => x.x === point.x && x.y === point.y) >= 0) {
-                return diffGroup[DIFFERENCE_CLUSTER_ID_INDEX];
+    private static getDifferenceClusterOfPoint(diffData: ISimpleDifferenceData, point: IPoint): DifferenceCluster|undefined {
+        for (const diffCluster of diffData) {
+            if (diffCluster[DIFFERENCE_CLUSTER_POINTS_INDEX].findIndex((x: IPoint) => x.x === point.x && x.y === point.y) >= 0) {
+                return diffCluster;
             }
         }
 
         return undefined;
     }
 
-    public async hasDifference(gameName: string, point: IPoint): Promise<boolean> {
+    public async getDifferenceCluster(gameName: string, point: IPoint): Promise<DifferenceCluster> {
         DiffValidatorService.assertPoint(point);
 
         const game: ISimpleGame = await this.getGame(gameName);
         const diffData: ISimpleDifferenceData = game.diffData;
-        const differenceGroup: number | undefined = DiffValidatorService.getDifferenceGroup(diffData, point);
+        const differenceGroup: DifferenceCluster | undefined = DiffValidatorService.getDifferenceClusterOfPoint(diffData, point);
 
-        return differenceGroup !== undefined;
+        if (differenceGroup === undefined) {
+            throw new Error(NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE);
+        }
+
+        return differenceGroup;
     }
 
     private async getGame(gameName: string): Promise<ISimpleGame> {
