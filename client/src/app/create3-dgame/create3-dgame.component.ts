@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { MatCheckboxChange, MatDialogRef, MatSliderChange } from "@angular/material";
+import { FREE_GAME_CREATION_ROUTE } from "../../../../common/communication/routes";
 import { ModificationType, ObjectGeometry } from "../FreeGameCreatorInterface/free-game-enum";
 import { AVAILABLE_MODIF_TYPES, AVAILABLE_OBJECT_TYPES, SelectType } from "../Interfaces/selectType";
 import { AbstractForm } from "../abstract-form";
@@ -79,7 +80,7 @@ export class Create3DGameComponent extends AbstractForm implements OnInit {
     fd.append("originalScene", JSON.stringify(this.freeGameCreator.scene));
     fd.append("modifiedScene", JSON.stringify(this.freeGameCreator.modifiedScene));
     // CHANGE ME I'M A DUMMY ROUTE
-    this.formPost.basicPost("api/game-creator/create-free-game", fd).subscribe(
+    this.formPost.basicPost(FREE_GAME_CREATION_ROUTE, fd).subscribe(
       (data) => {
         this.exit(data);
       },
