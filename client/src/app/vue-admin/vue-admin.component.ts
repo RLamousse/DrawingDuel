@@ -10,9 +10,10 @@ import { SimpleGameCreatorFormComponent } from "../simple-game-creator-form/simp
 })
 export class VueAdminComponent {
 
-  public constructor(private dialog: MatDialog,
-                     public rightButton: string = "reinitialiser",
-                     public leftButton: string = "supprimer", ) { }
+  public constructor(private dialog: MatDialog ) { }
+
+  public rightButton: string = "reinitialiser";
+  public leftButton: string = "supprimer";
 
   protected createSimpleGame(): void {
     const dialogConfig: MatDialogConfig = new MatDialogConfig();
