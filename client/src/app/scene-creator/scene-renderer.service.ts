@@ -49,7 +49,6 @@ export class SceneRendererService {
   private renderLoop(): void {
     requestAnimationFrame(() => this.renderLoop());
     this.rendererOri.render(this.scene, this.camera);
-    console.log(this.originalContainer.innerHTML);
     this.rendererMod.render(this.modifiedScene, this.camera);
     this.fpControls.update(this.updateTime);
   }

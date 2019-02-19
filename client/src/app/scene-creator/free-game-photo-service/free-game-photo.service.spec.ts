@@ -1,11 +1,11 @@
-import { TestBed } from '@angular/core/testing';
+import { TestBed } from "@angular/core/testing";
 
-import { FreeGamePhotoService } from './free-game-photo.service';
+import { FreeGamePhotoService } from "./free-game-photo.service";
 
-describe('FreeGamePhotoService', () => {
+describe("FreeGamePhotoService", () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
-  it('should be created', () => {
+  it("should be created", () => {
     const service: FreeGamePhotoService = TestBed.get(FreeGamePhotoService);
     expect(service).toBeTruthy();
   });

@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-//let domtoimage = require('dom-to-image');
+import { Injectable } from "@angular/core";
+// let domtoimage = require('dom-to-image');
 import * as THREE from "three";
 
 @Injectable()

@@ -1,7 +1,7 @@
-import { Component, Input, ViewChild, ElementRef, AfterViewInit } from "@angular/core";
+import { AfterViewInit, Component, ElementRef, Input, ViewChild } from "@angular/core";
 import { Router } from "@angular/router";
-import { FreeGamePhotoService } from "../../scene-creator/free-game-photo-service/free-game-photo.service";
 import * as THREE from "three";
+import { FreeGamePhotoService } from "../../scene-creator/free-game-photo-service/free-game-photo.service";
 
 @Component({
   selector: "app-game",
@@ -29,10 +29,11 @@ export class GameComponent implements AfterViewInit {
     }
   }
 
-  public ngAfterViewInit() {
-    let photoService: FreeGamePhotoService = new FreeGamePhotoService();
-    let dummyScene: THREE.Scene = new THREE.Scene();
-    let cube: THREE.Mesh = new THREE.Mesh(new THREE.SphereGeometry(20,36,36), new THREE.MeshPhongMaterial());
+  public ngAfterViewInit(): void {
+    const photoService: FreeGamePhotoService = new FreeGamePhotoService();
+    const dummyScene: THREE.Scene = new THREE.Scene();
+    const size: number = 36;
+    const cube: THREE.Mesh = new THREE.Mesh(new THREE.SphereGeometry(size, size, size), new THREE.MeshPhongMaterial());
     dummyScene.add(cube);
     photoService.takePhotos(dummyScene, this.originalSceneContainer.nativeElement);
   }
