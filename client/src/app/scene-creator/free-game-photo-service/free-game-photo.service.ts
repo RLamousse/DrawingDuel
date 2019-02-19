@@ -1,26 +1,38 @@
 import { Injectable } from '@angular/core';
-import { SceneRendererService } from "../scene-renderer.service";
 //let domtoimage = require('dom-to-image');
 import * as THREE from "three";
 
 @Injectable()
 export class FreeGamePhotoService {
+  private camera: THREE.PerspectiveCamera;
+  private renderer: THREE.WebGLRenderer;
 
+  private fieldOfView: number = 90;
+  private nearClippingPane: number = 1;
+  private farClippingPane: number = 1000;
+  private backGroundColor: number = 0x0B7B90;
 
-  private renderService: SceneRendererService = new SceneRendererService();
+  private cameraX: number = 0;
+  private cameraY: number = 0;
+  private cameraZ: number = 100;
 
-  public takePhotos(originScene: THREE.Scene, modScene: THREE.Scene): void {
-    console.log(originScene);
-    let oriCont: HTMLDivElement = <HTMLDivElement>(document.createElement("div"));
-    let modCont: HTMLDivElement = <HTMLDivElement>(document.createElement("div"));
-    console.log(oriCont.innerHTML);
-    this.renderService.init(oriCont, modCont);
-    this.renderService.loadScenes(originScene, modScene);
-    console.log(oriCont.innerHTML);
-    let canvas: HTMLCanvasElement = <HTMLCanvasElement>oriCont.querySelector("canvas");
-    if (typeof (canvas) !== null) {
-      let img = canvas.toDataURL("image/png");
-      console.log(img);
-    }
+  public takePhotos(originScene: THREE.Scene, container: HTMLDivElement): void {
+    this.camera = new THREE.PerspectiveCamera(
+      this.fieldOfView,
+      (container.clientWidth) / (container.clientHeight),
+      this.nearClippingPane,
+      this.farClippingPane,
+    );
+    this.camera.position.x = this.cameraX;
+    this.camera.position.y = this.cameraY;
+    this.camera.position.z = this.cameraZ;
+
+    this.renderer = new THREE.WebGLRenderer({ preserveDrawingBuffer: true });
+    this.renderer.setClearColor(this.backGroundColor);
+    this.renderer.setPixelRatio(devicePixelRatio);
+    this.renderer.setSize(container.clientWidth, container.clientHeight);
+    container.appendChild(this.renderer.domElement);
+
+    this.renderer.render(originScene, this.camera);
   }
 }
