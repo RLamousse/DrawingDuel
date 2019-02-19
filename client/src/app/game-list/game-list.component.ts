@@ -18,6 +18,8 @@ export class GameListComponent implements OnInit {
 
   public ngOnInit(): void {
     this.gameService.getSimpleGames().subscribe((gamesToModify: ISimpleGame[]) => {
+      this.gameService.freeGames = [];
+      this.gameService.simpleGames = [];
       this.gameService.convertScoresObject(gamesToModify);
       this.gameService.pushGames(gamesToModify);
       this.gameService.convertScoresObject(MOCKED_SIMPLE_GAMES);
