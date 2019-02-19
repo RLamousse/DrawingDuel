@@ -2,15 +2,17 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { of, Observable } from "rxjs";
 import { catchError } from "rxjs/operators";
-import { Game } from "../../../common/model/game";
+import {/*instanceOfFreeGame,*/ IFreeGame} from "../../../common/model/game/free-game";
+import {IGame} from "../../../common/model/game/game";
+import {instanceOfSimpleGame, ISimpleGame} from "../../../common/model/game/simple-game";
 
 @Injectable({
   providedIn: "root",
 })
 export class GameService {
-  public simpleGames: Game[] = [];
-  public freeGames: Game[] = [];
-  public readonly BASE_URL: string = "http://localhost:3000/api/data-base/get-games";
+  public simpleGames: ISimpleGame[] = [];
+  public freeGames: IFreeGame[] = [];
+  public readonly SIMPLE_GAME_BASE_URL: string = "http://localhost:3000/api/data-base/games/simple/";
   public constructor(private http: HttpClient) { }
 
   private convertTimeScores(seconds: number): number {
@@ -22,17 +24,9 @@ export class GameService {
     return Number((Math.floor(seconds) + ((seconds - Math.floor(seconds)) * COEFFICIENT)).toFixed(DECIMALS));
   }
 
-  private buildHttpAdress(imageAdress: string): string {
-    const ADRESS: string = "http://localhost:3000/";
-
-    return (ADRESS + imageAdress);
-  }
-
-  public convertScoresObject(game: Game[]): Game[] {
+  public convertScoresObject(game: IGame[]): IGame[] {
     for (const i in game) {
       if (game.hasOwnProperty(i)) {
-        game[i].originalImage = this.buildHttpAdress(game[i].originalImage);
-        game[i].modifiedImage = this.buildHttpAdress(game[i].modifiedImage);
         for (const j in game[i].bestSoloTimes) {
           if (game[i].bestSoloTimes.hasOwnProperty(j)) {
             game[i].bestSoloTimes[j].time = this.convertTimeScores(game[i].bestSoloTimes[j].time);
@@ -45,19 +39,19 @@ export class GameService {
     return game;
   }
 
-  public pushGames(gamesToPush: Game[]): void {
-    for (const i in gamesToPush) {
-      if (String(gamesToPush[i].isSimpleGame) === "true") {
-        this.simpleGames.push(gamesToPush[i]);
-      } else {
-        this.freeGames.push(gamesToPush[i]);
+  public pushGames(gamesToPush: IGame[]): void {
+    for (const game of gamesToPush) {
+      if (instanceOfSimpleGame(game)) {
+        this.simpleGames.push(game);
+      } else /*if (instanceOfFreeGame(game))*/ { // feature still in progress
+        this.freeGames.push(game);
       }
     }
   }
 
-  public getGames(): Observable<Game[]> {
-    return this.http.get<Game[]>(this.BASE_URL).pipe(
-      catchError(this.handleError<Game[]>("basicGet")),
+  public getSimpleGames(): Observable<ISimpleGame[]> {
+    return this.http.get<ISimpleGame[]>(this.SIMPLE_GAME_BASE_URL).pipe(
+      catchError(this.handleError<ISimpleGame[]>("basicGet")),
     );
   }
 
