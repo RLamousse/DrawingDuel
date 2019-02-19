@@ -1,15 +1,17 @@
 import { HttpClientModule } from "@angular/common/http";
 import { async, TestBed } from "@angular/core/testing";
-import {Game, GameType} from "../../../common/model/game/game";
+import {IFreeGame} from "../../../common/model/game/free-game";
+import {IGame} from "../../../common/model/game/game";
+import {ISimpleGame} from "../../../common/model/game/simple-game";
 import { GameService } from "./game.service";
 
 describe("GameService", () => {
   let serviceGame: GameService;
   let spyService: jasmine.SpyObj<GameService>;
 
-  const emptyMockedGameList: Game[] = [];
+  const emptyMockedGameList: IGame[] = [];
 
-  const mockMixGameList: Game[] = [
+  const mockMixGameList: IGame[] = [
     {
       gameName: "mockedSimpleName",
       originalImage: "oriName",
@@ -17,37 +19,28 @@ describe("GameService", () => {
       diffImage: "diffName",
       bestSoloTimes: [{ name: "mockedUser1", time: 120 }],
       bestMultiTimes: [{ name: "mockedUser2", time: 23 }],
-      gameType: GameType.FREE,
-    },
+      diffData: [],
+    } as ISimpleGame,
     {
-      gameName: "mockedFreeName",
-      originalImage: "oriName",
-      modifiedImage: "modName",
-      diffImage: "diffName",
+      gameName: "mockedName",
       bestSoloTimes: [{ name: "mockedUser1", time: 120 }],
       bestMultiTimes: [{ name: "mockedUser2", time: 23 }],
-      gameType: GameType.SIMPLE,
-    },
+    } as IFreeGame,
   ];
 
-  const mockSimpleGameList: Game[] = [{
+  const mockSimpleGameList: ISimpleGame[] = [{
     gameName: "mockedName",
     originalImage: "oriName",
     modifiedImage: "modName",
-    diffImage: "diffName",
     bestSoloTimes: [{ name: "mockedUser1", time: 120 }],
     bestMultiTimes: [{ name: "mockedUser2", time: 23 }],
-    gameType: GameType.SIMPLE,
+    diffData: [],
   }];
 
-  const mockFreeGameList: Game[] = [{
+  const mockFreeGameList: IFreeGame[] = [{
     gameName: "mockedName",
-    originalImage: "oriName",
-    modifiedImage: "modName",
-    diffImage: "diffName",
     bestSoloTimes: [{ name: "mockedUser1", time: 120 }],
     bestMultiTimes: [{ name: "mockedUser2", time: 23 }],
-    gameType: GameType.FREE,
   }];
 
   beforeEach(async(() => {
@@ -67,7 +60,7 @@ describe("GameService", () => {
 
   it("should be created", () => {
     serviceGame = TestBed.get(GameService);
-    spyOn(serviceGame, "getGames").and.returnValue(emptyMockedGameList);
+    spyOn(serviceGame, "getSimpleGames").and.returnValue(emptyMockedGameList);
     expect(serviceGame).toBeTruthy();
   });
 
@@ -89,18 +82,17 @@ describe("GameService", () => {
   });
 
   it("should return and modify originalImage if no time inside list", () => {
-    const incompleteList: Game[] = [{
+    const incompleteList: ISimpleGame[] = [{
       gameName: "incompleteList",
       originalImage: "name1.bmp",
       modifiedImage: "name2.bmp",
-      diffImage: "diffName.bmp",
       bestSoloTimes: [],
       bestMultiTimes: [],
-      gameType: GameType.SIMPLE,
+      diffData: [],
     }];
     serviceGame.convertScoresObject(incompleteList);
     expect(incompleteList[0].gameName).toBe("incompleteList");
-    expect(incompleteList[0].originalImage).toBe("http://localhost:3000/name1.bmp");
+    expect(incompleteList[0].originalImage).toBe("name1.bmp");
     expect(incompleteList[0].modifiedImage).toBe("name2.bmp");
     expect(incompleteList[0].bestSoloTimes.length).toBe(0);
     expect(incompleteList[0].bestMultiTimes.length).toBe(0);
@@ -120,6 +112,7 @@ describe("GameService", () => {
     serviceGame.simpleGames = [];
     serviceGame.pushGames(mockFreeGameList);
     expect(serviceGame.freeGames.length).not.toBe(0);
+    expect(serviceGame.freeGames[0]).toBe(mockFreeGameList[0]);
     expect(serviceGame.simpleGames.length).toBe(0);
   });
 
@@ -129,13 +122,14 @@ describe("GameService", () => {
     serviceGame.pushGames(mockSimpleGameList);
     expect(serviceGame.freeGames.length).toBe(0);
     expect(serviceGame.simpleGames.length).not.toBe(0);
+    expect(serviceGame.simpleGames[0]).toBe(mockSimpleGameList[0]);
   });
 
-  it("should only have games both its list", () => {
+  it("should have games both its list", () => {
     serviceGame.freeGames = [];
     serviceGame.simpleGames = [];
     serviceGame.pushGames(mockMixGameList);
-    expect(serviceGame.freeGames.length).not.toBe(0);
     expect(serviceGame.simpleGames.length).not.toBe(0);
+    expect(serviceGame.freeGames.length).not.toBe(0);
   });
 });
