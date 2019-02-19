@@ -8,6 +8,7 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { MaterialFileInputModule } from "ngx-material-file-input";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
+import { CompteurDiffComponent } from "./compteur-diff/compteur-diff.component";
 import {Create3DGameComponent} from "./create3-dgame/create3-dgame.component";
 import { FormPostService } from "./form-post.service";
 import { GameListComponent } from "./game-list/game-list.component";
@@ -19,7 +20,6 @@ import { SimpleGameCreatorFormComponent } from "./simple-game-creator-form/simpl
 import { UNListService } from "./username.service";
 import { VueAdminComponent } from "./vue-admin/vue-admin.component";
 import { WindowEventHandlerDirective } from "./window-event-handler.directive";
-import { CompteurDiffComponent } from './compteur-diff/compteur-diff.component';
 
 @NgModule({
   declarations: [
