@@ -35,6 +35,6 @@ export class GameComponent implements AfterViewInit {
     const size: number = 36;
     const cube: THREE.Mesh = new THREE.Mesh(new THREE.SphereGeometry(size, size, size), new THREE.MeshPhongMaterial());
     dummyScene.add(cube);
-    photoService.takePhotos(dummyScene, this.originalSceneContainer.nativeElement);
+    photoService.takePhoto(dummyScene, this.originalSceneContainer.nativeElement);
   }
 }

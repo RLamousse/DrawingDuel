@@ -16,7 +16,7 @@ export class FreeGamePhotoService {
   private cameraY: number = 0;
   private cameraZ: number = 100;
 
-  public takePhotos(originScene: THREE.Scene, container: HTMLDivElement): void {
+  public takePhoto(originScene: THREE.Scene, container: HTMLDivElement): void {
     this.camera = new THREE.PerspectiveCamera(
       this.fieldOfView,
       (container.clientWidth) / (container.clientHeight),
