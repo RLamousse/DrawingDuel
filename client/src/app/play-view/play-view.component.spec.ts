@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import {ActivatedRoute, Router} from "@angular/router";
+import {CompteurDiffComponent} from "../compteur-diff/compteur-diff.component";
 import { PlayViewComponent } from "./play-view.component";
 
 describe("PlayViewComponent", () => {
