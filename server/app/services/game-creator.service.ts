@@ -72,9 +72,9 @@ export class GameCreatorService {
 
         await GameCreatorService.testNameExistence(gameName);
 
-        this.testFreeGameNumberOfDiffs(<THREE.Mesh[]>originalScene.children, <THREE.Mesh[]>modifiedScene.children);//TODO Make static?
+        this.testFreeGameNumberOfDiffs(<THREE.Mesh[]>originalScene.children, <THREE.Mesh[]>modifiedScene.children);
 
-        return await this.generateFreeGame(gameName, originalScene, modifiedScene);//TODO static?
+        return await this.generateFreeGame(gameName, originalScene, modifiedScene);
     }
 
     public async createSimpleGame(gameName: string, originalImageFile: Buffer, modifiedImageFile: Buffer): Promise<Message> {
@@ -178,24 +178,13 @@ export class GameCreatorService {
 
     private async generateFreeGame(gameName: string, originalScene: THREE.Scene, modifiedScene: THREE.Scene): Promise<Message> {
 
-        //new version of game
-        // const GAME: Game = {
-        //     isSimpleGame: false,
-        //     bestMultiTimes: this.createRandomScores(),
-        //     bestSoloTimes: this.createRandomScores(),
-        //     gameName: gameName,
-        //     modifiedImage: JSON.stringify(originalScene),
-        //     originalImage: JSON.stringify(modifiedScene),//TODO enlever ce code en prevision des refacor de rivest, est la juste pour que ca compile!!
-        // };
-        // //TODO insert new way to write files(directly in mongodb)
+
         // try {
-        //     await Axios.post<Game>("http://localhost:3000/api/data-base/add-game",
-        //         {data: {[GAME_FIELD]: GAME}});
+        //     await this.uploadGame(gameName, imagesUrls, differenceData);
         // } catch (error) {
-        //     if (error.response.data.message === ALREADY_EXISTING_GAME_MESSAGE_ERROR) {
-        //         throw new Error(NAME_ERROR_MESSAGE);
+        //     if (error.message !== NON_EXISTING_GAME_ERROR_MESSAGE) {
+        //         throw new Error("dataBase: " + error.message);
         //     }
-        //     throw new Error("dataBase: " + error.response.data.message);
         // }
 
         return GAME_CREATION_SUCCESS_MESSAGE;
