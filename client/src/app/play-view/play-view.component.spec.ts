@@ -8,7 +8,7 @@ describe("PlayViewComponent", () => {
 
   beforeEach((done) => {
     TestBed.configureTestingModule({
-      declarations: [ PlayViewComponent ],
+      declarations: [ PlayViewComponent, CompteurDiffComponent ],
       providers: [
         { provide: Router, useClass: class { public navigate: jasmine.Spy = jasmine.createSpy("navigate"); }, },
         {
