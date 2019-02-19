@@ -15,18 +15,32 @@ export class SceneRendererService {
   private rendererMod: THREE.WebGLRenderer;
 
   private fpControls: THREE.FirstPersonControls;
-  private mvmSpeed: number = 10;
-  private lkSpeed: number = 0.05;
-  private updateTime: number = 0.17;
+  private mvmSpeed: number;
+  private lkSpeed: number;
+  private updateTime: number;
 
-  private fieldOfView: number = 90;
-  private nearClippingPane: number = 1;
-  private farClippingPane: number = 1000;
-  private backGroundColor: number = 0x0B7B90;
+  private fieldOfView: number;
+  private nearClippingPane: number;
+  private farClippingPane: number;
+  private backGroundColor: number;
 
-  private cameraX: number = 0;
-  private cameraY: number = 0;
-  private cameraZ: number = 100;
+  private cameraX: number;
+  private cameraY: number;
+  private cameraZ: number;
+
+  public constructor() {
+    this.mvmSpeed = 10;
+    this.lkSpeed = 0.05;
+    this.updateTime = 0.17;
+
+    this.fieldOfView = 90;
+    this.nearClippingPane = 1;
+    this.farClippingPane = 1000;
+    this.backGroundColor = 0x0B7B9;
+    this.cameraX = 0;
+    this.cameraY = 0;
+    this.cameraZ = 100;
+  }
 
   private setRenderer(): void {
     this.rendererOri = new THREE.WebGLRenderer({ preserveDrawingBuffer: true });
