@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import * as THREE from "three";
 require("three-first-person-controls")(THREE);
+let domtoimage = require('dom-to-image');
 
 @Injectable()
 export class SceneRendererService {
@@ -49,6 +50,7 @@ export class SceneRendererService {
   private renderLoop(): void {
     requestAnimationFrame(() => this.renderLoop());
     this.rendererOri.render(this.scene, this.camera);
+    console.log(this.originalContainer.innerHTML);
     this.rendererMod.render(this.modifiedScene, this.camera);
     this.fpControls.update(this.updateTime);
   }
@@ -125,4 +127,14 @@ export class SceneRendererService {
       this.screenshot = false;
     }
   }*/
+  public screenShots(): void {
+    domtoimage.toPng(this.originalContainer).then((dataUrl: string) => {
+      let img = new Image();
+      img.src = dataUrl;
+      this.originalContainer.appendChild(img);
+    }).catch((error: Error) => {
+      throw error.message = "dasdfasdfsad";
+    });
+
+  }
 }

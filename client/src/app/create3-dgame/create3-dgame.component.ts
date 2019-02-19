@@ -6,6 +6,7 @@ import { AVAILABLE_MODIF_TYPES, AVAILABLE_OBJECT_TYPES, SelectType } from "../In
 import { AbstractForm } from "../abstract-form";
 import { FormPostService } from "../form-post.service";
 import { FreeGameCreatorService } from "../scene-creator/FreeGameCreator/free-game-creator.service";
+import { FreeGamePhotoService } from "../scene-creator/free-game-photo-service/free-game-photo.service";
 
 @Component({
   selector: "app-create3-dgame",
@@ -96,6 +97,10 @@ export class Create3DGameComponent extends AbstractForm implements OnInit {
     this.freeGameCreator.objectTypes = objects;
     this.freeGameCreator.obj3DToCreate = this.sliderValue;
     this.freeGameCreator.createScenes();
+
+    let screenShots: FreeGamePhotoService = new FreeGamePhotoService();
+    console.log(this.freeGameCreator.scene);
+    screenShots.takePhotos(this.freeGameCreator.scene, this.freeGameCreator.modifiedScene);
 
   }
 }
