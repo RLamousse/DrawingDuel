@@ -1,7 +1,8 @@
 import {IGame, instanceOfGame} from "./game";
 
 export interface IFreeGame extends IGame {
-    // feature still in progress
+    originalScene: THREE.Scene;
+    modifiedScene: THREE.Scene;
 }
 
 export const instanceOfFreeGame = (object: any): object is IFreeGame =>
