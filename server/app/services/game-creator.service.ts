@@ -104,7 +104,7 @@ export class GameCreatorService {
                                differenceData: ISimpleDifferenceData): Promise<Message> {
         try {
             const imagesUrls: string[] = await this.uploadImages(originalImage, modifiedImage);
-            await this.uploadGame(gameName, imagesUrls, differenceData);
+            await this.uploadSimpleGame(gameName, imagesUrls, differenceData);
         } catch (error) {
             if (error.message !== NON_EXISTING_GAME_ERROR_MESSAGE) {
                 throw new Error("dataBase: " + error.message);
@@ -114,7 +114,7 @@ export class GameCreatorService {
         return GAME_CREATION_SUCCESS_MESSAGE;
     }
 
-    private async uploadGame(gameName: string, imagesUrls: string[], differenceData: ISimpleDifferenceData): Promise<void> {
+    private async uploadSimpleGame(gameName: string, imagesUrls: string[], differenceData: ISimpleDifferenceData): Promise<void> {
         const game: ISimpleGame = {
             gameName: gameName,
             bestSoloTimes: this.createRandomScores(),
@@ -127,6 +127,21 @@ export class GameCreatorService {
             // tslint:disable-next-line:no-any Generic error response
             .catch((reason: any) => {
                 throw new Error("Unable to create game: " + reason.response.data.message);
+            });
+    }
+
+    private async uploadFreeGame(gameName: string, orginalScene: THREE.Scene, modifiedScene: THREE.Scene): Promise<void> {
+        const game: IFreeGame = {
+            gameName: gameName,
+            bestSoloTimes: this.createRandomScores(),
+            bestMultiTimes: this.createRandomScores(),
+            originalScene: orginalScene,
+            modifiedScene: modifiedScene,
+        };
+        await Axios.post<IFreeGame>("http://localhost:3000/api/data-base/games/free/", game)
+            // tslint:disable-next-line:no-any Generic error response
+            .catch((reason: any) => {
+                throw new Error("dataBase: Unable to create game: " + reason.response.data.message);
             });
     }
 
@@ -184,16 +199,7 @@ export class GameCreatorService {
     }
 
     private async generateFreeGame(gameName: string, originalScene: THREE.Scene, modifiedScene: THREE.Scene): Promise<Message> {
-
-
-        // try {
-        //     await this.uploadGame(gameName, imagesUrls, differenceData);
-        // } catch (error) {
-        //     if (error.message !== NON_EXISTING_GAME_ERROR_MESSAGE) {
-        //         throw new Error("dataBase: " + error.message);
-        //     }
-        // }
-
+        await this.uploadFreeGame(gameName, originalScene, modifiedScene);
         return GAME_CREATION_SUCCESS_MESSAGE;
     }
 }
