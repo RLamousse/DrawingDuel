@@ -1,7 +1,7 @@
 import { Request, Response, Router} from "express";
 import * as HttpStatus from "http-status-codes";
 import { inject, injectable } from "inversify";
-import { UserValidationMessage } from "../../../common/communication/UserValidationMessage";
+import { UserValidationMessage } from "../../../common/communication/messages/user-validation-message";
 import { UsernameService } from "../services/username.service";
 import Types from "../types";
 

@@ -33,16 +33,14 @@ export class Application {
         this.app.use(logger("dev"));
         this.app.use(express.static("public"));
         this.app.use(bodyParser.json());
-        this.app.use(bodyParser.urlencoded({ extended: true }));
+        this.app.use(bodyParser.urlencoded({ extended: true}));
         this.app.use(cookieParser());
         this.app.use(cors());
     }
 
     public bindRoutes(): void {
-        // Notre application utilise le routeur de notre API `Index`
         this.app.use("/api/usernames", this.userController.router);
         this.app.use("/api/image-diff", this.bitmapDiffController.router);
-        // Notre application utilise le routeur de notre API `Index`
         this.app.use("/api/game-creator", this.gameCreatorController.router);
         this.app.use("/api/data-base", this.dataBaseController.router);
         this.errorHandeling();
