@@ -20,6 +20,7 @@ import Types from "../types";
 import {NON_EXISTING_GAME_ERROR_MESSAGE} from "./db/simple-games.collection.service";
 import {DifferenceEvaluatorService} from "./difference-evaluator.service";
 import {ImageUploadService} from "./image-upload.service";
+import {IFreeGame} from "../../../common/model/game/free-game";
 
 export const EXPECTED_DIFF_NUMBER: number = 7;
 
@@ -41,8 +42,14 @@ export class GameCreatorService {
             if (error.response.status !== Httpstatus.NOT_FOUND) {
                 throw new Error("dataBase: " + error.response.data.message);
             }
-
-            return;
+            try {
+                await Axios.get<IFreeGame>("http://localhost:3000/api/data-base/games/free/" + gameName);
+            } catch (error) {
+                if (error.response.status !== Httpstatus.NOT_FOUND) {
+                    throw new Error("dataBase: " + error.response.data.message);
+                }
+                return;
+            }
         }
         throw new Error(NAME_ERROR_MESSAGE);
     }
