@@ -123,7 +123,7 @@ export class GameCreatorService {
             modifiedImage: imagesUrls[1],
             diffData: differenceData,
         };
-        await Axios.post<ISimpleGame>("http://localhost:3000/api/data-base/games/simple/", game)
+        await Axios.post<Message>("http://localhost:3000/api/data-base/games/simple/", game)
             // tslint:disable-next-line:no-any Generic error response
             .catch((reason: any) => {
                 throw new Error("Unable to create game: " + reason.response.data.message);
@@ -138,7 +138,7 @@ export class GameCreatorService {
             originalScene: orginalScene,
             modifiedScene: modifiedScene,
         };
-        await Axios.post<IFreeGame>("http://localhost:3000/api/data-base/games/free/", game)
+        await Axios.post<Message>("http://localhost:3000/api/data-base/games/free/", game)
             // tslint:disable-next-line:no-any Generic error response
             .catch((reason: any) => {
                 throw new Error("dataBase: Unable to create game: " + reason.response.data.message);
