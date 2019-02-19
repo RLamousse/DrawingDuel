@@ -1,5 +1,5 @@
 import {IPoint} from "../point";
-import {IGame} from "./game";
+import {IGame, instanceOfGame} from "./game";
 
 export type DifferenceCluster = [number, IPoint[]];
 export type ISimpleDifferenceData = DifferenceCluster[];
@@ -11,3 +11,9 @@ export interface ISimpleGame extends IGame {
     modifiedImage: string;
     diffData: ISimpleDifferenceData;
 }
+
+export const instanceOfSimpleGame = (object: any): object is ISimpleGame =>
+    instanceOfGame(object) &&
+    'originalImage' in object &&
+    'modifiedImage' in object &&
+    'diffData' in object;
