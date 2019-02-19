@@ -3,6 +3,7 @@ import {Db, MongoClient, MongoError} from "mongodb";
 import "reflect-metadata";
 import {SimpleGamesCollectionService} from "./db/simple-games.collection.service";
 import {UsersCollectionService} from "./db/users.collection.service";
+import {FreeGamesCollectionService} from "./db/free-games.collection.service";
 
 @injectable()
 export class DataBaseService {
@@ -18,6 +19,7 @@ export class DataBaseService {
     private _dataBase: Db;
     private _users: UsersCollectionService;
     private _simpleGames: SimpleGamesCollectionService;
+    private _freeGames: FreeGamesCollectionService;
 
     public constructor() {
         MongoClient.connect(this.DB_URL, {useNewUrlParser : true}, (err: MongoError, client: MongoClient) => {
@@ -25,6 +27,7 @@ export class DataBaseService {
                 this._dataBase = client.db(this.DB_DB);
                 this._users = new UsersCollectionService(this._dataBase.collection("users"));
                 this._simpleGames = new SimpleGamesCollectionService(this._dataBase.collection("simpleGames"));
+                this._freeGames = new FreeGamesCollectionService(this._dataBase.collection("freeGames"));
             } else {
                 throw(err);
             }
@@ -37,5 +40,9 @@ export class DataBaseService {
 
     public get simpleGames(): SimpleGamesCollectionService {
         return this._simpleGames;
+    }
+
+    public get freeGames(): FreeGamesCollectionService {
+        return this._freeGames;
     }
 }
