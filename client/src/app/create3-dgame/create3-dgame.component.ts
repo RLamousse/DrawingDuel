@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { MatCheckboxChange, MatDialogRef, MatSliderChange } from "@angular/material";
+import { FREE_GAME_CREATION_ROUTE } from "../../../../common/communication/routes";
 import { ModificationType, ObjectGeometry } from "../FreeGameCreatorInterface/free-game-enum";
 import { AVAILABLE_MODIF_TYPES, AVAILABLE_OBJECT_TYPES, SelectType } from "../Interfaces/selectType";
 import { AbstractForm } from "../abstract-form";
@@ -77,12 +78,10 @@ export class Create3DGameComponent extends AbstractForm implements OnInit {
     this.createScenes(objectTypes, modificationTypes);
     const fd: FormData = new FormData();
     fd.append("gameName", this.formDoc.value.name);
-    fd.append("objectTypes", JSON.stringify(objectTypes));
-    fd.append("modificationTypes", JSON.stringify(modificationTypes));
-    fd.append("objectQuantity", this.sliderValue.toString());
-    this.formPost.basicPost(fd).subscribe(
+    fd.append("originalScene", JSON.stringify(this.freeGameCreator.scene));
+    fd.append("modifiedScene", JSON.stringify(this.freeGameCreator.modifiedScene));
+    this.formPost.basicPost(FREE_GAME_CREATION_ROUTE, fd).subscribe(
       (data) => {
-        // alert((data as { message: string }).message);
         this.exit(data);
       },
       (error: Error) => {
@@ -97,10 +96,13 @@ export class Create3DGameComponent extends AbstractForm implements OnInit {
     this.freeGameCreator.objectTypes = objects;
     this.freeGameCreator.obj3DToCreate = this.sliderValue;
     this.freeGameCreator.createScenes();
+<<<<<<< HEAD
 
     let screenShots: FreeGamePhotoService = new FreeGamePhotoService();
     console.log(this.freeGameCreator.scene);
     screenShots.takePhotos(this.freeGameCreator.scene, this.freeGameCreator.modifiedScene);
 
+=======
+>>>>>>> 5243a3fecc96ac75654e3823739d3f7ca4e857ce
   }
 }

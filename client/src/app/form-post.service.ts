@@ -3,6 +3,7 @@ import { Injectable } from "@angular/core";
 
 import { throwError, Observable } from "rxjs";
 import { catchError } from "rxjs/operators";
+import { environment } from "src/environments/environment";
 
 @Injectable({
   providedIn: "root",
@@ -10,12 +11,12 @@ import { catchError } from "rxjs/operators";
 export class FormPostService {
 
   // Since we are in dev we can't use the base URL of the document, hence the hardcode
-  private readonly BASE_URL: string = "http://localhost:3000/api/game-creator/create-simple-game";
+  private readonly BASE_URL: string = environment.production ? document.baseURI : "http://localhost:3000/";
   public constructor(private http: HttpClient) { }
 
-  public basicPost(body: FormData | {}): Observable<Object> {
+  public basicPost(route: string, body: FormData | {}): Observable<Object> {
 
-    return this.http.post<Object>(this.BASE_URL, body).pipe(
+    return this.http.post<Object>(this.BASE_URL + route, body).pipe(
       catchError(this.handleError),
     );
   }
