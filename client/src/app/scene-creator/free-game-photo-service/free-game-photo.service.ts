@@ -1,38 +1,45 @@
 import { Injectable } from "@angular/core";
-// let domtoimage = require('dom-to-image');
 import * as THREE from "three";
 
 @Injectable()
 export class FreeGamePhotoService {
-  private camera: THREE.PerspectiveCamera;
-  private renderer: THREE.WebGLRenderer;
+  private fieldOfView: number;
+  private nearClippingPane: number;
+  private farClippingPane: number;
+  private backGroundColor: number;
 
-  private fieldOfView: number = 90;
-  private nearClippingPane: number = 1;
-  private farClippingPane: number = 1000;
-  private backGroundColor: number = 0x0B7B90;
+  private cameraX: number;
+  private cameraY: number;
+  private cameraZ: number;
 
-  private cameraX: number = 0;
-  private cameraY: number = 0;
-  private cameraZ: number = 100;
+  public constructor() {
+    this.fieldOfView = 90;
+    this.nearClippingPane = 1;
+    this.farClippingPane = 1000;
+    this.backGroundColor = 0x0B7B90;
+
+    this.cameraX = 0;
+    this.cameraY = 0;
+    this.cameraZ = 100;
+  }
 
   public takePhoto(originScene: THREE.Scene, container: HTMLDivElement): void {
-    this.camera = new THREE.PerspectiveCamera(
+    const camera: THREE.PerspectiveCamera = new THREE.PerspectiveCamera(
       this.fieldOfView,
       (container.clientWidth) / (container.clientHeight),
       this.nearClippingPane,
       this.farClippingPane,
     );
-    this.camera.position.x = this.cameraX;
-    this.camera.position.y = this.cameraY;
-    this.camera.position.z = this.cameraZ;
+    camera.position.x = this.cameraX;
+    camera.position.y = this.cameraY;
+    camera.position.z = this.cameraZ;
 
-    this.renderer = new THREE.WebGLRenderer({ preserveDrawingBuffer: true });
-    this.renderer.setClearColor(this.backGroundColor);
-    this.renderer.setPixelRatio(devicePixelRatio);
-    this.renderer.setSize(container.clientWidth, container.clientHeight);
-    container.appendChild(this.renderer.domElement);
+    const renderer: THREE.WebGLRenderer = new THREE.WebGLRenderer({ preserveDrawingBuffer: true });
+    renderer.setClearColor(this.backGroundColor);
+    renderer.setPixelRatio(devicePixelRatio);
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    container.appendChild(renderer.domElement);
 
-    this.renderer.render(originScene, this.camera);
+    renderer.render(originScene, camera);
   }
 }
