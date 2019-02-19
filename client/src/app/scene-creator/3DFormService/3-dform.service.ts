@@ -3,13 +3,22 @@ import * as THREE from "three";
 @Injectable()
 export class Form3DService {
 
-  private baseSize: number = 20;
-  private maxSizeFactor: number = 150;
-  private minSizeFactor: number = 50;
-  private segments: number = 32;
-  private radiusFactor: number = 2;
+  private baseSize: number;
+  private maxSizeFactor: number;
+  private minSizeFactor: number;
+  private segments: number;
+  private radiusFactor: number;
   private material: THREE.MeshPhongMaterial;
-  private colorMask: number = 0xFFFFFF;
+  private colorMask: number;
+
+  public constructor() {
+    this.baseSize = 20;
+    this.maxSizeFactor = 150;
+    this.minSizeFactor = 50;
+    this.segments = 32;
+    this.radiusFactor = 2;
+    this.colorMask = 0xFFFFFF;
+  }
 
   private sizeGenerator(): number {
     const percentFactor: number = 100;
