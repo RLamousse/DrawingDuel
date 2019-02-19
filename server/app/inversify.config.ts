@@ -4,6 +4,7 @@ import {BitmapDiffController} from "./controllers/bitmap-diff.controller";
 import {DataBaseController} from "./controllers/data-base.controller";
 import { GameCreatorController } from "./controllers/game-creator.controller";
 import { UserController } from "./controllers/username.controller";
+import { WebsocketController } from "./controllers/websocket.controller";
 import {BitmapWriter} from "./images/bitmap/bitmap-writer";
 import {Server} from "./server";
 import {BitmapDiffService} from "./services/bitmap-diff.service";
@@ -28,5 +29,7 @@ container.bind(Types.BitmapDiffService).to(BitmapDiffService);
 container.bind(Types.BitmapWriter).to(BitmapWriter);
 container.bind(Types.UserNameService).to(UsernameService).inSingletonScope();
 container.bind(Types.UserNameController).to(UserController);
+
+container.bind(Types.WebsocketController).to(WebsocketController);
 
 export { container };
