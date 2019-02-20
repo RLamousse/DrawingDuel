@@ -51,6 +51,7 @@ export class GameService {
   }
 
   public getSimpleGames(): Observable<ISimpleGame[]> {
+
     return this.http.get<ISimpleGame[]>(this.SIMPLE_GAME_BASE_URL).pipe(
       catchError(this.handleError<ISimpleGame[]>("get SimpleGames from Server failed")),
     );
@@ -58,8 +59,6 @@ export class GameService {
 
   private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {
 
-    return (error: Error): Observable<T> => {
-        return of(result as T);
-    };
+    return (error: Error): Observable<T> =>  of(result as T);
   }
 }

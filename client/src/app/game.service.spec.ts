@@ -1,5 +1,6 @@
-import { HttpClientModule } from "@angular/common/http";
-import { async, TestBed } from "@angular/core/testing";
+import { HttpClient } from "@angular/common/http";
+import { async, inject, TestBed } from "@angular/core/testing";
+import { of, throwError } from "rxjs";
 import {IFreeGame} from "../../../common/model/game/free-game";
 import {IGame} from "../../../common/model/game/game";
 import {ISimpleGame} from "../../../common/model/game/simple-game";
@@ -7,7 +8,7 @@ import { GameService } from "./game.service";
 
 describe("GameService", () => {
   let serviceGame: GameService;
-  let spyService: jasmine.SpyObj<GameService>;
+  let spyService: jasmine.SpyObj<HttpClient>;
 
   const emptyMockedGameList: IGame[] = [];
 
@@ -44,19 +45,13 @@ describe("GameService", () => {
   }];
 
   beforeEach(async(() => {
+    spyService = jasmine.createSpyObj("HttpClient", ["get"]);
+    spyService.get.and.returnValue(of(mockFreeGameList));
     TestBed.configureTestingModule({
-      imports: [HttpClientModule],
-      providers: [GameService],
+      imports: [],
+      providers: [{ provide: HttpClient, useValue: spyService}, GameService],
     });
   }));
-
-  beforeEach(() => {
-    spyService = jasmine.createSpyObj("GameService", ["getGames"]);
-    TestBed.configureTestingModule({
-      imports: [HttpClientModule],
-      providers: [{ provide: GameService, useValue: spyService}, GameService],
-    });
-  });
 
   it("should be created", () => {
     serviceGame = TestBed.get(GameService);
@@ -65,9 +60,9 @@ describe("GameService", () => {
   });
 
   // Test ConvertScoresObject
-  it("should return a Game type Object", () => {
-    expect(typeof (mockMixGameList)).toBe(typeof (serviceGame.convertScoresObject(mockMixGameList)));
-  });
+  it("should return a Game type Object", inject([GameService], (serv: GameService) => {
+    expect(typeof (mockMixGameList)).toBe(typeof (serv.convertScoresObject(mockMixGameList)));
+  }));
 
   it("should have the right time format and not modify the name", () => {
     serviceGame.convertScoresObject(mockMixGameList);
@@ -132,4 +127,16 @@ describe("GameService", () => {
     expect(serviceGame.simpleGames.length).not.toBe(0);
     expect(serviceGame.freeGames.length).not.toBe(0);
   });
+
+  it("expect getSimpleGame to throw an error if get fails", async(inject([GameService], (serv: GameService) => {
+    spyService.get.and.returnValue(throwError("error"));
+    expect(serv.getSimpleGames).toThrow();
+  })));
+
+  it("expect getSimmpleGames to return an observable",  async(inject([GameService], (serv: GameService) => {
+    spyService.get.and.returnValue(of(mockFreeGameList));
+    serv.getSimpleGames().subscribe( (game: ISimpleGame[]) => {
+      expect(mockFreeGameList).toEqual(game);
+    });
+  })));
 });
