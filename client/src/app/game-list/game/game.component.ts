@@ -18,8 +18,8 @@ export class GameComponent {
   @Input() public bestMultiTimes: { name: string, time: number }[];
   @Input() public originalImage: string = "test";
   @Input() public modifiedImage: string = "test";
-  @Input() public rightButton: string;
-  @Input() public leftButton: string;
+  @Input() protected rightButton: string;
+  @Input() protected leftButton: string;
 
   protected leftButtonClick(): void {
     if (this.leftButton === "jouer") {
