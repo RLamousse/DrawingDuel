@@ -6,7 +6,5 @@ import { Component} from "@angular/core";
   styleUrls: ["./compteur-diff.component.css"],
 })
 export class CompteurDiffComponent {
-
-  public constructor() {/*vide*/ }
-
+  protected diffNumber: number = 0;
 }
