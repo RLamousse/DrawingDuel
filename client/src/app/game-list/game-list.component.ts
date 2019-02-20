@@ -12,8 +12,8 @@ import { MOCKED_FREE_GAMES, MOCKED_SIMPLE_GAMES } from "../mockGames";
 
 export class GameListComponent implements OnInit {
 
-  @Input() public rightButton: string = "joindre";
-  @Input() public leftButton: string = "jouer";
+  @Input() protected readonly rightButton: string = "joindre";
+  @Input() protected readonly leftButton: string = "jouer";
   public constructor(private gameService: GameService) {/*vide*/}
 
   public ngOnInit(): void {
