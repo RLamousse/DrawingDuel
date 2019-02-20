@@ -1,4 +1,4 @@
-import { SocketEvent } from "./socket-events";
+import { SocketEvent } from "../socket-events";
 
 export interface Message {
     title: string;
