@@ -9,7 +9,7 @@ body{
     border: 1px black solid;
     min-height: 30%;
 }
-img{
+app-simple-game-canvas {
     width: 640px;
     height: 480px;
     position: center;

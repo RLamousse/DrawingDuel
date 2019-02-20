@@ -8,8 +8,7 @@ import { ActivatedRoute} from "@angular/router";
 })
 export class PlayViewComponent implements OnInit {
 
-  public constructor(
-  private route: ActivatedRoute, ) {/*vide*/ }
+  public constructor(private route: ActivatedRoute) {/*vide*/ }
 
   public gameName: string;
   public originalImage: string;

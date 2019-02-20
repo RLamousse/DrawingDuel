@@ -3,8 +3,8 @@
   <div class = "compteur"> Vous jouez depuis 00:00:00</div>
   <app-compteur-diff></app-compteur-diff>
   <div class = "center">
-     <img  src={{originalImage}}>
-     <img  src={{modifiedImage}}>
+    <app-simple-game-canvas [imageSource]="originalImage"></app-simple-game-canvas>
+    <app-simple-game-canvas [imageSource]="modifiedImage"></app-simple-game-canvas>
   </div>
   <div class = "eventNotif"></div>
 </body>
