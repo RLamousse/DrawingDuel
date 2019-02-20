@@ -12,7 +12,9 @@ export class SimpleGameCanvasComponent implements OnInit {
   @Input() public imageSource: string;
 
   @ViewChild("canvas") private canvas: ElementRef;
-  private canvasContext: CanvasRenderingContext2D;
+  private _canvasContext: CanvasRenderingContext2D;
+  private _width: number;
+  private _height: number;
 
   public constructor() {
     this.pointClick = new EventEmitter();
@@ -22,20 +24,32 @@ export class SimpleGameCanvasComponent implements OnInit {
     const imageElement: HTMLImageElement = new Image();
     const canvasElement: HTMLCanvasElement = this.canvas.nativeElement;
     imageElement.onload = () => {
-      canvasElement.width = imageElement.width;
-      canvasElement.height = imageElement.height;
+
+      this._width = imageElement.width;
+      this._height = imageElement.height;
+
+      canvasElement.width = this._width;
+      canvasElement.height = this._height;
 
       const canvasContext: CanvasRenderingContext2D | null = canvasElement.getContext("2d");
       if (canvasContext === null) {
         // ¯\_(ツ)_/¯
         return;
       }
-      this.canvasContext = canvasContext;
-      this.canvasContext.drawImage(imageElement, 0, 0, imageElement.width, imageElement.height);
+      this._canvasContext = canvasContext;
+      this._canvasContext.drawImage(imageElement, 0, 0, this._width, this._height);
     };
 
     imageElement.crossOrigin = "Anonymous"; // To be able to write in canvas
     imageElement.src = this.imageSource;
+  }
+
+  public appendToCanvas(imgData: ImageData) {
+    this._canvasContext.putImageData(imgData, 0, 0);
+  }
+
+  public get canvasImageData(): ImageData {
+    return this._canvasContext.getImageData(0, 0, this._width, this._height);
   }
 
   protected clickHandler(event: MouseEvent): void {
