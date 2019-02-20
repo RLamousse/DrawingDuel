@@ -3,25 +3,14 @@ import * as THREE from "three";
 
 @Injectable()
 export class FreeGamePhotoService {
-  private fieldOfView: number;
-  private nearClippingPane: number;
-  private farClippingPane: number;
-  private backGroundColor: number;
+  private readonly fieldOfView: number = 90;
+  private readonly nearClippingPane: number = 1;
+  private readonly farClippingPane: number = 1000;
+  private readonly backGroundColor: number = 0x0B7B90;
 
-  private cameraX: number;
-  private cameraY: number;
-  private cameraZ: number;
-
-  public constructor() {
-    this.fieldOfView = 90;
-    this.nearClippingPane = 1;
-    this.farClippingPane = 1000;
-    this.backGroundColor = 0x0B7B90;
-
-    this.cameraX = 0;
-    this.cameraY = 0;
-    this.cameraZ = 100;
-  }
+  private readonly cameraX: number = 0;
+  private readonly cameraY: number = 0;
+  private readonly cameraZ: number = 100;
 
   public takePhoto(originScene: THREE.Scene, container: HTMLDivElement): void {
     const camera: THREE.PerspectiveCamera = new THREE.PerspectiveCamera(
