@@ -1,5 +1,6 @@
 import {IFreeGame} from "../../../common/model/game/free-game";
 import {ISimpleGame} from "../../../common/model/game/simple-game";
+import * as THREE from "three";
 
 export const MOCKED_SIMPLE_GAMES: ISimpleGame[] = [
     {
@@ -50,6 +51,8 @@ export const MOCKED_FREE_GAMES: IFreeGame[] = [
       bestMultiTimes: [{ name: "mockedUser1", time: 1200 },
                        { name: "mockedUser2", time: 1450 },
                        { name: "mockedUser3", time: 1600 }],
+      originalScene: new THREE.Scene(),
+      modifiedScene: new THREE.Scene(),
     },
     {
         gameName: "mockedFreeGameName2",
@@ -59,6 +62,8 @@ export const MOCKED_FREE_GAMES: IFreeGame[] = [
         bestMultiTimes: [{ name: "mockedUser1", time: 1200 },
                          { name: "mockedUser2", time: 1450 },
                          { name: "mockedUser3", time: 1600 }],
+      originalScene: new THREE.Scene(),
+      modifiedScene: new THREE.Scene(),
     },
     {
         gameName: "mockedFreeName3",
@@ -68,5 +73,7 @@ export const MOCKED_FREE_GAMES: IFreeGame[] = [
         bestMultiTimes: [{ name: "mockedUser1", time: 1200 },
                          { name: "mockedUser2", time: 1450 },
                          { name: "mockedUser3", time: 1600 }],
+      originalScene: new THREE.Scene(),
+      modifiedScene: new THREE.Scene(),
     },
   ];

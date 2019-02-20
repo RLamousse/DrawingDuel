@@ -42,9 +42,9 @@ export class GameService {
   public pushGames(gamesToPush: IGame[]): void {
     for (const game of gamesToPush) {
       if (instanceOfSimpleGame(game)) {
-        this.simpleGames.push(game);
+        this.simpleGames.push(<ISimpleGame>game);
       } else /*if (instanceOfFreeGame(game))*/ { // feature still in progress
-        this.freeGames.push(game);
+        this.freeGames.push(<IFreeGame>game);
       }
     }
   }
