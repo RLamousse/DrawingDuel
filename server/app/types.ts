@@ -12,4 +12,5 @@ export default  {
         BitmapDiffService: Symbol("BitmapDiffService"),
         BitmapWriter: Symbol("BitmapWriter"),
         WebsocketController: Symbol("WebSocketController"),
+        ImageUploadService: Symbol("ImageUploadService"),
 };

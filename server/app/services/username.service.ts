@@ -1,5 +1,5 @@
 ﻿import { injectable } from "inversify";
-import { UserValidationMessage } from "../../../common/communication/UserValidationMessage";
+import { UserValidationMessage } from "../../../common/communication/messages/user-validation-message";
 
 @injectable()
 export class UsernameService {

@@ -11,6 +11,7 @@ import {BitmapDiffService} from "./services/bitmap-diff.service";
 import {DataBaseService} from "./services/data-base.service";
 import {DifferenceEvaluatorService} from "./services/difference-evaluator.service";
 import {GameCreatorService} from "./services/game-creator.service";
+import {ImageUploadService} from "./services/image-upload.service";
 import { UsernameService } from "./services/username.service";
 import Types from "./types";
 
@@ -18,15 +19,20 @@ const container: Container = new Container();
 
 container.bind(Types.Server).to(Server);
 container.bind(Types.Application).to(Application);
+
 container.bind(Types.GameCreatorController).to(GameCreatorController);
 container.bind(Types.GameCreatorService).to(GameCreatorService);
+container.bind(Types.ImageUploadService).to(ImageUploadService);
+
 container.bind(Types.DataBaseController).to(DataBaseController);
 container.bind(Types.DataBaseService).to(DataBaseService);
+
 container.bind(Types.DifferenceEvaluatorService).to(DifferenceEvaluatorService);
+
 container.bind(Types.BitmapDiffController).to(BitmapDiffController);
 container.bind(Types.BitmapDiffService).to(BitmapDiffService);
-
 container.bind(Types.BitmapWriter).to(BitmapWriter);
+
 container.bind(Types.UserNameService).to(UsernameService).inSingletonScope();
 container.bind(Types.UserNameController).to(UserController);
 

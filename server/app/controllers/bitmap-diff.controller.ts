@@ -3,14 +3,15 @@ import * as HttpStatus from "http-status-codes";
 import { inject, injectable } from "inversify";
 import multer = require("multer");
 import { Bitmap } from "../../../common/image/bitmap/bitmap";
+import { BITMAP_MEME_TYPE } from "../../../common/image/bitmap/bitmap-utils";
 import { BitmapFactory } from "../images/bitmap/bitmap-factory";
 import { BitmapWriter } from "../images/bitmap/bitmap-writer";
 import { BitmapDiffService } from "../services/bitmap-diff.service";
 import Types from "../types";
 import {
-    assertFieldOfRequest,
+    assertFieldsOfRequest,
     assertRequestImageFilesFields,
-    BITMAP_MULTER_FILTER,
+    executeSafely, BITMAP_MULTER_FILTER,
     MODIFIED_IMAGE_FIELD_NAME, MULTER_BMP_FIELDS,
     ORIGINAL_IMAGE_FIELD_NAME, OUTPUT_FILE_NAME_FIELD_NAME, REQUIRED_IMAGE_HEIGHT, REQUIRED_IMAGE_WIDTH
 } from "./controller-utils";
@@ -33,9 +34,9 @@ export class BitmapDiffController {
         router.post("/",
                     this._multer.fields(MULTER_BMP_FIELDS),
                     (req: Request, res: Response, next: NextFunction) => {
-                    try {
+                    executeSafely(next, () => {
                         const diffFileName: string = req.body[OUTPUT_FILE_NAME_FIELD_NAME];
-                        assertFieldOfRequest(req, OUTPUT_FILE_NAME_FIELD_NAME);
+                        assertFieldsOfRequest(req, OUTPUT_FILE_NAME_FIELD_NAME);
                         assertRequestImageFilesFields(req);
 
                         const originalBitmap: Bitmap = BitmapDiffController.createBitmapFromRequest(req.files,
@@ -46,17 +47,12 @@ export class BitmapDiffController {
                                                                                                     "m-" + diffFileName);
 
                         const diffBitmap: Bitmap = this.bitmapDiffService.getDiff(diffFileName, originalBitmap, modifiedBitmap);
-                        const bitmapDiffPath: string = this.bitmapWriter.write(diffBitmap);
-                        res.status((diffBitmap ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR));
+                        const bitmapBytes: Buffer = this.bitmapWriter.getBitmapBytes(diffBitmap);
 
-                        const response: IBitmapDiffControllerResponse = {
-                            fileName: diffFileName,
-                            filePath: bitmapDiffPath,
-                        };
-                        res.json(response);
-                    } catch (error) {
-                        return next(error);
-                    }
+                        res.status((diffBitmap ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR));
+                        res.contentType(BITMAP_MEME_TYPE);
+                        res.send(bitmapBytes);
+                    });
             });
 
         return router;
@@ -83,9 +79,4 @@ export class BitmapDiffController {
         }
     }
 
-}
-
-export interface IBitmapDiffControllerResponse {
-    fileName: string;
-    filePath: string;
 }

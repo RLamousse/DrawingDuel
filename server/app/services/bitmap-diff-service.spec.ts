@@ -17,11 +17,11 @@ describe("A service generating the difference between two bitmaps", () => {
     });
     it("should return a white image if the same image is passed as parameters", () => {
         const diff: Bitmap = bitmapDiffService.getDiff("test-diff1.bmp", smallSolidWhiteBitmap, smallSolidWhiteBitmap);
-        expect(diff.pixels).to.deep.equal(smallSolidWhiteBitmap.pixels);
+        expect(diff.pixels).to.eql(smallSolidWhiteBitmap.pixels);
     });
     it("should return a black image if the two images are completely different", () => {
         const diff: Bitmap = bitmapDiffService.getDiff("test-diff2.bmp", smallSolidWhiteBitmap, smallSolidBlackBitmap);
-        expect(diff.pixels).to.deep.equal(smallSolidBlackBitmap.pixels);
+        expect(diff.pixels).to.eql(smallSolidBlackBitmap.pixels);
     });
     it("should draw the difference mask", () => {
         const expectedDiff: Bitmap = BitmapFactory.createBitmap(
@@ -32,7 +32,7 @@ describe("A service generating the difference between two bitmaps", () => {
             fs.readFileSync("test/test_bitmaps/centerBlack10x10.bmp"));
         const actualDiff: Bitmap = bitmapDiffService.getDiff("test-diff3.bmp", smallSolidWhiteBitmap, modified);
 
-        expect(actualDiff.pixels).to.deep.equal(expectedDiff.pixels);
+        expect(actualDiff.pixels).to.eql(expectedDiff.pixels);
     });
     it("should return a valid diff for two related images (navy seal)", () => {
         const expectedDiff: Bitmap = BitmapFactory.createBitmap("seal.diff.bmp", fs.readFileSync("test/test_bitmaps/seal.diff.bmp"));
