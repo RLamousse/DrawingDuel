@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { ModificationType, ObjectGeometry } from "src/app/FreeGameCreatorInterface/free-game-enum";
+import { ModificationType, ObjectGeometry } from "../../../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
 import * as THREE from "three";
 import { Form3DService } from "../3DFormService/3-dform.service";
 
