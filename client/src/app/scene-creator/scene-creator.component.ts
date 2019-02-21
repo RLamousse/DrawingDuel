@@ -32,5 +32,4 @@ export class SceneCreatorComponent implements AfterViewInit {
   public ngAfterViewInit(): void {
     this.renderService.init(this.originalContainer, this.modifiedContainer);
   }
-
 }

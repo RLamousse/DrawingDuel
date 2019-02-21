@@ -2,12 +2,11 @@ import { Component, OnInit } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { MatCheckboxChange, MatDialogRef, MatSliderChange } from "@angular/material";
 import { FREE_GAME_CREATION_ROUTE } from "../../../../common/communication/routes";
-import { ModificationType, ObjectGeometry } from "../FreeGameCreatorInterface/free-game-enum";
+import { ModificationType, ObjectGeometry } from "../../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
 import { AVAILABLE_MODIF_TYPES, AVAILABLE_OBJECT_TYPES, SelectType } from "../Interfaces/selectType";
 import { AbstractForm } from "../abstract-form";
 import { FormPostService } from "../form-post.service";
 import { FreeGameCreatorService } from "../scene-creator/FreeGameCreator/free-game-creator.service";
-
 @Component({
   selector: "app-create3-dgame",
   templateUrl: "./create3-dgame.component.html",

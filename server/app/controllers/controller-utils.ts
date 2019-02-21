@@ -1,4 +1,4 @@
-import {Request} from "express";
+import {NextFunction, Request} from "express";
 import {Field} from "multer";
 
 export const REQUIRED_IMAGE_HEIGHT: number = 480;
@@ -32,8 +32,24 @@ export const assertRequestImageFilesFields: (req: Express.Request) => void = (re
     }
 };
 
-export const assertFieldOfRequest: (req: Express.Request, field: string) => void = (req: Request, field: string): void => {
-    if (typeof req.body[field] !== "string" || req.body[field] === "") {
-        throw new Error(FORMAT_ERROR_MESSAGE);
+export const assertFieldsOfRequest: (req: Request, ...fields: string[]) => void = (req: Request, ...fields: string[]): void => {
+    let field: string;
+    for (field of fields) {
+        if (typeof req.body[field] === "undefined" || req.body[field] === "") {
+            throw new Error(FORMAT_ERROR_MESSAGE);
+        }
     }
+};
+
+export const executeSafely: (next: NextFunction, func: () => void) => void = (next: NextFunction, func: () => void): void => {
+    try {
+        func();
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const executePromiseSafely: (next: NextFunction, func: () => Promise<void>) => void =
+    (next: NextFunction, func: () => Promise<void>): void => {
+        func().catch((reason: Error) => next(reason));
 };

@@ -7,26 +7,26 @@ export class SceneRendererService {
 
   public originalContainer: HTMLDivElement;
   public modifiedContainer: HTMLDivElement;
+  public scene: THREE.Scene;
+  public modifiedScene: THREE.Scene;
+
   private camera: THREE.PerspectiveCamera;
   private rendererOri: THREE.WebGLRenderer;
   private rendererMod: THREE.WebGLRenderer;
-  public scene: THREE.Scene;
-  public modifiedScene: THREE.Scene;
-  // private screenshot: boolean = true;
 
   private fpControls: THREE.FirstPersonControls;
-  private mvmSpeed: number = 10;
-  private lkSpeed: number = 0.05;
-  private updateTime: number = 0.17;
+  private readonly mvmSpeed: number = 10;
+  private readonly lkSpeed: number = 0.05;
+  private readonly updateTime: number = 0.17;
 
-  private fieldOfView: number = 90;
-  private nearClippingPane: number = 1;
-  private farClippingPane: number = 1000;
-  private backGroundColor: number = 0x0B7B90;
+  private readonly fieldOfView: number = 90;
+  private readonly nearClippingPane: number = 1;
+  private readonly farClippingPane: number = 1000;
+  private readonly backGroundColor: number = 0x0B7B90;
 
-  private cameraX: number = 0;
-  private cameraY: number = 0;
-  private cameraZ: number = 100;
+  private readonly cameraX: number = 0;
+  private readonly cameraY: number = 0;
+  private readonly cameraZ: number = 100;
 
   private setRenderer(): void {
     this.rendererOri = new THREE.WebGLRenderer({ preserveDrawingBuffer: true });
@@ -93,36 +93,4 @@ export class SceneRendererService {
     this.modifiedScene = modified;
     this.renderLoop();
   }
-
-  /*public getSreenshots(original: THREE.Scene, modified: THREE.Scene): void {
-    this.screenshot = true;
-    if (this.screenshot) {
-      const saveFile = (strData: string, filename: string) => {
-        const link: HTMLAnchorElement = document.createElement("a");
-        if (typeof link.download === "string") {
-          document.body.appendChild(link);
-          link.download = filename;
-          link.href = strData;
-          link.click();
-          document.body.removeChild(link);
-        } else {
-          // location.replace(uri);
-        }
-      };
-      try {
-        const strMime: string = "image/jpeg";
-        let imgData: string = this.rendererOri.domElement.toDataURL(strMime);
-        const strDownloadMime: string = "image/octet-stream";
-        saveFile(imgData.replace(strMime, strDownloadMime), "test1.jpg");
-        this.camera.translateZ(-700);
-        imgData = this.rendererOri.domElement.toDataURL(strMime);
-        saveFile(imgData.replace(strMime, strDownloadMime), "test2.jpg");
-      } catch (e) {
-          throw (e);
-
-          return;
-      }
-      this.screenshot = false;
-    }
-  }*/
 }
