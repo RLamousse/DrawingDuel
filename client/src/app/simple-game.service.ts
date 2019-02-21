@@ -39,9 +39,9 @@ export class SimpleGameService {
 
   public async validateDifferenceAtPoint(point: IPoint): Promise<DifferenceCluster> {
     return Axios.get<DifferenceCluster>(
-      "http://localhost:3000/api/image-diff",
+      "http://localhost:3000/api/diff-validator",
       {
-        data: {
+        params: {
           coord: point,
           gameName: this._gameName,
         } as IDiffValidatorControllerRequest,

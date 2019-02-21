@@ -17,11 +17,12 @@ export class PlayViewComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.simpleGameService.gameName = this.gameName;
     this.route.queryParams.subscribe((params) => {
       this.gameName = params["gameName"];
       this.originalImage = params["originalImage"];
       this.modifiedImage = params["modifiedImage"];
+
+      this.simpleGameService.gameName = this.gameName;
     });
   }
 }
