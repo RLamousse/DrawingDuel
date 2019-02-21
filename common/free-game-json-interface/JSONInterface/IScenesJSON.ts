@@ -1,4 +1,4 @@
-﻿import * as ObjectType from "../FreeGameCreatorInterface/free-game-enum";
+﻿import { ObjectGeometry } from "../FreeGameCreatorInterface/free-game-enum";
 export interface IScenesJSON{
     originalObjects: IJson3DObject[],
     modifiedObjects: IJson3DObject[],
@@ -8,7 +8,7 @@ export interface IJson3DObject {
     position: number[],
     rotation: number[],
     color: number,
-    type: ObjectType.ObjectGeometry,
+    type: ObjectGeometry,
 }
 
 export interface ISphere extends IJson3DObject {
