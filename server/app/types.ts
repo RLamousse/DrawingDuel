@@ -12,4 +12,6 @@ export default  {
         BitmapDiffService: Symbol("BitmapDiffService"),
         BitmapWriter: Symbol("BitmapWriter"),
         ImageUploadService: Symbol("ImageUploadService"),
+        FreeGameCreatorService: Symbol("FreeGameCreatorService"),
+        Object3DCreatorService: Symbol("Object3DCreatorService"),
 };

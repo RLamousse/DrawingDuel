@@ -7,8 +7,8 @@ export class FreeGameCreatorService {
     private obj3DToCreate: number;
     private objectTypes: ObjectGeometry[];
     private modificationTypes: ModificationType[];
-    private objects: IObject.IJson3DObject[];
-    private modifiedObjects: IObject.IJson3DObject[];
+    public objects: IObject.IJson3DObject[];
+    public modifiedObjects: IObject.IJson3DObject[];
 
     private readonly MIN_DIST: number = 43;
     private readonly MAX_GAME_X: number = 300;
@@ -65,7 +65,7 @@ export class FreeGameCreatorService {
     public generate3DObject(): IObject.IJson3DObject {
         let randomObject: number;
         let createdObject: IObject.IJson3DObject;
-        const MAX_TYPE_OBJECTS: number = 4;
+        const MAX_TYPE_OBJECTS: number = this.objectTypes.length - 1;
         randomObject = this.getRandomValue(0, MAX_TYPE_OBJECTS);
         switch (this.objectTypes[randomObject]) {
             case ObjectGeometry.sphere: {
@@ -116,7 +116,6 @@ export class FreeGameCreatorService {
     }
 
     private generateDifferences(): void {
-        // DEEP COPY USING STRINGIFY AND PARSE, !!!!!!!!!!!!!!!
         this.modifiedObjects = JSON.parse(JSON.stringify(this.objects));
         const MOD_COUNT: number = 7;
         const INDEXES: Set<number> = new Set();
@@ -126,7 +125,7 @@ export class FreeGameCreatorService {
         this.randomDifference(INDEXES);
     }
 
-    public randomDifference(table: Set<number>): void {
+    private randomDifference(table: Set<number>): void {
         const MAX_MOD_TYPE: number = this.modificationTypes.length - 1;
         const ARRAY_INDEXES: number[] = Array.from(table).sort().reverse();
         let randomModifications: number;

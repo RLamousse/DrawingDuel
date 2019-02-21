@@ -9,8 +9,10 @@ import {Server} from "./server";
 import {BitmapDiffService} from "./services/bitmap-diff.service";
 import {DataBaseService} from "./services/data-base.service";
 import {DifferenceEvaluatorService} from "./services/difference-evaluator.service";
+import { FreeGameCreatorService } from "./services/free-game-creator.service";
 import {GameCreatorService} from "./services/game-creator.service";
 import {ImageUploadService} from "./services/image-upload.service";
+import { Object3DCreatorService } from "./services/object3D-creator.service";
 import { UsernameService } from "./services/username.service";
 import Types from "./types";
 
@@ -34,5 +36,8 @@ container.bind(Types.BitmapWriter).to(BitmapWriter);
 
 container.bind(Types.UserNameService).to(UsernameService).inSingletonScope();
 container.bind(Types.UserNameController).to(UserController);
+
+container.bind(Types.FreeGameCreatorService).to(FreeGameCreatorService);
+container.bind(Types.Object3DCreatorService).to(Object3DCreatorService);
 
 export { container };
