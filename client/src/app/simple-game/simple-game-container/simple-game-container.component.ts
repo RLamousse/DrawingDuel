@@ -11,7 +11,6 @@ import {SimpleGameCanvasComponent} from "../simple-game-canvas/simple-game-canva
            })
 export class SimpleGameContainerComponent implements OnInit {
 
-  @Input() public gameName: string;
   @Input() public originalImage: string;
   @Input() public modifiedImage: string;
 
@@ -22,7 +21,6 @@ export class SimpleGameContainerComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.simpleGameService.gameName = this.gameName;
   }
 
   public onCanvasClick(clickEvent: IPoint): void {
