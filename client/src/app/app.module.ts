@@ -20,11 +20,12 @@ import { Form3DService } from "./scene-creator/3DFormService/3-dform.service";
 import { FreeGameCreatorService } from "./scene-creator/FreeGameCreator/free-game-creator.service";
 import { SceneCreatorComponent } from "./scene-creator/scene-creator.component";
 import { SceneRendererService } from "./scene-creator/scene-renderer.service";
-import { SimpleGameCanvasComponent } from "./simple-game-canvas/simple-game-canvas.component";
+import { SimpleGameCanvasComponent } from "./simple-game/simple-game-canvas/simple-game-canvas.component";
 import { SimpleGameCreatorFormComponent } from "./simple-game-creator-form/simple-game-creator-form.component";
 import { UNListService } from "./username.service";
 import { VueAdminComponent } from "./vue-admin/vue-admin.component";
 import { WindowEventHandlerDirective } from "./window-event-handler.directive";
+import { SimpleGameContainerComponent } from './simple-game/simple-game-container/simple-game-container.component';
 
 @NgModule({
   declarations: [
@@ -41,6 +42,7 @@ import { WindowEventHandlerDirective } from "./window-event-handler.directive";
     CompteurDiffComponent,
     SceneCreatorComponent,
     SimpleGameCanvasComponent,
+    SimpleGameContainerComponent,
   ],
   imports: [
     BrowserModule,

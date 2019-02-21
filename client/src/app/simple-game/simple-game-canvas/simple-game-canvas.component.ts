@@ -1,5 +1,5 @@
 import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from "@angular/core";
-import {IPoint} from "../../../../common/model/point";
+import {IPoint} from "../../../../../common/model/point";
 
 @Component({
   selector: "app-simple-game-canvas",
@@ -8,7 +8,7 @@ import {IPoint} from "../../../../common/model/point";
 })
 export class SimpleGameCanvasComponent implements OnInit {
 
-  @Output() public pointClick: EventEmitter<IPoint>;
+  @Output() public pointClick: EventEmitter<IPoint> = new EventEmitter();
   @Input() public imageSource: string;
 
   @ViewChild("canvas") private canvas: ElementRef;
@@ -17,7 +17,6 @@ export class SimpleGameCanvasComponent implements OnInit {
   private _height: number;
 
   public constructor() {
-    this.pointClick = new EventEmitter();
   }
 
   public ngOnInit(): void {

@@ -2,9 +2,6 @@
   <div class = "centeredText">{{gameName}}</div>
   <div class = "compteur"> Vous jouez depuis 00:00:00</div>
   <app-compteur-diff></app-compteur-diff>
-  <div class = "center">
-    <app-simple-game-canvas [imageSource]="originalImage"></app-simple-game-canvas>
-    <app-simple-game-canvas [imageSource]="modifiedImage"></app-simple-game-canvas>
-  </div>
+  <app-simple-game-container [originalImage]="originalImage" [modifiedImage]="modifiedImage"></app-simple-game-container>
   <div class = "eventNotif"></div>
 </body>

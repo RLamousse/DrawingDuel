@@ -1,6 +1,6 @@
 @import "~@angular/material/prebuilt-themes/indigo-pink.css";
 
-body{
+body {
     background-color: lightblue;
 }
 
@@ -9,20 +9,14 @@ body{
     border: 1px black solid;
     min-height: 30%;
 }
-app-simple-game-canvas {
-    width: 640px;
-    height: 480px;
-    position: center;
-    padding-left: 10px;
-    padding-right: 10px;
-}
 
-.center {
+app-simple-game-container {
     margin: auto;
     width: 1320px;
     border: 3px solid green;
     padding: 10px;
     font: 25px arial serif;
+    display: block;
 }
 
 .centeredText {
@@ -30,12 +24,12 @@ app-simple-game-canvas {
     font-size: 16px;
 }
 
-.compteur{
+.compteur {
     margin: 10px;
     font: 20px arial serif;
 }
 
-.eventNotif{
+.eventNotif {
     margin: auto;
     width: 1320px;
     border: 3px solid green;
