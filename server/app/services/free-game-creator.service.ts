@@ -1,6 +1,6 @@
-﻿import { ModificationType, ObjectGeometry } from "../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
-import { Object3DCreatorService } from "./object3D-creator.service";
+import { ModificationType, ObjectGeometry } from "../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
 import * as IObject from "../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
+import { Object3DCreatorService } from "./object3D-creator.service";
 
 export class FreeGameCreatorService {
     private object3DService: Object3DCreatorService;
@@ -37,14 +37,14 @@ export class FreeGameCreatorService {
         let collision: boolean = true;
         let distance: number;
         const POWER: number = 2;
-        enum coordinate { X, Y, Z };
+        enum coordinate { X, Y, Z }
         if (list.length !== 0) {
             while (collision) {
                 for (const i of list) {
                     distance = Math.sqrt(
                         (Math.pow((i.position[coordinate.X] - object.position[coordinate.X]), POWER)) +
                         (Math.pow((i.position[coordinate.Y] - object.position[coordinate.Y]), POWER)) +
-                        (Math.pow((i.position[coordinate.Z] - object.position[coordinate.Z]), POWER)) 
+                        (Math.pow((i.position[coordinate.Z] - object.position[coordinate.Z]), POWER)),
                     );
                     if (distance < this.MIN_DIST) {
                         object.position = [
@@ -65,8 +65,8 @@ export class FreeGameCreatorService {
     public generate3DObject(): IObject.IJson3DObject {
         let randomObject: number;
         let createdObject: IObject.IJson3DObject;
-        const maxTypeObject: number = 4;
-        randomObject = this.getRandomValue(0, maxTypeObject);
+        const MAX_TYPE_OBJECTS: number = 4;
+        randomObject = this.getRandomValue(0, MAX_TYPE_OBJECTS);
         switch (this.objectTypes[randomObject]) {
             case ObjectGeometry.sphere: {
                 createdObject = this.object3DService.createSphere();
@@ -87,6 +87,7 @@ export class FreeGameCreatorService {
                 createdObject = { position: [], rotation: [], color: 0, type: ObjectGeometry.cube };
             }
         }
+
         return createdObject;
     }
 
@@ -117,20 +118,21 @@ export class FreeGameCreatorService {
     private generateDifferences(): void {
         // DEEP COPY USING STRINGIFY AND PARSE, !!!!!!!!!!!!!!!
         this.modifiedObjects = JSON.parse(JSON.stringify(this.objects));
-        const numberModifications: number = 7;
-        const indexes: Set<number> = new Set();
-        while (indexes.size !== numberModifications) {
-            indexes.add(this.getRandomValue(0, this.modifiedObjects.length - 1));
+        const MOD_COUNT: number = 7;
+        const INDEXES: Set<number> = new Set();
+        while (INDEXES.size !== MOD_COUNT) {
+            INDEXES.add(this.getRandomValue(0, this.modifiedObjects.length - 1));
         }
-        this.randomDifference(indexes);
+        this.randomDifference(INDEXES);
     }
 
     public randomDifference(table: Set<number>): void {
-        const maxModificationType: number = this.modificationTypes.length - 1;
-        const arrayIndexes: number[] = Array.from(table).sort().reverse();
-        for (const index of arrayIndexes) {
-            const randomModification: number = this.getRandomValue(0, maxModificationType);
-            switch (this.modificationTypes[randomModification]) {
+        const MAX_MOD_TYPE: number = this.modificationTypes.length - 1;
+        const ARRAY_INDEXES: number[] = Array.from(table).sort().reverse();
+        let randomModifications: number;
+        for (const index of ARRAY_INDEXES) {
+            randomModifications = this.getRandomValue(0, MAX_MOD_TYPE);
+            switch (this.modificationTypes[randomModifications]) {
                 case ModificationType.remove: {
                     this.modifiedObjects.splice(index, 1);
                     break;
@@ -142,8 +144,8 @@ export class FreeGameCreatorService {
                     break;
                 }
                 case ModificationType.changeColor: {
-                    const mask: number = 0xFFFFFF;
-                    this.modifiedObjects[index].color = (Math.random() * mask);
+                    const MASK: number = 0xFFFFFF;
+                    this.modifiedObjects[index].color = (Math.random() * MASK);
                     break;
                 }
                 default: {
