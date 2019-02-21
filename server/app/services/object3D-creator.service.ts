@@ -1,6 +1,6 @@
 ﻿import * as JsonScene from "../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
 import { ObjectGeometry } from "../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
-export class object3DCreatorService {
+export class Object3DCreatorService {
     private readonly BASE_SIZE: number = 20;
     private readonly MAX_SIZE_FACTOR: number = 150;
     private readonly MIN_SIZE_FACTOR: number = 50;
