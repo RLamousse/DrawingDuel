@@ -13,4 +13,5 @@ export default  {
         BitmapWriter: Symbol("BitmapWriter"),
         WebsocketController: Symbol("WebSocketController"),
         ImageUploadService: Symbol("ImageUploadService"),
+        DummyWebsocketActionService: Symbol("DummyWebsocketActionService"),
 };

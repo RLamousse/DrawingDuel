@@ -1,42 +1,46 @@
-import { injectable } from "inversify";
+import { inject, injectable } from "inversify";
 import * as io from "socket.io";
 import { isAWebsocketMessage, WebsocketMessage } from "../../../common/communication/messages/message";
 import { SocketEvent } from "../../../common/communication/socket-events";
 import IllegalArgumentError from "../../../common/errors/illegal-argument-error";
-import { WebsocketActionService } from "../services/abs-websocket-action-service";
+import { DummyWebsocketActionService } from "../services/websocket/dummy-action.service";
+import { WebsocketActionService } from "../services/websocket/websocket-action.service";
+import types from "../types";
 
 @injectable()
 export class WebsocketController {
 
-    private sockets: Map<string, io.Socket>;
-    private actions: Map<SocketEvent, WebsocketActionService>;
+    private actions: Map<SocketEvent, WebsocketActionService[]>;
 
-    public constructor () {
+    public constructor (@inject(types.DummyWebsocketActionService) private dummyAction: DummyWebsocketActionService) {
         this.registerSocket = this.registerSocket.bind(this);
         this.initSocket = this.initSocket.bind(this);
         this.handleMessage = this.handleMessage.bind(this);
-        this.sockets = new Map();
         this.actions = new Map();
     }
 
     public registerSocket(socket: io.Socket): void {
         this.initSocket(socket);
-        this.sockets.set(socket.id, socket);
     }
 
     private initSocket(socket: io.Socket): void {
-        socket.on("message", this.handleMessage);
+        socket.on("message", (message: string) => {
+            this.handleMessage (socket, message);
+        });
+        socket.on(SocketEvent.DUMMY, (message: string) => {
+            this.dummyAction.execute(message, socket);
+        });
         socket.emit(SocketEvent.WELCOME, "Connection has been made via a websocket");
     }
 
-    private handleMessage(id: string, paquet: string): void {
+    private handleMessage(socket: io.Socket, paquet: string): void {
         const message: WebsocketMessage | undefined = this.transformPaquet(paquet);
         if (!message) {
             throw new IllegalArgumentError("Message is not the right format");
         }
-        const actionService: WebsocketActionService | undefined = this.actions.get(message.title);
+        const actionService: WebsocketActionService[] | undefined = this.actions.get(message.title);
         if (actionService) {
-            actionService.execute(message.body);
+            actionService.forEach((action: WebsocketActionService) => action.execute(message.body, socket));
         }
     }
 
