@@ -1,4 +1,4 @@
-import { Injectable, Inject } from "@angular/core";
+import { Injectable } from "@angular/core";
 import * as THREE from "three";
 import { ObjectGeometry } from "../../../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
 import * as IObject from "../../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
@@ -7,27 +7,27 @@ import { Form3DService } from "../3DFormService/3-dform.service";
 @Injectable()
 export class FreeGameCreatorService {
 
-  public scene: THREE.Scene;
-  public modifiedScene: THREE.Scene;
+  private scene: THREE.Scene;
+  private modifiedScene: THREE.Scene;
 
   private objects: THREE.Mesh[];
   private modifiedObjects: THREE.Mesh[];
-
-  public constructor(
-    @Inject('IObject.IScenesJSON') private primitiveScenes: IObject.IScenesJSON,
-    private formService: Form3DService,
-  ) {
+  private formService: Form3DService;
+  public constructor() {
     this.objects = [];
     this.modifiedObjects = [];
+    this.formService = new Form3DService();
   }
 
-  public createScenes(): void {
+  public createScenes(primitiveScenes: IObject.IScenesJSON): THREE.Scene[] {
 
     this.scene = new THREE.Scene();
     this.modifiedScene = new THREE.Scene();
     this.setLighting();
-    this.generateOriginalScene();
-    this.generateModifiedScene();
+    this.generateOriginalScene(primitiveScenes);
+    this.generateModifiedScene(primitiveScenes);
+
+    return [this.scene, this.modifiedScene];
   }
 
   private setLighting(): void {
@@ -46,18 +46,18 @@ export class FreeGameCreatorService {
     this.modifiedScene.add(modifiedAmbiantLight);
   }
 
-  private generateOriginalScene(): void {
+  private generateOriginalScene(primitiveScenes: IObject.IScenesJSON): void {
     let object: THREE.Mesh;
-    for (const i of this.primitiveScenes.originalObjects) {
+    for (const i of primitiveScenes.originalObjects) {
       object = this.generate3DObject(i);
       this.scene.add(object);
       this.objects.push(object);
     }
   }
 
-  private generateModifiedScene(): void {
+  private generateModifiedScene(primitiveScenes: IObject.IScenesJSON): void {
     let object: THREE.Mesh;
-    for (const i of this.primitiveScenes.modifiedObjects) {
+    for (const i of primitiveScenes.modifiedObjects) {
       object = this.generate3DObject(i);
       this.modifiedScene.add(object);
       this.modifiedObjects.push(object);
