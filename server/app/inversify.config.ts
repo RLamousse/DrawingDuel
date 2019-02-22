@@ -13,7 +13,7 @@ import {DifferenceEvaluatorService} from "./services/difference-evaluator.servic
 import {GameCreatorService} from "./services/game-creator.service";
 import {ImageUploadService} from "./services/image-upload.service";
 import { UsernameService } from "./services/username.service";
-import { DummyWebsocketActionService } from "./services/websocket/dummy-action.service";
+import { DummyWebsocketActionService } from "./services/websocket/dummy-websocket-action.service";
 import Types from "./types";
 
 const container: Container = new Container();
