@@ -1,5 +1,6 @@
-import {IFreeGame} from "../../../common/model/game/free-game";
-import {ISimpleGame} from "../../../common/model/game/simple-game";
+//import {IFreeGame} from "../../../common/model/game/free-game";
+import { IGame } from "../../../common/model/game/game";
+import { ISimpleGame } from "../../../common/model/game/simple-game";
 
 export const MOCKED_SIMPLE_GAMES: ISimpleGame[] = [
     {
@@ -41,7 +42,7 @@ export const MOCKED_SIMPLE_GAMES: ISimpleGame[] = [
     },
   ];
 
-export const MOCKED_FREE_GAMES: IFreeGame[] = [
+export const MOCKED_FREE_GAMES: IGame[] = [
     {
       gameName: "mockedFreeGameName1",
       bestSoloTimes: [{ name: "mockedUser1", time: 1200 },
