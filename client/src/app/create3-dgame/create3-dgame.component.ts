@@ -76,8 +76,8 @@ export class Create3DGameComponent extends AbstractForm implements OnInit {
     this.createScenes(objectTypes, modificationTypes);
     const fd: FormData = new FormData();
     fd.append("gameName", this.formDoc.value.name);
-    fd.append("originalScene", JSON.stringify(this.freeGameCreator.scene));
-    fd.append("modifiedScene", JSON.stringify(this.freeGameCreator.modifiedScene));
+    fd.append("objectTypes", JSON.stringify(this.checkboxes.objectTypes));
+    fd.append("modificationTypes", JSON.stringify(this.checkboxes.modificationTypes));
     this.formPost.submitForm(FREE_GAME_CREATION_ROUTE, fd).subscribe(
       (data) => {
         this.exit(data);
