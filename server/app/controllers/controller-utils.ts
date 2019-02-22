@@ -39,9 +39,10 @@ export const assertRequestImageFilesFields: (req: Express.Request) => void = (re
 export const assertRequestSceneFields: (req: Express.Request) => void = (req: Request): void => {
     assertFieldsOfRequest(req, GAME_NAME_FIELD);
     //TODO assert these objects like the function just up
-    assertFieldsOfRequest(req, "objectQuantity");
-    assertFieldsOfRequest(req, "objectTypes");
-    assertFieldsOfRequest(req, "modificationTypes"); //TODO after merge with Ballandras, use constants
+
+    // assertFieldsOfRequest(req, "objectQuantity");
+    // assertFieldsOfRequest(req, "objectTypes");
+    // assertFieldsOfRequest(req, "modificationTypes"); //TODO after merge with Ballandras, use constants
     //TODO the same convention as phillipe for this request
 };
 
