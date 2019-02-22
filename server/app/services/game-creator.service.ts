@@ -1,7 +1,6 @@
 import Axios, {AxiosResponse} from "axios";
 import * as FormData from "form-data";
 import * as Httpstatus from "http-status-codes";
-import * as THREE from "three";
 import {inject, injectable} from "inversify";
 import "reflect-metadata";
 import {Message} from "../../../common/communication/messages/message";
@@ -13,7 +12,7 @@ import {ISimpleDifferenceData, ISimpleGame} from "../../../common/model/game/sim
 import {
     DIFFERENCE_ERROR_MESSAGE, MODIFIED_IMAGE_FIELD_NAME,
     NAME_ERROR_MESSAGE, ORIGINAL_IMAGE_FIELD_NAME, GAME_CREATION_SUCCESS_MESSAGE,
-    OUTPUT_FILE_NAME_FIELD_NAME
+    OUTPUT_FILE_NAME_FIELD_NAME, NON_EXISTING_THEME
 } from "../controllers/controller-utils";
 import {BitmapFactory} from "../images/bitmap/bitmap-factory";
 import Types from "../types";
@@ -21,6 +20,12 @@ import {NON_EXISTING_GAME_ERROR_MESSAGE} from "./db/simple-games.collection.serv
 import {DifferenceEvaluatorService} from "./difference-evaluator.service";
 import {ImageUploadService} from "./image-upload.service";
 import {IFreeGame} from "../../../common/model/game/free-game";
+import {
+    ModificationType,
+    ObjectGeometry
+} from "../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
+import {FreeGameCreatorService} from "./free-game-creator.service";
+import {IScenesJSON} from "../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
 
 export const EXPECTED_DIFF_NUMBER: number = 7;
 
@@ -75,13 +80,13 @@ export class GameCreatorService {
         }
     }
 
-    public async createFreeGame(gameName: string, originalScene: THREE.Scene, modifiedScene: THREE.Scene): Promise<Message> {
+    public async createFreeGame(gameName: string, numberOfObjects: number, theme: string, modTypes: ObjectGeometry[]): Promise<Message> {//TODO change theme to the good type with pfillipes code, and maybe the modtypes
 
         await GameCreatorService.testNameExistence(gameName);
 
-        this.testFreeGameNumberOfDiffs(<THREE.Mesh[]>originalScene.children, <THREE.Mesh[]>modifiedScene.children);
+        const scene: IScenesJSON = this.generateScene(numberOfObjects, theme, modTypes);
 
-        return await this.generateFreeGame(gameName, originalScene, modifiedScene);
+        return await this.generateFreeGame(gameName, scene);
     }
 
     public async createSimpleGame(gameName: string, originalImageFile: Buffer, modifiedImageFile: Buffer): Promise<Message> {
@@ -130,13 +135,12 @@ export class GameCreatorService {
             });
     }
 
-    private async uploadFreeGame(gameName: string, orginalScene: THREE.Scene, modifiedScene: THREE.Scene): Promise<void> {
+    private async uploadFreeGame(gameName: string, scene: IScenesJSON): Promise<void> {
         const game: IFreeGame = {
             gameName: gameName,
             bestSoloTimes: this.createRandomScores(),
             bestMultiTimes: this.createRandomScores(),
-            originalScene: orginalScene,
-            modifiedScene: modifiedScene,
+            scene: scene,
         };
         await Axios.post<Message>("http://localhost:3000/api/data-base/games/free/", game)
             // tslint:disable-next-line:no-any Generic error response
@@ -185,21 +189,38 @@ export class GameCreatorService {
         return diffData;
     }
 
-    private testFreeGameNumberOfDiffs(originalScene: THREE.Mesh[], modifiedScene: THREE.Mesh[]): void {
+    //TODO remove the function from the diff eval file, the diff eval tests, and the game creator tests
+    // private testFreeGameNumberOfDiffs(originalScene: THREE.Mesh[], modifiedScene: THREE.Mesh[]): void {
+    //
+    //     let diffNumber: number;
+    //     try {
+    //         diffNumber = this.differenceEvaluatorService.getFreeNDifferences(originalScene, modifiedScene);
+    //     } catch (error) {
+    //         throw new Error("diff counting: " + error.message);
+    //     }
+    //     if (diffNumber !== EXPECTED_DIFF_NUMBER) {
+    //         throw new Error(DIFFERENCE_ERROR_MESSAGE);
+    //     }
+    // }
 
-        let diffNumber: number;
-        try {
-            diffNumber = this.differenceEvaluatorService.getFreeNDifferences(originalScene, modifiedScene);
-        } catch (error) {
-            throw new Error("diff counting: " + error.message);
-        }
-        if (diffNumber !== EXPECTED_DIFF_NUMBER) {
-            throw new Error(DIFFERENCE_ERROR_MESSAGE);
-        }
+    private async generateFreeGame(gameName: string, scene: IScenesJSON): Promise<Message> {
+        await this.uploadFreeGame(gameName, scene);
+        return GAME_CREATION_SUCCESS_MESSAGE;
     }
 
-    private async generateFreeGame(gameName: string, originalScene: THREE.Scene, modifiedScene: THREE.Scene): Promise<Message> {
-        await this.uploadFreeGame(gameName, originalScene, modifiedScene);
-        return GAME_CREATION_SUCCESS_MESSAGE;
+    private generateScene(numberOfObjects: number, theme: string, modTypes: ObjectGeometry[]): IScenesJSON {
+        if (theme === "geometry") {//TODO modify that with phillips code
+            const sceneCreator: FreeGameCreatorService = new FreeGameCreatorService(numberOfObjects,
+                [ObjectGeometry.sphere,
+                    ObjectGeometry.cube,
+                    ObjectGeometry.cone,
+                    ObjectGeometry.cylinder,
+                    ObjectGeometry.pyramid],
+                [ModificationType.remove, ModificationType.add, ModificationType.changeColor]);
+
+            sceneCreator.generateIScenes();
+            return {originalObjects: sceneCreator.objects, modifiedObjects: sceneCreator.modifiedObjects};
+        }
+        throw new Error(NON_EXISTING_THEME);
     }
 }
