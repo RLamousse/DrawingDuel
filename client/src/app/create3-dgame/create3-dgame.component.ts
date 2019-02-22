@@ -6,7 +6,7 @@ import { ModificationType, ObjectGeometry } from "../../../../common/free-game-j
 import { AVAILABLE_MODIF_TYPES, AVAILABLE_OBJECT_TYPES, SelectType } from "../Interfaces/selectType";
 import { AbstractForm } from "../abstract-form";
 import { FormPostService } from "../form-post.service";
-import { FreeGameCreatorService } from "../scene-creator/FreeGameCreator/free-game-creator.service";
+//import { FreeGameCreatorService } from "../scene-creator/FreeGameCreator/free-game-creator.service";
 @Component({
   selector: "app-create3-dgame",
   templateUrl: "./create3-dgame.component.html",
@@ -29,7 +29,7 @@ export class Create3DGameComponent extends AbstractForm implements OnInit {
     _fb: FormBuilder,
     dialogRef: MatDialogRef<Create3DGameComponent>,
     formPost: FormPostService,
-    private freeGameCreator: FreeGameCreatorService,
+    //private freeGameCreator: FreeGameCreatorService,
   ) {
     super(_fb, dialogRef, formPost);
     this.checkboxes = {
@@ -90,9 +90,6 @@ export class Create3DGameComponent extends AbstractForm implements OnInit {
   }
 
   private createScenes(objects: ObjectGeometry[], modifications: ModificationType[]): void {
-    this.freeGameCreator.modificationTypes = modifications;
-    this.freeGameCreator.objectTypes = objects;
-    this.freeGameCreator.obj3DToCreate = this.sliderValue;
-    this.freeGameCreator.createScenes();
+    
   }
 }

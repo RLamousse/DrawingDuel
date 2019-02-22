@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, Inject } from "@angular/core";
 import * as THREE from "three";
 import { ObjectGeometry } from "../../../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
 import * as IObject from "../../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
@@ -10,15 +10,13 @@ export class FreeGameCreatorService {
   public scene: THREE.Scene;
   public modifiedScene: THREE.Scene;
 
-  private formService: Form3DService;
-
   private objects: THREE.Mesh[];
   private modifiedObjects: THREE.Mesh[];
-  private primitiveScenes: IObject.IScenesJSON;
 
-  public constructor(primScenes: IObject.IScenesJSON) {
-    this.formService = new Form3DService();
-    this.primitiveScenes = primScenes;
+  public constructor(
+    @Inject('IObject.IScenesJSON') private primitiveScenes: IObject.IScenesJSON,
+    private formService: Form3DService,
+  ) {
     this.objects = [];
     this.modifiedObjects = [];
   }
