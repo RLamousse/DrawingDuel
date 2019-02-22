@@ -27,7 +27,7 @@ export class WebsocketController {
         socket.on("message", (message: string) => {
             this.handleMessage (socket, message);
         });
-        socket.on(SocketEvent.DUMMY, (message: string) => {
+        socket.on(SocketEvent.DUMMY, (message: WebsocketMessage) => {
             this.dummyAction.execute(message, socket);
         });
         socket.emit(SocketEvent.WELCOME, "Connection has been made via a websocket");
@@ -40,7 +40,7 @@ export class WebsocketController {
         }
         const actionService: WebsocketActionService[] | undefined = this.actions.get(message.title);
         if (actionService) {
-            actionService.forEach((action: WebsocketActionService) => action.execute(message.body, socket));
+            actionService.forEach((action: WebsocketActionService) => action.execute(message, socket));
         }
     }
 
