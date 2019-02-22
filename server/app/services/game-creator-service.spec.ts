@@ -237,6 +237,7 @@ describe("A service that creates a game", () => {
     });
 
     //TODO change the arguments of createFreeGame to be the same as the pgillipe ones
+    //TODO mock the free game creator class
     describe("Create free game", () => {
 
         it("should throw a name error if the game name is already in the free games data base(simple game name existence)", async () => {
