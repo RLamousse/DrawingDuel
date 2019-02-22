@@ -1,4 +1,5 @@
 import {NextFunction, Request, Response, Router} from "express";
+import e = require("express");
 import {inject, injectable} from "inversify";
 import * as multer from "multer";
 import {GAME_NAME_FIELD} from "../../../common/communication/requests/game-creator.controller.request";
@@ -7,13 +8,12 @@ import Types from "../types";
 import {
     assertBodyFieldsOfRequest,
     assertRequestImageFilesFields,
-    BITMAP_MULTER_FILTER,
     executePromiseSafely,
+    BITMAP_MULTER_FILTER,
     MODIFIED_IMAGE_FIELD_NAME,
     MULTER_BMP_FIELDS,
     ORIGINAL_IMAGE_FIELD_NAME
 } from "./controller-utils";
-import e = require("express");
 
 @injectable()
 export class GameCreatorController {

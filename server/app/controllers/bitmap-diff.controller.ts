@@ -1,6 +1,7 @@
 import {NextFunction, Request, Response, Router} from "express";
 import * as HttpStatus from "http-status-codes";
 import {inject, injectable} from "inversify";
+import multer = require("multer");
 import {Bitmap} from "../../../common/image/bitmap/bitmap";
 import {BITMAP_MEME_TYPE} from "../../../common/image/bitmap/bitmap-utils";
 import {BitmapFactory} from "../images/bitmap/bitmap-factory";
@@ -10,8 +11,8 @@ import Types from "../types";
 import {
     assertBodyFieldsOfRequest,
     assertRequestImageFilesFields,
-    BITMAP_MULTER_FILTER,
     executeSafely,
+    BITMAP_MULTER_FILTER,
     MODIFIED_IMAGE_FIELD_NAME,
     MULTER_BMP_FIELDS,
     ORIGINAL_IMAGE_FIELD_NAME,
@@ -19,7 +20,6 @@ import {
     REQUIRED_IMAGE_HEIGHT,
     REQUIRED_IMAGE_WIDTH
 } from "./controller-utils";
-import multer = require("multer");
 
 @injectable()
 export class BitmapDiffController {

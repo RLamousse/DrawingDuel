@@ -2,7 +2,7 @@
 import {expect} from "chai";
 import * as HttpStatus from "http-status-codes";
 import * as request from "supertest";
-import {anyString, anything, instance, mock, when} from "ts-mockito";
+import {anything, anyString, instance, mock, when} from "ts-mockito";
 import {IDiffValidatorControllerRequest} from "../../../common/communication/requests/diff-validator-controller.request";
 import {IDiffValidatorControllerResponse} from "../../../common/communication/responses/diff-validator-controller.response";
 import {Application} from "../app";
