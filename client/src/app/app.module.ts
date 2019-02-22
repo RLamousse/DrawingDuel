@@ -1,7 +1,7 @@
 import { HttpClientModule } from "@angular/common/http";
 import { NgModule, NO_ERRORS_SCHEMA } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { MatButtonModule, MatFormFieldModule, MatIconModule, MatInputModule, MatSelectModule } from "@angular/material";
+import { MatButtonModule, MatCheckboxModule, MatFormFieldModule, MatIconModule, MatInputModule, MatSliderModule } from "@angular/material";
 import { MatDialogModule } from "@angular/material/dialog";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
@@ -15,6 +15,10 @@ import { GameComponent } from "./game-list/game/game.component";
 import { GameService } from "./game.service";
 import { InitialViewComponent } from "./initial-view/initial-view.component";
 import { PlayViewComponent } from "./play-view/play-view.component";
+import { Form3DService } from "./scene-creator/3DFormService/3-dform.service";
+import { FreeGameCreatorService } from "./scene-creator/FreeGameCreator/free-game-creator.service";
+import { SceneCreatorComponent } from "./scene-creator/scene-creator.component";
+import { SceneRendererService } from "./scene-creator/scene-renderer.service";
 import { SimpleGameCreatorFormComponent } from "./simple-game-creator-form/simple-game-creator-form.component";
 import { UNListService } from "./username.service";
 import { VueAdminComponent } from "./vue-admin/vue-admin.component";
@@ -32,6 +36,7 @@ import { WindowEventHandlerDirective } from "./window-event-handler.directive";
     Create3DGameComponent,
     SimpleGameCreatorFormComponent,
     PlayViewComponent,
+    SceneCreatorComponent,
   ],
   imports: [
     BrowserModule,
@@ -39,7 +44,6 @@ import { WindowEventHandlerDirective } from "./window-event-handler.directive";
     FormsModule,
     ReactiveFormsModule,
     MatButtonModule,
-    MatSelectModule,
     MatIconModule,
     MatInputModule,
     MatFormFieldModule,
@@ -47,8 +51,10 @@ import { WindowEventHandlerDirective } from "./window-event-handler.directive";
     AppRoutingModule,
     MaterialFileInputModule,
     MatDialogModule,
+    MatSliderModule,
+    MatCheckboxModule,
   ],
-  providers: [UNListService, FormPostService, GameService],
+  providers: [UNListService, FormPostService, GameService, SceneRendererService, Form3DService, FreeGameCreatorService],
   bootstrap: [AppComponent],
   entryComponents: [SimpleGameCreatorFormComponent, Create3DGameComponent],
   schemas: [NO_ERRORS_SCHEMA],
