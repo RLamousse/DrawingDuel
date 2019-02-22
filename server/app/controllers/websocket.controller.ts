@@ -3,7 +3,7 @@ import * as io from "socket.io";
 import { isAWebsocketMessage, WebsocketMessage } from "../../../common/communication/messages/message";
 import { SocketEvent } from "../../../common/communication/socket-events";
 import IllegalArgumentError from "../../../common/errors/illegal-argument-error";
-import { DummyWebsocketActionService } from "../services/websocket/dummy-action.service";
+import { DummyWebsocketActionService } from "../services/websocket/dummy-websocket-action.service";
 import { WebsocketActionService } from "../services/websocket/websocket-action.service";
 import types from "../types";
 
