@@ -25,7 +25,6 @@ export class PlayViewComponent implements OnInit , AfterViewInit {
       this.gameName = params["gameName"];
       this.originalImage = params["originalImage"];
       this.modifiedImage = params["modifiedImage"];
-      this.originalSceneContainer = params["originalSceneContainer"];
     });
   }
   public ngAfterViewInit(): void {
