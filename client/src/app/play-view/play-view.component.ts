@@ -14,8 +14,10 @@ export class PlayViewComponent implements OnInit {
   public gameName: string;
   public originalImage: string;
   public modifiedImage: string;
+  public isSimpleGame: boolean;
   public ngOnInit(): void {
     this.route.queryParams.subscribe((params) => {
+      this.isSimpleGame = params ["isSimpleGame"];
       this.gameName = params["gameName"];
       this.originalImage = params["originalImage"];
       this.modifiedImage = params["modifiedImage"];

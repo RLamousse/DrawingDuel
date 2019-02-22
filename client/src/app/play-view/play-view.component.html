@@ -3,8 +3,13 @@
   <div class = "compteur"> Vous jouez depuis 00:00:00</div>
   <app-compteur-diff></app-compteur-diff>
   <div class = "center">
-     <img  src={{originalImage}}>
-     <img  src={{modifiedImage}}>
+      <div *ngIf="isSimpleGame;  then thenBlock else elseBlock"></div>
+      <ng-template #thenBlock>
+            <img  src={{originalImage}}>
+            <img  src={{modifiedImage}}>
+      </ng-template>
+      <ng-template #elseBlock>
+      </ng-template>
   </div>
   <div class = "eventNotif"></div>
 </body>
