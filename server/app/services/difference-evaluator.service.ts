@@ -1,7 +1,6 @@
 import {injectable} from "inversify";
-import * as THREE from "three";
 import "reflect-metadata";
-import {create2dArray, deepCompare, customIndexOf} from "../../../common/util/util";
+import {create2dArray} from "../../../common/util/util";
 import {ISimpleDifferenceData} from "../../../common/model/game/simple-game";
 import {IPoint} from "../../../common/model/point";
 
@@ -35,33 +34,6 @@ export class DifferenceEvaluatorService {
         }
 
         return this.generateDiffZonesMap(PARENT_TABLE, ARRAY_OF_LABELS);
-    }
-
-    public getFreeNDifferences(originalScene: THREE.Mesh[], modifiedScene: THREE.Mesh[]): number {
-
-        this.validateFreeData(originalScene, modifiedScene);
-
-        const diffs: THREE.Mesh[] = [];
-
-        for (const ORIGINAL_MESH of originalScene) {
-            if (ORIGINAL_MESH instanceof THREE.Mesh) {
-                diffs.push(ORIGINAL_MESH);
-            }
-        }
-        for (const MODIFIED_MESH of modifiedScene) {
-            if (MODIFIED_MESH instanceof THREE.Mesh) {
-                const foundIndex: number = customIndexOf(diffs, MODIFIED_MESH, (elementToFind: THREE.Mesh, elementInArray: THREE.Mesh) => {
-                    return deepCompare(elementToFind.position, elementInArray.position);
-                });
-                if (foundIndex === -1) {
-                    diffs.push(MODIFIED_MESH);
-                } else if (this.compareMaterials(diffs[foundIndex], MODIFIED_MESH)) {
-                    diffs.splice(foundIndex, 1);
-                }
-            }
-        }
-
-        return diffs.length;
     }
 
     private validateSimpleData(pixels: number[][]): void {
@@ -138,37 +110,6 @@ export class DifferenceEvaluatorService {
         return parentTable[value] = this.findRoot(parentTable[value], parentTable);
     }
 
-    private validateFreeData(originalScene: THREE.Mesh[], modifiedScene: THREE.Mesh[]) {
-        if(!(originalScene instanceof Array) || !(modifiedScene instanceof Array)){
-            throw new Error(ARGUMENT_ERROR_MESSAGE);
-        }
-        const EVERY_VALUE: THREE.Mesh[] = originalScene.concat(modifiedScene);
-        for (const MESH of EVERY_VALUE){
-            if (!(MESH instanceof THREE.Object3D)) {
-                throw new Error(ARGUMENT_ERROR_MESSAGE);
-            }
-        }
-    }
-
-    private compareMaterials(mesh1: THREE.Mesh, mesh2: THREE.Mesh): boolean {
-        if (Array.isArray(mesh1.material) && Array.isArray(mesh2.material)) {
-            if (mesh1.material.length === mesh2.material.length) {
-                for (let i = 0; i < mesh1.material.length; i++) {
-                    if (!deepCompare((<THREE.MeshPhongMaterial>mesh1.material[i]).color,
-                        (<THREE.MeshPhongMaterial>mesh2.material[i]).color)) {
-                        return false;
-                    }
-                }
-                return true;
-            }
-            return false;
-        } else if (!Array.isArray(mesh1.material) && !Array.isArray(mesh2.material)) {
-            return deepCompare((<THREE.MeshPhongMaterial>mesh1.material).color,
-                               (<THREE.MeshPhongMaterial>mesh2.material).color);
-        }
-        return false;
-    }
-
     private generateDiffZonesMap(parentTable: Map<number, number>, arrayOfLabels: number[][]): ISimpleDifferenceData {
         const DIFF_ZONES_MAP: Map<number, IPoint[]> = new Map<number, IPoint[]>();
 
@@ -177,9 +118,9 @@ export class DifferenceEvaluatorService {
                 if (arrayOfLabels[i][j]) {
                     if (DIFF_ZONES_MAP.has(this.findRoot(arrayOfLabels[i][j], parentTable))) {
                         // @ts-ignore
-                        DIFF_ZONES_MAP.get(this.findRoot(arrayOfLabels[i][j], parentTable)).push({x: i, y: j});
+                        DIFF_ZONES_MAP.get(this.findRoot(arrayOfLabels[i][j], parentTable)).push({x: j, y: i});
                     } else {
-                        DIFF_ZONES_MAP.set(this.findRoot(arrayOfLabels[i][j], parentTable), [{x: i, y: j}]);
+                        DIFF_ZONES_MAP.set(this.findRoot(arrayOfLabels[i][j], parentTable), [{x: j, y: i}]);
                     }
                 }
             }
