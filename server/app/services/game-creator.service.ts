@@ -84,9 +84,9 @@ export class GameCreatorService {
 
         await GameCreatorService.testNameExistence(gameName);
 
-        const scene: IScenesJSON = this.generateScene(numberOfObjects, theme, modTypes);
+        const scenes: IScenesJSON = this.generateScene(numberOfObjects, theme, modTypes);
 
-        return await this.generateFreeGame(gameName, scene);
+        return await this.generateFreeGame(gameName, scenes);
     }
 
     public async createSimpleGame(gameName: string, originalImageFile: Buffer, modifiedImageFile: Buffer): Promise<Message> {
