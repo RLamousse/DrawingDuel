@@ -8,6 +8,7 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { MaterialFileInputModule } from "ngx-material-file-input";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
+import { CompteurDiffComponent } from "./compteur-diff/compteur-diff.component";
 import {Create3DGameComponent} from "./create3-dgame/create3-dgame.component";
 import { FormPostService } from "./form-post.service";
 import { GameListComponent } from "./game-list/game-list.component";
@@ -36,6 +37,7 @@ import { WindowEventHandlerDirective } from "./window-event-handler.directive";
     Create3DGameComponent,
     SimpleGameCreatorFormComponent,
     PlayViewComponent,
+    CompteurDiffComponent,
     SceneCreatorComponent,
   ],
   imports: [

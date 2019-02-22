@@ -4,6 +4,7 @@
         <app-game *ngFor="let instance of gameService.simpleGames" 
             [gameName]= "instance.gameName"
             [originalImage]= "instance.originalImage"
+            [modifiedImage]= "instance.modifiedImage"
             [bestSoloTimes]= "instance.bestSoloTimes"
             [bestMultiTimes]= "instance.bestMultiTimes"
             [rightButton]= "rightButton"
@@ -11,15 +12,16 @@
         </app-game>
     </div>
     <div class="window">
-      <h1>Parties Libres</h1>
-      <app-game *ngFor="let instance of gameService.freeGames"
-                [gameName]="instance.gameName"
-                [originalImage]="instance.originalImage"
-                [bestSoloTimes]="instance.bestSoloTimes"
-                [bestMultiTimes]="instance.bestMultiTimes"
-                [rightButton]="rightButton"
-                [leftButton]="leftButton">
-      </app-game>
+        <h1>Parties Libres</h1>
+        <app-game *ngFor="let instance of gameService.freeGames" 
+            [gameName]= "instance.gameName"
+            [originalImage]= "instance.originalImage"
+            [modifiedImage]= "instance.modifiedImage"
+            [bestSoloTimes]= "instance.bestSoloTimes"
+            [bestMultiTimes]= "instance.bestMultiTimes" 
+            [rightButton]= "rightButton"
+            [leftButton]= "leftButton">
+        </app-game>
     </div>
 </div>
 

@@ -12,12 +12,14 @@ import { MOCKED_FREE_GAMES, MOCKED_SIMPLE_GAMES } from "../mockGames";
 
 export class GameListComponent implements OnInit {
 
-  @Input() public rightButton: string = "joindre";
-  @Input() public leftButton: string = "jouer";
+  @Input() protected readonly rightButton: string = "joindre";
+  @Input() protected readonly leftButton: string = "jouer";
   public constructor(private gameService: GameService) {/*vide*/}
 
   public ngOnInit(): void {
     this.gameService.getSimpleGames().subscribe((gamesToModify: ISimpleGame[]) => {
+      this.gameService.freeGames = [];
+      this.gameService.simpleGames = [];
       this.gameService.convertScoresObject(gamesToModify);
       this.gameService.pushGames(gamesToModify);
       this.gameService.convertScoresObject(MOCKED_SIMPLE_GAMES);
@@ -26,4 +28,5 @@ export class GameListComponent implements OnInit {
       this.gameService.pushGames(MOCKED_FREE_GAMES);
     });
   }
+
 }

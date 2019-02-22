@@ -19,13 +19,16 @@ export class GameComponent implements AfterViewInit {
   @Input() public bestSoloTimes: { name: string, time: number }[];
   @Input() public bestMultiTimes: { name: string, time: number }[];
   @Input() public originalImage: string = "test";
+  @Input() public modifiedImage: string = "test";
   @Input() public rightButton: string;
   @Input() public leftButton: string;
   @ViewChild("photoContainer") public originalSceneContainer: ElementRef;
 
   protected leftButtonClick(): void {
     if (this.leftButton === "jouer") {
-      this.router.navigate(["../play-view/"]).catch();
+      this.router.navigate(["/play-view/"], {queryParams: {
+        gameName: this.gameName, originalImage: this.originalImage, modifiedImage: this.modifiedImage },
+      });
     }
   }
 
