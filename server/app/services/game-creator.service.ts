@@ -135,12 +135,12 @@ export class GameCreatorService {
             });
     }
 
-    private async uploadFreeGame(gameName: string, scene: IScenesJSON): Promise<void> {
+    private async uploadFreeGame(gameName: string, scenes: IScenesJSON): Promise<void> {
         const game: IFreeGame = {
             gameName: gameName,
             bestSoloTimes: this.createRandomScores(),
             bestMultiTimes: this.createRandomScores(),
-            scene: scene,
+            scenes: scenes,
         };
         await Axios.post<Message>("http://localhost:3000/api/data-base/games/free/", game)
             // tslint:disable-next-line:no-any Generic error response
@@ -203,8 +203,8 @@ export class GameCreatorService {
     //     }
     // }
 
-    private async generateFreeGame(gameName: string, scene: IScenesJSON): Promise<Message> {
-        await this.uploadFreeGame(gameName, scene);
+    private async generateFreeGame(gameName: string, scenes: IScenesJSON): Promise<Message> {
+        await this.uploadFreeGame(gameName, scenes);
         return GAME_CREATION_SUCCESS_MESSAGE;
     }
 

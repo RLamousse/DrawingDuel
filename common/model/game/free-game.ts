@@ -2,7 +2,7 @@ import {IGame, instanceOfGame} from "./game";
 import {IScenesJSON} from "../../free-game-json-interface/JSONInterface/IScenesJSON";
 
 export interface IFreeGame extends IGame {
-    scene: IScenesJSON;
+    scenes: IScenesJSON;
 }
 
 export const instanceOfFreeGame = (object: any): object is IFreeGame =>
