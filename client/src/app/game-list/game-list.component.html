@@ -16,13 +16,11 @@
         <h1>Parties Libres</h1>
         <app-game *ngFor="let instance of gameService.freeGames" 
             [gameName]= "instance.gameName"
-            [originalImage]= "instance.originalImage"
-            [modifiedImage]= "instance.modifiedImage"
             [bestSoloTimes]= "instance.bestSoloTimes"
             [bestMultiTimes]= "instance.bestMultiTimes" 
             [rightButton]= "rightButton"
             [leftButton]= "leftButton"
-            [isSimpleGame]=false>
+            [isSimpleGame]= false>
         </app-game>
     </div>
 </div>
