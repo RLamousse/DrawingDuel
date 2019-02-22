@@ -18,8 +18,8 @@ export class GameComponent implements AfterViewInit {
   @Input() public gameName: string = "test";
   @Input() public bestSoloTimes: { name: string, time: number }[];
   @Input() public bestMultiTimes: { name: string, time: number }[];
-  @Input() public originalImage: string = "test";
-  @Input() public modifiedImage: string = "test";
+  @Input() public originalImage: string;
+  @Input() public modifiedImage: string;
   @Input() public rightButton: string;
   @Input() public leftButton: string;
   @Input() public isSimpleGame: boolean;
@@ -28,7 +28,8 @@ export class GameComponent implements AfterViewInit {
   protected leftButtonClick(): void {
     if (this.leftButton === "jouer") {
       this.router.navigate(["/play-view/"], {queryParams: {
-        gameName: this.gameName, originalImage: this.originalImage, modifiedImage: this.modifiedImage },
+        isSimpleGame : this.isSimpleGame, gameName: this.gameName, originalSceneContainer: this.originalSceneContainer,
+        originalImage: this.originalImage, modifiedImage: this.modifiedImage },
       }).catch();
     }
   }
