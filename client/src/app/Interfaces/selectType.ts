@@ -1,4 +1,4 @@
-import { ModificationType, ObjectGeometry } from "../FreeGameCreatorInterface/free-game-enum";
+import { ModificationType, ObjectGeometry } from "../../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
 
 export interface SelectType<Enum> {
     value: Enum;

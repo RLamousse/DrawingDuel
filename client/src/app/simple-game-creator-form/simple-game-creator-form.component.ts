@@ -47,7 +47,7 @@ export class SimpleGameCreatorFormComponent extends AbstractForm implements OnIn
     fd.append("gameName", this.formDoc.value.name);
     fd.append("originalImage", this.formDoc.value.originalImage.files[0]);
     fd.append("modifiedImage", this.formDoc.value.modifiedImage.files[0]);
-    this.formPost.basicPost(SIMPLE_GAME_CREATION_ROUTE, fd).subscribe(
+    this.formPost.submitForm(SIMPLE_GAME_CREATION_ROUTE, fd).subscribe(
       (data) => {
         // alert((data as { message: string }).message);
         this.exit(data);
