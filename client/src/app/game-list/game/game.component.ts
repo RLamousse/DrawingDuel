@@ -28,7 +28,7 @@ export class GameComponent implements AfterViewInit {
   protected leftButtonClick(): void {
     if (this.leftButton === "jouer") {
       this.router.navigate(["/play-view/"], {queryParams: {
-        isSimpleGame : this.isSimpleGame, gameName: this.gameName,
+        isSimpleGame : this.isSimpleGame, gameName: this.gameName, originalSceneContainer: this.originalSceneContainer,
         originalImage: this.originalImage, modifiedImage: this.modifiedImage },
       }).catch();
     }
