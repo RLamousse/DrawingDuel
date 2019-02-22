@@ -5,8 +5,9 @@ export interface Message {
     body: string;
 }
 
-export interface WebsocketMessage extends Message {
+export interface WebsocketMessage {
     title: SocketEvent;
+    body: Object;
 }
 
 export function isAWebsocketMessage (object: any) {
