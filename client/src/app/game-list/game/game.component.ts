@@ -22,6 +22,7 @@ export class GameComponent implements AfterViewInit {
   @Input() public modifiedImage: string = "test";
   @Input() public rightButton: string;
   @Input() public leftButton: string;
+  @Input() public isSimpleGame: boolean;
   @ViewChild("photoContainer") public originalSceneContainer: ElementRef;
 
   protected leftButtonClick(): void {
