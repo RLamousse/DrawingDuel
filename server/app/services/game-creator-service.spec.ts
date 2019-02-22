@@ -14,7 +14,6 @@ import {NON_EXISTING_GAME_ERROR_MESSAGE} from "./db/simple-games.collection.serv
 import {DifferenceEvaluatorService} from "./difference-evaluator.service";
 import {EXPECTED_DIFF_NUMBER, GameCreatorService} from "./game-creator.service";
 import {ImageUploadService} from "./image-upload.service";
-import * as THREE from "three";
 
 describe("A service that creates a game", () => {
 
@@ -45,7 +44,6 @@ describe("A service that creates a game", () => {
         mockedImageUploadService = mock(ImageUploadService);
 
         when(mockedDifferenceEvaluatorServiceMock.getSimpleNDifferences(anything())).thenReturn(createdMockedDiffData(EXPECTED_DIFF_NUMBER));
-        when(mockedDifferenceEvaluatorServiceMock.getFreeNDifferences(anything(), anything())).thenReturn(EXPECTED_DIFF_NUMBER);
         when(mockedImageUploadService.uploadImage(anything())).thenResolve("");
     });
 
@@ -238,11 +236,10 @@ describe("A service that creates a game", () => {
         });
     });
 
+    //TODO change the arguments of createFreeGame to be the same as the pgillipe ones
     describe("Create free game", () => {
 
-        const testScene = new THREE.Scene();
-
-        it("should throw a name error if the game name is already in the free games data base", async () => {
+        it("should throw a name error if the game name is already in the free games data base(simple game name existence)", async () => {
 
             axiosMock.onGet("http://localhost:3000/api/data-base/games/simple/nonExistingGameTest")
                 .reply(HttpStatus.NOT_FOUND);
@@ -252,8 +249,9 @@ describe("A service that creates a game", () => {
             try {
                 await getMockedService()
                     .createFreeGame( "nonExistingGameTest",
-                        testScene,
-                        testScene);
+                        0,
+                        "",
+                        []);
             } catch (error) {
                 return expect(error.message).to.be.equal(NAME_ERROR_MESSAGE);
             }
@@ -261,7 +259,7 @@ describe("A service that creates a game", () => {
             return expect.fail();
         });
 
-        it("should throw a name error if the game name is already in the simple games data base", async () => {
+        it("should throw a name error if the game name is already in the simple games data base(free game name existence)", async () => {
 
             axiosMock.onGet("http://localhost:3000/api/data-base/games/simple/nonExistingGameTest")
                 .reply(HttpStatus.OK);
@@ -269,8 +267,9 @@ describe("A service that creates a game", () => {
             try {
                 await getMockedService()
                     .createFreeGame( "nonExistingGameTest",
-                        testScene,
-                        testScene);
+                        0,
+                        "",
+                        []);
             } catch (error) {
                 return expect(error.message).to.be.equal(NAME_ERROR_MESSAGE);
             }
@@ -278,20 +277,21 @@ describe("A service that creates a game", () => {
             return expect.fail();
         });
 
-        it("should throw error on db get simple game call", async () => {
+        it("should throw error on db get simple game call(simple name existence testing)", async () => {
             axiosMock.onGet("http://localhost:3000/api/data-base/games/simple/someGameTest")
                 .reply(HttpStatus.INTERNAL_SERVER_ERROR, {message: "error"});
 
             return getMockedService()
                 .createFreeGame( "someGameTest",
-                    testScene,
-                    testScene)
+                    0,
+                    "",
+                    [])
                 .catch((reason: Error) => {
                     expect(reason.message).to.eql("dataBase: error");
                 });
         });
 
-        it("should throw error on db get free game call", async () => {
+        it("should throw error on db get free game call(free game name existence testing)", async () => {
 
             axiosMock.onGet("http://localhost:3000/api/data-base/games/simple/someGameTest")
                 .reply(HttpStatus.NOT_FOUND, {message: NON_EXISTING_GAME_ERROR_MESSAGE});
@@ -300,72 +300,17 @@ describe("A service that creates a game", () => {
 
             return getMockedService()
                 .createFreeGame( "someGameTest",
-                    testScene,
-                    testScene)
+                    0,
+                    "",
+                    [])
                 .catch((reason: Error) => {
                     expect(reason.message).to.eql("dataBase: error");
                 });
         });
 
-        it("should throw a difference error if there are less than 7 differences", async () => {
-
-            axiosMock.onGet("http://localhost:3000/api/data-base/games/simple/someGameTest")
-                .reply(HttpStatus.NOT_FOUND, {message: NON_EXISTING_GAME_ERROR_MESSAGE});
-            axiosMock.onGet("http://localhost:3000/api/data-base/games/free/someGameTest")
-                .reply(HttpStatus.NOT_FOUND, {message: NON_EXISTING_GAME_ERROR_MESSAGE});
-
-            when(mockedDifferenceEvaluatorServiceMock.getFreeNDifferences(anything(), anything())).thenReturn(EXPECTED_DIFF_NUMBER - 1);
-
-            try {
-                await getMockedService()
-                    .createFreeGame( "someGameTest",
-                        testScene,
-                        testScene);
-            } catch (error) {
-                return expect(error.message).to.be.equal(DIFFERENCE_ERROR_MESSAGE);
-            }
-
-            return expect.fail();
-        });
-
-        it("should throw a difference error if there are more than 7 differences", async () => {
-
-            axiosMock.onGet("http://localhost:3000/api/data-base/games/simple/someGameTest")
-                .reply(HttpStatus.NOT_FOUND, {message: NON_EXISTING_GAME_ERROR_MESSAGE});
-            axiosMock.onGet("http://localhost:3000/api/data-base/games/free/someGameTest")
-                .reply(HttpStatus.NOT_FOUND, {message: NON_EXISTING_GAME_ERROR_MESSAGE});
-
-            when(mockedDifferenceEvaluatorServiceMock.getFreeNDifferences(anything(), anything())).thenReturn(EXPECTED_DIFF_NUMBER + 1);
-
-            try {
-                await getMockedService()
-                    .createFreeGame( "someGameTest",
-                        testScene,
-                        testScene);
-            } catch (error) {
-                return expect(error.message).to.be.equal(DIFFERENCE_ERROR_MESSAGE);
-            }
-
-            return expect.fail();
-        });
-
-        it("should throw on differenceEvaluatorService call error", async () => {
-
-            axiosMock.onGet("http://localhost:3000/api/data-base/games/simple/someGameTest")
-                .reply(HttpStatus.NOT_FOUND, {message: NON_EXISTING_GAME_ERROR_MESSAGE});
-            axiosMock.onGet("http://localhost:3000/api/data-base/games/free/someGameTest")
-                .reply(HttpStatus.NOT_FOUND, {message: NON_EXISTING_GAME_ERROR_MESSAGE});
-
-            when(mockedDifferenceEvaluatorServiceMock.getFreeNDifferences(anything(), anything())).thenThrow(new Error("error"));
-
-            return await getMockedService()
-                .createFreeGame( "someGameTest",
-                    testScene,
-                    testScene)
-                .catch((reason: Error) => {
-                    expect(reason.message).to.eql("diff counting: error");
-                });
-        });
+        //TODO wrong number of objects
+        //TODO wrong theme
+        //TODO wrong modTypes
 
         it("should throw error on db create game call", async () => {
 
@@ -379,8 +324,9 @@ describe("A service that creates a game", () => {
 
             return getMockedService()
                 .createFreeGame( "someGameTest",
-                    testScene,
-                    testScene)
+                    100,
+                    "geometry",
+                    [])//TODO phil modtypes
                 .catch((reason: Error) => {
                     expect(reason.message).to.eql("dataBase: Unable to create game: error");
                 });
@@ -397,10 +343,10 @@ describe("A service that creates a game", () => {
                 .reply(HttpStatus.OK);
 
             return expect((await getMockedService()
-                .createFreeGame(
-                    "someGameTest",
-                    testScene,
-                    testScene)).title)
+                .createFreeGame( "someGameTest",
+                    100,
+                    "geometry",
+                    [])).title)//TODO phil modtypes
                 .to.be.equal("Game created");
         });
     });
