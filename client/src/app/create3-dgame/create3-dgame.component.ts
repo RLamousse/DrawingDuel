@@ -73,11 +73,11 @@ export class Create3DGameComponent extends AbstractForm implements OnInit {
     this.disableButton = true;
     const objectTypes: ObjectGeometry[] = Array.from(this.checkboxes.objectTypes);
     const modificationTypes: ModificationType[] = Array.from(this.checkboxes.modificationTypes);
-    this.createScenes(objectTypes, modificationTypes);
     const fd: FormData = new FormData();
     fd.append("gameName", this.formDoc.value.name);
-    fd.append("objectTypes", JSON.stringify(this.checkboxes.objectTypes));
-    fd.append("modificationTypes", JSON.stringify(this.checkboxes.modificationTypes));
+    fd.append("objectQuantity", this.sliderValue.toString());
+    fd.append("objectTypes", JSON.stringify(objectTypes));
+    fd.append("modificationTypes", JSON.stringify(modificationTypes));
     this.formPost.submitForm(FREE_GAME_CREATION_ROUTE, fd).subscribe(
       (data) => {
         this.exit(data);
@@ -87,9 +87,5 @@ export class Create3DGameComponent extends AbstractForm implements OnInit {
         alert(error.message);
         this.disableButton = false;
       });
-  }
-
-  private createScenes(objects: ObjectGeometry[], modifications: ModificationType[]): void {
-    
   }
 }
