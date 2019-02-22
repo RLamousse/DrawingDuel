@@ -1,15 +1,14 @@
 import {NextFunction, Request} from "express";
 import {Field} from "multer";
-import * as THREE from "three";
 import {Message} from "../../../common/communication/messages/message";
+import {GAME_NAME_FIELD} from "../../../common/communication/requests/game-creator.controller.request";
 
 export const REQUIRED_IMAGE_HEIGHT: number = 480;
 export const REQUIRED_IMAGE_WIDTH: number = 640;
 export const OUTPUT_FILE_NAME_FIELD_NAME: string = "name";
 export const ORIGINAL_IMAGE_FIELD_NAME: string = "originalImage";
+export const NON_EXISTING_THEME: string = "ERROR: The theme is not recognized";
 export const MODIFIED_IMAGE_FIELD_NAME: string = "modifiedImage";
-export const ORIGINAL_SCENE_FIELD_NAME: string = "originalScene";
-export const MODIFIED_SCENE_FIELD_NAME: string = "modifiedScene";
 export const EXPECTED_FILES_FORMAT: string = "image/bmp";
 export const DIFFERENCE_ERROR_MESSAGE: string = "Error: The data that you sent doesn't have seven differences!";
 export const GAME_CREATION_SUCCESS_MESSAGE: Message = {title: "Game created", body: "The game was successfully created!"};
@@ -38,10 +37,8 @@ export const assertRequestImageFilesFields: (req: Express.Request) => void = (re
 };
 
 export const assertRequestSceneFields: (req: Express.Request) => void = (req: Request): void => {
-    if (!(req.body[ORIGINAL_SCENE_FIELD_NAME] instanceof THREE.Scene) ||
-        !(req.body[MODIFIED_SCENE_FIELD_NAME]  instanceof THREE.Scene)) {
-            throw new Error(FORMAT_ERROR_MESSAGE);
-    }
+    assertFieldsOfRequest(req, GAME_NAME_FIELD);
+    //TODO the same convention as phillipe for this request
 };
 
 export const assertFieldsOfRequest: (req: Request, ...fields: string[]) => void = (req: Request, ...fields: string[]): void => {
