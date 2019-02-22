@@ -26,10 +26,14 @@ export class SimpleGameContainerComponent implements OnInit {
   public onCanvasClick(clickEvent: IPoint): void {
     this.simpleGameService.validateDifferenceAtPoint(clickEvent)
       .then((differenceCluster: DifferenceCluster) => {
+        console.log("WINNER WINNER CHICKEN DINNER");
+        console.log(JSON.stringify(clickEvent));
         this.copyPixelsForCluster(differenceCluster);
       })
       .catch((error: Error) => {
         // TODO: Handle difference not found
+        console.log("FOUINNNNNN");
+        console.log(JSON.stringify(clickEvent));
         this.playSound();
       });
   }
