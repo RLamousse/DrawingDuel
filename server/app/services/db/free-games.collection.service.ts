@@ -8,14 +8,12 @@ import {
     GAME_FORMAT_ERROR_MESSAGE, GAME_NAME_FIELD,
     NON_EXISTING_GAME_ERROR_MESSAGE
 } from "./simple-games.collection.service";
-import * as THREE from "three";
 
 @injectable()
 export class FreeGamesCollectionService extends CollectionService<IFreeGame> {
 
     public static validate(game: IFreeGame): boolean {
-        return game.originalScene instanceof THREE.Scene &&
-            game.modifiedScene instanceof THREE.Scene &&
+        return game.scenes !== undefined &&
             game.gameName !== "";
     }
 
