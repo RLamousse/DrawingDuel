@@ -9,8 +9,8 @@ import {
     assertFieldsOfRequest,
     assertRequestImageFilesFields, assertRequestSceneFields,
     BITMAP_MULTER_FILTER, executePromiseSafely,
-    MODIFIED_IMAGE_FIELD_NAME, MODIFIED_SCENE_FIELD_NAME,
-    MULTER_BMP_FIELDS, ORIGINAL_IMAGE_FIELD_NAME, ORIGINAL_SCENE_FIELD_NAME
+    MODIFIED_IMAGE_FIELD_NAME,
+    MULTER_BMP_FIELDS, ORIGINAL_IMAGE_FIELD_NAME
 } from "./controller-utils";
 
 @injectable()
@@ -42,13 +42,13 @@ export class GameCreatorController {
 
         router.post("/create-free-game", async (req: Request, res: Response, next: NextFunction) => {
             try {
-                assertFieldsOfRequest(req, GAME_NAME_FIELD);
                 assertRequestSceneFields(req);
 
                 res.json(await this.gameCreatorService.createFreeGame(
                     req.body[GAME_NAME_FIELD],
-                    req.body[ORIGINAL_SCENE_FIELD_NAME],
-                    req.body[MODIFIED_SCENE_FIELD_NAME]));
+                    req.body["numberOfObjects"],//TODO Use phillipe convention
+                    req.body["theme"],
+                    req.body["modTypes"]));
 
             } catch (error) {
                 next(error);
