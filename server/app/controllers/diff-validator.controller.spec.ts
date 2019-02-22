@@ -1,13 +1,12 @@
 // tslint:disable:typedef
-import { expect } from "chai";
+import {expect} from "chai";
 import * as HttpStatus from "http-status-codes";
 import * as request from "supertest";
-import {anything, anyString, instance, mock, when} from "ts-mockito";
+import {anyString, anything, instance, mock, when} from "ts-mockito";
 import {IDiffValidatorControllerRequest} from "../../../common/communication/requests/diff-validator-controller.request";
 import {IDiffValidatorControllerResponse} from "../../../common/communication/responses/diff-validator-controller.response";
-import {ORIGIN} from "../../../common/model/point";
-import { Application } from "../app";
-import { container } from "../inversify.config";
+import {Application} from "../app";
+import {container} from "../inversify.config";
 import {DiffValidatorService, NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE} from "../services/diff-validator.service";
 import types from "../types";
 import {FORMAT_ERROR_MESSAGE} from "./controller-utils";
@@ -36,7 +35,7 @@ describe("Diff validator controller", () => {
     it("should send an error if the game name is missing", async () => {
         return request(app)
             .get("/api/diff-validator")
-            .send({coord: ORIGIN})
+            .query({coordX: 0, coordY: 0})
             .expect(HttpStatus.INTERNAL_SERVER_ERROR)
             .then((response) => {
                 expect(response.body).to.eql(errorResponse(FORMAT_ERROR_MESSAGE));
@@ -46,7 +45,7 @@ describe("Diff validator controller", () => {
     it("should send an error if the clicked coord is missing", async () => {
         return request(app)
             .get("/api/diff-validator")
-            .send({gameName: "ayylmao"})
+            .query({gameName: "ayylmao"})
             .expect(HttpStatus.INTERNAL_SERVER_ERROR)
             .then((response) => {
                 expect(response.body).to.eql(errorResponse(FORMAT_ERROR_MESSAGE));
@@ -54,9 +53,10 @@ describe("Diff validator controller", () => {
     });
 
     it("should return NOT_FOUND if the specified point is not part of difference", async () => {
-        const body: IDiffValidatorControllerRequest = {
+        const query: IDiffValidatorControllerRequest = {
             gameName: "test3",
-            coord: {x: 42, y: 42},
+            coordX: 42,
+            coordY: 42,
         };
 
         when(mockedDiffValidatorService.getDifferenceCluster(anyString(), anything()))
@@ -66,7 +66,7 @@ describe("Diff validator controller", () => {
 
         return request(app)
             .get("/api/diff-validator")
-            .send(body)
+            .query(query)
             .expect(HttpStatus.NOT_FOUND)
             .then((value) => {
                 return expect(value).to.exist;
@@ -74,9 +74,10 @@ describe("Diff validator controller", () => {
     });
 
     it("should return a valid response in normal conditions", async () => {
-        const body: IDiffValidatorControllerRequest = {
+        const query: IDiffValidatorControllerRequest = {
             gameName: "test3",
-            coord: ORIGIN,
+            coordX: 0,
+            coordY: 0,
         };
         const expectedResponse: IDiffValidatorControllerResponse = {
             validDifference: true,
@@ -86,7 +87,7 @@ describe("Diff validator controller", () => {
 
         return request(app)
             .get("/api/diff-validator")
-            .send(body)
+            .query(query)
             .expect(HttpStatus.OK)
             .then((response) => {
                 expect(response.body).to.eql(expectedResponse);
