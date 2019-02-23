@@ -150,8 +150,4 @@ export class FreeGameCreatorService {
             }
         }
     }
-
-    public saveScenes(): void {
-        // To implement according to JSON (Lets go MILEN!!!!)
-    }
 }
