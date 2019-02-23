@@ -10,9 +10,13 @@ import {TIMES_ARRAY_SIZE} from "../../../common/model/game/game";
 import {IRecordTime} from "../../../common/model/game/record-time";
 import {ISimpleDifferenceData, ISimpleGame} from "../../../common/model/game/simple-game";
 import {
-    DIFFERENCE_ERROR_MESSAGE, MODIFIED_IMAGE_FIELD_NAME,
-    NAME_ERROR_MESSAGE, ORIGINAL_IMAGE_FIELD_NAME, GAME_CREATION_SUCCESS_MESSAGE,
-    OUTPUT_FILE_NAME_FIELD_NAME, NON_EXISTING_THEME
+    DIFFERENCE_ERROR_MESSAGE,
+    GAME_CREATION_SUCCESS_MESSAGE,
+    MODIFIED_IMAGE_FIELD_NAME,
+    NAME_ERROR_MESSAGE,
+    NON_EXISTING_THEME,
+    ORIGINAL_IMAGE_FIELD_NAME,
+    OUTPUT_FILE_NAME_FIELD_NAME
 } from "../controllers/controller-utils";
 import {BitmapFactory} from "../images/bitmap/bitmap-factory";
 import Types from "../types";
@@ -22,7 +26,8 @@ import {ImageUploadService} from "./image-upload.service";
 import {IFreeGame} from "../../../common/model/game/free-game";
 import {
     ModificationType,
-    ObjectGeometry
+    ObjectGeometry,
+    Themes
 } from "../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
 import {FreeGameCreatorService} from "./free-game-creator.service";
 import {IScenesJSON} from "../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
@@ -80,7 +85,7 @@ export class GameCreatorService {
         }
     }
 
-    public async createFreeGame(gameName: string, numberOfObjects: number, theme: string, modTypes: ObjectGeometry[]): Promise<Message> {//TODO change theme to the good type with pfillipes code, and maybe the modtypes
+    public async createFreeGame(gameName: string, numberOfObjects: number, theme: Themes, modTypes: ObjectGeometry[]): Promise<Message> {
 
         await GameCreatorService.testNameExistence(gameName);
 
@@ -208,8 +213,8 @@ export class GameCreatorService {
         return GAME_CREATION_SUCCESS_MESSAGE;
     }
 
-    private generateScene(numberOfObjects: number, theme: string, modTypes: ObjectGeometry[]): IScenesJSON {
-        if (theme === "geometry") {//TODO modify that with phillips code
+    private generateScene(numberOfObjects: number, theme: Themes, modTypes: ObjectGeometry[]): IScenesJSON {
+        if (theme === Themes.Geometry) {
             const sceneCreator: FreeGameCreatorService = new FreeGameCreatorService(numberOfObjects,
                 [ObjectGeometry.sphere,
                     ObjectGeometry.cube,
