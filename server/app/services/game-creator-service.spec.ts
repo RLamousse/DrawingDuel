@@ -1,9 +1,9 @@
 // tslint:disable:no-magic-numbers
 import Axios from "axios";
-import MockAdapter from "axios-mock-adapter";
 // tslint:disable-next-line:no-duplicate-imports Weird interaction between singletons and interface (olivier st-o approved)
+import MockAdapter from "axios-mock-adapter";
 import AxiosAdapter from "axios-mock-adapter";
-import { expect } from "chai";
+import {expect} from "chai";
 import * as fs from "fs";
 import * as HttpStatus from "http-status-codes";
 import {anything, instance, mock, when} from "ts-mockito";
@@ -14,6 +14,7 @@ import {NON_EXISTING_GAME_ERROR_MESSAGE} from "./db/simple-games.collection.serv
 import {DifferenceEvaluatorService} from "./difference-evaluator.service";
 import {EXPECTED_DIFF_NUMBER, GameCreatorService} from "./game-creator.service";
 import {ImageUploadService} from "./image-upload.service";
+import {Themes} from "../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
 
 describe("A service that creates a game", () => {
 
@@ -251,7 +252,7 @@ describe("A service that creates a game", () => {
                 await getMockedService()
                     .createFreeGame( "nonExistingGameTest",
                         0,
-                        "",
+                        Themes.Geometry,
                         []);
             } catch (error) {
                 return expect(error.message).to.be.equal(NAME_ERROR_MESSAGE);
@@ -269,7 +270,7 @@ describe("A service that creates a game", () => {
                 await getMockedService()
                     .createFreeGame( "nonExistingGameTest",
                         0,
-                        "",
+                        Themes.Geometry,
                         []);
             } catch (error) {
                 return expect(error.message).to.be.equal(NAME_ERROR_MESSAGE);
@@ -285,7 +286,7 @@ describe("A service that creates a game", () => {
             return getMockedService()
                 .createFreeGame( "someGameTest",
                     0,
-                    "",
+                    Themes.Geometry,
                     [])
                 .catch((reason: Error) => {
                     expect(reason.message).to.eql("dataBase: error");
@@ -302,7 +303,7 @@ describe("A service that creates a game", () => {
             return getMockedService()
                 .createFreeGame( "someGameTest",
                     0,
-                    "",
+                    Themes.Geometry,
                     [])
                 .catch((reason: Error) => {
                     expect(reason.message).to.eql("dataBase: error");
@@ -326,7 +327,7 @@ describe("A service that creates a game", () => {
             return getMockedService()
                 .createFreeGame( "someGameTest",
                     100,
-                    "geometry",
+                    Themes.Geometry,
                     [])//TODO phil modtypes
                 .catch((reason: Error) => {
                     expect(reason.message).to.eql("dataBase: Unable to create game: error");
@@ -346,7 +347,7 @@ describe("A service that creates a game", () => {
             return expect((await getMockedService()
                 .createFreeGame( "someGameTest",
                     100,
-                    "geometry",
+                    Themes.Geometry,
                     [])).title)//TODO phil modtypes
                 .to.be.equal("Game created");
         });
