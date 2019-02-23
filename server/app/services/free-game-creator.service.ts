@@ -26,7 +26,7 @@ export class FreeGameCreatorService {
         this.modifiedObjects = [];
     }
 
-    private getRandomGeometry(min: number, max: number): number {
+    private getRandomValue(min: number, max: number): number {
         return Math.floor(Math.random() * (max - min + 1) + min);
     }
 
@@ -46,9 +46,9 @@ export class FreeGameCreatorService {
                     );
                     if (distance < this.MIN_DIST) {
                         object.position = [
-                            this.getRandomGeometry(-this.MAX_GAME_X, this.MAX_GAME_X),
-                            this.getRandomGeometry(-this.MAX_GAME_Y, this.MAX_GAME_Y),
-                            this.getRandomGeometry(-this.MAX_GAME_Z, this.MAX_GAME_Z),
+                            this.getRandomValue(-this.MAX_GAME_X, this.MAX_GAME_X),
+                            this.getRandomValue(-this.MAX_GAME_Y, this.MAX_GAME_Y),
+                            this.getRandomValue(-this.MAX_GAME_Z, this.MAX_GAME_Z),
                         ];
                         collision = true;
                         break;
@@ -63,7 +63,7 @@ export class FreeGameCreatorService {
     public generate3DObject(): IObject.IJson3DObject {
         let randomObject: number;
         let createdObject: IObject.IJson3DObject;
-        randomObject = this.getRandomGeometry(0, this.MAX_TYPE_OBJECTS);
+        randomObject = this.getRandomValue(0, this.MAX_TYPE_OBJECTS);
         switch (randomObject) {
             case ObjectGeometry.sphere: {
                 createdObject = this.object3DService.createSphere();
@@ -97,14 +97,14 @@ export class FreeGameCreatorService {
         for (let i: number = 0; i < this.obj3DToCreate; ++i) {
             object = this.generate3DObject();
             object.position = [
-                this.getRandomGeometry(-this.MAX_GAME_X, this.MAX_GAME_X),
-                this.getRandomGeometry(-this.MAX_GAME_Y, this.MAX_GAME_Y),
-                this.getRandomGeometry(-this.MAX_GAME_Z, this.MAX_GAME_Z),
+                this.getRandomValue(-this.MAX_GAME_X, this.MAX_GAME_X),
+                this.getRandomValue(-this.MAX_GAME_Y, this.MAX_GAME_Y),
+                this.getRandomValue(-this.MAX_GAME_Z, this.MAX_GAME_Z),
             ];
             object.rotation = [
-                this.getRandomGeometry(0, MAXROTATIONANGLE),
-                this.getRandomGeometry(0, MAXROTATIONANGLE),
-                this.getRandomGeometry(0, MAXROTATIONANGLE),
+                this.getRandomValue(0, MAXROTATIONANGLE),
+                this.getRandomValue(0, MAXROTATIONANGLE),
+                this.getRandomValue(0, MAXROTATIONANGLE),
             ];
             object = this.handleCollision(object, this.objects);
             this.objects.push(object);
@@ -117,7 +117,7 @@ export class FreeGameCreatorService {
         const MOD_COUNT: number = 7;
         const INDEXES: Set<number> = new Set();
         while (INDEXES.size !== MOD_COUNT) {
-            INDEXES.add(this.getRandomGeometry(0, this.modifiedObjects.length - 1));
+            INDEXES.add(this.getRandomValue(0, this.modifiedObjects.length - 1));
         }
         this.randomDifference(INDEXES);
     }
@@ -127,7 +127,7 @@ export class FreeGameCreatorService {
         const ARRAY_INDEXES: number[] = Array.from(table).sort().reverse();
         let randomModifications: number;
         for (const index of ARRAY_INDEXES) {
-            randomModifications = this.getRandomGeometry(0, MAX_MOD_TYPE);
+            randomModifications = this.getRandomValue(0, MAX_MOD_TYPE);
             switch (this.modificationTypes[randomModifications]) {
                 case ModificationType.remove: {
                     this.modifiedObjects.splice(index, 1);
