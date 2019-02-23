@@ -49,54 +49,20 @@ describe("FreeGameCreatorService", () => {
     });
 
     // Test generateIScenes
-    it("should only create default object (color = 0) and have 100 objects", () => {
-        const obj: ObjectGeometry[] = [];
-        const modTypes: ModificationType[] = [];
-        const objNumber: number = 100;
-        freeGameCreatorService = new FreeGameCreatorService(objNumber, obj, modTypes);
-        freeGameCreatorService.generateIScenes();
-        expect(freeGameCreatorService.objects.length).to.eql(objNumber);
-        for (const i of freeGameCreatorService.objects) {
-            expect(i.color).to.eql(0);
-        }
-    });
-
-    it("should only create spheres or cone geometry, whith 20 elements", () => {
-        const obj: ObjectGeometry[] = [ObjectGeometry.cone, ObjectGeometry.sphere];
-        const modTypes: ModificationType[] = [];
-        const objNumber: number = 20;
-        freeGameCreatorService = new FreeGameCreatorService(objNumber, obj, modTypes);
-        freeGameCreatorService.generateIScenes();
-        expect(freeGameCreatorService.objects.length).to.eql(objNumber);
-        for (const i of freeGameCreatorService.objects) {
-            expect(
-                i.type === ObjectGeometry.cone || i.type === ObjectGeometry.sphere,
-            ).to.eql(true);
-        }
-    });
-    it("should only create cube,cylinder or pyramid geometry, whith 200 elements", () => {
-        const obj: ObjectGeometry[] = [ObjectGeometry.cube, ObjectGeometry.cylinder, ObjectGeometry.pyramid];
+    it("should create 200 elements", () => {
         const modTypes: ModificationType[] = [];
         const objNumber: number = 200;
-        freeGameCreatorService = new FreeGameCreatorService(objNumber, obj, modTypes);
+        freeGameCreatorService = new FreeGameCreatorService(objNumber, modTypes);
         freeGameCreatorService.generateIScenes();
         expect(freeGameCreatorService.objects.length).to.eql(objNumber);
-        for (const i of freeGameCreatorService.objects) {
-            expect(
-                i.type === ObjectGeometry.cube ||
-                i.type === ObjectGeometry.cylinder ||
-                i.type === ObjectGeometry.pyramid,
-            ).to.eql(true);
-        }
     });
     // Test handleCollision
     it("should only have objects with a distance grater than 43", () => {
-        const obj: ObjectGeometry[] = [ObjectGeometry.cube, ObjectGeometry.cylinder, ObjectGeometry.pyramid];
         const modTypes: ModificationType[] = [];
         const objNumber: number = 100;
         const MAX_DIST: number = 43;
         const POWER: number = 2;
-        freeGameCreatorService = new FreeGameCreatorService(objNumber, obj, modTypes);
+        freeGameCreatorService = new FreeGameCreatorService(objNumber, modTypes);
         freeGameCreatorService.generateIScenes();
         expect(freeGameCreatorService.objects.length).to.eql(objNumber);
         let distance: number;
@@ -117,33 +83,30 @@ describe("FreeGameCreatorService", () => {
 
     // Test randomDifference
     it("should remove 7 objects from original table", () => {
-        const obj: ObjectGeometry[] = [ObjectGeometry.cube, ObjectGeometry.cylinder, ObjectGeometry.pyramid];
         const modTypes: ModificationType[] = [ModificationType.remove];
         const objNumber: number = 30;
         const DIFF: number = 7;
-        freeGameCreatorService = new FreeGameCreatorService(objNumber, obj, modTypes);
+        freeGameCreatorService = new FreeGameCreatorService(objNumber, modTypes);
         freeGameCreatorService.generateIScenes();
         expect(freeGameCreatorService.objects.length).to.eql(objNumber);
         expect(freeGameCreatorService.modifiedObjects.length).to.eql(objNumber - DIFF);
     });
 
     it("should add 7 objects from original table", () => {
-        const obj: ObjectGeometry[] = [ObjectGeometry.cube, ObjectGeometry.cylinder, ObjectGeometry.pyramid];
         const modTypes: ModificationType[] = [ModificationType.add];
         const objNumber: number = 30;
         const DIFF: number = 7;
-        freeGameCreatorService = new FreeGameCreatorService(objNumber, obj, modTypes);
+        freeGameCreatorService = new FreeGameCreatorService(objNumber, modTypes);
         freeGameCreatorService.generateIScenes();
         expect(freeGameCreatorService.objects.length).to.eql(objNumber);
         expect(freeGameCreatorService.modifiedObjects.length).to.eql(objNumber + DIFF);
     });
 
     it("should have 7 objects that don't have their original color", () => {
-        const obj: ObjectGeometry[] = [ObjectGeometry.cube, ObjectGeometry.cylinder, ObjectGeometry.pyramid];
         const modTypes: ModificationType[] = [ModificationType.changeColor];
         const objNumber: number = 30;
         const DIFF: number = 7;
-        freeGameCreatorService = new FreeGameCreatorService(objNumber, obj, modTypes);
+        freeGameCreatorService = new FreeGameCreatorService(objNumber,modTypes);
         freeGameCreatorService.generateIScenes();
         expect(freeGameCreatorService.objects.length).to.eql(freeGameCreatorService.modifiedObjects.length);
         let colDiffCounter: number = 0;
