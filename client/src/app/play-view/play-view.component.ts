@@ -1,6 +1,5 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from "@angular/core";
 import { ActivatedRoute} from "@angular/router";
-import { Observable } from "rxjs";
 import * as THREE from "three";
 import { IFreeGame } from "../../../../common/model/game/free-game";
 import { GameService } from "../game.service";
@@ -14,7 +13,7 @@ import { FreeGamePhotoService } from "../scene-creator/free-game-photo-service/f
 export class PlayViewComponent implements OnInit , AfterViewInit {
 
   public constructor(
-  private route: ActivatedRoute, private gameService: GameService, public freeGame: Observable<IFreeGame[]>) {/*vide*/ }
+  private route: ActivatedRoute, private gameService: GameService, ) {/*vide*/ }
 
   public gameName: string;
   public originalImage: string;
@@ -42,7 +41,9 @@ export class PlayViewComponent implements OnInit , AfterViewInit {
 
   public verifyGame(): void {
     if (!this.isSimpleGame) {
-      this.freeGame = this.gameService.getFreeGames();
+      this.gameService.getFreeGameByName(this.gameName).subscribe((freeGame: IFreeGame) => {
+        //this.originalImage = freeGame.scenesTable.originalObjects;
+      });
     }
   }
 }
