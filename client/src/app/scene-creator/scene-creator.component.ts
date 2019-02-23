@@ -10,10 +10,11 @@ import { SceneRendererService } from "./scene-renderer.service";
 })
 export class SceneCreatorComponent implements AfterViewInit, OnInit {
 
-  public constructor(private renderService: SceneRendererService, private route: ActivatedRoute, public freeScenes: IScene ) { }
+  public constructor(private renderService: SceneRendererService, private route: ActivatedRoute, ) { }
 
   protected gameName: string;
   protected isSimpleGame: boolean;
+  protected freeScenes: IScene;
 
   private get originalContainer(): HTMLDivElement {
     return this.originalRef.nativeElement;
