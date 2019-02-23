@@ -3,9 +3,9 @@ import * as IObject from "../../../common/free-game-json-interface/JSONInterface
 import { Object3DCreatorService } from "./object3D-creator.service";
 
 export class FreeGameCreatorService {
+    private readonly MAX_TYPE_OBJECTS: number = 5;
     private object3DService: Object3DCreatorService;
     private obj3DToCreate: number;
-    private objectTypes: ObjectGeometry[];
     private modificationTypes: ModificationType[];
     public objects: IObject.IJson3DObject[];
     public modifiedObjects: IObject.IJson3DObject[];
@@ -17,18 +17,16 @@ export class FreeGameCreatorService {
 
     public constructor(
         objectToCreate: number,
-        objType: ObjectGeometry[],
         modType: ModificationType[],
     ) {
         this.object3DService = new Object3DCreatorService();
         this.obj3DToCreate = objectToCreate;
-        this.objectTypes = objType;
         this.modificationTypes = modType;
         this.objects = [];
         this.modifiedObjects = [];
     }
 
-    private getRandomValue(min: number, max: number): number {
+    private getRandomGeometry(min: number, max: number): number {
         return Math.floor(Math.random() * (max - min + 1) + min);
     }
 
@@ -48,9 +46,9 @@ export class FreeGameCreatorService {
                     );
                     if (distance < this.MIN_DIST) {
                         object.position = [
-                            this.getRandomValue(-this.MAX_GAME_X, this.MAX_GAME_X),
-                            this.getRandomValue(-this.MAX_GAME_Y, this.MAX_GAME_Y),
-                            this.getRandomValue(-this.MAX_GAME_Z, this.MAX_GAME_Z),
+                            this.getRandomGeometry(-this.MAX_GAME_X, this.MAX_GAME_X),
+                            this.getRandomGeometry(-this.MAX_GAME_Y, this.MAX_GAME_Y),
+                            this.getRandomGeometry(-this.MAX_GAME_Z, this.MAX_GAME_Z),
                         ];
                         collision = true;
                         break;
@@ -65,9 +63,8 @@ export class FreeGameCreatorService {
     public generate3DObject(): IObject.IJson3DObject {
         let randomObject: number;
         let createdObject: IObject.IJson3DObject;
-        const MAX_TYPE_OBJECTS: number = this.objectTypes.length - 1;
-        randomObject = this.getRandomValue(0, MAX_TYPE_OBJECTS);
-        switch (this.objectTypes[randomObject]) {
+        randomObject = this.getRandomGeometry(0, this.MAX_TYPE_OBJECTS);
+        switch (randomObject) {
             case ObjectGeometry.sphere: {
                 createdObject = this.object3DService.createSphere();
                 break; }
@@ -100,14 +97,14 @@ export class FreeGameCreatorService {
         for (let i: number = 0; i < this.obj3DToCreate; ++i) {
             object = this.generate3DObject();
             object.position = [
-                this.getRandomValue(-this.MAX_GAME_X, this.MAX_GAME_X),
-                this.getRandomValue(-this.MAX_GAME_Y, this.MAX_GAME_Y),
-                this.getRandomValue(-this.MAX_GAME_Z, this.MAX_GAME_Z),
+                this.getRandomGeometry(-this.MAX_GAME_X, this.MAX_GAME_X),
+                this.getRandomGeometry(-this.MAX_GAME_Y, this.MAX_GAME_Y),
+                this.getRandomGeometry(-this.MAX_GAME_Z, this.MAX_GAME_Z),
             ];
             object.rotation = [
-                this.getRandomValue(0, MAXROTATIONANGLE),
-                this.getRandomValue(0, MAXROTATIONANGLE),
-                this.getRandomValue(0, MAXROTATIONANGLE),
+                this.getRandomGeometry(0, MAXROTATIONANGLE),
+                this.getRandomGeometry(0, MAXROTATIONANGLE),
+                this.getRandomGeometry(0, MAXROTATIONANGLE),
             ];
             object = this.handleCollision(object, this.objects);
             this.objects.push(object);
@@ -120,7 +117,7 @@ export class FreeGameCreatorService {
         const MOD_COUNT: number = 7;
         const INDEXES: Set<number> = new Set();
         while (INDEXES.size !== MOD_COUNT) {
-            INDEXES.add(this.getRandomValue(0, this.modifiedObjects.length - 1));
+            INDEXES.add(this.getRandomGeometry(0, this.modifiedObjects.length - 1));
         }
         this.randomDifference(INDEXES);
     }
@@ -130,7 +127,7 @@ export class FreeGameCreatorService {
         const ARRAY_INDEXES: number[] = Array.from(table).sort().reverse();
         let randomModifications: number;
         for (const index of ARRAY_INDEXES) {
-            randomModifications = this.getRandomValue(0, MAX_MOD_TYPE);
+            randomModifications = this.getRandomGeometry(0, MAX_MOD_TYPE);
             switch (this.modificationTypes[randomModifications]) {
                 case ModificationType.remove: {
                     this.modifiedObjects.splice(index, 1);
