@@ -1,5 +1,5 @@
 <form name="creat-game-form" [formGroup]="formDoc" novalidate (ngSubmit)="onSubmit()">
-
+  <h2>Créer une partie libre</h2>
   <mat-form-field hintLabel="Max 15 charactères" id="name">
     <input required matInput #input maxlength="15" placeholder="Nom de la partie" formControlName="name">
     <mat-hint align="end">{{input.value?.length || 0}}/15</mat-hint>
@@ -8,16 +8,17 @@
     </mat-error>
   </mat-form-field>
 
-  <section class="example-section">
-    <h3>Types d'objets dans la scène</h3>
-    <mat-checkbox *ngFor="let objType of objectTypes" class="example-margin"
-      (change)="onCheckboxChange($event, 'objectTypes', objType.value)">
-      {{objType.viewValue}}
-    </mat-checkbox>
-    <mat-error *ngIf="checkboxes['objectTypes'].size === 0">
-      Choisir minimum 1 option
+  <mat-form-field id="themes">
+    <mat-select placeholder="Types de scène" formControlName="theme">
+      <mat-option *ngFor="let theme of themes">
+        {{theme.viewValue}}
+      </mat-option>
+    </mat-select>
+    <mat-hint align="end">Les thèmes ne sont pas encore implémentés</mat-hint>
+    <mat-error *ngIf="formDoc.value.theme !== 'geometry'">
+      Les thèmes autres que Geométrie ne sont pas implémenté
     </mat-error>
-  </section>
+  </mat-form-field>
 
   <section class="example-section">
     <h3>Nombre d'objets dans la scène</h3>
@@ -30,7 +31,7 @@
     <h3>Types de modifications dans la scène</h3>
     <mat-checkbox *ngFor="let modType of modTypes" class="example-margin"
       ng-required="checkboxes['modificationTypes'].size===0"
-      (change)="onCheckboxChange($event, 'modificationTypes', modType.value)">
+      (change)="onCheckboxChange($event, modType.value)">
       {{modType.viewValue}}
     </mat-checkbox>
     <mat-error *ngIf="checkboxes['modificationTypes'].size === 0">
@@ -42,7 +43,7 @@
 
   <div>
     <button id="form-submit" type="form-submit" name="submit" mat-button
-      [disabled]="!formDoc.valid || disableButton || !checboxesValid()">Envoyer</button>
+      [disabled]="isFormInvalid()">Envoyer</button>
     <button id="form-reset" type="reset" mat-button color="warn" (click)="exit()">Annuler</button>
   </div>
 </form>

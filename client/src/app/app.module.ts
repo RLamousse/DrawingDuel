@@ -1,7 +1,9 @@
 import { HttpClientModule } from "@angular/common/http";
 import { NgModule, NO_ERRORS_SCHEMA } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { MatButtonModule, MatCheckboxModule, MatFormFieldModule, MatIconModule, MatInputModule, MatSliderModule } from "@angular/material";
+import {
+  MatButtonModule, MatCheckboxModule, MatFormFieldModule, MatIconModule, MatInputModule, MatSelectModule, MatSliderModule
+} from "@angular/material";
 import { MatDialogModule } from "@angular/material/dialog";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
@@ -56,6 +58,7 @@ import { FreeGamePhotoService } from "./scene-creator/free-game-photo-service/fr
     MatDialogModule,
     MatSliderModule,
     MatCheckboxModule,
+    MatSelectModule,
   ],
   providers: [UNListService, FormPostService, GameService, SceneRendererService, Form3DService, FreeGameCreatorService, FreeGamePhotoService],
   bootstrap: [AppComponent],
