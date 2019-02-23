@@ -194,20 +194,6 @@ export class GameCreatorService {
         return diffData;
     }
 
-    //TODO remove the function from the diff eval file, the diff eval tests, and the game creator tests
-    // private testFreeGameNumberOfDiffs(originalScene: THREE.Mesh[], modifiedScene: THREE.Mesh[]): void {
-    //
-    //     let diffNumber: number;
-    //     try {
-    //         diffNumber = this.differenceEvaluatorService.getFreeNDifferences(originalScene, modifiedScene);
-    //     } catch (error) {
-    //         throw new Error("diff counting: " + error.message);
-    //     }
-    //     if (diffNumber !== EXPECTED_DIFF_NUMBER) {
-    //         throw new Error(DIFFERENCE_ERROR_MESSAGE);
-    //     }
-    // }
-
     private async generateFreeGame(gameName: string, scenes: IScenesJSON): Promise<Message> {
         await this.uploadFreeGame(gameName, scenes);
         return GAME_CREATION_SUCCESS_MESSAGE;
