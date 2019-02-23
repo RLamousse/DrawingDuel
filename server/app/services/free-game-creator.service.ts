@@ -5,7 +5,6 @@ import { Object3DCreatorService } from "./object3D-creator.service";
 export class FreeGameCreatorService {
     private object3DService: Object3DCreatorService;
     private obj3DToCreate: number;
-    private objectTypes: ObjectGeometry[];
     private modificationTypes: ModificationType[];
     public objects: IObject.IJson3DObject[];
     public modifiedObjects: IObject.IJson3DObject[];
@@ -17,12 +16,10 @@ export class FreeGameCreatorService {
 
     public constructor(
         objectToCreate: number,
-        objType: ObjectGeometry[],
         modType: ModificationType[],
     ) {
         this.object3DService = new Object3DCreatorService();
         this.obj3DToCreate = objectToCreate;
-        this.objectTypes = objType;
         this.modificationTypes = modType;
         this.objects = [];
         this.modifiedObjects = [];
@@ -65,9 +62,9 @@ export class FreeGameCreatorService {
     public generate3DObject(): IObject.IJson3DObject {
         let randomObject: number;
         let createdObject: IObject.IJson3DObject;
-        const MAX_TYPE_OBJECTS: number = this.objectTypes.length - 1;
+        const MAX_TYPE_OBJECTS: number = 4;
         randomObject = this.getRandomValue(0, MAX_TYPE_OBJECTS);
-        switch (this.objectTypes[randomObject]) {
+        switch (randomObject) {
             case ObjectGeometry.sphere: {
                 createdObject = this.object3DService.createSphere();
                 break; }
