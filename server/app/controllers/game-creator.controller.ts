@@ -46,8 +46,8 @@ export class GameCreatorController {
 
                 res.json(await this.gameCreatorService.createFreeGame(
                     req.body[GAME_NAME_FIELD],
-                    req.body["objectQuantity"],//TODO after merge with Ballandras, use constants
-                    req.body["objectTypes"],
+                    req.body["objectQuantity"],//TODO after merge with Ballandras, use constants for the name fields
+                    req.body["theme"],
                     req.body["modificationTypes"]));
 
             } catch (error) {
