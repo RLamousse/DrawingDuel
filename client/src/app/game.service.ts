@@ -52,6 +52,12 @@ export class GameService {
     );
   }
 
+  public getFreeGameByName(gameName: string): Observable<IFreeGame> {
+    return this.http.get<IFreeGame>(this.FREE_GAME_BASE_URL + "/" + gameName).pipe(
+      catchError(this.handleError<IFreeGame>("get free game from server error")),
+    );
+  }
+
   private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {
 
     return (error: Error): Observable<T> => {
