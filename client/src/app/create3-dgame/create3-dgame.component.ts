@@ -69,7 +69,7 @@ export class Create3DGameComponent extends AbstractForm implements OnInit {
     this.sliderValue = e.value ? e.value : 0;
   }
 
-  protected isFormInvalid(): boolean {
+  public isFormInvalid(): boolean {
     return (
       !this.formDoc.valid ||
       this.disableButton ||
