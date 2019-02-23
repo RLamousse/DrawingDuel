@@ -85,7 +85,7 @@ export class GameCreatorService {
         }
     }
 
-    public async createFreeGame(gameName: string, numberOfObjects: number, theme: Themes, modTypes: ObjectGeometry[]): Promise<Message> {
+    public async createFreeGame(gameName: string, numberOfObjects: number, theme: Themes, modTypes: ModificationType[]): Promise<Message> {
 
         await GameCreatorService.testNameExistence(gameName);
 
@@ -213,7 +213,7 @@ export class GameCreatorService {
         return GAME_CREATION_SUCCESS_MESSAGE;
     }
 
-    private generateScene(numberOfObjects: number, theme: Themes, modTypes: ObjectGeometry[]): IScenesJSON {
+    private generateScene(numberOfObjects: number, theme: Themes, modTypes: ModificationType[]): IScenesJSON {
         if (theme === Themes.Geometry) {
             const sceneCreator: FreeGameCreatorService = new FreeGameCreatorService(numberOfObjects,
                 [ObjectGeometry.sphere,
@@ -221,7 +221,7 @@ export class GameCreatorService {
                     ObjectGeometry.cone,
                     ObjectGeometry.cylinder,
                     ObjectGeometry.pyramid],
-                [ModificationType.remove, ModificationType.add, ModificationType.changeColor]);
+                modTypes);
 
             sceneCreator.generateIScenes();
             return {originalObjects: sceneCreator.objects, modifiedObjects: sceneCreator.modifiedObjects};
