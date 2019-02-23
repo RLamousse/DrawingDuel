@@ -2,7 +2,7 @@
 
 export enum ObjectGeometry { sphere, cube, cone, cylinder, pyramid }
 
-export enum Coordinate { X, Y, Z };
+export enum Coordinate { X, Y, Z }
 
 export enum Themes {
     Geometry = "geometry",
