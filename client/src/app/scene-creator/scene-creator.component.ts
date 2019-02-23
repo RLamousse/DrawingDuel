@@ -1,4 +1,6 @@
-import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from "@angular/core";
+import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild } from "@angular/core";
+import { ActivatedRoute} from "@angular/router";
+import { IScene } from "../../../scene-interface";
 import { SceneRendererService } from "./scene-renderer.service";
 
 @Component({
@@ -6,9 +8,12 @@ import { SceneRendererService } from "./scene-renderer.service";
   templateUrl: "./scene-creator.component.html",
   styleUrls: ["./scene-creator.component.css"],
 })
-export class SceneCreatorComponent implements AfterViewInit {
+export class SceneCreatorComponent implements AfterViewInit, OnInit {
 
-  public constructor(private renderService: SceneRendererService) { }
+  public constructor(private renderService: SceneRendererService, private route: ActivatedRoute, public freeScenes: IScene ) { }
+
+  protected gameName: string;
+  protected isSimpleGame: boolean;
 
   private get originalContainer(): HTMLDivElement {
     return this.originalRef.nativeElement;
@@ -29,7 +34,16 @@ export class SceneCreatorComponent implements AfterViewInit {
     this.renderService.onResize();
   }
 
+  public ngOnInit(): void {
+    this.route.queryParams.subscribe((params) => {
+      this.isSimpleGame = params ["isSimpleGame"];
+      this.gameName = params["gameName"];
+      this.freeScenes = params["freeScenes"];
+    });
+  }
+
   public ngAfterViewInit(): void {
     this.renderService.init(this.originalContainer, this.modifiedContainer);
+    this.renderService.loadScenes(this.freeScenes.scene, this.freeScenes.modifiedScene);
   }
 }
