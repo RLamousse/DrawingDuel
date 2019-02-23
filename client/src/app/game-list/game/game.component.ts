@@ -1,5 +1,9 @@
 import { Component, Input } from "@angular/core";
 import { Router } from "@angular/router";
+import { IFreeGame } from "../../../../../common/model/game/free-game";
+import { IScene } from "../../../../scene-interface";
+import { GameService } from "../../game.service";
+import { FreeGameCreatorService} from "../../scene-creator/FreeGameCreator/free-game-creator.service";
 
 @Component({
   selector: "app-game",
@@ -9,7 +13,8 @@ import { Router } from "@angular/router";
 
 export class GameComponent {
 
-  public constructor( private router: Router ) {/*vide*/}
+  public constructor( private router: Router, private freeGameCreator: FreeGameCreatorService,
+                      private gameService: GameService, ) {/*vide*/}
 
   @Input() public gameName: string = "test";
   @Input() public bestSoloTimes: { name: string, time: number }[];
@@ -20,13 +25,30 @@ export class GameComponent {
   @Input() public rightButton: string;
   @Input() public leftButton: string;
   @Input() public isSimpleGame: boolean;
+  protected freeScenes: IScene;
 
   protected leftButtonClick(): void {
     if (this.leftButton === "jouer") {
-      this.router.navigate(["/play-view/"], {queryParams: {
-        isSimpleGame : this.isSimpleGame, gameName: this.gameName,
-        originalImage: this.originalImage, modifiedImage: this.modifiedImage },
-      }).catch();
+      if (this.isSimpleGame) {
+        this.router.navigate(["/play-view/"], {queryParams: {
+          isSimpleGame : this.isSimpleGame, gameName: this.gameName,
+          originalImage: this.originalImage, modifiedImage: this.modifiedImage },
+        }).catch();
+      } else {
+        this.verifyGame();
+        this.router.navigate(["/3d-view/"], {queryParams: {
+          isSimpleGame : this.isSimpleGame, gameName: this.gameName,
+          freeScenes: this.freeScenes },
+        }).catch();
+      }
+    }
+  }
+
+  private verifyGame(): void {
+    if (!this.isSimpleGame) {
+      this.gameService.getFreeGameByName(this.gameName).subscribe((freeGame: IFreeGame) => {
+        this.freeScenes = this.freeGameCreator.createScenes(freeGame.scenesTable);
+      });
     }
   }
 }
