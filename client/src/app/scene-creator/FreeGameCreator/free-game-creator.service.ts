@@ -10,8 +10,8 @@ export class FreeGameCreatorService {
   private scene: THREE.Scene;
   private modifiedScene: THREE.Scene;
 
-  private objects: THREE.Mesh[];
-  private modifiedObjects: THREE.Mesh[];
+  public objects: THREE.Mesh[];
+  public modifiedObjects: THREE.Mesh[];
   private formService: Form3DService;
   public constructor() {
     this.objects = [];

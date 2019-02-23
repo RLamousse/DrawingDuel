@@ -9,7 +9,7 @@ import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import "hammerjs";
 import * as THREE from "three";
-import { ModificationType, ObjectGeometry } from "../FreeGameCreatorInterface/free-game-enum";
+import { ModificationType, ObjectGeometry } from "../../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
 import { FormPostService } from "../form-post.service";
 import { FreeGameCreatorService } from "../scene-creator/FreeGameCreator/free-game-creator.service";
 import { Create3DGameComponent } from "./create3-dgame.component";

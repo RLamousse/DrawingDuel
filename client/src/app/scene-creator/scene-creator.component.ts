@@ -1,4 +1,5 @@
-import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from "@angular/core";
+import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
 import { SceneRendererService } from "./scene-renderer.service";
 
 @Component({
@@ -6,9 +7,12 @@ import { SceneRendererService } from "./scene-renderer.service";
   templateUrl: "./scene-creator.component.html",
   styleUrls: ["./scene-creator.component.css"],
 })
-export class SceneCreatorComponent implements AfterViewInit {
-
-  public constructor(private renderService: SceneRendererService) { }
+export class SceneCreatorComponent implements AfterViewInit, OnInit {
+  private renderService: SceneRendererService
+  private route: ActivatedRoute;
+  public constructor() {
+    this.renderService = new SceneRendererService();
+  }
 
   private get originalContainer(): HTMLDivElement {
     return this.originalRef.nativeElement;
@@ -28,7 +32,11 @@ export class SceneCreatorComponent implements AfterViewInit {
   public onResize(): void {
     this.renderService.onResize();
   }
+  public ngOnInit(): void {
+    this.route.queryParams.subscribe((params) => {
 
+    });
+  }
   public ngAfterViewInit(): void {
     this.renderService.init(this.originalContainer, this.modifiedContainer);
   }

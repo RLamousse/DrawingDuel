@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewChild, ElementRef } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { MatCheckboxChange, MatDialogRef, MatSliderChange } from "@angular/material";
 import { FREE_GAME_CREATION_ROUTE } from "../../../../common/communication/routes";
@@ -6,7 +6,6 @@ import { ModificationType, ObjectGeometry } from "../../../../common/free-game-j
 import { AVAILABLE_MODIF_TYPES, AVAILABLE_OBJECT_TYPES, SelectType } from "../Interfaces/selectType";
 import { AbstractForm } from "../abstract-form";
 import { FormPostService } from "../form-post.service";
-//import { FreeGameCreatorService } from "../scene-creator/FreeGameCreator/free-game-creator.service";
 @Component({
   selector: "app-create3-dgame",
   templateUrl: "./create3-dgame.component.html",
@@ -15,7 +14,7 @@ import { FormPostService } from "../form-post.service";
 export class Create3DGameComponent extends AbstractForm implements OnInit {
 
   private readonly MIN_NAME_LENGTH: number = 5;
-
+  @ViewChild("photoContainer") divElemt: ElementRef;
   protected modTypes: SelectType<ModificationType>[] = AVAILABLE_MODIF_TYPES;
   protected objectTypes: SelectType<ObjectGeometry>[] = AVAILABLE_OBJECT_TYPES;
   protected sliderValue: number = 10;
@@ -49,8 +48,8 @@ export class Create3DGameComponent extends AbstractForm implements OnInit {
   }
 
   protected onCheckboxChange(e: MatCheckboxChange,
-                             selectType: "objectTypes" | "modificationTypes",
-                             selectName: ObjectGeometry | ModificationType): void {
+    selectType: "objectTypes" | "modificationTypes",
+    selectName: ObjectGeometry | ModificationType): void {
     if (e.checked) {
       (this.checkboxes[selectType] as Set<ObjectGeometry | ModificationType>).add(selectName);
     } else {

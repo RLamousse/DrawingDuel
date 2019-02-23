@@ -10,12 +10,12 @@ export class FreeGamePhotoService {
 
   private readonly cameraX: number = 0;
   private readonly cameraY: number = 0;
-  private readonly cameraZ: number = 100;
+  private readonly cameraZ: number = 2;
 
   public takePhoto(originScene: THREE.Scene, container: HTMLDivElement): void {
     const camera: THREE.PerspectiveCamera = new THREE.PerspectiveCamera(
       this.fieldOfView,
-      (container.clientWidth) / (container.clientHeight),
+      1,
       this.nearClippingPane,
       this.farClippingPane,
     );
@@ -26,9 +26,13 @@ export class FreeGamePhotoService {
     const renderer: THREE.WebGLRenderer = new THREE.WebGLRenderer({ preserveDrawingBuffer: true });
     renderer.setClearColor(this.backGroundColor);
     renderer.setPixelRatio(devicePixelRatio);
-    renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.setSize(400, 400);
     container.appendChild(renderer.domElement);
 
+    let cube: THREE.Mesh = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshBasicMaterial({ color: 0xFFFFFFF }));
+    originScene.add(cube);
+
     renderer.render(originScene, camera);
+    console.log((container.children[0] as HTMLCanvasElement).toDataURL());
   }
 }

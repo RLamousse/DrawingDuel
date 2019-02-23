@@ -14,6 +14,7 @@ class MockedForm3DService {
 }
 
 const mockedInstance: MockedForm3DService = new MockedForm3DService();
+const dummyCube: IObject.ICube = {}
 
 describe("FreeGameCreatorService", () => {
   beforeEach(() => {
@@ -26,10 +27,15 @@ describe("FreeGameCreatorService", () => {
   });
 
   // Test createScenes
-  it("should create empty scenes, objects array empty", () => {
+  it("should create empty scenes => objects array empty", () => {
     const emptyScenes: IObject.IScenesJSON = { originalObjects: [], modifiedObjects: [] };
-    const service: FreeGameCreatorService = new FreeGameCreatorService(emptyScenes, new Form3DService());
-    service.createScenes();
+    const service: FreeGameCreatorService = new FreeGameCreatorService();
+    service.createScenes(emptyScenes);
+    expect(service.objects.length).toEqual(0);
+    expect(service.modifiedObjects.length).toEqual(0);
   });
 
+  it("should create scenes with 5 different types of objects", () => {
+
+  })
 });
