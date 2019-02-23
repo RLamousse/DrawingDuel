@@ -14,14 +14,15 @@
     </div>
     <div class="window">
         <h1>Parties Libres</h1>
-        <app-game *ngFor="let instance of gameService.freeGames" 
+        <app-game *ngFor= "let instance of gameService.freeGames" 
             [gameName]= "instance.gameName"
             [bestSoloTimes]= "instance.bestSoloTimes"
             [bestMultiTimes]= "instance.bestMultiTimes"
             [scenesTable]= "instance.scenesTable"
             [rightButton]= "rightButton"
             [leftButton]= "leftButton"
-            [isSimpleGame]= false>
+            [isSimpleGame]= false
+            [thumbnail]= "instance.thumbnail">
         </app-game>
     </div>
 </div>

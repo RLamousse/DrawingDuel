@@ -5,10 +5,9 @@
       <div *ngIf="isSimpleGame;  then thenBlock else elseBlock"></div>
       <ng-template #thenBlock>
         <img class="image" src={{originalImage}}>
-        <div #photoContainer></div>
       </ng-template>
       <ng-template #elseBlock>
-        <div class="image" #photoContainer></div>
+        <img class="image" src={{thumbnail}}>
       </ng-template>
       
       
