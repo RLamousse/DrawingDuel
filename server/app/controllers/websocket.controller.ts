@@ -25,7 +25,7 @@ export class WebsocketController {
 
     private initSocket(socket: io.Socket): void {
         socket.on("message", (message: string) => {
-            this.handleMessage (socket, message);
+            this.handleMessage (message, socket);
         });
         socket.on(SocketEvent.DUMMY, (message: WebsocketMessage) => {
             this.dummyAction.execute(message, socket);
@@ -33,7 +33,7 @@ export class WebsocketController {
         socket.emit(SocketEvent.WELCOME, "Connection has been made via a websocket");
     }
 
-    private handleMessage(socket: io.Socket, paquet: string): void {
+    private handleMessage(paquet: string, socket: io.Socket): void {
         const message: WebsocketMessage | undefined = this.transformPaquet(paquet);
         if (!message) {
             throw new IllegalArgumentError("Message is not the right format");
