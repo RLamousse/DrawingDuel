@@ -3,7 +3,11 @@ import {Field} from "multer";
 import {Message} from "../../../common/communication/messages/message";
 import {GAME_NAME_FIELD} from "../../../common/communication/requests/game-creator.controller.request";
 import {ARGUMENT_ERROR_MESSAGE} from "../services/difference-evaluator.service";
-import {Themes} from "../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
+import {
+    ModificationType,
+    Themes
+} from "../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
+import {EXPECTED_DIFF_NUMBER} from "../services/game-creator.service";
 
 export const REQUIRED_IMAGE_HEIGHT: number = 480;
 export const REQUIRED_IMAGE_WIDTH: number = 640;
@@ -40,19 +44,20 @@ export const assertRequestImageFilesFields: (req: Express.Request) => void = (re
 
 export const assertRequestSceneFields: (req: Express.Request) => void = (req: Request): void => {
     assertFieldsOfRequest(req, GAME_NAME_FIELD);
-    // TODO after merge with Ballandras, use constants for the name fields
 
-    if (req.body["objectQuantity"] < 0 ||
-        req.body["theme"] < 0 || req.body["theme"] > 0 ||
-        !Array.isArray(req.body["modificationTypes"]) ||
-        req.body["modificationTypes"].length < 1 ||
-        req.body["modificationTypes"].length > 3 ) {
+    if (req.body.objectQuantity < EXPECTED_DIFF_NUMBER ||
+        (req.body.theme !== Themes.Geometry &&
+        req.body.theme !== Themes.Sanic &&
+        req.body.theme !== Themes.Forest) ||
+        !Array.isArray(req.body.modificationTypes) ||
+        req.body.modificationTypes.length < 1 ||
+        req.body.modificationTypes.length > 3 ) {
         throw new Error(ARGUMENT_ERROR_MESSAGE);
     }
-    for (const element of req.body["modificationTypes"]) {
-        if (element !== Themes.Geometry ||
-            element !== Themes.Forest ||
-            element !== Themes.Sanic) {
+    for (const modificationType of req.body.modificationTypes) {
+        if (modificationType !== ModificationType.add &&
+            modificationType !== ModificationType.remove &&
+            modificationType !== ModificationType.changeColor) {
             throw new Error(ARGUMENT_ERROR_MESSAGE);
         }
     }
