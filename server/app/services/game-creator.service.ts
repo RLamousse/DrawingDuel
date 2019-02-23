@@ -26,7 +26,6 @@ import {ImageUploadService} from "./image-upload.service";
 import {IFreeGame} from "../../../common/model/game/free-game";
 import {
     ModificationType,
-    ObjectGeometry,
     Themes
 } from "../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
 import {FreeGameCreatorService} from "./free-game-creator.service";
@@ -201,13 +200,7 @@ export class GameCreatorService {
 
     private generateScene(numberOfObjects: number, theme: Themes, modTypes: ModificationType[]): IScenesJSON {
         if (theme === Themes.Geometry) {
-            const sceneCreator: FreeGameCreatorService = new FreeGameCreatorService(numberOfObjects,
-                [ObjectGeometry.sphere,
-                    ObjectGeometry.cube,
-                    ObjectGeometry.cone,
-                    ObjectGeometry.cylinder,
-                    ObjectGeometry.pyramid],
-                modTypes);
+            const sceneCreator: FreeGameCreatorService = new FreeGameCreatorService(numberOfObjects, modTypes);
 
             sceneCreator.generateIScenes();
             return {originalObjects: sceneCreator.objects, modifiedObjects: sceneCreator.modifiedObjects};
