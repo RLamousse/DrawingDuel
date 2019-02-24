@@ -8,6 +8,7 @@ import {
 import { AVAILABLE_MODIF_TYPES, AVAILABLE_THEMES, SelectType } from "../Interfaces/selectType";
 import { AbstractForm } from "../abstract-form";
 import { FormPostService } from "../form-post.service";
+import {ICreateFreeGameRequest} from "../../../../common/communication/requests/game-creator.controller.request";
 @Component({
   selector: "app-create3-dgame",
   templateUrl: "./create3-dgame.component.html",
@@ -81,12 +82,13 @@ export class Create3DGameComponent extends AbstractForm implements OnInit {
   protected onSubmit(): void {
     this.disableButton = true;
     const modificationTypes: ModificationType[] = Array.from(this.checkboxes.modificationTypes);
-    const fd: FormData = new FormData();
-    fd.append("gameName", this.formDoc.value.name);
-    fd.append("objectQuantity", this.sliderValue.toString());
-    fd.append("objectTypes", this.formDoc.value.theme);
-    fd.append("modificationTypes", JSON.stringify(modificationTypes));
-    this.formPost.submitForm(FREE_GAME_CREATION_ROUTE, fd).subscribe(
+    const requestData: ICreateFreeGameRequest = {
+      gameName : this.formDoc.value.name,
+      objectQuantity : this.sliderValue,
+      theme : this.formDoc.value.theme,
+      modificationTypes : modificationTypes,
+    };
+    this.formPost.submitForm(FREE_GAME_CREATION_ROUTE, requestData).subscribe(
       (data) => {
         this.exit(data);
       },
