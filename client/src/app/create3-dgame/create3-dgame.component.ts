@@ -85,7 +85,7 @@ export class Create3DGameComponent extends AbstractForm implements OnInit {
     fd.append("gameName", this.formDoc.value.name);
     fd.append("objectQuantity", this.sliderValue.toString());
     fd.append("objectTypes", this.formDoc.value.theme);
-    fd.append("modificationTypes", new Blob([new Uint8Array(modificationTypes)], {type: "octet/stream"}));
+    fd.append("modificationTypes", JSON.stringify(modificationTypes));
     this.formPost.submitForm(FREE_GAME_CREATION_ROUTE, fd).subscribe(
       (data) => {
         this.exit(data);
