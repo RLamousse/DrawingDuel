@@ -11,7 +11,11 @@ export default  {
         BitmapDiffController: Symbol("BitmapDiffController"),
         BitmapDiffService: Symbol("BitmapDiffService"),
         BitmapWriter: Symbol("BitmapWriter"),
+        DiffValidatorController: Symbol("DiffValidatorController"),
+        DiffValidatorService: Symbol("DiffValidatorService"),
+        WebsocketController: Symbol("WebSocketController"),
         ImageUploadService: Symbol("ImageUploadService"),
         FreeGameCreatorService: Symbol("FreeGameCreatorService"),
         Object3DCreatorService: Symbol("Object3DCreatorService"),
+        DummyWebsocketActionService: Symbol("DummyWebsocketActionService"),
 };

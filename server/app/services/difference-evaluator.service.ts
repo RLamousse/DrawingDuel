@@ -48,7 +48,7 @@ export class DifferenceEvaluatorService {
         if (!Array.isArray(TMP_ARRAY[0])) {
             throw new Error(ARGUMENT_ERROR_MESSAGE);
         }
-        if ( TMP_ARRAY[0].length === 0) {
+        if (TMP_ARRAY[0].length === 0) {
             throw new Error(EMPTY_ARRAY_ERROR_MESSAGE);
         }
         if (typeof TMP_ARRAY[0][0] !== "number") {
