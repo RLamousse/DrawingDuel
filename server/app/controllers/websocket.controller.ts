@@ -13,8 +13,10 @@ export class WebsocketController {
         this.routeSocket = this.routeSocket.bind(this);
     }
 
-    public registerSocket(socket: io.Socket): void {
+    public registerSocket(socket: io.Socket): io.Socket {
         this.routeSocket(socket);
+
+        return socket;
     }
 
     private routeSocket(socket: io.Socket): void {
