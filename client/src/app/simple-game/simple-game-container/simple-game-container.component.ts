@@ -1,8 +1,8 @@
 import {Component, Input, ViewChild} from "@angular/core";
-import {DifferenceCluster, DIFFERENCE_CLUSTER_POINTS_INDEX} from "../../../../../common/model/game/simple-game";
-import {tansformOrigin, IPoint} from "../../../../../common/model/point";
+import {DIFFERENCE_CLUSTER_POINTS_INDEX, DifferenceCluster} from "../../../../../common/model/game/simple-game";
+import {IPoint, tansformOrigin} from "../../../../../common/model/point";
 import {PixelData, SimpleGameCanvasComponent} from "../simple-game-canvas/simple-game-canvas.component";
-import {SimpleGameService} from "../simple-game.service";
+import {ALREADY_FOUND_DIFFERENCE, SimpleGameService} from "../simple-game.service";
 
 @Component({
              selector: "app-simple-game-container",
@@ -31,6 +31,10 @@ export class SimpleGameContainerComponent {
       })
       // tslint:disable-next-line:no-any Generic error response
       .catch((reason: any) => {
+        if (reason.message !== undefined && reason.message === ALREADY_FOUND_DIFFERENCE) {
+          return;
+        }
+
         throw new Error(reason);
       });
   }

@@ -13,6 +13,7 @@ import {Create3DGameComponent} from "./create3-dgame/create3-dgame.component";
 import {FormPostService} from "./form-post.service";
 import {GameListComponent} from "./game-list/game-list.component";
 import {GameComponent} from "./game-list/game/game.component";
+import {GameService} from "./game.service";
 import {InitialViewComponent} from "./initial-view/initial-view.component";
 import {PlayViewComponent} from "./play-view/play-view.component";
 import {Form3DService} from "./scene-creator/3DFormService/3-dform.service";
@@ -20,9 +21,9 @@ import {FreeGameCreatorService} from "./scene-creator/FreeGameCreator/free-game-
 import {SceneCreatorComponent} from "./scene-creator/scene-creator.component";
 import {SceneRendererService} from "./scene-creator/scene-renderer.service";
 import {SimpleGameCreatorFormComponent} from "./simple-game-creator-form/simple-game-creator-form.component";
-import {GameService} from "./simple-game/game.service";
 import {SimpleGameCanvasComponent} from "./simple-game/simple-game-canvas/simple-game-canvas.component";
 import {SimpleGameContainerComponent} from "./simple-game/simple-game-container/simple-game-container.component";
+import {SimpleGameService} from "./simple-game/simple-game.service";
 import {UNListService} from "./username.service";
 import {VueAdminComponent} from "./vue-admin/vue-admin.component";
 import {WindowEventHandlerDirective} from "./window-event-handler.directive";
@@ -60,7 +61,15 @@ import {WindowEventHandlerDirective} from "./window-event-handler.directive";
               MatSliderModule,
               MatCheckboxModule,
             ],
-            providers: [UNListService, FormPostService, GameService, SceneRendererService, Form3DService, FreeGameCreatorService],
+            providers: [
+              UNListService,
+              FormPostService,
+              GameService,
+              SceneRendererService,
+              Form3DService,
+              FreeGameCreatorService,
+              SimpleGameService,
+            ],
             bootstrap: [AppComponent],
             entryComponents: [SimpleGameCreatorFormComponent, Create3DGameComponent],
             schemas: [NO_ERRORS_SCHEMA],

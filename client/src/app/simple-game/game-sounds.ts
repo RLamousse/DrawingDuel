@@ -58,6 +58,7 @@ export const OH_BABY_SOUND: Howl = new Howl(
 export const SANIC_SOUND: Howl = new Howl(
   {
     src: ["assets/sounds/sanic.webm", "assets/sounds/sanic.mp3"],
+    volume: 0.3,
   });
 
 export const TROMBONE1_SOUND: Howl = new Howl(
@@ -73,6 +74,7 @@ export const TROMBONE2_SOUND: Howl = new Howl(
 export const VIOLIN_SOUND: Howl = new Howl(
   {
     src: ["assets/sounds/violin.webm", "assets/sounds/violin.mp3"],
+    volume: 0.3,
   });
 
 export const WOW_SOUND: Howl = new Howl(

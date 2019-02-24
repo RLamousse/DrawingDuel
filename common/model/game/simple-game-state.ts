@@ -1,3 +1,5 @@
+import {DifferenceCluster} from "./simple-game";
+
 export default interface ISimpleGameState {
-    foundDifferencesIds: number[]
+    foundDifferenceClusters: DifferenceCluster[]
 }
