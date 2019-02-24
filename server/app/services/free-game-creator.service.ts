@@ -50,8 +50,7 @@ export class FreeGameCreatorService {
         return object;
     }
 
-    //TODO make private
-    public generate3DObject(): IObject.IJson3DObject {
+    private generate3DObject(): IObject.IJson3DObject {
         let randomObject: number;
         let createdObject: IObject.IJson3DObject;
         randomObject = this.getRandomValue(0, this.MAX_TYPE_OBJECTS);
