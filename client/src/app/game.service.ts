@@ -2,6 +2,8 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { of, Observable } from "rxjs";
 import { catchError } from "rxjs/operators";
+import { IScenesJSON } from "../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
+import { IExtendedFreeGame } from "../../../common/model/game/extended-free-game";
 import { IFreeGame } from "../../../common/model/game/free-game";
 import { IGame } from "../../../common/model/game/game";
 import { ISimpleGame } from "../../../common/model/game/simple-game";
@@ -12,6 +14,7 @@ import { ISimpleGame } from "../../../common/model/game/simple-game";
 export class GameService {
   public simpleGames: ISimpleGame[] = [];
   public freeGames: IFreeGame[] = [];
+  public extendedFreeGames: IExtendedFreeGame[] = [];
   public readonly SIMPLE_GAME_BASE_URL: string = "http://localhost:3000/api/data-base/games/simple/";
   public readonly FREE_GAME_BASE_URL: string = "http://localhost:3000/api/data-base/games/free/";
   public constructor(private http: HttpClient) { }
@@ -38,6 +41,10 @@ export class GameService {
     }
 
     return game;
+  }
+
+  public extractThumbnail(scene: IScenesJSON): string {
+    return "";
   }
 
   public getSimpleGames(): Observable<ISimpleGame[]> {

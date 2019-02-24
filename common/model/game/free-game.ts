@@ -3,11 +3,9 @@ import { IScenesJSON } from "../../../common/free-game-json-interface/JSONInterf
 
 export interface IFreeGame extends IGame {
     scenesTable: IScenesJSON;
-    thumbnail: string;
 }
 
 export const instanceOfFreeGame = (object: any): object is IFreeGame =>
     instanceOfGame(object) &&
-    'scenesTable' in object &&
-    'thumbnail' in object;
+    'scenesTable' in object;
     

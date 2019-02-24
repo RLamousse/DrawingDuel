@@ -14,7 +14,7 @@
     </div>
     <div class="window">
         <h1>Parties Libres</h1>
-        <app-game *ngFor= "let instance of gameService.freeGames" 
+        <app-game *ngFor= "let instance of gameService.extendedFreeGames" 
             [gameName]= "instance.gameName"
             [bestSoloTimes]= "instance.bestSoloTimes"
             [bestMultiTimes]= "instance.bestMultiTimes"

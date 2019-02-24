@@ -2,7 +2,7 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { IFreeGame } from "../../../../common/model/game/free-game";
 import { ISimpleGame } from "../../../../common/model/game/simple-game";
-//import {} from "../../../../common/model/game/extended-free-game";
+import { IExtendedFreeGame } from "../../../../common/model/game/extended-free-game";
 import { GameService } from "../game.service";
 import { MOCKED_FREE_GAMES, MOCKED_SIMPLE_GAMES } from "../mockGames";
 
@@ -30,18 +30,30 @@ export class GameListComponent implements OnInit {
         this.gameService.simpleGames.push(game);
       }
     });
-
+    
     this.gameService.getFreeGames().subscribe((freeGamesToModify: IFreeGame[]) => {
       this.gameService.freeGames = [];
+      this.gameService.extendedFreeGames = [];
       this.gameService.convertScoresObject(freeGamesToModify);
       this.gameService.convertScoresObject(MOCKED_FREE_GAMES);
       for (const test of MOCKED_FREE_GAMES) {
-        this.gameService.freeGames.push(test);
+        this.gameService.extendedFreeGames.push(test);
       }
+      console.log(this.gameService.extendedFreeGames);
       // for (const game of freeGamesToModify) {
       //   console.log(typeof game);
       //   //this.gameService.freeGames.push(game);
       // }
+      for (const game of this.gameService.freeGames) {
+        let newThumbnail: string = this.gameService.extractThumbnail(game.scenesTable);
+        let extendedFreeGame: IExtendedFreeGame= {thumbnail: newThumbnail,
+                                                  scenesTable: game.scenesTable,
+                                                  gameName: game.gameName,
+                                                  bestSoloTimes: game.bestSoloTimes,
+                                                  bestMultiTimes: game.bestMultiTimes
+                                                 };
+        this.gameService.extendedFreeGames.push(extendedFreeGame);
+      }
     });
   }
 
