@@ -1,24 +1,25 @@
+/* tslint:disable:max-file-line-count */
 // tslint:disable:no-magic-numbers
 import Axios from "axios";
+import AxiosAdapter from "axios-mock-adapter";
 // tslint:disable-next-line:no-duplicate-imports Weird interaction between singletons and interface (olivier st-o approved)
 import MockAdapter from "axios-mock-adapter";
-import AxiosAdapter from "axios-mock-adapter";
 import {expect} from "chai";
 import * as fs from "fs";
 import * as HttpStatus from "http-status-codes";
 import {anything, instance, mock, when} from "ts-mockito";
+import {
+    ModificationType,
+    Themes
+} from "../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
 import {ISimpleDifferenceData} from "../../../common/model/game/simple-game";
 import {IPoint, ORIGIN} from "../../../common/model/point";
 import {DIFFERENCE_ERROR_MESSAGE, NAME_ERROR_MESSAGE, NON_EXISTING_THEME} from "../controllers/controller-utils";
 import {NON_EXISTING_GAME_ERROR_MESSAGE} from "./db/simple-games.collection.service";
 import {DifferenceEvaluatorService} from "./difference-evaluator.service";
+import {FreeGameCreatorService} from "./free-game-creator.service";
 import {EXPECTED_DIFF_NUMBER, GameCreatorService} from "./game-creator.service";
 import {ImageUploadService} from "./image-upload.service";
-import {
-    ModificationType,
-    Themes
-} from "../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
-import {FreeGameCreatorService} from "./free-game-creator.service";
 
 describe("A service that creates a game", () => {
 
@@ -51,9 +52,11 @@ describe("A service that creates a game", () => {
         mockedImageUploadService = mock(ImageUploadService);
         mockedFreeGameCreatorService = mock(FreeGameCreatorService);
 
-        when(mockedDifferenceEvaluatorServiceMock.getSimpleNDifferences(anything())).thenReturn(createdMockedDiffData(EXPECTED_DIFF_NUMBER));
+        when(mockedDifferenceEvaluatorServiceMock.getSimpleNDifferences(anything()))
+            .thenReturn(createdMockedDiffData(EXPECTED_DIFF_NUMBER));
         when(mockedImageUploadService.uploadImage(anything())).thenResolve("");
-        when(mockedFreeGameCreatorService.generateIScenes(anything(), anything())).thenReturn({originalObjects: [], modifiedObjects: []});
+        when(mockedFreeGameCreatorService.generateIScenes(anything(), anything()))
+            .thenReturn({originalObjects: [], modifiedObjects: []});
     });
 
     describe("Create simple game", () => {
@@ -85,7 +88,8 @@ describe("A service that creates a game", () => {
             axiosMock.onPost("http://localhost:3000/api/image-diff/")
                 .reply(HttpStatus.OK, fs.readFileSync("test/test_files_for_game_creator_service/6diff-modified.bmp"));
 
-            when(mockedDifferenceEvaluatorServiceMock.getSimpleNDifferences(anything())).thenReturn(createdMockedDiffData(EXPECTED_DIFF_NUMBER - 1));
+            when(mockedDifferenceEvaluatorServiceMock.getSimpleNDifferences(anything()))
+                .thenReturn(createdMockedDiffData(EXPECTED_DIFF_NUMBER - 1));
 
             try {
                 await getMockedService()
@@ -109,7 +113,8 @@ describe("A service that creates a game", () => {
             axiosMock.onPost("http://localhost:3000/api/image-diff/")
                 .reply(HttpStatus.OK, fs.readFileSync("test/test_files_for_game_creator_service/8diff-modified.bmp"));
 
-            when(mockedDifferenceEvaluatorServiceMock.getSimpleNDifferences(anything())).thenReturn(createdMockedDiffData(EXPECTED_DIFF_NUMBER + 1));
+            when(mockedDifferenceEvaluatorServiceMock.getSimpleNDifferences(anything()))
+                .thenReturn(createdMockedDiffData(EXPECTED_DIFF_NUMBER + 1));
 
             try {
                 await getMockedService()
@@ -234,7 +239,8 @@ describe("A service that creates a game", () => {
             axiosMock.onPost("http://localhost:3000/api/data-base/games/simple/")
                 .reply(HttpStatus.OK);
 
-            when(mockedDifferenceEvaluatorServiceMock.getSimpleNDifferences(anything())).thenReturn(createdMockedDiffData(EXPECTED_DIFF_NUMBER));
+            when(mockedDifferenceEvaluatorServiceMock.getSimpleNDifferences(anything()))
+                .thenReturn(createdMockedDiffData(EXPECTED_DIFF_NUMBER));
 
             return expect((await getMockedService()
                 .createSimpleGame(
@@ -257,9 +263,9 @@ describe("A service that creates a game", () => {
             try {
                 await getMockedService()
                     .createFreeGame( "nonExistingGameTest",
-                        0,
-                        Themes.Geometry,
-                        [ModificationType.add, ModificationType.remove, ModificationType.changeColor]);
+                                     0,
+                                     Themes.Geometry,
+                                     [ModificationType.add, ModificationType.remove, ModificationType.changeColor]);
             } catch (error) {
                 return expect(error.message).to.be.equal(NAME_ERROR_MESSAGE);
             }
@@ -275,9 +281,9 @@ describe("A service that creates a game", () => {
             try {
                 await getMockedService()
                     .createFreeGame( "nonExistingGameTest",
-                        0,
-                        Themes.Geometry,
-                        [ModificationType.add, ModificationType.remove, ModificationType.changeColor]);
+                                     0,
+                                     Themes.Geometry,
+                                     [ModificationType.add, ModificationType.remove, ModificationType.changeColor]);
             } catch (error) {
                 return expect(error.message).to.be.equal(NAME_ERROR_MESSAGE);
             }
@@ -291,9 +297,9 @@ describe("A service that creates a game", () => {
 
             return getMockedService()
                 .createFreeGame( "someGameTest",
-                    0,
-                    Themes.Geometry,
-                    [ModificationType.add, ModificationType.remove, ModificationType.changeColor])
+                                 0,
+                                 Themes.Geometry,
+                                 [ModificationType.add, ModificationType.remove, ModificationType.changeColor])
                 .catch((reason: Error) => {
                     expect(reason.message).to.eql("dataBase: error");
                 });
@@ -308,9 +314,9 @@ describe("A service that creates a game", () => {
 
             return getMockedService()
                 .createFreeGame( "someGameTest",
-                    0,
-                    Themes.Geometry,
-                    [ModificationType.add, ModificationType.remove, ModificationType.changeColor])
+                                 0,
+                                 Themes.Geometry,
+                                 [ModificationType.add, ModificationType.remove, ModificationType.changeColor])
                 .catch((reason: Error) => {
                     expect(reason.message).to.eql("dataBase: error");
                 });
@@ -328,9 +334,9 @@ describe("A service that creates a game", () => {
 
             return getMockedService()
                 .createFreeGame( "someGameTest",
-                    100,
-                    Themes.Sanic,
-                    [ModificationType.add, ModificationType.remove, ModificationType.changeColor])
+                                 100,
+                                 Themes.Sanic,
+                                 [ModificationType.add, ModificationType.remove, ModificationType.changeColor])
                 .catch((reason: Error) => {
                     expect(reason.message).to.eql(NON_EXISTING_THEME);
                 });
@@ -348,9 +354,9 @@ describe("A service that creates a game", () => {
 
             return getMockedService()
                 .createFreeGame( "someGameTest",
-                    100,
-                    Themes.Geometry,
-                    [ModificationType.add, ModificationType.remove, ModificationType.changeColor])
+                                 100,
+                                 Themes.Geometry,
+                                 [ModificationType.add, ModificationType.remove, ModificationType.changeColor])
                 .catch((reason: Error) => {
                     expect(reason.message).to.eql("dataBase: Unable to create game: error");
                 });
@@ -366,13 +372,14 @@ describe("A service that creates a game", () => {
             axiosMock.onPost("http://localhost:3000/api/data-base/games/free/")
                 .reply(HttpStatus.OK);
 
-            when(mockedFreeGameCreatorService.generateIScenes(anything(), anything())).thenReturn({originalObjects: [], modifiedObjects: []});
+            when(mockedFreeGameCreatorService.generateIScenes(anything(), anything()))
+                .thenReturn({originalObjects: [], modifiedObjects: []});
 
             return expect((await getMockedService()
                 .createFreeGame( "someGameTest",
-                    100,
-                    Themes.Geometry,
-                    [ModificationType.add, ModificationType.remove, ModificationType.changeColor])).title)
+                                 100,
+                                 Themes.Geometry,
+                                 [ModificationType.add, ModificationType.remove, ModificationType.changeColor])).title)
                 .to.be.equal("Game created");
         });
     });

@@ -1,6 +1,6 @@
+import {injectable} from "inversify";
 import { ObjectGeometry } from "../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
 import * as JsonScene from "../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
-import {injectable} from "inversify";
 
 @injectable()
 export class Object3DCreatorService {

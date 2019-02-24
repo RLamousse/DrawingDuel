@@ -8,7 +8,7 @@ import Types from "../types";
 import {
     assertFieldsOfRequest,
     assertRequestImageFilesFields, assertRequestSceneFields,
-    BITMAP_MULTER_FILTER, executePromiseSafely,
+    executePromiseSafely, BITMAP_MULTER_FILTER,
     MODIFIED_IMAGE_FIELD_NAME,
     MULTER_BMP_FIELDS, ORIGINAL_IMAGE_FIELD_NAME
 } from "./controller-utils";

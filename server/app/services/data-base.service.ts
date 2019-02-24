@@ -1,9 +1,9 @@
 import { injectable } from "inversify";
 import {Db, MongoClient, MongoError} from "mongodb";
 import "reflect-metadata";
+import {FreeGamesCollectionService} from "./db/free-games.collection.service";
 import {SimpleGamesCollectionService} from "./db/simple-games.collection.service";
 import {UsersCollectionService} from "./db/users.collection.service";
-import {FreeGamesCollectionService} from "./db/free-games.collection.service";
 
 @injectable()
 export class DataBaseService {

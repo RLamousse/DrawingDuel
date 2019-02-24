@@ -4,8 +4,14 @@ import * as Httpstatus from "http-status-codes";
 import {inject, injectable} from "inversify";
 import "reflect-metadata";
 import {Message} from "../../../common/communication/messages/message";
+import {
+    ModificationType,
+    Themes
+} from "../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
+import {IScenesJSON} from "../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
 import {Bitmap} from "../../../common/image/bitmap/bitmap";
 import {BITMAP_MEME_TYPE} from "../../../common/image/bitmap/bitmap-utils";
+import {IFreeGame} from "../../../common/model/game/free-game";
 import {TIMES_ARRAY_SIZE} from "../../../common/model/game/game";
 import {IRecordTime} from "../../../common/model/game/record-time";
 import {ISimpleDifferenceData, ISimpleGame} from "../../../common/model/game/simple-game";
@@ -22,14 +28,8 @@ import {BitmapFactory} from "../images/bitmap/bitmap-factory";
 import Types from "../types";
 import {NON_EXISTING_GAME_ERROR_MESSAGE} from "./db/simple-games.collection.service";
 import {DifferenceEvaluatorService} from "./difference-evaluator.service";
-import {ImageUploadService} from "./image-upload.service";
-import {IFreeGame} from "../../../common/model/game/free-game";
-import {
-    ModificationType,
-    Themes
-} from "../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
 import {FreeGameCreatorService} from "./free-game-creator.service";
-import {IScenesJSON} from "../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
+import {ImageUploadService} from "./image-upload.service";
 
 export const EXPECTED_DIFF_NUMBER: number = 7;
 
@@ -58,6 +58,7 @@ export class GameCreatorService {
                 if (error.response.status !== Httpstatus.NOT_FOUND) {
                     throw new Error("dataBase: " + error.response.data.message);
                 }
+
                 return;
             }
         }
@@ -91,7 +92,7 @@ export class GameCreatorService {
 
         const scenes: IScenesJSON = this.generateScene(numberOfObjects, theme, modTypes);
 
-        return await this.generateFreeGame(gameName, scenes);
+        return this.generateFreeGame(gameName, scenes);
     }
 
     public async createSimpleGame(gameName: string, originalImageFile: Buffer, modifiedImageFile: Buffer): Promise<Message> {
@@ -109,9 +110,9 @@ export class GameCreatorService {
     }
 
     private async generateSimpleGame(gameName: string,
-                               originalImage: Buffer,
-                               modifiedImage: Buffer,
-                               differenceData: ISimpleDifferenceData): Promise<Message> {
+                                     originalImage: Buffer,
+                                     modifiedImage: Buffer,
+                                     differenceData: ISimpleDifferenceData): Promise<Message> {
         try {
             const imagesUrls: string[] = await this.uploadImages(originalImage, modifiedImage);
             await this.uploadSimpleGame(gameName, imagesUrls, differenceData);
@@ -196,6 +197,7 @@ export class GameCreatorService {
 
     private async generateFreeGame(gameName: string, scenes: IScenesJSON): Promise<Message> {
         await this.uploadFreeGame(gameName, scenes);
+
         return GAME_CREATION_SUCCESS_MESSAGE;
     }
 

@@ -6,7 +6,6 @@ import { container } from "../inversify.config";
 import types from "../types";
 import { FreeGameCreatorService } from "./free-game-creator.service";
 import {Object3DCreatorService} from "./object3D-creator.service";
-import {IScenesJSON} from "../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
 
 const MASK: number = 0xFFFFFF;
 const mockedBaseObject: IObject.IJson3DObject = {
@@ -45,7 +44,7 @@ const mockedObject3DCreator = {
 };
 
 describe("FreeGameCreatorService", () => {
-    let freeGameCreatorService: FreeGameCreatorService = new FreeGameCreatorService(new Object3DCreatorService());
+    const freeGameCreatorService: FreeGameCreatorService = new FreeGameCreatorService(new Object3DCreatorService());
     beforeEach(() => {
         container.rebind(types.Object3DCreatorService).toConstantValue(mockedObject3DCreator);
     });
@@ -62,7 +61,7 @@ describe("FreeGameCreatorService", () => {
         const objNumber: number = 100;
         const MAX_DIST: number = 43;
         const POWER: number = 2;
-        const response: IScenesJSON = freeGameCreatorService.generateIScenes(objNumber, modTypes);
+        const response: IObject.IScenesJSON = freeGameCreatorService.generateIScenes(objNumber, modTypes);
         expect(response.originalObjects.length).to.eql(objNumber);
         let distance: number;
         enum coordinate { X, Y, Z }
@@ -85,7 +84,7 @@ describe("FreeGameCreatorService", () => {
         const modTypes: ModificationType[] = [ModificationType.remove];
         const objNumber: number = 30;
         const DIFF: number = 7;
-        const response: IScenesJSON =freeGameCreatorService.generateIScenes(objNumber, modTypes);
+        const response: IObject.IScenesJSON = freeGameCreatorService.generateIScenes(objNumber, modTypes);
         expect(response.originalObjects.length).to.eql(objNumber);
         expect(response.modifiedObjects.length).to.eql(objNumber - DIFF);
     });
@@ -94,7 +93,7 @@ describe("FreeGameCreatorService", () => {
         const modTypes: ModificationType[] = [ModificationType.add];
         const objNumber: number = 30;
         const DIFF: number = 7;
-        const response: IScenesJSON =freeGameCreatorService.generateIScenes(objNumber, modTypes);
+        const response: IObject.IScenesJSON = freeGameCreatorService.generateIScenes(objNumber, modTypes);
         expect(response.originalObjects.length).to.eql(objNumber);
         expect(response.modifiedObjects.length).to.eql(objNumber + DIFF);
     });
@@ -103,7 +102,7 @@ describe("FreeGameCreatorService", () => {
         const modTypes: ModificationType[] = [ModificationType.changeColor];
         const objNumber: number = 30;
         const DIFF: number = 7;
-        const response: IScenesJSON =freeGameCreatorService.generateIScenes(objNumber, modTypes);
+        const response: IObject.IScenesJSON = freeGameCreatorService.generateIScenes(objNumber, modTypes);
         expect(response.originalObjects.length).to.eql(response.modifiedObjects.length);
         let colDiffCounter: number = 0;
         for (let i: number = 0; i < objNumber; ++i) {

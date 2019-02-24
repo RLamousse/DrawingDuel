@@ -1,14 +1,13 @@
+import {inject, injectable} from "inversify";
 import { ModificationType, ObjectGeometry } from "../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
 import * as IObject from "../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
-import { Object3DCreatorService } from "./object3D-creator.service";
-import {inject, injectable} from "inversify";
 import Types from "../types";
-import {IScenesJSON} from "../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
+import { Object3DCreatorService } from "./object3D-creator.service";
 
 @injectable()
 export class FreeGameCreatorService {
 
-    constructor(@inject(Types.Object3DCreatorService) private object3DCreatorService: Object3DCreatorService){}
+    public constructor(@inject(Types.Object3DCreatorService) private object3DCreatorService: Object3DCreatorService) {}
 
     private readonly MAX_TYPE_OBJECTS: number = 5;
     private readonly MIN_DIST: number = 43;
@@ -78,7 +77,7 @@ export class FreeGameCreatorService {
         return createdObject;
     }
 
-    public generateIScenes(obj3DToCreate: number, modificationTypes: ModificationType[]): IScenesJSON {
+    public generateIScenes(obj3DToCreate: number, modificationTypes: ModificationType[]): IObject.IScenesJSON {
         const objects: IObject.IJson3DObject[] = [];
 
         const PI: number = Math.PI;
@@ -102,7 +101,8 @@ export class FreeGameCreatorService {
         }
         const modifiedObjects: IObject.IJson3DObject[] = JSON.parse(JSON.stringify(objects));
         this.generateDifferences(modificationTypes, modifiedObjects);
-        return {originalObjects: objects, modifiedObjects: modifiedObjects}
+
+        return {originalObjects: objects, modifiedObjects: modifiedObjects};
     }
 
     private generateDifferences(modificationTypes: ModificationType[], modifiedObjects: IObject.IJson3DObject[]): void {
@@ -116,7 +116,7 @@ export class FreeGameCreatorService {
 
     private randomDifference(table: Set<number>, modificationTypes: ModificationType[], modifiedObjects: IObject.IJson3DObject[]): void {
         const MAX_MOD_TYPE: number = modificationTypes.length - 1;
-        const ARRAY_INDEXES: number[] = Array.from(table).sort((n1,n2) => n1-n2).reverse();
+        const ARRAY_INDEXES: number[] = Array.from(table).sort((n1: number, n2: number) => n1 - n2).reverse();
         let randomModifications: number;
         for (const index of ARRAY_INDEXES) {
             randomModifications = this.getRandomValue(0, MAX_MOD_TYPE);

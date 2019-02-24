@@ -1,8 +1,8 @@
 import {injectable} from "inversify";
 import "reflect-metadata";
-import {create2dArray} from "../../../common/util/util";
 import {ISimpleDifferenceData} from "../../../common/model/game/simple-game";
 import {IPoint} from "../../../common/model/point";
+import {create2dArray} from "../../../common/util/util";
 
 export const ARGUMENT_ERROR_MESSAGE: string = "Error: the argument has the wrong format!";
 export const EMPTY_ARRAY_ERROR_MESSAGE: string = "Error: the given array is empty!";

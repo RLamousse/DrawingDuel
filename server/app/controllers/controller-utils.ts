@@ -2,11 +2,11 @@ import {NextFunction, Request} from "express";
 import {Field} from "multer";
 import {Message} from "../../../common/communication/messages/message";
 import {GAME_NAME_FIELD} from "../../../common/communication/requests/game-creator.controller.request";
-import {ARGUMENT_ERROR_MESSAGE} from "../services/difference-evaluator.service";
 import {
     ModificationType,
     Themes
 } from "../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
+import {ARGUMENT_ERROR_MESSAGE} from "../services/difference-evaluator.service";
 import {EXPECTED_DIFF_NUMBER} from "../services/game-creator.service";
 
 export const REQUIRED_IMAGE_HEIGHT: number = 480;
@@ -21,6 +21,8 @@ export const GAME_CREATION_SUCCESS_MESSAGE: Message = {title: "Game created", bo
 export const FORMAT_ERROR_MESSAGE: string = "Error: Request sent by the client had the wrong format!";
 export const NAME_ERROR_MESSAGE: string = "Error: The game name that you sent already exists!";
 export const BMP_ERROR_MESSAGE: string = "Error: Sent files are not in bmp format!";
+
+const NUMBER_OF_MODIFICATION_TYPES: number = 3;
 
 export const BITMAP_MULTER_FILTER:
     (req: Express.Request, file: Express.Multer.File, cb: (error: (Error | null), acceptFile: boolean) => void) => void =
@@ -50,9 +52,9 @@ export const assertRequestSceneFields: (req: Express.Request) => void = (req: Re
         req.body.theme !== Themes.Forest) ||
         !Array.isArray(req.body.modificationTypes) ||
         req.body.modificationTypes.length < 1 ||
-        req.body.modificationTypes.length > 3  ||
+        req.body.modificationTypes.length > NUMBER_OF_MODIFICATION_TYPES  ||
         (req.body.objectQuantity < EXPECTED_DIFF_NUMBER &&
-        req.body.modificationTypes.indexOf(ModificationType.remove) >= 0)){
+        req.body.modificationTypes.indexOf(ModificationType.remove) >= 0)) {
         throw new Error(ARGUMENT_ERROR_MESSAGE);
     }
     for (const modificationType of req.body.modificationTypes) {
