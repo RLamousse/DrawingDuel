@@ -33,6 +33,5 @@ export class FreeGamePhotoService {
     originScene.add(cube);
 
     renderer.render(originScene, camera);
-    console.log((container.children[0] as HTMLCanvasElement).toDataURL());
   }
 }
