@@ -29,7 +29,7 @@ export class FreeGamePhotoService {
     renderer.setSize(400, 400);
     container.appendChild(renderer.domElement);
 
-    let cube: THREE.Mesh = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshBasicMaterial({ color: 0xFFFFFFF }));
+    const cube: THREE.Mesh = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshBasicMaterial({ color: 0xFFFFFFF }));
     originScene.add(cube);
 
     renderer.render(originScene, camera);

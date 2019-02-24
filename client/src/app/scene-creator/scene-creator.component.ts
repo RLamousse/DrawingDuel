@@ -8,7 +8,7 @@ import { SceneRendererService } from "./scene-renderer.service";
   styleUrls: ["./scene-creator.component.css"],
 })
 export class SceneCreatorComponent implements AfterViewInit, OnInit {
-  private renderService: SceneRendererService
+  private renderService: SceneRendererService;
   private route: ActivatedRoute;
   public constructor() {
     this.renderService = new SceneRendererService();

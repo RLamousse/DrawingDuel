@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from "@angular/core";
+import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { MatCheckboxChange, MatDialogRef, MatSliderChange } from "@angular/material";
 import { FREE_GAME_CREATION_ROUTE } from "../../../../common/communication/routes";
@@ -16,7 +16,7 @@ import { FormPostService } from "../form-post.service";
 export class Create3DGameComponent extends AbstractForm implements OnInit {
 
   private readonly MIN_NAME_LENGTH: number = 5;
-  @ViewChild("photoContainer") divElemt: ElementRef;
+  @ViewChild("photoContainer") public divElemt: ElementRef;
   protected modTypes: SelectType<ModificationType>[] = AVAILABLE_MODIF_TYPES;
   protected themes: SelectType<Themes>[] = AVAILABLE_THEMES;
   protected sliderValue: number = 10;

@@ -1,5 +1,5 @@
 import { TestBed } from "@angular/core/testing";
-//import * as THREE from "three";
+// import * as THREE from "three";
 import { Form3DService } from "./3-dform.service";
 
 describe("3DFormService", () => {

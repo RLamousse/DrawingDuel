@@ -20,13 +20,13 @@ import { InitialViewComponent } from "./initial-view/initial-view.component";
 import { PlayViewComponent } from "./play-view/play-view.component";
 import { Form3DService } from "./scene-creator/3DFormService/3-dform.service";
 import { FreeGameCreatorService } from "./scene-creator/FreeGameCreator/free-game-creator.service";
+import { FreeGamePhotoService } from "./scene-creator/free-game-photo-service/free-game-photo.service";
 import { SceneCreatorComponent } from "./scene-creator/scene-creator.component";
 import { SceneRendererService } from "./scene-creator/scene-renderer.service";
 import { SimpleGameCreatorFormComponent } from "./simple-game-creator-form/simple-game-creator-form.component";
 import { UNListService } from "./username.service";
 import { VueAdminComponent } from "./vue-admin/vue-admin.component";
 import { WindowEventHandlerDirective } from "./window-event-handler.directive";
-import { FreeGamePhotoService } from "./scene-creator/free-game-photo-service/free-game-photo.service";
 
 @NgModule({
   declarations: [
@@ -60,7 +60,15 @@ import { FreeGamePhotoService } from "./scene-creator/free-game-photo-service/fr
     MatCheckboxModule,
     MatSelectModule,
   ],
-  providers: [UNListService, FormPostService, GameService, SceneRendererService, Form3DService, FreeGameCreatorService, FreeGamePhotoService],
+  providers: [
+    UNListService,
+    FormPostService,
+    GameService,
+    SceneRendererService,
+    Form3DService,
+    FreeGameCreatorService,
+    FreeGamePhotoService,
+  ],
   bootstrap: [AppComponent],
   entryComponents: [SimpleGameCreatorFormComponent, Create3DGameComponent],
   schemas: [NO_ERRORS_SCHEMA],

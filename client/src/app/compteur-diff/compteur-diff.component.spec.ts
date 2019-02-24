@@ -8,7 +8,7 @@ describe("CompteurDiffComponent", () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CompteurDiffComponent, ]
+      declarations: [ CompteurDiffComponent, ],
     })
     .compileComponents();
   }));
