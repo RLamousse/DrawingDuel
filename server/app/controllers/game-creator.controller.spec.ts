@@ -17,7 +17,7 @@ const errorResponse = (errorMessage: string) => {
     };
 };
 
-const successMessage: Message = {title: "Game created", body: "The game was successfully created!"};
+const SUCCESS_MESSAGE: Message = {title: "Game created", body: "The game was successfully created!"};
 
 describe("Game creator controller", () => {
     let app: Express.Application;
@@ -25,7 +25,7 @@ describe("Game creator controller", () => {
 
     beforeEach(() => {
         mockedGameCreatorService = mock(GameCreatorService);
-        when(mockedGameCreatorService.createSimpleGame(anyString(), anything(), anything())).thenResolve(successMessage);
+        when(mockedGameCreatorService.createSimpleGame(anyString(), anything(), anything())).thenResolve(SUCCESS_MESSAGE);
         container.rebind(types.GameCreatorService).toConstantValue(instance(mockedGameCreatorService));
         app = container.get<Application>(types.Application).app;
     });
@@ -93,7 +93,7 @@ describe("Game creator controller", () => {
             .attach("modifiedImage", "./test/test_bitmaps/pika.m.bmp")
             .expect(HttpStatus.OK)
             .then((response) => {
-                expect(response.body).to.eql(successMessage);
+                expect(response.body).to.eql(SUCCESS_MESSAGE);
             });
     });
 });
