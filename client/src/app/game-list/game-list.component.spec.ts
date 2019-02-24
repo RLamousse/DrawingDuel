@@ -4,7 +4,7 @@ import {ComponentFixture, TestBed} from "@angular/core/testing";
 import {FormsModule} from "@angular/forms";
 import {Observable} from "rxjs";
 import {ISimpleGame} from "../../../../common/model/game/simple-game";
-import {GameService} from "../simple-game/game.service";
+import {GameService} from "../game.service";
 import {GameListComponent} from "./game-list.component";
 import {GameComponent} from "./game/game.component";
 
