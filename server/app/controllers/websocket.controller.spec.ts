@@ -14,8 +14,7 @@ describe("Websocket controller", () => {
     });
 
     it("should initialize", () => {
-        // tslint:disable-next-line:no-unused-expression
-        expect(controller).to.exist;
+        return expect(controller).to.exist;
     });
 
     it("should return a socket with listeners", () => {
