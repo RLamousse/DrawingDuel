@@ -59,7 +59,7 @@ describe("Socket service", () => {
       {
         title: SocketEvent.DUMMY,
         body: "Thank you Kanye, very cool 👍",
-      }
+      },
     )).toBeFalsy();
   });
 });
