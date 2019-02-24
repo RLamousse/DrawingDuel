@@ -28,7 +28,11 @@ export class GameComponent implements AfterViewInit {
     if (this.leftButton === "jouer") {
       this.router.navigate(["/play-view/"], {queryParams: {
         gameName: this.gameName, originalImage: this.originalImage, modifiedImage: this.modifiedImage },
-      });
+      })
+      // tslint:disable-next-line:no-any Generic error response
+        .catch((reason: any) => {
+          throw new Error(reason);
+        });
     }
   }
 

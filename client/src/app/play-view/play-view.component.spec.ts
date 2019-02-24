@@ -13,9 +13,9 @@ describe("PlayViewComponent", () => {
     TestBed.configureTestingModule(
       {
         declarations: [PlayViewComponent,
-          CompteurDiffComponent,
-          SimpleGameContainerComponent,
-          SimpleGameCanvasComponent,
+                       CompteurDiffComponent,
+                       SimpleGameContainerComponent,
+                       SimpleGameCanvasComponent,
         ],
         providers: [
         { provide: Router, useClass: class { public navigate: jasmine.Spy = jasmine.createSpy("navigate"); }, },
