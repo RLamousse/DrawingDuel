@@ -5,7 +5,6 @@ import { container } from "../inversify.config";
 import types from "../types";
 import { WebsocketController } from "./websocket.controller";
 
-
 describe("Websocket controller", () => {
     let controller: WebsocketController;
 
