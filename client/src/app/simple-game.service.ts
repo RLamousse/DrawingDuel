@@ -1,11 +1,12 @@
 import {Injectable} from "@angular/core";
 import Axios, {AxiosResponse} from "axios";
+import * as Httpstatus from "http-status-codes";
 import {IDiffValidatorControllerRequest} from "../../../common/communication/requests/diff-validator-controller.request";
 import {IDiffValidatorControllerResponse} from "../../../common/communication/responses/diff-validator-controller.response";
 import {DifferenceCluster} from "../../../common/model/game/simple-game";
 import ISimpleGameState from "../../../common/model/game/simple-game-state";
 import {IPoint} from "../../../common/model/point";
-import {NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE} from "../../../server/app/services/diff-validator.service";
+import {FOUND_DIFFERENCE_SOUNDS, NO_DIFFERENCE_SOUNDS, playRandomSound} from "./simple-game/game-sounds";
 
 export const ALREADY_FOUND_DIFFERENCE: string = "Difference was already found!";
 
@@ -49,13 +50,14 @@ export class SimpleGameService {
         }
 
         this._gameState.foundDifferencesIds.push(value.data.differenceClusterId);
+        playRandomSound(FOUND_DIFFERENCE_SOUNDS);
 
         return [value.data.differenceClusterId, value.data.differenceClusterCoords] as DifferenceCluster;
       })
       // tslint:disable-next-line:no-any Generic error response
       .catch((reason: any) => {
-        if (reason.response.status) {
-          throw new Error(NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE);
+        if (reason.response.status === Httpstatus.NOT_FOUND) {
+          playRandomSound(NO_DIFFERENCE_SOUNDS);
         }
 
         throw new Error(reason.message);
