@@ -34,8 +34,6 @@ export class SceneCreatorComponent implements AfterViewInit, OnInit {
   public onResize(): void {
     this.renderService.onResize();
   }
-  public ngOnInit(): void {
-    this.route.queryParams.subscribe((params) => {
 
   public ngOnInit(): void {
     this.route.queryParams.subscribe((params) => {

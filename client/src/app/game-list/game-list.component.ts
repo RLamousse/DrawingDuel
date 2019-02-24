@@ -1,10 +1,13 @@
 
 import { Component, Input, OnInit } from "@angular/core";
+import { IExtendedFreeGame } from "../../../../common/model/game/extended-free-game";
 import { IFreeGame } from "../../../../common/model/game/free-game";
 import { ISimpleGame } from "../../../../common/model/game/simple-game";
-import { IExtendedFreeGame } from "../../../../common/model/game/extended-free-game";
+import { IScene } from "../../../scene-interface";
 import { GameService } from "../game.service";
 import { MOCKED_FREE_GAMES, MOCKED_SIMPLE_GAMES } from "../mockGames";
+import { FreeGameCreatorService } from "../scene-creator/FreeGameCreator/free-game-creator.service";
+import { FreeGamePhotoService } from "../scene-creator/free-game-photo-service/free-game-photo.service";
 
 @Component({
   selector: "app-game-list",
@@ -16,7 +19,11 @@ export class GameListComponent implements OnInit {
 
   @Input() protected readonly rightButton: string = "joindre";
   @Input() protected readonly leftButton: string = "jouer";
-  public constructor (private gameService: GameService) {/*vide*/}
+  public constructor(
+    private gameService: GameService,
+    private photoService: FreeGamePhotoService,
+    private freeGameCreatorService: FreeGameCreatorService,
+  ) {/*vide*/ }
 
   public ngOnInit(): void {
     this.gameService.getSimpleGames().subscribe((simpleGamesToModify: ISimpleGame[]) => {
@@ -30,7 +37,7 @@ export class GameListComponent implements OnInit {
         this.gameService.simpleGames.push(game);
       }
     });
-    
+
     this.gameService.getFreeGames().subscribe((freeGamesToModify: IFreeGame[]) => {
       this.gameService.freeGames = [];
       this.gameService.extendedFreeGames = [];
@@ -39,18 +46,18 @@ export class GameListComponent implements OnInit {
       for (const test of MOCKED_FREE_GAMES) {
         this.gameService.extendedFreeGames.push(test);
       }
-      console.log(this.gameService.extendedFreeGames);
       // for (const game of freeGamesToModify) {
       //   console.log(typeof game);
       //   //this.gameService.freeGames.push(game);
       // }
       for (const game of this.gameService.freeGames) {
-        let newThumbnail: string = this.gameService.extractThumbnail(game.scenesTable);
-        let extendedFreeGame: IExtendedFreeGame= {thumbnail: newThumbnail,
+        const scenes: IScene = this.freeGameCreatorService.createScenes(game.scenesTable);
+        const extendedFreeGame: IExtendedFreeGame = {
+                                                  thumbnail: this.photoService.takePhoto(scenes.scene),
                                                   scenesTable: game.scenesTable,
                                                   gameName: game.gameName,
                                                   bestSoloTimes: game.bestSoloTimes,
-                                                  bestMultiTimes: game.bestMultiTimes
+                                                  bestMultiTimes: game.bestMultiTimes,
                                                  };
         this.gameService.extendedFreeGames.push(extendedFreeGame);
       }
