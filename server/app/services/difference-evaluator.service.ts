@@ -4,15 +4,15 @@ import {ISimpleDifferenceData} from "../../../common/model/game/simple-game";
 import {IPoint} from "../../../common/model/point";
 import {create2dArray} from "../../../common/util/util";
 
-export const ARGUMENT_ERROR_MESSAGE: string = "Error: the argument has the wrong format! Must be a number[][].";
+export const ARGUMENT_ERROR_MESSAGE: string = "Error: the argument has the wrong format!";
 export const EMPTY_ARRAY_ERROR_MESSAGE: string = "Error: the given array is empty!";
 
 @injectable()
 export class DifferenceEvaluatorService {
 
-    public getNDifferences(pixels: number[][]): ISimpleDifferenceData {
+    public getSimpleNDifferences(pixels: number[][]): ISimpleDifferenceData {
 
-        this.validateData(pixels);
+        this.validateSimpleData(pixels);
 
         // this algorithm is the two-pass algorithm and a set of connected labelled zones is connected by a disjoint-set data structure
         // the algorithm does not consider edge connections
@@ -36,7 +36,7 @@ export class DifferenceEvaluatorService {
         return this.generateDiffZonesMap(PARENT_TABLE, ARRAY_OF_LABELS);
     }
 
-    private validateData(pixels: number[][]): void {
+    private validateSimpleData(pixels: number[][]): void {
         // local variable needed because pixels cannot be directly passed to isArray function
         const TMP_ARRAY: number[][] = pixels;
         if (!Array.isArray(TMP_ARRAY)) {
@@ -118,9 +118,9 @@ export class DifferenceEvaluatorService {
                 if (arrayOfLabels[i][j]) {
                     if (DIFF_ZONES_MAP.has(this.findRoot(arrayOfLabels[i][j], parentTable))) {
                         // @ts-ignore
-                        DIFF_ZONES_MAP.get(this.findRoot(arrayOfLabels[i][j], parentTable)).push({x: i, y: j});
+                        DIFF_ZONES_MAP.get(this.findRoot(arrayOfLabels[i][j], parentTable)).push({x: j, y: i});
                     } else {
-                        DIFF_ZONES_MAP.set(this.findRoot(arrayOfLabels[i][j], parentTable), [{x: i, y: j}]);
+                        DIFF_ZONES_MAP.set(this.findRoot(arrayOfLabels[i][j], parentTable), [{x: j, y: i}]);
                     }
                 }
             }

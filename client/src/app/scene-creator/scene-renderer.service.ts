@@ -89,6 +89,7 @@ export class SceneRendererService {
       const errorMsg: string = "La composante n'a pas ete initialise!";
       throw (new Error(errorMsg));
     }
+    console.log(original);
     this.scene = original;
     this.modifiedScene = modified;
     this.renderLoop();

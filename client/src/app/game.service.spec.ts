@@ -4,6 +4,7 @@ import {IFreeGame} from "../../../common/model/game/free-game";
 import {IGame} from "../../../common/model/game/game";
 import {ISimpleGame} from "../../../common/model/game/simple-game";
 import { GameService } from "./game.service";
+import * as THREE from "three";
 
 describe("GameService", () => {
   let serviceGame: GameService;
@@ -41,6 +42,8 @@ describe("GameService", () => {
     gameName: "mockedName",
     bestSoloTimes: [{ name: "mockedUser1", time: 120 }],
     bestMultiTimes: [{ name: "mockedUser2", time: 23 }],
+    originalScene: new THREE.Scene(),
+    modifiedScene: new THREE.Scene(),
   }];
 
   beforeEach(async(() => {

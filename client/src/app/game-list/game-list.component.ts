@@ -46,15 +46,15 @@ export class GameListComponent implements OnInit {
       for (const test of MOCKED_FREE_GAMES) {
         this.gameService.extendedFreeGames.push(test);
       }
-      // for (const game of freeGamesToModify) {
-      //   console.log(typeof game);
-      //   //this.gameService.freeGames.push(game);
-      // }
+      for (const game of freeGamesToModify) {
+         console.log(typeof game);
+         this.gameService.freeGames.push(game);
+      }
       for (const game of this.gameService.freeGames) {
-        const scenes: IScene = this.freeGameCreatorService.createScenes(game.scenesTable);
+        const scenes: IScene = this.freeGameCreatorService.createScenes(game.scenes);
         const extendedFreeGame: IExtendedFreeGame = {
                                                   thumbnail: this.photoService.takePhoto(scenes.scene),
-                                                  scenesTable: game.scenesTable,
+                                                  scenes: game.scenes,
                                                   gameName: game.gameName,
                                                   bestSoloTimes: game.bestSoloTimes,
                                                   bestMultiTimes: game.bestMultiTimes,

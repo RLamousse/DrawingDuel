@@ -5,6 +5,7 @@ import * as IObject from "../../../common/free-game-json-interface/JSONInterface
 import { container } from "../inversify.config";
 import types from "../types";
 import { FreeGameCreatorService } from "./free-game-creator.service";
+import {Object3DCreatorService} from "./object3D-creator.service";
 
 const MASK: number = 0xFFFFFF;
 const mockedBaseObject: IObject.IJson3DObject = {
@@ -43,33 +44,29 @@ const mockedObject3DCreator = {
 };
 
 describe("FreeGameCreatorService", () => {
-    let freeGameCreatorService: FreeGameCreatorService;
+    const freeGameCreatorService: FreeGameCreatorService = new FreeGameCreatorService(new Object3DCreatorService());
     beforeEach(() => {
         container.rebind(types.Object3DCreatorService).toConstantValue(mockedObject3DCreator);
     });
 
     // Test generateIScenes
-    it("should only have 200 objects", () => {
+    it("should create 200 elements", () => {
         const modTypes: ModificationType[] = [];
         const objNumber: number = 200;
-        freeGameCreatorService = new FreeGameCreatorService(objNumber, modTypes);
-        freeGameCreatorService.generateIScenes();
-        expect(freeGameCreatorService.objects.length).to.eql(objNumber);
+        expect(freeGameCreatorService.generateIScenes(objNumber, modTypes).originalObjects.length).to.eql(objNumber);
     });
-
     // Test handleCollision
     it("should only have objects with a distance grater than 43", () => {
         const modTypes: ModificationType[] = [];
         const objNumber: number = 100;
         const MAX_DIST: number = 43;
         const POWER: number = 2;
-        freeGameCreatorService = new FreeGameCreatorService(objNumber, modTypes);
-        freeGameCreatorService.generateIScenes();
-        expect(freeGameCreatorService.objects.length).to.eql(objNumber);
+        const response: IObject.IScenesJSON = freeGameCreatorService.generateIScenes(objNumber, modTypes);
+        expect(response.originalObjects.length).to.eql(objNumber);
         let distance: number;
         enum coordinate { X, Y, Z }
-        for (const i of freeGameCreatorService.objects) {
-            for (const j of freeGameCreatorService.objects) {
+        for (const i of response.originalObjects) {
+            for (const j of response.originalObjects) {
                 if (i !== j) {
                     distance = Math.sqrt(
                         (Math.pow((i.position[coordinate.X] - j.position[coordinate.X]), POWER)) +
@@ -87,33 +84,29 @@ describe("FreeGameCreatorService", () => {
         const modTypes: ModificationType[] = [ModificationType.remove];
         const objNumber: number = 30;
         const DIFF: number = 7;
-        freeGameCreatorService = new FreeGameCreatorService(objNumber, modTypes);
-        freeGameCreatorService.generateIScenes();
-        expect(freeGameCreatorService.objects.length).to.eql(objNumber);
-        expect(freeGameCreatorService.modifiedObjects.length).to.eql(objNumber - DIFF);
-
+        const response: IObject.IScenesJSON = freeGameCreatorService.generateIScenes(objNumber, modTypes);
+        expect(response.originalObjects.length).to.eql(objNumber);
+        expect(response.modifiedObjects.length).to.eql(objNumber - DIFF);
     });
 
     it("should add 7 objects from original table", () => {
         const modTypes: ModificationType[] = [ModificationType.add];
         const objNumber: number = 30;
         const DIFF: number = 7;
-        freeGameCreatorService = new FreeGameCreatorService(objNumber, modTypes);
-        freeGameCreatorService.generateIScenes();
-        expect(freeGameCreatorService.objects.length).to.eql(objNumber);
-        expect(freeGameCreatorService.modifiedObjects.length).to.eql(objNumber + DIFF);
+        const response: IObject.IScenesJSON = freeGameCreatorService.generateIScenes(objNumber, modTypes);
+        expect(response.originalObjects.length).to.eql(objNumber);
+        expect(response.modifiedObjects.length).to.eql(objNumber + DIFF);
     });
 
     it("should have 7 objects that don't have their original color", () => {
         const modTypes: ModificationType[] = [ModificationType.changeColor];
         const objNumber: number = 30;
         const DIFF: number = 7;
-        freeGameCreatorService = new FreeGameCreatorService(objNumber, modTypes);
-        freeGameCreatorService.generateIScenes();
-        expect(freeGameCreatorService.objects.length).to.eql(freeGameCreatorService.modifiedObjects.length);
+        const response: IObject.IScenesJSON = freeGameCreatorService.generateIScenes(objNumber, modTypes);
+        expect(response.originalObjects.length).to.eql(response.modifiedObjects.length);
         let colDiffCounter: number = 0;
         for (let i: number = 0; i < objNumber; ++i) {
-            if (freeGameCreatorService.objects[i].color !== freeGameCreatorService.modifiedObjects[i].color) {
+            if (response.originalObjects[i].color !== response.modifiedObjects[i].color) {
                 colDiffCounter++;
             }
         }

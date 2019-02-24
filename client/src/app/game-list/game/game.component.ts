@@ -36,6 +36,7 @@ export class GameComponent {
         }).catch();
       } else {
         this.verifyGame();
+        console.log(this.freeScenes);
         this.router.navigate(["/3d-view/"], {queryParams: {
           isSimpleGame : this.isSimpleGame, gameName: this.gameName,
           freeScenes: this.freeScenes },
@@ -47,7 +48,7 @@ export class GameComponent {
   private verifyGame(): void {
     if (!this.isSimpleGame) {
       this.gameService.getFreeGameByName(this.gameName).subscribe((freeGame: IFreeGame) => {
-        this.freeScenes = this.freeGameCreator.createScenes(freeGame.scenesTable);
+        this.freeScenes = this.freeGameCreator.createScenes(freeGame.scenes);
       });
     }
   }
