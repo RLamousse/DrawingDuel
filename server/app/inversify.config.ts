@@ -2,6 +2,7 @@ import { Container } from "inversify";
 import { Application } from "./app";
 import {BitmapDiffController} from "./controllers/bitmap-diff.controller";
 import {DataBaseController} from "./controllers/data-base.controller";
+import {DiffValidatorController} from "./controllers/diff-validator.controller";
 import { GameCreatorController } from "./controllers/game-creator.controller";
 import { UserController } from "./controllers/username.controller";
 import { WebsocketController } from "./controllers/websocket.controller";
@@ -9,6 +10,7 @@ import {BitmapWriter} from "./images/bitmap/bitmap-writer";
 import {Server} from "./server";
 import {BitmapDiffService} from "./services/bitmap-diff.service";
 import {DataBaseService} from "./services/data-base.service";
+import {DiffValidatorService} from "./services/diff-validator.service";
 import {DifferenceEvaluatorService} from "./services/difference-evaluator.service";
 import {GameCreatorService} from "./services/game-creator.service";
 import {ImageUploadService} from "./services/image-upload.service";
@@ -29,6 +31,8 @@ container.bind(Types.DataBaseController).to(DataBaseController);
 container.bind(Types.DataBaseService).to(DataBaseService);
 
 container.bind(Types.DifferenceEvaluatorService).to(DifferenceEvaluatorService);
+container.bind(Types.DiffValidatorService).to(DiffValidatorService);
+container.bind(Types.DiffValidatorController).to(DiffValidatorController);
 
 container.bind(Types.BitmapDiffController).to(BitmapDiffController);
 container.bind(Types.BitmapDiffService).to(BitmapDiffService);

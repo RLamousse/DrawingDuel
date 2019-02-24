@@ -48,7 +48,7 @@ export class DifferenceEvaluatorService {
         if (!Array.isArray(TMP_ARRAY[0])) {
             throw new Error(ARGUMENT_ERROR_MESSAGE);
         }
-        if ( TMP_ARRAY[0].length === 0) {
+        if (TMP_ARRAY[0].length === 0) {
             throw new Error(EMPTY_ARRAY_ERROR_MESSAGE);
         }
         if (typeof TMP_ARRAY[0][0] !== "number") {
@@ -118,9 +118,9 @@ export class DifferenceEvaluatorService {
                 if (arrayOfLabels[i][j]) {
                     if (DIFF_ZONES_MAP.has(this.findRoot(arrayOfLabels[i][j], parentTable))) {
                         // @ts-ignore
-                        DIFF_ZONES_MAP.get(this.findRoot(arrayOfLabels[i][j], parentTable)).push({x: i, y: j});
+                        DIFF_ZONES_MAP.get(this.findRoot(arrayOfLabels[i][j], parentTable)).push({x: j, y: i});
                     } else {
-                        DIFF_ZONES_MAP.set(this.findRoot(arrayOfLabels[i][j], parentTable), [{x: i, y: j}]);
+                        DIFF_ZONES_MAP.set(this.findRoot(arrayOfLabels[i][j], parentTable), [{x: j, y: i}]);
                     }
                 }
             }
