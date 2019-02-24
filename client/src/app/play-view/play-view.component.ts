@@ -9,9 +9,9 @@ import {SimpleGameService} from "../simple-game/simple-game.service";
            })
 export class PlayViewComponent implements OnInit {
 
-  public gameName: string;
-  public originalImage: string;
-  public modifiedImage: string;
+  protected gameName: string;
+  protected originalImage: string;
+  protected modifiedImage: string;
 
   public constructor(private route: ActivatedRoute, private simpleGameService: SimpleGameService) { /*vide*/
   }

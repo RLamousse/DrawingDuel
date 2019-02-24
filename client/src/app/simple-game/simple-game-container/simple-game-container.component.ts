@@ -1,6 +1,6 @@
 import {Component, Input, ViewChild} from "@angular/core";
-import {DIFFERENCE_CLUSTER_POINTS_INDEX, DifferenceCluster} from "../../../../../common/model/game/simple-game";
-import {IPoint, tansformOrigin} from "../../../../../common/model/point";
+import {DifferenceCluster, DIFFERENCE_CLUSTER_POINTS_INDEX} from "../../../../../common/model/game/simple-game";
+import {tansformOrigin, IPoint} from "../../../../../common/model/point";
 import {PixelData, SimpleGameCanvasComponent} from "../simple-game-canvas/simple-game-canvas.component";
 import {ALREADY_FOUND_DIFFERENCE, SimpleGameService} from "../simple-game.service";
 

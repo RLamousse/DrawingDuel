@@ -52,7 +52,7 @@ import {WindowEventHandlerDirective} from "./window-event-handler.directive";
               CompteurDiffComponent,
               SceneCreatorComponent,
               SimpleGameCanvasComponent,
-              SimpleGameContainerComponent
+              SimpleGameContainerComponent,
             ],
             imports: [
               BrowserModule,

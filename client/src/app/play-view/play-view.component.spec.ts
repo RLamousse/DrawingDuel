@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router} from "@angular/router";
 import {CompteurDiffComponent} from "../compteur-diff/compteur-diff.component";
+import {SimpleGameCanvasComponent} from "../simple-game/simple-game-canvas/simple-game-canvas.component";
+import {SimpleGameContainerComponent} from "../simple-game/simple-game-container/simple-game-container.component";
 import { PlayViewComponent } from "./play-view.component";
 
 describe("PlayViewComponent", () => {
@@ -8,9 +10,14 @@ describe("PlayViewComponent", () => {
   let fixture: ComponentFixture<PlayViewComponent>;
 
   beforeEach((done) => {
-    TestBed.configureTestingModule({
-      declarations: [ PlayViewComponent, CompteurDiffComponent ],
-      providers: [
+    TestBed.configureTestingModule(
+      {
+        declarations: [PlayViewComponent,
+          CompteurDiffComponent,
+          SimpleGameContainerComponent,
+          SimpleGameCanvasComponent,
+        ],
+        providers: [
         { provide: Router, useClass: class { public navigate: jasmine.Spy = jasmine.createSpy("navigate"); }, },
         {
           provide: ActivatedRoute,
