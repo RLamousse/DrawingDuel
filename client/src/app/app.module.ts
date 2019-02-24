@@ -16,6 +16,7 @@ import { GameService } from "./game.service";
 import { InitialViewComponent } from "./initial-view/initial-view.component";
 import { PlayViewComponent } from "./play-view/play-view.component";
 import { SimpleGameCreatorFormComponent } from "./simple-game-creator-form/simple-game-creator-form.component";
+import { SocketService } from "./socket.service";
 import { UNListService } from "./username.service";
 import { VueAdminComponent } from "./vue-admin/vue-admin.component";
 import { WindowEventHandlerDirective } from "./window-event-handler.directive";
@@ -48,7 +49,7 @@ import { WindowEventHandlerDirective } from "./window-event-handler.directive";
     MaterialFileInputModule,
     MatDialogModule,
   ],
-  providers: [UNListService, FormPostService, GameService],
+  providers: [UNListService, FormPostService, GameService, SocketService],
   bootstrap: [AppComponent],
   entryComponents: [SimpleGameCreatorFormComponent, Create3DGameComponent],
   schemas: [NO_ERRORS_SCHEMA],
