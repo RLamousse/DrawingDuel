@@ -66,19 +66,33 @@ describe("FreeGameCreatorService", () => {
     });
   });
 
-  // Test createScenes
-  it("should create empty scenes => objects array empty", () => {
-    const emptyScenes: IObject.IScenesJSON = { originalObjects: [], modifiedObjects: [] };
+  it("should create", () => {
     const service: FreeGameCreatorService = new FreeGameCreatorService();
-    service.createScenes(emptyScenes);
-    expect(service.objects.length).toEqual(0);
-    expect(service.modifiedObjects.length).toEqual(0);
+    expect(service).toBeDefined();
   });
 
-  it("should create scenes with the 5 different types of objects in the original, only 3 in the modified", () => {
+  // Test createScenes
+  it("should create empty scenes => objects array empty and defined scenes", () => {
+    const emptyScenes: IObject.IScenesJSON = { originalObjects: [], modifiedObjects: [] };
+    const service: FreeGameCreatorService = new FreeGameCreatorService();
+    let scenes: THREE.Scene[] = service.createScenes(emptyScenes);
+    expect(service.objects.length).toEqual(0);
+    expect(service.modifiedObjects.length).toEqual(0);
+    expect(scenes[0]).toBeDefined();
+    expect(scenes[1]).toBeDefined();
+  });
+
+ it("should create scenes with the 5 different types of objects in the original, only 3 in the modified", () => {
     const service: FreeGameCreatorService = new FreeGameCreatorService();
     service.createScenes(dummyScenes);
     expect(service.objects.length).toEqual(5);
     expect(service.modifiedObjects.length).toEqual(3);
+  });
+
+  it("should create 2 scenes with (objectsArray.lenght + 2 light) children", () => {
+    const service: FreeGameCreatorService = new FreeGameCreatorService();
+    let scenes: THREE.Scene[] = service.createScenes(dummyScenes);
+    expect(scenes[0].children.length).toEqual(service.objects.length + 2);
+    expect(scenes[1].children.length).toEqual(service.modifiedObjects.length + 2);
   });
 });
