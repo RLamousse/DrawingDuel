@@ -1,20 +1,21 @@
-
-import { Component, Input, OnInit } from "@angular/core";
-import { ISimpleGame } from "../../../../common/model/game/simple-game";
-import { GameService } from "../game.service";
-import { MOCKED_FREE_GAMES, MOCKED_SIMPLE_GAMES } from "../mockGames";
+import {Component, Input, OnInit} from "@angular/core";
+import {ISimpleGame} from "../../../../common/model/game/simple-game";
+import {GameService} from "../game.service";
+import {MOCKED_FREE_GAMES, MOCKED_SIMPLE_GAMES} from "../mockGames";
 
 @Component({
-  selector: "app-game-list",
-  templateUrl: "./game-list.component.html",
-  styleUrls: ["./game-list.component.css"],
-})
+             selector: "app-game-list",
+             templateUrl: "./game-list.component.html",
+             styleUrls: ["./game-list.component.css"],
+           })
 
 export class GameListComponent implements OnInit {
 
   @Input() protected readonly rightButton: string = "joindre";
   @Input() protected readonly leftButton: string = "jouer";
-  public constructor(private gameService: GameService) {/*vide*/}
+
+  public constructor(private gameService: GameService) {/*vide*/
+  }
 
   public ngOnInit(): void {
     this.gameService.getSimpleGames().subscribe((gamesToModify: ISimpleGame[]) => {
