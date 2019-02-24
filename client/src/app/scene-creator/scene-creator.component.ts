@@ -1,6 +1,9 @@
 import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild } from "@angular/core";
 import { ActivatedRoute} from "@angular/router";
+import { IFreeGame } from "../../../../common/model/game/free-game";
 import { IScene } from "../../../scene-interface";
+import { GameService } from "../game.service";
+import { FreeGameCreatorService} from "../scene-creator/FreeGameCreator/free-game-creator.service";
 import { SceneRendererService } from "./scene-renderer.service";
 
 @Component({
@@ -10,7 +13,8 @@ import { SceneRendererService } from "./scene-renderer.service";
 })
 export class SceneCreatorComponent implements AfterViewInit, OnInit {
 
-  public constructor(private renderService: SceneRendererService, private route: ActivatedRoute, ) { }
+  public constructor(private renderService: SceneRendererService, private route: ActivatedRoute,
+                     private freeGameCreator: FreeGameCreatorService, private gameService: GameService, ) { }
 
   protected gameName: string;
   protected isSimpleGame: boolean;
@@ -37,14 +41,22 @@ export class SceneCreatorComponent implements AfterViewInit, OnInit {
 
   public ngOnInit(): void {
     this.route.queryParams.subscribe((params) => {
-      this.isSimpleGame = params ["isSimpleGame"];
       this.gameName = params["gameName"];
-      this.freeScenes = params["freeScenes"];
     });
   }
 
+  private async verifyGame(): Promise<IScene> {
+    return new Promise<IScene>((resolve) => {
+      this.gameService.getFreeGameByName(this.gameName).subscribe((freeGame: IFreeGame) => {
+        const freeScenes: IScene = this.freeGameCreator.createScenes(freeGame.scenes);
+        resolve(freeScenes);
+      });
+  });
+}
+
   public ngAfterViewInit(): void {
     this.renderService.init(this.originalContainer, this.modifiedContainer);
-    this.renderService.loadScenes(this.freeScenes.scene, this.freeScenes.modifiedScene, this.originalContainer, this.modifiedContainer);
+    this.verifyGame().then((scene: IScene) =>
+    this.renderService.loadScenes(scene.scene, scene.modifiedScene, this.originalContainer, this.modifiedContainer));
   }
 }
