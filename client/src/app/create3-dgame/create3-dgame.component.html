@@ -10,7 +10,7 @@
 
   <mat-form-field id="themes">
     <mat-select placeholder="Types de scène" formControlName="theme">
-      <mat-option *ngFor="let theme of themes">
+      <mat-option *ngFor="let theme of themes" [value]="theme.value">
         {{theme.viewValue}}
       </mat-option>
     </mat-select>
