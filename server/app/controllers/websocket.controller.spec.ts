@@ -1,18 +1,17 @@
 // tslint:disable:typedef
 import { expect } from "chai";
-// import { Application } from "../app";
-// import { container } from "../inversify.config";
-// import types from "../types";
+import { container } from "../inversify.config";
+import types from "../types";
+import { WebsocketController } from "./websocket.controller";
 
-describe("username controller", () => {
-    // let app: Express.Application;
+describe("Websocket controller", () => {
+    let controller: WebsocketController;
 
     beforeEach(() => {
-        // container.rebind(types.DummyWebsocketActionService).toConstantValue(mockedUsernameService);
-        // app = container.get<Application>(types.Application).app;
+        controller = container.get<WebsocketController>(types.WebsocketController);
     });
 
-    it ("should test", () => {
-        expect(true).to.be.true;
+    it("should initialize", () => {
+        expect(controller).to.exist;
     });
 });
