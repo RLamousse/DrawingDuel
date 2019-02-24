@@ -1,12 +1,12 @@
 import {Injectable} from "@angular/core";
 import Axios, {AxiosResponse} from "axios";
 import * as Httpstatus from "http-status-codes";
-import {IDiffValidatorControllerRequest} from "../../../common/communication/requests/diff-validator-controller.request";
-import {IDiffValidatorControllerResponse} from "../../../common/communication/responses/diff-validator-controller.response";
-import {DifferenceCluster} from "../../../common/model/game/simple-game";
-import ISimpleGameState from "../../../common/model/game/simple-game-state";
-import {IPoint} from "../../../common/model/point";
-import {FOUND_DIFFERENCE_SOUNDS, NO_DIFFERENCE_SOUNDS, playRandomSound} from "./simple-game/game-sounds";
+import {IDiffValidatorControllerRequest} from "../../../../common/communication/requests/diff-validator-controller.request";
+import {IDiffValidatorControllerResponse} from "../../../../common/communication/responses/diff-validator-controller.response";
+import {DifferenceCluster} from "../../../../common/model/game/simple-game";
+import ISimpleGameState from "../../../../common/model/game/simple-game-state";
+import {IPoint} from "../../../../common/model/point";
+import {playRandomSound, FOUND_DIFFERENCE_SOUNDS, NO_DIFFERENCE_SOUNDS} from "./game-sounds";
 
 export const ALREADY_FOUND_DIFFERENCE: string = "Difference was already found!";
 

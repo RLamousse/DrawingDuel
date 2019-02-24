@@ -22,7 +22,7 @@ import {SceneRendererService} from "./scene-creator/scene-renderer.service";
 import {SimpleGameCreatorFormComponent} from "./simple-game-creator-form/simple-game-creator-form.component";
 import {GameService} from "./simple-game/game.service";
 import {SimpleGameCanvasComponent} from "./simple-game/simple-game-canvas/simple-game-canvas.component";
-import {SimpleGameContainerComponent} from './simple-game/simple-game-container/simple-game-container.component';
+import {SimpleGameContainerComponent} from "./simple-game/simple-game-container/simple-game-container.component";
 import {UNListService} from "./username.service";
 import {VueAdminComponent} from "./vue-admin/vue-admin.component";
 import {WindowEventHandlerDirective} from "./window-event-handler.directive";

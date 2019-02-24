@@ -1,8 +1,8 @@
 import {Component, Input, ViewChild} from "@angular/core";
 import {DifferenceCluster, DIFFERENCE_CLUSTER_POINTS_INDEX} from "../../../../../common/model/game/simple-game";
 import {tansformOrigin, IPoint} from "../../../../../common/model/point";
-import {SimpleGameService} from "../../simple-game.service";
 import {PixelData, SimpleGameCanvasComponent} from "../simple-game-canvas/simple-game-canvas.component";
+import {SimpleGameService} from "../simple-game.service";
 
 @Component({
              selector: "app-simple-game-container",
@@ -28,6 +28,10 @@ export class SimpleGameContainerComponent {
           .map((point: IPoint) => tansformOrigin(point, this.originalImageComponent.height));
         const pixels: PixelData[] = this.originalImageComponent.getPixels(differencePoints);
         this.modifiedImageComponent.drawPixels(pixels);
+      })
+      // tslint:disable-next-line:no-any Generic error response
+      .catch((reason: any) => {
+        throw new Error(reason);
       });
   }
 }

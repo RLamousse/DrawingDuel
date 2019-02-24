@@ -1,6 +1,6 @@
 import {Component, OnInit} from "@angular/core";
 import {ActivatedRoute} from "@angular/router";
-import {SimpleGameService} from "../simple-game.service";
+import {SimpleGameService} from "../simple-game/simple-game.service";
 
 @Component({
              selector: "app-play-view",

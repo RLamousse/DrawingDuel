@@ -97,6 +97,6 @@ export const NO_DIFFERENCE_SOUNDS: Howl[] = [
   TROMBONE2_SOUND, VIOLIN_SOUND,
 ];
 
-export const playRandomSound = (sounds: Howl[]): void => {
+export const playRandomSound: (sounds: Howl[]) => void = (sounds: Howl[]): void => {
   sounds[Math.floor(Math.random() * sounds.length)].play();
 };
