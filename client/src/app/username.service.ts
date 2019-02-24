@@ -63,9 +63,7 @@ export class UNListService {
       return false;
     }
 
-    return this.sendUserRequest(name)
-      .toPromise()
-      .then((response: UserValidationMessage) => {
+    return this.sendUserRequest(name).toPromise().then((response: UserValidationMessage) => {
         this.response = response;
         if (typeof this.response !== "undefined" && !this.response.available) {
           this.message = "Cet identifiant est deja pris! Essaie un nouvel identifiant";

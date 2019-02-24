@@ -1,7 +1,9 @@
-import { AfterViewInit, Component, ElementRef, Input, ViewChild } from "@angular/core";
+import { Component, Input } from "@angular/core";
 import { Router } from "@angular/router";
-import * as THREE from "three";
-import { FreeGamePhotoService } from "../../scene-creator/free-game-photo-service/free-game-photo.service";
+import { IFreeGame } from "../../../../../common/model/game/free-game";
+import { IScene } from "../../../../scene-interface";
+import { GameService } from "../../game.service";
+import { FreeGameCreatorService} from "../../scene-creator/FreeGameCreator/free-game-creator.service";
 
 @Component({
   selector: "app-game",
@@ -9,35 +11,44 @@ import { FreeGamePhotoService } from "../../scene-creator/free-game-photo-servic
   styleUrls: ["./game.component.css"],
 })
 
-export class GameComponent implements AfterViewInit {
+export class GameComponent {
 
-  public constructor(
-    private router: Router,
-  ) {/*vide*/}
+  public constructor( private router: Router, private freeGameCreator: FreeGameCreatorService,
+                      private gameService: GameService, ) {/*vide*/}
 
   @Input() public gameName: string = "test";
   @Input() public bestSoloTimes: { name: string, time: number }[];
   @Input() public bestMultiTimes: { name: string, time: number }[];
-  @Input() public originalImage: string = "test";
-  @Input() public modifiedImage: string = "test";
+  @Input() public originalImage: string;
+  @Input() public modifiedImage: string;
+  @Input() public thumbnail: string;
   @Input() public rightButton: string;
   @Input() public leftButton: string;
-  @ViewChild("photoContainer") public originalSceneContainer: ElementRef;
+  @Input() public isSimpleGame: boolean;
+  protected freeScenes: IScene;
 
   protected leftButtonClick(): void {
     if (this.leftButton === "jouer") {
-      this.router.navigate(["/play-view/"], {queryParams: {
-        gameName: this.gameName, originalImage: this.originalImage, modifiedImage: this.modifiedImage },
-      });
+      if (this.isSimpleGame) {
+        this.router.navigate(["/play-view/"], {queryParams: {
+          isSimpleGame : this.isSimpleGame, gameName: this.gameName,
+          originalImage: this.originalImage, modifiedImage: this.modifiedImage },
+        }).catch();
+      } else {
+        this.verifyGame();
+        this.router.navigate(["/3d-view/"], {queryParams: {
+          isSimpleGame : this.isSimpleGame, gameName: this.gameName,
+          freeScenes: this.freeScenes },
+        }).catch();
+      }
     }
   }
 
-  public ngAfterViewInit(): void {
-    const photoService: FreeGamePhotoService = new FreeGamePhotoService();
-    const dummyScene: THREE.Scene = new THREE.Scene();
-    const size: number = 36;
-    const cube: THREE.Mesh = new THREE.Mesh(new THREE.SphereGeometry(size, size, size), new THREE.MeshPhongMaterial());
-    dummyScene.add(cube);
-    photoService.takePhoto(dummyScene, this.originalSceneContainer.nativeElement);
+  private verifyGame(): void {
+    if (!this.isSimpleGame) {
+      this.gameService.getFreeGameByName(this.gameName).subscribe((freeGame: IFreeGame) => {
+        this.freeScenes = this.freeGameCreator.createScenes(freeGame.scenesTable);
+      });
+    }
   }
 }

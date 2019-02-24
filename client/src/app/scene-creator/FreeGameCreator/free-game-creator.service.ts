@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import * as THREE from "three";
 import { ObjectGeometry } from "../../../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
 import * as IObject from "../../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
+import { IScene } from "../../../../scene-interface";
 import { Form3DService } from "../3DFormService/3-dform.service";
 
 @Injectable()
@@ -19,7 +20,7 @@ export class FreeGameCreatorService {
     this.formService = new Form3DService();
   }
 
-  public createScenes(primitiveScenes: IObject.IScenesJSON): THREE.Scene[] {
+  public createScenes(primitiveScenes: IObject.IScenesJSON): IScene {
 
     this.scene = new THREE.Scene();
     this.modifiedScene = new THREE.Scene();
@@ -27,7 +28,7 @@ export class FreeGameCreatorService {
     this.generateOriginalScene(primitiveScenes);
     this.generateModifiedScene(primitiveScenes);
 
-    return [this.scene, this.modifiedScene];
+    return {scene: this.scene, modifiedScene: this.modifiedScene};
   }
 
   private setLighting(): void {
