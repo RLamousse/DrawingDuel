@@ -2,6 +2,7 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { IFreeGame } from "../../../../common/model/game/free-game";
 import { ISimpleGame } from "../../../../common/model/game/simple-game";
+//import {} from "../../../../common/model/game/extended-free-game";
 import { GameService } from "../game.service";
 import { MOCKED_FREE_GAMES, MOCKED_SIMPLE_GAMES } from "../mockGames";
 
@@ -25,7 +26,6 @@ export class GameListComponent implements OnInit {
       for (const test of MOCKED_SIMPLE_GAMES) {
         this.gameService.simpleGames.push(test);
       }
-      console.log(typeof simpleGamesToModify);
       for (const game of simpleGamesToModify) {
         this.gameService.simpleGames.push(game);
       }
@@ -38,7 +38,6 @@ export class GameListComponent implements OnInit {
       for (const test of MOCKED_FREE_GAMES) {
         this.gameService.freeGames.push(test);
       }
-      console.log(typeof freeGamesToModify);
       // for (const game of freeGamesToModify) {
       //   console.log(typeof game);
       //   //this.gameService.freeGames.push(game);
