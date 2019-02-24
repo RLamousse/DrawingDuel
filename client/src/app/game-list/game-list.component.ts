@@ -47,7 +47,6 @@ export class GameListComponent implements OnInit {
         this.gameService.extendedFreeGames.push(test);
       }
       for (const game of freeGamesToModify) {
-         console.log(typeof game);
          this.gameService.freeGames.push(game);
       }
       for (const game of this.gameService.freeGames) {
