@@ -1,6 +1,7 @@
 import {Injectable} from "@angular/core";
 import Axios, {AxiosResponse} from "axios";
 import * as Httpstatus from "http-status-codes";
+import {Observable, Subject} from "rxjs";
 import {IDiffValidatorControllerRequest} from "../../../../common/communication/requests/diff-validator-controller.request";
 import {IDiffValidatorControllerResponse} from "../../../../common/communication/responses/diff-validator-controller.response";
 import {DifferenceCluster, DIFFERENCE_CLUSTER_POINTS_INDEX} from "../../../../common/model/game/simple-game";
@@ -16,6 +17,8 @@ export const ALREADY_FOUND_DIFFERENCE: string = "Difference was already found!";
 export class SimpleGameService {
 
   private _gameState: ISimpleGameState;
+  private _gameName: string;
+  private _differenceCountSubject: Subject<number> = new Subject();
 
   public constructor() {
     this._gameState = {
@@ -23,14 +26,12 @@ export class SimpleGameService {
     };
   }
 
-  private _gameName: string;
-
   public set gameName(value: string) {
     this._gameName = value;
   }
 
-  public get foundDifferencesCount(): number {
-    return this._gameState.foundDifferenceClusters.length;
+  public get foundDifferencesCount(): Observable<number> {
+    return this._differenceCountSubject;
   }
 
   public async validateDifferenceAtPoint(point: IPoint): Promise<DifferenceCluster> {
@@ -50,6 +51,7 @@ export class SimpleGameService {
       .then((value: AxiosResponse<IDiffValidatorControllerResponse>) => {
         const differenceCluster: DifferenceCluster = [value.data.differenceClusterId, value.data.differenceClusterCoords];
         this._gameState.foundDifferenceClusters.push(differenceCluster);
+        this._differenceCountSubject.next(this._gameState.foundDifferenceClusters.length);
         playRandomSound(FOUND_DIFFERENCE_SOUNDS);
 
         return differenceCluster;
