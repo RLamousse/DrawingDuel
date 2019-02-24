@@ -13,5 +13,7 @@ export default  {
         BitmapWriter: Symbol("BitmapWriter"),
         DiffValidatorController: Symbol("DiffValidatorController"),
         DiffValidatorService: Symbol("DiffValidatorService"),
+        WebsocketController: Symbol("WebSocketController"),
         ImageUploadService: Symbol("ImageUploadService"),
+        DummyWebsocketActionService: Symbol("DummyWebsocketActionService"),
 };

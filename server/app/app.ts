@@ -34,7 +34,7 @@ export class Application {
         // Middlewares configuration
         this.app.use(logger("dev"));
         this.app.use(express.static("public"));
-        this.app.use(bodyParser.json({limit: "10mb"}));
+        this.app.use(bodyParser.json({limit: "1 mb"}));
         this.app.use(bodyParser.urlencoded({ extended: true}));
         this.app.use(cookieParser());
         this.app.use(cors());

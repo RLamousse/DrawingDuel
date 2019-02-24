@@ -5,6 +5,7 @@ import {DataBaseController} from "./controllers/data-base.controller";
 import {DiffValidatorController} from "./controllers/diff-validator.controller";
 import { GameCreatorController } from "./controllers/game-creator.controller";
 import { UserController } from "./controllers/username.controller";
+import { WebsocketController } from "./controllers/websocket.controller";
 import {BitmapWriter} from "./images/bitmap/bitmap-writer";
 import {Server} from "./server";
 import {BitmapDiffService} from "./services/bitmap-diff.service";
@@ -14,6 +15,7 @@ import {DifferenceEvaluatorService} from "./services/difference-evaluator.servic
 import {GameCreatorService} from "./services/game-creator.service";
 import {ImageUploadService} from "./services/image-upload.service";
 import { UsernameService } from "./services/username.service";
+import { DummyWebsocketActionService } from "./services/websocket/dummy-websocket-action.service";
 import Types from "./types";
 
 const container: Container = new Container();
@@ -38,5 +40,8 @@ container.bind(Types.BitmapWriter).to(BitmapWriter);
 
 container.bind(Types.UserNameService).to(UsernameService).inSingletonScope();
 container.bind(Types.UserNameController).to(UserController);
+
+container.bind(Types.WebsocketController).to(WebsocketController);
+container.bind(Types.DummyWebsocketActionService).to(DummyWebsocketActionService);
 
 export { container };
