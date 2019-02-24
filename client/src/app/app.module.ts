@@ -61,12 +61,12 @@ import { WindowEventHandlerDirective } from "./window-event-handler.directive";
     MatCheckboxModule,
     MatSelectModule,
   ],
-  providers: [UNListService, FormPostService, GameService, SocketService],
   providers: [
     UNListService,
     FormPostService,
     GameService,
     SceneRendererService,
+    SocketService,
     Form3DService,
     FreeGameCreatorService,
     FreeGamePhotoService,
