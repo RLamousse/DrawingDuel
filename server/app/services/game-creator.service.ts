@@ -168,8 +168,8 @@ export class GameCreatorService {
     private createRandomScores(): IRecordTime[] {
 
         const scoreArray: number[] = new Array(TIMES_ARRAY_SIZE);
-        for (const I of scoreArray) {
-            scoreArray[I] = Number((this._MIN_GENERATED_SCORE +
+        for (let i: number = 0; i < TIMES_ARRAY_SIZE; i++) {
+            scoreArray[i] = Number((this._MIN_GENERATED_SCORE +
                 Math.random() * (this._MAX_GENERATED_SCORE - this._MIN_GENERATED_SCORE)).toFixed(0));
         }
 
