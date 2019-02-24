@@ -9,10 +9,7 @@ export class Form3DService {
     const geometry: THREE.BoxGeometry = new THREE.BoxGeometry(obj.sideLenght, obj.sideLenght, obj.sideLenght);
     const material: THREE.MeshPhongMaterial = new THREE.MeshPhongMaterial({ color: obj.color });
     const cube: THREE.Mesh = new THREE.Mesh(geometry, material);
-    cube.position.set(obj.position[Coordinate.X], obj.position[Coordinate.Y], obj.position[Coordinate.Z]);
-    cube.rotateX(obj.rotation[Coordinate.X]);
-    cube.rotateY(obj.rotation[Coordinate.Y]);
-    cube.rotateZ(obj.rotation[Coordinate.Z]);
+    this.setUpParameters(cube, obj);
 
     return cube;
   }
@@ -21,10 +18,7 @@ export class Form3DService {
     const geometry: THREE.SphereGeometry = new THREE.SphereGeometry(obj.radius, obj.widthSegments, obj.heightSegments);
     const material: THREE.MeshPhongMaterial = new THREE.MeshPhongMaterial({ color: obj.color });
     const sphere: THREE.Mesh = new THREE.Mesh(geometry, material);
-    sphere.position.set(obj.position[Coordinate.X], obj.position[Coordinate.Y], obj.position[Coordinate.Z]);
-    sphere.rotateX(obj.rotation[Coordinate.X]);
-    sphere.rotateY(obj.rotation[Coordinate.Y]);
-    sphere.rotateZ(obj.rotation[Coordinate.Z]);
+    this.setUpParameters(sphere, obj);
 
     return sphere;
   }
@@ -33,10 +27,7 @@ export class Form3DService {
     const geometry: THREE.ConeGeometry = new THREE.ConeGeometry(obj.radius, obj.height, obj.radialSegment);
     const material: THREE.MeshPhongMaterial = new THREE.MeshPhongMaterial({ color: obj.color });
     const cone: THREE.Mesh = new THREE.Mesh(geometry, material);
-    cone.position.set(obj.position[Coordinate.X], obj.position[Coordinate.Y], obj.position[Coordinate.Z]);
-    cone.rotateX(obj.rotation[Coordinate.X]);
-    cone.rotateY(obj.rotation[Coordinate.Y]);
-    cone.rotateZ(obj.rotation[Coordinate.Z]);
+    this.setUpParameters(cone, obj);
 
     return cone;
   }
@@ -50,10 +41,7 @@ export class Form3DService {
     );
     const material: THREE.MeshPhongMaterial = new THREE.MeshPhongMaterial({ color: obj.color });
     const cylinder: THREE.Mesh = new THREE.Mesh(geometry, material);
-    cylinder.position.set(obj.position[Coordinate.X], obj.position[Coordinate.Y], obj.position[Coordinate.Z]);
-    cylinder.rotateX(obj.rotation[Coordinate.X]);
-    cylinder.rotateY(obj.rotation[Coordinate.Y]);
-    cylinder.rotateZ(obj.rotation[Coordinate.Z]);
+    this.setUpParameters(cylinder, obj);
 
     return cylinder;
   }
@@ -68,11 +56,15 @@ export class Form3DService {
     );
     const material: THREE.MeshPhongMaterial = new THREE.MeshPhongMaterial({ color: obj.color });
     const pyramid: THREE.Mesh = new THREE.Mesh(geometry, material);
-    pyramid.position.set(obj.position[Coordinate.X], obj.position[Coordinate.Y], obj.position[Coordinate.Z]);
-    pyramid.rotateX(obj.rotation[Coordinate.X]);
-    pyramid.rotateY(obj.rotation[Coordinate.Y]);
-    pyramid.rotateZ(obj.rotation[Coordinate.Z]);
+    this.setUpParameters(pyramid, obj);
 
     return pyramid;
+  }
+
+  private setUpParameters(mesh: THREE.Mesh, obj: IObject.IJson3DObject): void {
+    mesh.position.set(obj.position[Coordinate.X], obj.position[Coordinate.Y], obj.position[Coordinate.Z]);
+    mesh.rotateX(obj.rotation[Coordinate.X]);
+    mesh.rotateY(obj.rotation[Coordinate.Y]);
+    mesh.rotateZ(obj.rotation[Coordinate.Z]);
   }
 }

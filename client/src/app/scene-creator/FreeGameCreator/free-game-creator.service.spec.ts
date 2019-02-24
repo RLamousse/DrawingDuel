@@ -71,7 +71,7 @@ const dummyScenes: IObject.IScenesJSON = {
   modifiedObjects: [dummyCube, dummyCone, dummyCylinder],
 };
 
-fdescribe("FreeGameCreatorService", () => {
+describe("FreeGameCreatorService", () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
@@ -81,13 +81,13 @@ fdescribe("FreeGameCreatorService", () => {
     });
   });
 
-  fit("should create", () => {
+  it("should create", () => {
     const service: FreeGameCreatorService = TestBed.get(FreeGameCreatorService);
     expect(service).toBeDefined();
   });
 
   // Test createScenes
-  fit("should create empty scenes => objects array empty and defined scenes", () => {
+  it("should create empty scenes => objects array empty and defined scenes", () => {
     const emptyScenes: IObject.IScenesJSON = { originalObjects: [], modifiedObjects: [] };
     const service: FreeGameCreatorService = TestBed.get(FreeGameCreatorService);
     const scenes: THREE.Scene[] = service.createScenes(emptyScenes);
@@ -97,14 +97,14 @@ fdescribe("FreeGameCreatorService", () => {
     expect(scenes[1]).toBeDefined();
   });
 
-  fit("should create scenes with the 5 different types of objects in the original, only 3 in the modified", () => {
+  it("should create scenes with the 5 different types of objects in the original, only 3 in the modified", () => {
     const service: FreeGameCreatorService = TestBed.get(FreeGameCreatorService);
     service.createScenes(dummyScenes);
     expect(service.objects.length).toEqual(5);
     expect(service.modifiedObjects.length).toEqual(3);
   });
 
-  fit("should create 2 scenes with (objectsArray.lenght + 2 light) children", () => {
+  it("should create 2 scenes with (objectsArray.lenght + 2 light) children", () => {
     const service: FreeGameCreatorService = TestBed.get(FreeGameCreatorService);
     const scenes: THREE.Scene[] = service.createScenes(dummyScenes);
     expect(scenes[0].children.length).toEqual(service.objects.length + 2);
