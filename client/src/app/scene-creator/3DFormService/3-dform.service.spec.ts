@@ -1,8 +1,8 @@
 import { TestBed } from "@angular/core/testing";
+import { ObjectGeometry } from "../../../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
+import * as IObject from "../../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
 // import * as THREE from "three";
 import { Form3DService } from "./3-dform.service";
-import * as IObject from "../../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
-import { ObjectGeometry } from "../../../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
 
 /* tslint:disable:no-magic-numbers */
 describe("3DFormService", () => {
@@ -29,7 +29,7 @@ describe("3DFormService", () => {
 
     expect(cube.position.x).toEqual(25);
     expect(cube.position.y).toEqual(12);
-    expect(cube.position.z).toEqual(2); 
+    expect(cube.position.z).toEqual(2);
   });
 
   // Test createSphere
@@ -44,12 +44,12 @@ describe("3DFormService", () => {
       widthSegments: 32,
     };
     const sphere: THREE.Mesh = service.createSphere(dummySphere);
-    
+
     expect(sphere.geometry.type).toBe("SphereGeometry");
 
     expect(sphere.position.x).toEqual(25);
     expect(sphere.position.y).toEqual(12);
-    expect(sphere.position.z).toEqual(2); 
+    expect(sphere.position.z).toEqual(2);
   });
 
   // Test createCone
@@ -66,7 +66,7 @@ describe("3DFormService", () => {
     const cone: THREE.Mesh = service.createCone(dummyCone);
 
     expect(cone.geometry.type).toBe("ConeGeometry");
-   
+
     expect(cone.position.x).toEqual(5);
     expect(cone.position.y).toEqual(12);
     expect(cone.position.z).toEqual(2);
