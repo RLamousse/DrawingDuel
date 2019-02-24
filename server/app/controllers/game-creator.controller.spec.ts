@@ -26,6 +26,7 @@ describe("Game creator controller", () => {
     beforeEach(() => {
         mockedGameCreatorService = mock(GameCreatorService);
         when(mockedGameCreatorService.createSimpleGame(anyString(), anything(), anything())).thenResolve(SUCCESS_MESSAGE);
+        when(mockedGameCreatorService.createFreeGame(anyString(), anything(), anything(), anything())).thenResolve(SUCCESS_MESSAGE);
         container.rebind(types.GameCreatorService).toConstantValue(instance(mockedGameCreatorService));
         app = container.get<Application>(types.Application).app;
     });
