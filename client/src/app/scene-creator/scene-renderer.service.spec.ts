@@ -84,6 +84,4 @@ describe("SceneRendererService", () => {
     expect(service.scene).toBe(original2);
     expect(service.modifiedScene).toBe(modified2);
   });
-
-  // Test getScreenshots
 });
