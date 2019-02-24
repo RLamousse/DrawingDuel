@@ -240,7 +240,7 @@ describe("A service that creates a game", () => {
                 .to.be.equal("Game created");
         });
     });
-    //TODO mock the free game creator class
+
     describe("Create free game", () => {
 
         it("should throw a name error if the game name is already in the free games data base(simple game name existence)", async () => {
@@ -281,7 +281,7 @@ describe("A service that creates a game", () => {
             return expect.fail();
         });
 
-        it("should throw error on db get simple game call(simple name existence testing)", async () => {
+        it("should throw error on db get simple game call", async () => {
             axiosMock.onGet("http://localhost:3000/api/data-base/games/simple/someGameTest")
                 .reply(HttpStatus.INTERNAL_SERVER_ERROR, {message: "error"});
 
@@ -295,7 +295,7 @@ describe("A service that creates a game", () => {
                 });
         });
 
-        it("should throw error on db get free game call(free game name existence testing)", async () => {
+        it("should throw error on db get free game call", async () => {
 
             axiosMock.onGet("http://localhost:3000/api/data-base/games/simple/someGameTest")
                 .reply(HttpStatus.NOT_FOUND, {message: NON_EXISTING_GAME_ERROR_MESSAGE});
