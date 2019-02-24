@@ -15,12 +15,20 @@ export class SocketService {
         this.socket = this.openSocket();
     }
 
+    public isSocketConnected (): boolean {
+        return this.socket.connected;
+    }
+
     private openSocket(): SocketIOClient.Socket {
         return connect(this.BASE_URL);
     }
 
-    public send(event: SocketEvent, message: WebsocketMessage): void {
-        this.socket.emit(event, message);
+    public send(event: SocketEvent, message: WebsocketMessage): boolean {
+        if (this.isSocketConnected()) {
+            return this.socket.emit(event, message).connected;
+        }
+
+        return false;
     }
 
     public onMessage(): Observable<WebsocketMessage> {
