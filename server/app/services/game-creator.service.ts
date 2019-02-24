@@ -38,7 +38,8 @@ export class GameCreatorService {
 
     public constructor(
         @inject(Types.DifferenceEvaluatorService) private differenceEvaluatorService: DifferenceEvaluatorService,
-        @inject(Types.ImageUploadService) private imageUploadService: ImageUploadService) {}
+        @inject(Types.ImageUploadService) private imageUploadService: ImageUploadService,
+        @inject(Types.FreeGameCreatorService) private freeGameCreatorService: FreeGameCreatorService) {}
 
     private readonly _MIN_GENERATED_SCORE: number = 20;
     private readonly _MAX_GENERATED_SCORE: number = 120;
@@ -200,10 +201,8 @@ export class GameCreatorService {
 
     private generateScene(numberOfObjects: number, theme: Themes, modTypes: ModificationType[]): IScenesJSON {
         if (theme === Themes.Geometry) {
-            const sceneCreator: FreeGameCreatorService = new FreeGameCreatorService(numberOfObjects, modTypes);
 
-            sceneCreator.generateIScenes();
-            return {originalObjects: sceneCreator.objects, modifiedObjects: sceneCreator.modifiedObjects};
+            return this.freeGameCreatorService.generateIScenes(numberOfObjects, modTypes);
         }
         throw new Error(NON_EXISTING_THEME);
     }

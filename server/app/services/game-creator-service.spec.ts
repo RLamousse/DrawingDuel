@@ -15,12 +15,14 @@ import {DifferenceEvaluatorService} from "./difference-evaluator.service";
 import {EXPECTED_DIFF_NUMBER, GameCreatorService} from "./game-creator.service";
 import {ImageUploadService} from "./image-upload.service";
 import {Themes} from "../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
+import {FreeGameCreatorService} from "./free-game-creator.service";
 
 describe("A service that creates a game", () => {
 
     let axiosMock: MockAdapter;
     let mockedDifferenceEvaluatorServiceMock: DifferenceEvaluatorService;
     let mockedImageUploadService: ImageUploadService;
+    let mockedFreeGameCreatorService: FreeGameCreatorService;
 
     const createdMockedDiffData: (diffCount: number) => ISimpleDifferenceData = (diffCount: number) => {
         const mockedDifferenceData: Map<number, IPoint[]> = new Map();
@@ -35,6 +37,7 @@ describe("A service that creates a game", () => {
         return new GameCreatorService(
             instance(mockedDifferenceEvaluatorServiceMock),
             instance(mockedImageUploadService),
+            instance(mockedFreeGameCreatorService),
         );
     };
 
@@ -43,6 +46,7 @@ describe("A service that creates a game", () => {
 
         mockedDifferenceEvaluatorServiceMock = mock(DifferenceEvaluatorService);
         mockedImageUploadService = mock(ImageUploadService);
+        mockedFreeGameCreatorService = mock(FreeGameCreatorService);
 
         when(mockedDifferenceEvaluatorServiceMock.getSimpleNDifferences(anything())).thenReturn(createdMockedDiffData(EXPECTED_DIFF_NUMBER));
         when(mockedImageUploadService.uploadImage(anything())).thenResolve("");
@@ -236,8 +240,6 @@ describe("A service that creates a game", () => {
                 .to.be.equal("Game created");
         });
     });
-
-    //TODO change the arguments of createFreeGame to be the same as the pgillipe ones
     //TODO mock the free game creator class
     describe("Create free game", () => {
 
