@@ -7,10 +7,10 @@ import { GameCreatorService } from "../services/game-creator.service";
 import Types from "../types";
 import {
     assertFieldsOfRequest,
-    assertRequestImageFilesFields,
-    executePromiseSafely,
-    BITMAP_MULTER_FILTER,
-    MODIFIED_IMAGE_FIELD_NAME, MULTER_BMP_FIELDS, ORIGINAL_IMAGE_FIELD_NAME
+    assertRequestImageFilesFields, assertRequestSceneFields,
+    executePromiseSafely, BITMAP_MULTER_FILTER,
+    MODIFIED_IMAGE_FIELD_NAME,
+    MULTER_BMP_FIELDS, ORIGINAL_IMAGE_FIELD_NAME
 } from "./controller-utils";
 
 @injectable()
@@ -38,6 +38,21 @@ export class GameCreatorController {
                     req.files[ORIGINAL_IMAGE_FIELD_NAME][0].buffer,
                     req.files[MODIFIED_IMAGE_FIELD_NAME][0].buffer));
             });
+        });
+
+        router.post("/create-free-game", async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                assertRequestSceneFields(req);
+
+                res.json(await this.gameCreatorService.createFreeGame(
+                    req.body[GAME_NAME_FIELD],
+                    req.body.objectQuantity,
+                    req.body.theme,
+                    req.body.modificationTypes));
+
+            } catch (error) {
+                next(error);
+            }
         });
 
         return router;

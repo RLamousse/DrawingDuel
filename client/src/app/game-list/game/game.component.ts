@@ -35,19 +35,24 @@ export class GameComponent {
           originalImage: this.originalImage, modifiedImage: this.modifiedImage },
         }).catch();
       } else {
-        this.verifyGame();
-        this.router.navigate(["/3d-view/"], {queryParams: {
-          isSimpleGame : this.isSimpleGame, gameName: this.gameName,
-          freeScenes: this.freeScenes },
-        }).catch();
+        this.verifyGame().then((done) => {
+          console.log(this.freeScenes);
+          this.router.navigate(["/3d-view/"], {
+            queryParams: {
+              isSimpleGame: this.isSimpleGame, gameName: this.gameName,
+              freeScenes: this.freeScenes
+            },
+          }).catch();
+        });
       }
     }
   }
 
-  private verifyGame(): void {
+  private async verifyGame(): Promise<void> {
     if (!this.isSimpleGame) {
-      this.gameService.getFreeGameByName(this.gameName).subscribe((freeGame: IFreeGame) => {
-        this.freeScenes = this.freeGameCreator.createScenes(freeGame.scenesTable);
+      await this.gameService.getFreeGameByName(this.gameName).subscribe((freeGame: IFreeGame) => {
+        console.log(freeGame);
+        this.freeScenes = this.freeGameCreator.createScenes(freeGame.scenes);
       });
     }
   }

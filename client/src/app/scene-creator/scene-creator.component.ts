@@ -45,6 +45,6 @@ export class SceneCreatorComponent implements AfterViewInit, OnInit {
 
   public ngAfterViewInit(): void {
     this.renderService.init(this.originalContainer, this.modifiedContainer);
-    this.renderService.loadScenes(this.freeScenes.scene, this.freeScenes.modifiedScene);
+    this.renderService.loadScenes(this.freeScenes.scene, this.freeScenes.modifiedScene, this.originalContainer, this.modifiedContainer);
   }
 }

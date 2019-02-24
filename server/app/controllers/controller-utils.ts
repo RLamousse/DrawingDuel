@@ -1,16 +1,28 @@
 import {NextFunction, Request} from "express";
 import {Field} from "multer";
+import {Message} from "../../../common/communication/messages/message";
+import {GAME_NAME_FIELD} from "../../../common/communication/requests/game-creator.controller.request";
+import {
+    ModificationType,
+    Themes
+} from "../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
+import {ARGUMENT_ERROR_MESSAGE} from "../services/difference-evaluator.service";
+import {EXPECTED_DIFF_NUMBER} from "../services/game-creator.service";
 
 export const REQUIRED_IMAGE_HEIGHT: number = 480;
 export const REQUIRED_IMAGE_WIDTH: number = 640;
 export const OUTPUT_FILE_NAME_FIELD_NAME: string = "name";
 export const ORIGINAL_IMAGE_FIELD_NAME: string = "originalImage";
+export const NON_EXISTING_THEME: string = "ERROR: The theme is not supported yet!";
 export const MODIFIED_IMAGE_FIELD_NAME: string = "modifiedImage";
 export const EXPECTED_FILES_FORMAT: string = "image/bmp";
-export const DIFFERENCE_ERROR_MESSAGE: string = "Error: The images that you sent don't have seven difference!";
+export const DIFFERENCE_ERROR_MESSAGE: string = "Error: The data that you sent doesn't have seven differences!";
+export const GAME_CREATION_SUCCESS_MESSAGE: Message = {title: "Game created", body: "The game was successfully created!"};
 export const FORMAT_ERROR_MESSAGE: string = "Error: Request sent by the client had the wrong format!";
 export const NAME_ERROR_MESSAGE: string = "Error: The game name that you sent already exists!";
 export const BMP_ERROR_MESSAGE: string = "Error: Sent files are not in bmp format!";
+
+const NUMBER_OF_MODIFICATION_TYPES: number = 3;
 
 export const BITMAP_MULTER_FILTER:
     (req: Express.Request, file: Express.Multer.File, cb: (error: (Error | null), acceptFile: boolean) => void) => void =
@@ -29,6 +41,28 @@ export const assertRequestImageFilesFields: (req: Express.Request) => void = (re
         typeof req.files[ORIGINAL_IMAGE_FIELD_NAME][0] === "undefined" ||
         typeof req.files[MODIFIED_IMAGE_FIELD_NAME][0] === "undefined") {
             throw new Error(FORMAT_ERROR_MESSAGE);
+    }
+};
+
+export const assertRequestSceneFields: (req: Express.Request) => void = (req: Request): void => {
+    assertFieldsOfRequest(req, GAME_NAME_FIELD);
+
+    if ((req.body.theme !== Themes.Geometry &&
+        req.body.theme !== Themes.Sanic &&
+        req.body.theme !== Themes.Forest) ||
+        !Array.isArray(req.body.modificationTypes) ||
+        req.body.modificationTypes.length < 1 ||
+        req.body.modificationTypes.length > NUMBER_OF_MODIFICATION_TYPES  ||
+        (req.body.objectQuantity < EXPECTED_DIFF_NUMBER &&
+        req.body.modificationTypes.indexOf(ModificationType.remove) >= 0)) {
+        throw new Error(ARGUMENT_ERROR_MESSAGE);
+    }
+    for (const modificationType of req.body.modificationTypes) {
+        if (modificationType !== ModificationType.add &&
+            modificationType !== ModificationType.remove &&
+            modificationType !== ModificationType.changeColor) {
+            throw new Error(ARGUMENT_ERROR_MESSAGE);
+        }
     }
 };
 
