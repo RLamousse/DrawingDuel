@@ -45,13 +45,14 @@ export const assertRequestImageFilesFields: (req: Express.Request) => void = (re
 export const assertRequestSceneFields: (req: Express.Request) => void = (req: Request): void => {
     assertFieldsOfRequest(req, GAME_NAME_FIELD);
 
-    if (req.body.objectQuantity < EXPECTED_DIFF_NUMBER ||
-        (req.body.theme !== Themes.Geometry &&
+    if ((req.body.theme !== Themes.Geometry &&
         req.body.theme !== Themes.Sanic &&
         req.body.theme !== Themes.Forest) ||
         !Array.isArray(req.body.modificationTypes) ||
         req.body.modificationTypes.length < 1 ||
-        req.body.modificationTypes.length > 3 ) {
+        req.body.modificationTypes.length > 3  ||
+        (req.body.objectQuantity < EXPECTED_DIFF_NUMBER &&
+        req.body.modificationTypes.indexOf(ModificationType.remove) >= 0)){
         throw new Error(ARGUMENT_ERROR_MESSAGE);
     }
     for (const modificationType of req.body.modificationTypes) {
