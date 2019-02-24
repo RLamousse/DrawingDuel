@@ -91,7 +91,7 @@ describe("FreeGameCreatorService", () => {
         freeGameCreatorService.generateIScenes();
         expect(freeGameCreatorService.objects.length).to.eql(objNumber);
         expect(freeGameCreatorService.modifiedObjects.length).to.eql(objNumber - DIFF);
-      
+
     });
 
     it("should add 7 objects from original table", () => {
