@@ -9,12 +9,15 @@ import * as HttpStatus from "http-status-codes";
 import {anything, instance, mock, when} from "ts-mockito";
 import {ISimpleDifferenceData} from "../../../common/model/game/simple-game";
 import {IPoint, ORIGIN} from "../../../common/model/point";
-import {DIFFERENCE_ERROR_MESSAGE, NAME_ERROR_MESSAGE} from "../controllers/controller-utils";
+import {DIFFERENCE_ERROR_MESSAGE, NAME_ERROR_MESSAGE, NON_EXISTING_THEME} from "../controllers/controller-utils";
 import {NON_EXISTING_GAME_ERROR_MESSAGE} from "./db/simple-games.collection.service";
 import {DifferenceEvaluatorService} from "./difference-evaluator.service";
 import {EXPECTED_DIFF_NUMBER, GameCreatorService} from "./game-creator.service";
 import {ImageUploadService} from "./image-upload.service";
-import {Themes} from "../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
+import {
+    ModificationType,
+    Themes
+} from "../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
 import {FreeGameCreatorService} from "./free-game-creator.service";
 
 describe("A service that creates a game", () => {
@@ -50,6 +53,7 @@ describe("A service that creates a game", () => {
 
         when(mockedDifferenceEvaluatorServiceMock.getSimpleNDifferences(anything())).thenReturn(createdMockedDiffData(EXPECTED_DIFF_NUMBER));
         when(mockedImageUploadService.uploadImage(anything())).thenResolve("");
+        when(mockedFreeGameCreatorService.generateIScenes(anything(), anything())).thenReturn({originalObjects: [], modifiedObjects: []});
     });
 
     describe("Create simple game", () => {
@@ -255,7 +259,7 @@ describe("A service that creates a game", () => {
                     .createFreeGame( "nonExistingGameTest",
                         0,
                         Themes.Geometry,
-                        []);
+                        [ModificationType.add, ModificationType.remove, ModificationType.changeColor]);
             } catch (error) {
                 return expect(error.message).to.be.equal(NAME_ERROR_MESSAGE);
             }
@@ -273,7 +277,7 @@ describe("A service that creates a game", () => {
                     .createFreeGame( "nonExistingGameTest",
                         0,
                         Themes.Geometry,
-                        []);
+                        [ModificationType.add, ModificationType.remove, ModificationType.changeColor]);
             } catch (error) {
                 return expect(error.message).to.be.equal(NAME_ERROR_MESSAGE);
             }
@@ -289,7 +293,7 @@ describe("A service that creates a game", () => {
                 .createFreeGame( "someGameTest",
                     0,
                     Themes.Geometry,
-                    [])
+                    [ModificationType.add, ModificationType.remove, ModificationType.changeColor])
                 .catch((reason: Error) => {
                     expect(reason.message).to.eql("dataBase: error");
                 });
@@ -306,15 +310,31 @@ describe("A service that creates a game", () => {
                 .createFreeGame( "someGameTest",
                     0,
                     Themes.Geometry,
-                    [])
+                    [ModificationType.add, ModificationType.remove, ModificationType.changeColor])
                 .catch((reason: Error) => {
                     expect(reason.message).to.eql("dataBase: error");
                 });
         });
 
-        //TODO wrong number of objects
-        //TODO wrong theme
-        //TODO wrong modTypes
+        it("should throw error if the theme is other than Geometry", async () => {
+
+            axiosMock.onGet("http://localhost:3000/api/data-base/games/simple/someGameTest")
+                .reply(HttpStatus.NOT_FOUND, {message: NON_EXISTING_GAME_ERROR_MESSAGE});
+            axiosMock.onGet("http://localhost:3000/api/data-base/games/free/someGameTest")
+                .reply(HttpStatus.NOT_FOUND, {message: NON_EXISTING_GAME_ERROR_MESSAGE});
+
+            axiosMock.onPost("http://localhost:3000/api/data-base/games/free/")
+                .reply(HttpStatus.INTERNAL_SERVER_ERROR, new Error("error"));
+
+            return getMockedService()
+                .createFreeGame( "someGameTest",
+                    100,
+                    Themes.Sanic,
+                    [ModificationType.add, ModificationType.remove, ModificationType.changeColor])
+                .catch((reason: Error) => {
+                    expect(reason.message).to.eql(NON_EXISTING_THEME);
+                });
+        });
 
         it("should throw error on db create game call", async () => {
 
@@ -330,7 +350,7 @@ describe("A service that creates a game", () => {
                 .createFreeGame( "someGameTest",
                     100,
                     Themes.Geometry,
-                    [])//TODO phil modtypes
+                    [ModificationType.add, ModificationType.remove, ModificationType.changeColor])
                 .catch((reason: Error) => {
                     expect(reason.message).to.eql("dataBase: Unable to create game: error");
                 });
@@ -346,11 +366,13 @@ describe("A service that creates a game", () => {
             axiosMock.onPost("http://localhost:3000/api/data-base/games/free/")
                 .reply(HttpStatus.OK);
 
+            when(mockedFreeGameCreatorService.generateIScenes(anything(), anything())).thenReturn({originalObjects: [], modifiedObjects: []});
+
             return expect((await getMockedService()
                 .createFreeGame( "someGameTest",
                     100,
                     Themes.Geometry,
-                    [])).title)//TODO phil modtypes
+                    [ModificationType.add, ModificationType.remove, ModificationType.changeColor])).title)
                 .to.be.equal("Game created");
         });
     });
