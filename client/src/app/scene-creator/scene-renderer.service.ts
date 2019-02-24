@@ -85,10 +85,6 @@ export class SceneRendererService {
   }
 
   public loadScenes(original: THREE.Scene, modified: THREE.Scene, oriCont: HTMLDivElement, modCont: HTMLDivElement): void {
-    this.originalContainer = oriCont;
-    this.modifiedContainer = modCont;
-    this.setCamera();
-    this.setRenderer();
     if (this.originalContainer === undefined || this.modifiedContainer === undefined) {
       const errorMsg: string = "La composante n'a pas ete initialise!";
       throw (new Error(errorMsg));
