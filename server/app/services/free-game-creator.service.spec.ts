@@ -49,43 +49,14 @@ describe("FreeGameCreatorService", () => {
     });
 
     // Test generateIScenes
-    it("should only create default object (color = 0) and have 100 objects", () => {
-        const modTypes: ModificationType[] = [];
-        const objNumber: number = 100;
-        freeGameCreatorService = new FreeGameCreatorService(objNumber, modTypes);
-        freeGameCreatorService.generateIScenes();
-        expect(freeGameCreatorService.objects.length).to.eql(objNumber);
-        for (const i of freeGameCreatorService.objects) {
-            expect(i.color).to.eql(0);
-        }
-    });
-
-    it("should only create spheres or cone geometry, whith 20 elements", () => {
-        const modTypes: ModificationType[] = [];
-        const objNumber: number = 20;
-        freeGameCreatorService = new FreeGameCreatorService(objNumber, modTypes);
-        freeGameCreatorService.generateIScenes();
-        expect(freeGameCreatorService.objects.length).to.eql(objNumber);
-        for (const i of freeGameCreatorService.objects) {
-            expect(
-                i.type === ObjectGeometry.cone || i.type === ObjectGeometry.sphere,
-            ).to.eql(true);
-        }
-    });
-    it("should only create cube,cylinder or pyramid geometry, whith 200 elements", () => {
+    it("should only have 200 objects", () => {
         const modTypes: ModificationType[] = [];
         const objNumber: number = 200;
         freeGameCreatorService = new FreeGameCreatorService(objNumber, modTypes);
         freeGameCreatorService.generateIScenes();
         expect(freeGameCreatorService.objects.length).to.eql(objNumber);
-        for (const i of freeGameCreatorService.objects) {
-            expect(
-                i.type === ObjectGeometry.cube ||
-                i.type === ObjectGeometry.cylinder ||
-                i.type === ObjectGeometry.pyramid,
-            ).to.eql(true);
-        }
     });
+
     // Test handleCollision
     it("should only have objects with a distance grater than 43", () => {
         const modTypes: ModificationType[] = [];
@@ -120,6 +91,7 @@ describe("FreeGameCreatorService", () => {
         freeGameCreatorService.generateIScenes();
         expect(freeGameCreatorService.objects.length).to.eql(objNumber);
         expect(freeGameCreatorService.modifiedObjects.length).to.eql(objNumber - DIFF);
+      
     });
 
     it("should add 7 objects from original table", () => {

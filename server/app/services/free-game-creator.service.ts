@@ -124,7 +124,7 @@ export class FreeGameCreatorService {
 
     private randomDifference(table: Set<number>): void {
         const MAX_MOD_TYPE: number = this.modificationTypes.length - 1;
-        const ARRAY_INDEXES: number[] = Array.from(table).sort().reverse();
+        const ARRAY_INDEXES: number[] = Array.from(table).sort((n1,n2) => n1-n2).reverse();
         let randomModifications: number;
         for (const index of ARRAY_INDEXES) {
             randomModifications = this.getRandomValue(0, MAX_MOD_TYPE);
