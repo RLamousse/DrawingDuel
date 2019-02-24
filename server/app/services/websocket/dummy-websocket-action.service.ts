@@ -4,6 +4,10 @@ import { WebsocketMessage } from "../../../../common/communication/messages/mess
 import { SocketEvent } from "../../../../common/communication/socket-events";
 import { WebsocketActionService } from "./websocket-action.service";
 
+/**
+ * This is supposed to be an example/test socket service
+ * (as can be deducted from the very static message it answers with)
+ */
 @injectable()
 export class DummyWebsocketActionService extends WebsocketActionService {
 
