@@ -33,8 +33,6 @@ export class SimpleGameContainerComponent {
         if (reason.message === ALREADY_FOUND_DIFFERENCE || reason.message === NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE) {
           return;
         }
-
-        throw reason;
       });
   }
 }
