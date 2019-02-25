@@ -21,4 +21,22 @@ describe("SimpleGameCanvasComponent", () => {
   it("should create", () => {
     expect(component).toBeTruthy();
   });
+
+  it("should return the correct pixels", () => {
+    fail();
+  });
+
+  it("should draw given pixels successfully", () => {
+    fail();
+  });
+
+  it("should emit a click event on click", () => {
+    /*
+    fixture.debugElement.query(By.css('canvas')).triggerEventHandler('click', {
+                offsetX: expectedPoint.x,
+                offsetY: height - expectedPoint.y,
+            });
+     */
+    fail();
+  });
 });

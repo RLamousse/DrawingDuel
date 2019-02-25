@@ -22,4 +22,16 @@ describe("SimpleGameContainerComponent", () => {
   it("should create", () => {
     expect(component).toBeTruthy();
   });
+
+  it("should throw on unexpected service error", () => {
+    fail();
+  });
+
+  it("should handle already found difference errors", () => {
+    fail();
+  });
+
+  it("should copy pixel from the original canvas to the modified", () => {
+    fail();
+  });
 });
