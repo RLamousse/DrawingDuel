@@ -11,7 +11,7 @@ export class FreeGamePhotoService {
 
   private readonly cameraX: number = 0;
   private readonly cameraY: number = 0;
-  private readonly cameraZ: number = 2;
+  private readonly cameraZ: number = 200;
 
   public takePhoto(originScene: THREE.Scene): string {
     const divElem: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
