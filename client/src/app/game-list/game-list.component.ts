@@ -5,7 +5,7 @@ import { IFreeGame } from "../../../../common/model/game/free-game";
 import { ISimpleGame } from "../../../../common/model/game/simple-game";
 import { IScene } from "../../../scene-interface";
 import { GameService } from "../game.service";
-import { MOCKED_FREE_GAMES, MOCKED_SIMPLE_GAMES } from "../mockGames";
+import { MOCKED_SIMPLE_GAMES } from "../mockGames";
 import { FreeGameCreatorService } from "../scene-creator/FreeGameCreator/free-game-creator.service";
 import { FreeGamePhotoService } from "../scene-creator/free-game-photo-service/free-game-photo.service";
 
@@ -42,10 +42,6 @@ export class GameListComponent implements OnInit {
       this.gameService.freeGames = [];
       this.gameService.extendedFreeGames = [];
       this.gameService.convertScoresObject(freeGamesToModify);
-      this.gameService.convertScoresObject(MOCKED_FREE_GAMES);
-      for (const test of MOCKED_FREE_GAMES) {
-        this.gameService.extendedFreeGames.push(test);
-      }
       for (const game of freeGamesToModify) {
          this.gameService.freeGames.push(game);
       }
