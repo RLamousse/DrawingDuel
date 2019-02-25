@@ -37,7 +37,16 @@ describe("SimpleGameService", () => {
   });
 
   it("should throw on unexpected server response", () => {
-    fail();
+    const service: SimpleGameService = TestBed.get(SimpleGameService);
+    service.gameName = "SimpleGameService-Test";
+
+    axiosMock.onGet("http://localhost:3000/api/diff-validator/")
+      .reply(HttpStatus.INTERNAL_SERVER_ERROR);
+
+    return service.validateDifferenceAtPoint(ORIGIN)
+      .catch((reason: Error) => {
+        expect(reason).toBeDefined();
+      });
   });
 
   it("should return a difference cluster with successful call to server", () => {
