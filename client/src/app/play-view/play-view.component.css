@@ -1,45 +1,39 @@
-@import "~@angular/material/prebuilt-themes/indigo-pink.css";
-
-body{
-    background-color: lightblue;
+body {
+  font-family: Orbitron;
+  background-color: rgb(65, 62, 62);
+  color:white;
 }
-
-.window {
-    width: 30%;
-    border: 1px black solid;
-    min-height: 30%;
+  
+.centered {
+  text-align: center;
+  font-size: 50px;
 }
-
-img{
-    width: 640px;
-    height: 480px;
-    position: center;
-    padding-left: 10px;
-    padding-right: 10px;
+  
+.row {
+  display: flex;
+  margin-left: 10%;
+  flex-direction: row;
 }
-
-.center {
-    margin: auto;
-    width: 1320px;
-    border: 3px solid green;
-    padding: 10px;
-    font: 25px arial serif;
+  
+img {
+  height: 500px;
+  width: 700px;
+  border: 5px rgb(194, 185, 185) solid;
 }
-
-.centeredText {
-    text-align: center;
-    font-size: 16px;
+  
+.middleText {
+  margin-top: 7%;
+  text-align: center;
+  font-size: 35px;
 }
-
-.compteur{
-    margin: 10px;
-    font: 20px arial serif;
+  
+.timer {
+  color: rgb(243, 44, 44);
+  font-size: 60px;
+  padding-left: 22%;
 }
-
-.eventNotif{
-    margin: auto;
-    width: 1320px;
-    border: 3px solid green;
-    padding: 10px;
-    min-height: 300px;
+  
+.differences {
+  color: green;
+  font-size: 60px;
 }
