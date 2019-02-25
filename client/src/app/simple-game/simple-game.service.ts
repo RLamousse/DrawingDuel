@@ -7,6 +7,7 @@ import {IDiffValidatorControllerResponse} from "../../../../common/communication
 import {DifferenceCluster, DIFFERENCE_CLUSTER_POINTS_INDEX} from "../../../../common/model/game/simple-game";
 import ISimpleGameState from "../../../../common/model/game/simple-game-state";
 import {IPoint} from "../../../../common/model/point";
+import {NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE} from "../../../../server/app/services/diff-validator.service";
 import {playRandomSound, FOUND_DIFFERENCE_SOUNDS, NO_DIFFERENCE_SOUNDS} from "./game-sounds";
 
 export const ALREADY_FOUND_DIFFERENCE: string = "Difference was already found!";
@@ -60,6 +61,7 @@ export class SimpleGameService {
       .catch((reason: any) => {
         if (reason.response !== undefined && reason.response.status === Httpstatus.NOT_FOUND) {
           playRandomSound(NO_DIFFERENCE_SOUNDS);
+          throw new Error(NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE);
         }
 
         throw new Error(reason.message);

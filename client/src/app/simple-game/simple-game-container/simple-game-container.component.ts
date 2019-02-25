@@ -1,6 +1,7 @@
 import {Component, Input, ViewChild} from "@angular/core";
 import {DifferenceCluster, DIFFERENCE_CLUSTER_POINTS_INDEX} from "../../../../../common/model/game/simple-game";
 import {tansformOrigin, IPoint} from "../../../../../common/model/point";
+import {NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE} from "../../../../../server/app/services/diff-validator.service";
 import {PixelData, SimpleGameCanvasComponent} from "../simple-game-canvas/simple-game-canvas.component";
 import {ALREADY_FOUND_DIFFERENCE, SimpleGameService} from "../simple-game.service";
 
@@ -29,13 +30,12 @@ export class SimpleGameContainerComponent {
         const pixels: PixelData[] = this.originalImageComponent.getPixels(differencePoints);
         this.modifiedImageComponent.drawPixels(pixels);
       })
-      // tslint:disable-next-line:no-any Generic error response
-      .catch((reason: any) => {
-        if (reason.message !== undefined && reason.message === ALREADY_FOUND_DIFFERENCE) {
+      .catch((reason: Error) => {
+        if (reason.message === ALREADY_FOUND_DIFFERENCE || reason.message === NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE) {
           return;
         }
 
-        throw new Error(reason);
+        throw reason;
       });
   }
 }
