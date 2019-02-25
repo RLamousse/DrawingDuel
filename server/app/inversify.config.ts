@@ -15,6 +15,7 @@ import {DifferenceEvaluatorService} from "./services/difference-evaluator.servic
 import {GameCreatorService} from "./services/game-creator.service";
 import {ImageUploadService} from "./services/image-upload.service";
 import { UsernameService } from "./services/username.service";
+import { DiffCheckWebsocketActionService } from "./services/websocket/diff-check-websocket-action.service";
 import { DummyWebsocketActionService } from "./services/websocket/dummy-websocket-action.service";
 import Types from "./types";
 
@@ -43,5 +44,6 @@ container.bind(Types.UserNameController).to(UserController);
 
 container.bind(Types.WebsocketController).to(WebsocketController);
 container.bind(Types.DummyWebsocketActionService).to(DummyWebsocketActionService);
+container.bind(Types.DiffCheckWebsocketActionService).to(DiffCheckWebsocketActionService);
 
 export { container };

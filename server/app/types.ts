@@ -16,4 +16,5 @@ export default  {
         WebsocketController: Symbol("WebSocketController"),
         ImageUploadService: Symbol("ImageUploadService"),
         DummyWebsocketActionService: Symbol("DummyWebsocketActionService"),
+        DiffCheckWebsocketActionService: Symbol("DiffCheckWebsocketActionService"),
 };
