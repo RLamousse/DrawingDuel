@@ -1,3 +1,4 @@
+import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router} from "@angular/router";
 import {CompteurDiffComponent} from "../compteur-diff/compteur-diff.component";
@@ -20,9 +21,11 @@ describe("PlayViewComponent", () => {
               "play-view?gameName=numbers&originalImage=https:%2F%2Fi.imgur.com%2Fvc0cKmB.png&modifiedImage=https:%2F%2Fi.imgur.com%2F5lei5Nb.png"
               ,
             ),
-        }, } , },
-
+          },
+          },
+        },
       ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
     });
     done();
   });

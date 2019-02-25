@@ -1,4 +1,10 @@
+import { HttpClientModule } from "@angular/common/http";
+import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { ActivatedRoute } from "@angular/router";
+import * as THREE from "three";
+import { IScene } from "../../../scene-interface";
+import { FreeGameCreatorService } from "../scene-creator/FreeGameCreator/free-game-creator.service";
 import { SceneCreatorComponent } from "./scene-creator.component";
 import { SceneRendererService } from "./scene-renderer.service";
 
@@ -11,13 +17,32 @@ describe("SceneCreatorComponent", () => {
     public onResize(): void { this.called = "onResize"; }
     public init(): void { this.called = "init"; }
   }
-
   const mockedService: MockSceneCreatorService = new MockSceneCreatorService();
+
+  class MockFreeGameCreatorService {
+    public isCalled: boolean = false;
+    public createScenes(): IScene {
+      this.isCalled = true;
+
+      return { scene: new THREE.Scene(), modifiedScene: new THREE.Scene() };
+    }
+  }
+  const mockedFreeGameCreator: MockFreeGameCreatorService = new MockFreeGameCreatorService();
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [SceneCreatorComponent],
-      providers: [{ provide: SceneRendererService, useValue: mockedService }],
+      imports: [HttpClientModule],
+      providers: [
+        { provide: SceneRendererService, useValue: mockedService },
+        {
+          provide: ActivatedRoute, useValue: {
+            params: null,
+          },
+        },
+        { provide: FreeGameCreatorService, useValue: mockedFreeGameCreator },
+      ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
     });
     fixture = TestBed.createComponent(SceneCreatorComponent);
     component = fixture.componentInstance;

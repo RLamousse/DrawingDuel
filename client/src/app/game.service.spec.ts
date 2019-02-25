@@ -1,6 +1,6 @@
 import { HttpClientModule } from "@angular/common/http";
 import { async, TestBed } from "@angular/core/testing";
-import * as THREE from "three";
+// import * as THREE from "three";
 import {IFreeGame} from "../../../common/model/game/free-game";
 import {IGame} from "../../../common/model/game/game";
 import {ISimpleGame} from "../../../common/model/game/simple-game";
@@ -29,23 +29,6 @@ describe("GameService", () => {
     } as IFreeGame,
   ];
 
-  const mockSimpleGameList: ISimpleGame[] = [{
-    gameName: "mockedName",
-    originalImage: "oriName",
-    modifiedImage: "modName",
-    bestSoloTimes: [{ name: "mockedUser1", time: 120 }],
-    bestMultiTimes: [{ name: "mockedUser2", time: 23 }],
-    diffData: [],
-  }];
-
-  const mockFreeGameList: IFreeGame[] = [{
-    gameName: "mockedName",
-    bestSoloTimes: [{ name: "mockedUser1", time: 120 }],
-    bestMultiTimes: [{ name: "mockedUser2", time: 23 }],
-    originalScene: new THREE.Scene(),
-    modifiedScene: new THREE.Scene(),
-  }];
-
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientModule],
@@ -57,7 +40,8 @@ describe("GameService", () => {
     spyService = jasmine.createSpyObj("GameService", ["getGames"]);
     TestBed.configureTestingModule({
       imports: [HttpClientModule],
-      providers: [{ provide: GameService, useValue: spyService}, GameService],
+      providers: [
+        { provide: GameService, useValue: spyService}, GameService],
     });
   });
 
@@ -99,40 +83,5 @@ describe("GameService", () => {
     expect(incompleteList[0].modifiedImage).toBe("name2.bmp");
     expect(incompleteList[0].bestSoloTimes.length).toBe(0);
     expect(incompleteList[0].bestMultiTimes.length).toBe(0);
-  });
-
-  // Test pushGames
-  it("should not have any game in its list if gameToPush is empty", () => {
-    serviceGame.freeGames = [];
-    serviceGame.simpleGames = [];
-    serviceGame.pushGames(emptyMockedGameList);
-    expect(serviceGame.freeGames.length).toBe(0);
-    expect(serviceGame.simpleGames.length).toBe(0);
-  });
-
-  it("should only have games in freeGames list and none in simpleGame list", () => {
-    serviceGame.freeGames = [];
-    serviceGame.simpleGames = [];
-    serviceGame.pushGames(mockFreeGameList);
-    expect(serviceGame.freeGames.length).not.toBe(0);
-    expect(serviceGame.freeGames[0]).toBe(mockFreeGameList[0]);
-    expect(serviceGame.simpleGames.length).toBe(0);
-  });
-
-  it("should only have games in simpleGames list and none in freeGame list", () => {
-    serviceGame.freeGames = [];
-    serviceGame.simpleGames = [];
-    serviceGame.pushGames(mockSimpleGameList);
-    expect(serviceGame.freeGames.length).toBe(0);
-    expect(serviceGame.simpleGames.length).not.toBe(0);
-    expect(serviceGame.simpleGames[0]).toBe(mockSimpleGameList[0]);
-  });
-
-  it("should have games both its list", () => {
-    serviceGame.freeGames = [];
-    serviceGame.simpleGames = [];
-    serviceGame.pushGames(mockMixGameList);
-    expect(serviceGame.simpleGames.length).not.toBe(0);
-    expect(serviceGame.freeGames.length).not.toBe(0);
   });
 });
