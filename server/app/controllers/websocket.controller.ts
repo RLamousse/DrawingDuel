@@ -29,7 +29,7 @@ export class WebsocketController {
         });
         socket.on(SocketEvent.CHECK_DIFFERENCE, (message: WebsocketMessage<IDiffValidatorControllerRequest>) => {
             this.diffCheckAction.execute(message, socket);
-        })
+        });
         socket.emit(SocketEvent.WELCOME, "Connection has been made via a websocket");
     }
 }
