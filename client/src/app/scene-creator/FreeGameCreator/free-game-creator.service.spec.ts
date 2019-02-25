@@ -3,6 +3,7 @@ import { TestBed } from "@angular/core/testing";
 import * as THREE from "three";
 import { ObjectGeometry } from "../../../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
 import * as IObject from "../../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
+import { IScene } from "../../../../scene-interface";
 import { Form3DService } from "../3DFormService/3-dform.service";
 import { FreeGameCreatorService } from "./free-game-creator.service";
 
@@ -90,11 +91,11 @@ describe("FreeGameCreatorService", () => {
   it("should create empty scenes => objects array empty and defined scenes", () => {
     const emptyScenes: IObject.IScenesJSON = { originalObjects: [], modifiedObjects: [] };
     const service: FreeGameCreatorService = TestBed.get(FreeGameCreatorService);
-    const scenes: THREE.Scene[] = service.createScenes(emptyScenes);
+    const scenes: IScene =  service.createScenes(emptyScenes) ;
     expect(service.objects.length).toEqual(0);
     expect(service.modifiedObjects.length).toEqual(0);
-    expect(scenes[0]).toBeDefined();
-    expect(scenes[1]).toBeDefined();
+    expect(scenes.scene).toBeDefined();
+    expect(scenes.modifiedScene).toBeDefined();
   });
 
   it("should create scenes with the 5 different types of objects in the original, only 3 in the modified", () => {
@@ -106,8 +107,8 @@ describe("FreeGameCreatorService", () => {
 
   it("should create 2 scenes with (objectsArray.lenght + 2 light) children", () => {
     const service: FreeGameCreatorService = TestBed.get(FreeGameCreatorService);
-    const scenes: THREE.Scene[] = service.createScenes(dummyScenes);
-    expect(scenes[0].children.length).toEqual(service.objects.length + 2);
-    expect(scenes[1].children.length).toEqual(service.modifiedObjects.length + 2);
+    const scenes: IScene = service.createScenes(dummyScenes);
+    expect(scenes.scene.children.length).toEqual(service.objects.length + 2);
+    expect(scenes.modifiedScene.children.length).toEqual(service.modifiedObjects.length + 2);
   });
 });

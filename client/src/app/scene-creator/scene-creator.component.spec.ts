@@ -1,4 +1,10 @@
+import { HttpClientModule } from "@angular/common/http";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { ActivatedRoute, Router } from "@angular/router";
+import * as THREE from "three";
+import { IScene } from "../../../scene-interface";
+import { FreeGameCreatorService } from "../scene-creator/FreeGameCreator/free-game-creator.service";
+import { TimerComponent} from "../timer/timer.component";
 import { SceneCreatorComponent } from "./scene-creator.component";
 import { SceneRendererService } from "./scene-renderer.service";
 
@@ -11,13 +17,40 @@ describe("SceneCreatorComponent", () => {
     public onResize(): void { this.called = "onResize"; }
     public init(): void { this.called = "init"; }
   }
-
   const mockedService: MockSceneCreatorService = new MockSceneCreatorService();
+
+  class MockFreeGameCreatorService {
+    public isCalled: boolean = false;
+    public createScenes(): IScene {
+      this.isCalled = true;
+
+      return { scene: new THREE.Scene(), modifiedScene: new THREE.Scene() };
+    }
+  }
+  const mockedFreeGameCreator: MockFreeGameCreatorService = new MockFreeGameCreatorService();
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [SceneCreatorComponent],
-      providers: [{ provide: SceneRendererService, useValue: mockedService }],
+      declarations: [SceneCreatorComponent, TimerComponent],
+      imports: [HttpClientModule],
+      providers: [
+        { provide: SceneRendererService, useValue: mockedService },
+        // tslint:disable-next-line:max-classes-per-file
+        { provide: Router, useClass: class { public navigate: jasmine.Spy = jasmine.createSpy("navigate"); }, },
+        {
+          provide: ActivatedRoute,
+          useValue: {queryParams: {
+            subscribe: (fn: (queryParams: string ) => void) => fn(
+              // tslint:disable-next-line:max-line-length
+              "3d-view?gameName=freeGame100"
+              ,
+            ),
+          },
+          },
+        },
+        { provide: FreeGameCreatorService, useValue: mockedFreeGameCreator },
+      ],
+
     });
     fixture = TestBed.createComponent(SceneCreatorComponent);
     component = fixture.componentInstance;

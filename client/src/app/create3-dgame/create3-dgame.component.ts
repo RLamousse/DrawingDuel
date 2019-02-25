@@ -1,6 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { MatCheckboxChange, MatDialogRef, MatSliderChange } from "@angular/material";
+import {ICreateFreeGameRequest} from "../../../../common/communication/requests/game-creator.controller.request";
 import { FREE_GAME_CREATION_ROUTE } from "../../../../common/communication/routes";
 import {
   ModificationType, Themes
@@ -8,7 +9,6 @@ import {
 import { AVAILABLE_MODIF_TYPES, AVAILABLE_THEMES, SelectType } from "../Interfaces/selectType";
 import { AbstractForm } from "../abstract-form";
 import { FormPostService } from "../form-post.service";
-import {ICreateFreeGameRequest} from "../../../../common/communication/requests/game-creator.controller.request";
 @Component({
   selector: "app-create3-dgame",
   templateUrl: "./create3-dgame.component.html",
