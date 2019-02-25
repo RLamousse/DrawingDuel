@@ -44,7 +44,7 @@ export class GameCreatorController {
         });
 
         router.post("/create-free-game", async (req: Request, res: Response, next: NextFunction) => {
-            try {
+            executePromiseSafely(res, next, async () => {
                 assertRequestSceneFields(req);
 
                 res.json(await this.gameCreatorService.createFreeGame(
@@ -52,10 +52,7 @@ export class GameCreatorController {
                     req.body.objectQuantity,
                     req.body.theme,
                     req.body.modificationTypes));
-
-            } catch (error) {
-                next(error);
-            }
+            });
         });
 
         return router;
