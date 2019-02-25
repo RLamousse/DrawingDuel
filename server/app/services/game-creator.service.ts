@@ -41,9 +41,18 @@ export class GameCreatorService {
         @inject(Types.ImageUploadService) private imageUploadService: ImageUploadService,
         @inject(Types.FreeGameCreatorService) private freeGameCreatorService: FreeGameCreatorService) {}
 
-    private readonly _MIN_GENERATED_SCORE: number = 20;
-    private readonly _MAX_GENERATED_SCORE: number = 120;
-    private readonly _GENERATED_NAMES: string[] = ["normie", "hardTryer4269", "xXx_D4B0W5_xXx"];
+    private readonly _MIN_GENERATED_SCORE: number = 120;
+    private readonly _MAX_GENERATED_SCORE: number = 360;
+    private readonly _GENERATED_NAMES: string[] = ["normie",
+                                                   "hardTryer4269",
+                                                   "xXx_D4B0W5_xXx",
+                                                   "spongebob",
+                                                   "pikatchu",
+                                                   "sanic",
+                                                   "Donald J. Trump",
+                                                   "some aliens",
+                                                   "ur mom",
+                                                   "Som Ting Wong"];
 
     private static async testNameExistence(gameName: string): Promise<void> {
         try {
@@ -173,14 +182,12 @@ export class GameCreatorService {
                 Math.random() * (this._MAX_GENERATED_SCORE - this._MIN_GENERATED_SCORE)).toFixed(0));
         }
 
-        scoreArray.sort((a: number, b: number) => {
-            // tslint:disable-next-line:no-magic-numbers
-            return a < b ? -1 : a > b ? 1 : 0;
-        });
+        scoreArray.sort((a: number, b: number) => b - a);
+        const randomNames: string[] = this.generateRandomNames();
 
-        return [{name: this._GENERATED_NAMES[2], time: scoreArray[2]},
-                {name: this._GENERATED_NAMES[1], time: scoreArray[1]},
-                {name: this._GENERATED_NAMES[0], time: scoreArray[0]}];
+        return [{name: randomNames[2], time: scoreArray[2]},
+                {name: randomNames[1], time: scoreArray[1]},
+                {name: randomNames[0], time: scoreArray[0]}];
     }
 
     private testSimpleGameNumberOfDifference(diffImage: Buffer): ISimpleDifferenceData {
@@ -210,5 +217,19 @@ export class GameCreatorService {
             return this.freeGameCreatorService.generateIScenes(numberOfObjects, modTypes);
         }
         throw new Error(NON_EXISTING_THEME);
+    }
+
+    private generateRandomNames(): string[] {
+        const randomNamesIndex: number[] = [];
+        while (randomNamesIndex.length < TIMES_ARRAY_SIZE) {
+            const randomNumber: number = Math.floor(Math.random() * (this._GENERATED_NAMES.length));
+            if (randomNamesIndex.indexOf(randomNumber) < 0) {
+                randomNamesIndex.push(randomNumber);
+            }
+        }
+
+        return [this._GENERATED_NAMES[randomNamesIndex[0]],
+                this._GENERATED_NAMES[randomNamesIndex[1]],
+                this._GENERATED_NAMES[randomNamesIndex[2]]];
     }
 }
