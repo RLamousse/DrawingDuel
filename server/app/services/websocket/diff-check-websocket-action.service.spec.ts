@@ -41,7 +41,6 @@ const socketMessageSuccess: WebsocketMessage<IDiffValidatorControllerResponse> =
     body: {
         differenceClusterCoords: [],
         differenceClusterId: 0,
-        validDifference: true,
     },
 };
 
@@ -50,7 +49,6 @@ const socketMessageFail: WebsocketMessage<IDiffValidatorControllerResponse> = {
     body: {
         differenceClusterCoords: [],
         differenceClusterId: 0,
-        validDifference: true,
     },
 };
 
@@ -66,12 +64,14 @@ describe("A websocket service that bridges websocket and DiffValidatorController
     });
 
     it("should return with error if the diff request is not resolved", async () => {
+        axiosMock.onGet("http://localhost:3000/api/diff-validator")
+        .reply(HttpStatus.NOT_FOUND, "");
         diffChecker.execute(fakeMessage, fakeSocket as unknown as io.Socket);
 
         return fakeSocket.waitForEmit().then(() => {
-            const val: boolean = (fakeSocket.messageIntercepted as WebsocketMessage<IDiffValidatorControllerResponse>).body.validDifference;
+            const val: string = fakeSocket.messageIntercepted.body as string;
 
-            return expect(val).to.be.false;
+            return expect(val).to.be.equal(DiffCheckWebsocketActionService.DIFF_ERR);
         });
     });
 
@@ -81,10 +81,10 @@ describe("A websocket service that bridges websocket and DiffValidatorController
         diffChecker.execute(fakeMessage, fakeSocket as unknown as io.Socket);
 
         return fakeSocket.waitForEmit().then(() => {
-            const val: boolean = (fakeSocket.messageIntercepted.body as WebsocketMessage<IDiffValidatorControllerResponse>)
-                                 .body.validDifference;
+            const val: IDiffValidatorControllerResponse = 
+            (fakeSocket.messageIntercepted.body as WebsocketMessage<IDiffValidatorControllerResponse>).body;
 
-            return expect(val).to.be.true;
+            return expect(val.differenceClusterId).to.exist;
         });
     });
 
@@ -94,9 +94,9 @@ describe("A websocket service that bridges websocket and DiffValidatorController
         diffChecker.execute(fakeMessage, fakeSocket as unknown as io.Socket);
 
         return fakeSocket.waitForEmit().then(() => {
-            const val: boolean = (fakeSocket.messageIntercepted as WebsocketMessage<IDiffValidatorControllerResponse>).body.validDifference;
+            const val: string = (fakeSocket.messageIntercepted.body as string);
 
-            return expect(val).to.be.false;
+            return expect(val).to.be.equal("");
         });
     });
 });

@@ -1,5 +1,5 @@
 import Axios, { AxiosRequestConfig, AxiosResponse } from "axios";
-// import * as Httpstatus from "http-status-codes";
+import * as Httpstatus from "http-status-codes";
 import { injectable } from "inversify";
 import * as io from "socket.io";
 import { WebsocketMessage } from "../../../../common/communication/messages/message";
@@ -18,7 +18,7 @@ export class DiffCheckWebsocketActionService extends WebsocketActionService {
         .then((response: IDiffValidatorControllerResponse) => {
             this.emitMessage<IDiffValidatorControllerResponse>(response, socket);
         })
-        .catch((invalidDiff: IDiffValidatorControllerResponse) => {
+        .catch((invalidDiff: Object) => {
             this.emitMessage(invalidDiff, socket);
         });
     }
@@ -38,16 +38,12 @@ export class DiffCheckWebsocketActionService extends WebsocketActionService {
                     .then((response: AxiosResponse<IDiffValidatorControllerResponse>) => {
                         resolve(response.data as IDiffValidatorControllerResponse);
                     })
-                    /**
-                     * TO BE DONE: CHECK SERVER FAILURE INSTEAD OF THROWING A RESPONSE
-                     */
-                    .catch(() => {
-                        const diffValidator: IDiffValidatorControllerResponse = {
-                            validDifference: false,
-                            differenceClusterCoords: [],
-                            differenceClusterId: -1,
+                    // tslint:disable-next-line:no-any Generic error response
+                    .catch((reason: any) => {
+                        if (reason.response.data && reason.response.status === Httpstatus.NOT_FOUND) {
+                            reject("");
                         }
-                        resolve(diffValidator);
+                        reject(DiffCheckWebsocketActionService.DIFF_ERR);
                     });
             });
     }
