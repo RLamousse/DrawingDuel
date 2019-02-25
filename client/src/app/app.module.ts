@@ -24,6 +24,7 @@ import { FreeGamePhotoService } from "./scene-creator/free-game-photo-service/fr
 import { SceneCreatorComponent } from "./scene-creator/scene-creator.component";
 import { SceneRendererService } from "./scene-creator/scene-renderer.service";
 import { SimpleGameCreatorFormComponent } from "./simple-game-creator-form/simple-game-creator-form.component";
+import { TimerComponent } from "./timer/timer.component";
 import { UNListService } from "./username.service";
 import { VueAdminComponent } from "./vue-admin/vue-admin.component";
 import { WindowEventHandlerDirective } from "./window-event-handler.directive";
@@ -42,6 +43,7 @@ import { WindowEventHandlerDirective } from "./window-event-handler.directive";
     PlayViewComponent,
     CompteurDiffComponent,
     SceneCreatorComponent,
+    TimerComponent,
   ],
   imports: [
     BrowserModule,
