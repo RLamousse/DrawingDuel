@@ -173,7 +173,6 @@ export class GameCreatorService {
                 Math.random() * (this._MAX_GENERATED_SCORE - this._MIN_GENERATED_SCORE)).toFixed(0));
         }
 
-        console.dir(scoreArray);
         scoreArray.sort((a: number, b: number) => {
             // tslint:disable-next-line:no-magic-numbers
             return a < b ? -1 : a > b ? 1 : 0;
