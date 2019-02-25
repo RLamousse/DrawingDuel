@@ -21,7 +21,7 @@ describe("FreeGamePhotoService", () => {
     scene.add(cube);
     const divElem: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
     expect(divElem.innerHTML.length).toEqual(0);
-    service.takePhoto(scene, divElem);
+    service.takePhoto(scene);
 
     expect(divElem.innerHTML.length).not.toEqual(0);
     expect(divElem.firstChild).toBeDefined();

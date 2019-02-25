@@ -1,5 +1,10 @@
+import { HttpClientModule } from "@angular/common/http";
+import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { ActivatedRoute, Router} from "@angular/router";
+import { ActivatedRoute } from "@angular/router";
+import * as THREE from "three";
+import { IScene } from "../../../scene-interface";
+import { FreeGameCreatorService } from "../scene-creator/FreeGameCreator/free-game-creator.service";
 import { SceneCreatorComponent } from "./scene-creator.component";
 import { SceneRendererService } from "./scene-renderer.service";
 
@@ -12,21 +17,33 @@ describe("SceneCreatorComponent", () => {
     public onResize(): void { this.called = "onResize"; }
     public init(): void { this.called = "init"; }
   }
-
   const mockedService: MockSceneCreatorService = new MockSceneCreatorService();
+
+  class MockFreeGameCreatorService {
+    public isCalled: boolean = false;
+    public createScenes(): IScene {
+      this.isCalled = true;
+
+      return { scene: new THREE.Scene(), modifiedScene: new THREE.Scene() };
+    }
+  }
+  const mockedFreeGameCreator: MockFreeGameCreatorService = new MockFreeGameCreatorService();
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [SceneCreatorComponent],
-      providers: [{ provide: SceneRendererService, useValue: mockedService },
-                  { provide: Router, useClass: class { public navigate: jasmine.Spy = jasmine.createSpy("navigate"); }, },
-                  { provide: ActivatedRoute, useValue: {queryParams: { subscribe: (fn: (queryParams: string ) => void) => fn(
-                     "3d-view?gameName=test0"
-              ,
-            ),
-        }, } , },
-
+      imports: [HttpClientModule],
+      providers: [
+        { provide: SceneRendererService, useValue: mockedService },
+        {
+          provide: ActivatedRoute, useValue: {
+            params: null,
+          },
+        },
+        { provide: FreeGameCreatorService, useValue: mockedFreeGameCreator },
       ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+                  { provide: Router, useClass: class { public navigate: jasmine.Spy = jasmine.createSpy("navigate"); }, },
     });
     fixture = TestBed.createComponent(SceneCreatorComponent);
     component = fixture.componentInstance;
