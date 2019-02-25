@@ -1,9 +1,8 @@
 import {Component, Input, ViewChild} from "@angular/core";
 import {DifferenceCluster, DIFFERENCE_CLUSTER_POINTS_INDEX} from "../../../../../common/model/game/simple-game";
 import {tansformOrigin, IPoint} from "../../../../../common/model/point";
-import {NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE} from "../../../../../server/app/services/diff-validator.service";
 import {PixelData, SimpleGameCanvasComponent} from "../simple-game-canvas/simple-game-canvas.component";
-import {ALREADY_FOUND_DIFFERENCE, SimpleGameService} from "../simple-game.service";
+import {ALREADY_FOUND_DIFFERENCE, NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE, SimpleGameService} from "../simple-game.service";
 
 @Component({
              selector: "app-simple-game-container",

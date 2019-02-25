@@ -4,9 +4,9 @@ import MockAdapter from "axios-mock-adapter";
 // tslint:disable-next-line:no-duplicate-imports Weird interaction between singletons and interface (olivier st-o approved)
 import AxiosAdapter from "axios-mock-adapter";
 import * as HttpStatus from "http-status-codes";
+import {DifferenceCluster} from "../../../../common/model/game/simple-game";
 import {ORIGIN} from "../../../../common/model/point";
-import {NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE} from "../../../../server/app/services/diff-validator.service";
-import { SimpleGameService } from "./simple-game.service";
+import {NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE, SimpleGameService} from "./simple-game.service";
 
 describe("SimpleGameService", () => {
 
@@ -50,7 +50,16 @@ describe("SimpleGameService", () => {
   });
 
   it("should return a difference cluster with successful call to server", () => {
-    fail();
+    const service: SimpleGameService = TestBed.get(SimpleGameService);
+    service.gameName = "SimpleGameService-Test";
+
+    axiosMock.onGet("http://localhost:3000/api/diff-validator/")
+      .reply(HttpStatus.OK, [0, [ORIGIN]] as DifferenceCluster);
+
+    return service.validateDifferenceAtPoint(ORIGIN)
+      .catch((reason: Error) => {
+        expect(reason).toBeDefined();
+      });
   });
 
   it("should throw if a difference cluster was already found", () => {
