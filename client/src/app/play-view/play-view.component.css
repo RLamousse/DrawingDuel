@@ -1,0 +1,38 @@
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+
+body {
+    background-color: lightblue;
+}
+
+.window {
+    width: 30%;
+    border: 1px black solid;
+    min-height: 30%;
+}
+
+app-simple-game-container {
+    margin: auto;
+    width: 1320px;
+    border: 3px solid green;
+    padding: 10px;
+    font: 25px arial serif;
+    display: block;
+}
+
+.centeredText {
+    text-align: center;
+    font-size: 16px;
+}
+
+.compteur {
+    margin: 10px;
+    font: 20px arial serif;
+}
+
+.eventNotif {
+    margin: auto;
+    width: 1320px;
+    border: 3px solid green;
+    padding: 10px;
+    min-height: 300px;
+}

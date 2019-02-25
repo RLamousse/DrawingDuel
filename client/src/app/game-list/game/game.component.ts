@@ -1,5 +1,7 @@
-import { Component, Input } from "@angular/core";
+import { AfterViewInit, Component, ElementRef, Input, ViewChild } from "@angular/core";
 import { Router } from "@angular/router";
+import * as THREE from "three";
+import { FreeGamePhotoService } from "../../scene-creator/free-game-photo-service/free-game-photo.service";
 
 @Component({
   selector: "app-game",
@@ -7,7 +9,7 @@ import { Router } from "@angular/router";
   styleUrls: ["./game.component.css"],
 })
 
-export class GameComponent {
+export class GameComponent implements AfterViewInit {
 
   public constructor(
     private router: Router,
@@ -17,12 +19,29 @@ export class GameComponent {
   @Input() public bestSoloTimes: { name: string, time: number }[];
   @Input() public bestMultiTimes: { name: string, time: number }[];
   @Input() public originalImage: string = "test";
+  @Input() public modifiedImage: string = "test";
   @Input() public rightButton: string;
   @Input() public leftButton: string;
+  @ViewChild("photoContainer") public originalSceneContainer: ElementRef;
 
   protected leftButtonClick(): void {
     if (this.leftButton === "jouer") {
-      this.router.navigate(["../play-view/"]).catch();
+      this.router.navigate(["/play-view/"], {queryParams: {
+        gameName: this.gameName, originalImage: this.originalImage, modifiedImage: this.modifiedImage },
+      })
+      // tslint:disable-next-line:no-any Generic error response
+        .catch((reason: any) => {
+          throw new Error(reason);
+        });
     }
+  }
+
+  public ngAfterViewInit(): void {
+    const photoService: FreeGamePhotoService = new FreeGamePhotoService();
+    const dummyScene: THREE.Scene = new THREE.Scene();
+    const size: number = 36;
+    const cube: THREE.Mesh = new THREE.Mesh(new THREE.SphereGeometry(size, size, size), new THREE.MeshPhongMaterial());
+    dummyScene.add(cube);
+    photoService.takePhoto(dummyScene, this.originalSceneContainer.nativeElement);
   }
 }
