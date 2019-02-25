@@ -1,6 +1,6 @@
 import { HttpClientModule } from "@angular/common/http";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute, } from "@angular/router";
 import * as THREE from "three";
 import { IScene } from "../../../scene-interface";
 import { FreeGameCreatorService } from "../scene-creator/FreeGameCreator/free-game-creator.service";
@@ -35,13 +35,11 @@ describe("SceneCreatorComponent", () => {
       imports: [HttpClientModule],
       providers: [
         { provide: SceneRendererService, useValue: mockedService },
-        // tslint:disable-next-line:max-classes-per-file
-        { provide: Router, useClass: class { public navigate: jasmine.Spy = jasmine.createSpy("navigate"); }, },
         {
           provide: ActivatedRoute,
           useValue: {queryParams: {
             subscribe: (fn: (queryParams: string ) => void) => fn(
-              // tslint:disable-next-line:max-line-length
+              // pour donner un "parametre" au subscribe
               "3d-view?gameName=freeGame100"
               ,
             ),
