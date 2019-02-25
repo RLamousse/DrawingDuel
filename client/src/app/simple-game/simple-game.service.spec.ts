@@ -4,13 +4,16 @@ import MockAdapter from "axios-mock-adapter";
 // tslint:disable-next-line:no-duplicate-imports Weird interaction between singletons and interface (olivier st-o approved)
 import AxiosAdapter from "axios-mock-adapter";
 import * as HttpStatus from "http-status-codes";
-import {DifferenceCluster} from "../../../../common/model/game/simple-game";
+import {IDiffValidatorControllerResponse} from "../../../../common/communication/responses/diff-validator-controller.response";
+import {DifferenceCluster, DIFFERENCE_CLUSTER_POINTS_INDEX} from "../../../../common/model/game/simple-game";
 import {ORIGIN} from "../../../../common/model/point";
-import {NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE, SimpleGameService} from "./simple-game.service";
+import {ALREADY_FOUND_DIFFERENCE, NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE, SimpleGameService} from "./simple-game.service";
 
 describe("SimpleGameService", () => {
 
   let axiosMock: MockAdapter;
+  const BASE_URL: string = "http://localhost:3000/api/diff-validator";
+  const ALL_GET_CALLS_REGEX: RegExp = new RegExp(`${BASE_URL}/*`);
 
   beforeEach(() => {
     axiosMock = new AxiosAdapter(Axios);
@@ -23,11 +26,11 @@ describe("SimpleGameService", () => {
     expect(service).toBeTruthy();
   });
 
-  it("should throw when there's no difference at point", () => {
+  it("should throw when there's no difference at point", async () => {
     const service: SimpleGameService = TestBed.get(SimpleGameService);
     service.gameName = "SimpleGameService-Test";
 
-    axiosMock.onGet("http://localhost:3000/api/diff-validator/")
+    axiosMock.onGet(ALL_GET_CALLS_REGEX)
       .reply(HttpStatus.NOT_FOUND);
 
     return service.validateDifferenceAtPoint(ORIGIN)
@@ -36,37 +39,74 @@ describe("SimpleGameService", () => {
       });
   });
 
-  it("should throw on unexpected server response", () => {
+  it("should throw on unexpected server response", async () => {
     const service: SimpleGameService = TestBed.get(SimpleGameService);
     service.gameName = "SimpleGameService-Test";
 
-    axiosMock.onGet("http://localhost:3000/api/diff-validator/")
+    axiosMock.onGet(ALL_GET_CALLS_REGEX)
       .reply(HttpStatus.INTERNAL_SERVER_ERROR);
 
     return service.validateDifferenceAtPoint(ORIGIN)
       .catch((reason: Error) => {
-        expect(reason).toBeDefined();
+        expect(reason.message).not.toEqual(NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE);
       });
   });
 
-  it("should return a difference cluster with successful call to server", () => {
+  it("should return a difference cluster with successful call to server", async () => {
     const service: SimpleGameService = TestBed.get(SimpleGameService);
     service.gameName = "SimpleGameService-Test";
 
-    axiosMock.onGet("http://localhost:3000/api/diff-validator/")
-      .reply(HttpStatus.OK, [0, [ORIGIN]] as DifferenceCluster);
+    axiosMock.onGet(ALL_GET_CALLS_REGEX)
+      .reply(HttpStatus.OK,
+             {
+               differenceClusterCoords: [ORIGIN],
+               differenceClusterId: 0,
+             } as IDiffValidatorControllerResponse,
+      );
 
     return service.validateDifferenceAtPoint(ORIGIN)
-      .catch((reason: Error) => {
-        expect(reason).toBeDefined();
+      .then((differenceCluster: DifferenceCluster) => {
+        expect(differenceCluster[DIFFERENCE_CLUSTER_POINTS_INDEX]).toContain(ORIGIN);
       });
   });
 
-  it("should throw if a difference cluster was already found", () => {
-    fail();
+  it("should throw if a difference cluster was already found", async () => {
+    const service: SimpleGameService = TestBed.get(SimpleGameService);
+    service.gameName = "SimpleGameService-Test";
+
+    axiosMock.onGet(ALL_GET_CALLS_REGEX)
+      .reply(HttpStatus.OK,
+             {
+               differenceClusterCoords: [ORIGIN],
+               differenceClusterId: 0,
+             } as IDiffValidatorControllerResponse,
+      );
+
+    await service.validateDifferenceAtPoint(ORIGIN);
+
+    return service.validateDifferenceAtPoint(ORIGIN)
+      .catch((reason: Error) => {
+        expect(reason.message).toEqual(ALREADY_FOUND_DIFFERENCE);
+      });
   });
 
-  it("should update the difference count", () => {
-    fail();
+  it("should update the difference count", async (done) => {
+    const service: SimpleGameService = TestBed.get(SimpleGameService);
+    service.gameName = "SimpleGameService-Test";
+
+    axiosMock.onGet(ALL_GET_CALLS_REGEX)
+      .reply(HttpStatus.OK,
+             {
+               differenceClusterCoords: [ORIGIN],
+               differenceClusterId: 0,
+             } as IDiffValidatorControllerResponse,
+      );
+
+    service.foundDifferencesCount.subscribe((diffCount: number) => {
+      expect(diffCount).toEqual(1);
+      done();
+    });
+
+    await service.validateDifferenceAtPoint(ORIGIN);
   });
 });

@@ -36,9 +36,7 @@ export class SimpleGameService {
   }
 
   public async validateDifferenceAtPoint(point: IPoint): Promise<DifferenceCluster> {
-    if (this.wasDifferenceFound(point)) {
-      throw new Error(ALREADY_FOUND_DIFFERENCE);
-    }
+    this.assertAlreadyFoundDifference(point);
 
     return Axios.get<IDiffValidatorControllerResponse>(
       "http://localhost:3000/api/diff-validator",
@@ -66,6 +64,12 @@ export class SimpleGameService {
 
         throw new Error(reason.message);
       });
+  }
+
+  private assertAlreadyFoundDifference(point: IPoint): void {
+    if (this.wasDifferenceFound(point)) {
+      throw new Error(ALREADY_FOUND_DIFFERENCE);
+    }
   }
 
   private wasDifferenceFound(point: IPoint): boolean {
