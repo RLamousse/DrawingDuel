@@ -46,7 +46,7 @@ export const assertRequestImageFilesFields: (req: Express.Request) => void = (re
 };
 
 export const assertRequestSceneFields: (req: Express.Request) => void = (req: Request): void => {
-    assertFieldsOfRequest(req, GAME_NAME_FIELD);
+    assertBodyFieldsOfRequest(req, GAME_NAME_FIELD);
 
     if ((req.body.theme !== Themes.Geometry &&
         req.body.theme !== Themes.Sanic &&
@@ -67,7 +67,7 @@ export const assertRequestSceneFields: (req: Express.Request) => void = (req: Re
     }
 };
 
-export const assertFieldsOfRequest: (req: Request, ...fields: string[]) => void = (req: Request, ...fields: string[]): void => {
+export const assertBodyFieldsOfRequest: (req: Request, ...fields: string[]) => void = (req: Request, ...fields: string[]): void => {
     let field: string;
     for (field of fields) {
         if (typeof req.body[field] === "undefined" || req.body[field] === "") {

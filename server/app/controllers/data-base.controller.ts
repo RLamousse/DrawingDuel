@@ -77,25 +77,25 @@ export class DataBaseController {
         // Free Games
 
         router.post("/games/free", async (req: Request, res: Response, next: NextFunction) => {
-            executePromiseSafely(next, async () => {
+            executePromiseSafely(res, next, async () => {
                 res.json(await this.dataBaseService.freeGames.create(req.body));
             });
         });
 
         router.delete("/games/free/:id", async (req: Request, res: Response, next: NextFunction) => {
-            executePromiseSafely(next, async () => {
+            executePromiseSafely(res, next, async () => {
                 res.json(await this.dataBaseService.freeGames.delete(req.params["id"]));
             });
         });
 
         router.get("/games/free", async (req: Request, res: Response, next: NextFunction) => {
-            executePromiseSafely(next, async () => {
+            executePromiseSafely(res, next, async () => {
                 res.json(await this.dataBaseService.freeGames.getAll());
             });
         });
 
         router.get("/games/free/:gameName", async (req: Request, res: Response, next: NextFunction) => {
-            executePromiseSafely(next, async () => {
+            executePromiseSafely(res, next, async () => {
                 this.dataBaseService.freeGames
                     .getFromId(req.params["gameName"])
                     .then((value: IFreeGame) => {

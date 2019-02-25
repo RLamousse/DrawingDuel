@@ -8,6 +8,7 @@ import Types from "../types";
 import {
     assertBodyFieldsOfRequest,
     assertRequestImageFilesFields,
+    assertRequestSceneFields,
     executePromiseSafely,
     BITMAP_MULTER_FILTER,
     MODIFIED_IMAGE_FIELD_NAME,
