@@ -7,5 +7,5 @@ export interface IFreeGame extends IGame {
 
 export const instanceOfFreeGame = (object: any): object is IFreeGame =>
     instanceOfGame(object) &&
-    'scenesTable' in object;
+    'scenes' in object;
     
