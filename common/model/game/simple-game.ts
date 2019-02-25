@@ -1,7 +1,8 @@
 import {IPoint} from "../point";
 import {IGame, instanceOfGame} from "./game";
 
-export type ISimpleDifferenceData = [number, IPoint[]][];
+export type DifferenceCluster = [number, IPoint[]];
+export type ISimpleDifferenceData = DifferenceCluster[];
 export const DIFFERENCE_CLUSTER_ID_INDEX = 0;
 export const DIFFERENCE_CLUSTER_POINTS_INDEX = 1;
 

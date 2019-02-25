@@ -24,6 +24,7 @@ import { FreeGamePhotoService } from "./scene-creator/free-game-photo-service/fr
 import { SceneCreatorComponent } from "./scene-creator/scene-creator.component";
 import { SceneRendererService } from "./scene-creator/scene-renderer.service";
 import { SimpleGameCreatorFormComponent } from "./simple-game-creator-form/simple-game-creator-form.component";
+import { SocketService } from "./socket.service";
 import { TimerComponent } from "./timer/timer.component";
 import { UNListService } from "./username.service";
 import { VueAdminComponent } from "./vue-admin/vue-admin.component";
@@ -67,6 +68,7 @@ import { WindowEventHandlerDirective } from "./window-event-handler.directive";
     FormPostService,
     GameService,
     SceneRendererService,
+    SocketService,
     Form3DService,
     FreeGameCreatorService,
     FreeGamePhotoService,
