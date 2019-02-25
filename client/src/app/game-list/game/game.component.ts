@@ -1,6 +1,5 @@
 import { Component, Input } from "@angular/core";
 import { Router } from "@angular/router";
-import { IScene } from "../../../../scene-interface";
 
 @Component({
   selector: "app-game",
@@ -21,7 +20,6 @@ export class GameComponent {
   @Input() public rightButton: string;
   @Input() public leftButton: string;
   @Input() public isSimpleGame: boolean;
-  protected freeScenes: IScene;
 
   protected leftButtonClick(): void {
     if (this.leftButton === "jouer") {
