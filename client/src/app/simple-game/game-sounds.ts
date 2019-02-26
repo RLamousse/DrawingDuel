@@ -87,6 +87,16 @@ export const ZELDA_SOUND: Howl = new Howl(
     src: ["assets/sounds/zelda.webm", "assets/sounds/zelda.mp3"],
   });
 
+export const OOF1_SOUND: Howl = new Howl(
+  {
+    src: ["assets/sounds/oof1.webm", "assets/sounds/oof1.mp3"],
+  });
+
+export const OOF2_SOUND: Howl = new Howl(
+  {
+    src: ["assets/sounds/oof2.webm", "assets/sounds/oof2.mp3"],
+  });
+
 export const FOUND_DIFFERENCE_SOUNDS: Howl[] = [
   AIRHORN_SOUND, DAMN_SON_SOUND, HOT_SOUND,
   NOICE_SOUND, SANIC_SOUND, WOW_SOUND,
@@ -96,7 +106,7 @@ export const FOUND_DIFFERENCE_SOUNDS: Howl[] = [
 export const NO_DIFFERENCE_SOUNDS: Howl[] = [
   BRUH_SOUND, CRICKETS_SOUND, DEEZ_NUTZ_SOUND,
   HOW_COULD_THIS_HAPPEND_TO_ME_SOUND, NOPE_SOUND, TROMBONE1_SOUND,
-  TROMBONE2_SOUND, VIOLIN_SOUND,
+  TROMBONE2_SOUND, VIOLIN_SOUND, OOF1_SOUND, OOF2_SOUND,
 ];
 
 export const playRandomSound: (sounds: Howl[]) => void = (sounds: Howl[]): void => {
