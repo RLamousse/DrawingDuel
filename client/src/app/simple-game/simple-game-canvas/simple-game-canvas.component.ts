@@ -7,7 +7,7 @@ export interface PixelData {
 }
 
 export const IMAGE_DATA_PIXEL_LENGTH: number = 4;
-
+export const DEFAULT_CANVAS_HEIGHT: number = 480;
 @Component({
              selector: "app-simple-game-canvas",
              templateUrl: "./simple-game-canvas.component.html",
@@ -21,7 +21,7 @@ export class SimpleGameCanvasComponent implements OnInit {
   @ViewChild("canvas") private canvas: ElementRef;
   private _canvasContext: CanvasRenderingContext2D;
   private _width: number;
-  private _height: number;
+  private _height: number = DEFAULT_CANVAS_HEIGHT;
 
   public get height(): number {
     return this._height;
