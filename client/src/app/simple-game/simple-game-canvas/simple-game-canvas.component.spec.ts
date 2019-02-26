@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import {By} from "@angular/platform-browser";
-import {IPoint, ORIGIN, tansformOrigin} from "../../../../../common/model/point";
+import {tansformOrigin, IPoint, ORIGIN} from "../../../../../common/model/point";
 
 import {DEFAULT_CANVAS_HEIGHT, SimpleGameCanvasComponent} from "./simple-game-canvas.component";
 

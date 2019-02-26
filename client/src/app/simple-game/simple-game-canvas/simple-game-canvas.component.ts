@@ -1,5 +1,5 @@
 import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from "@angular/core";
-import {IPoint, tansformOrigin} from "../../../../../common/model/point";
+import {tansformOrigin, IPoint} from "../../../../../common/model/point";
 
 export interface PixelData {
   coords: IPoint;
