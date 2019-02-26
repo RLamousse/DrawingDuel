@@ -6,6 +6,7 @@ import { WebsocketMessage } from "../../../../common/communication/messages/mess
 import { IDiffValidatorControllerRequest } from "../../../../common/communication/requests/diff-validator-controller.request";
 import { IDiffValidatorControllerResponse } from "../../../../common/communication/responses/diff-validator-controller.response";
 import { SocketEvent } from "../../../../common/communication/socket-events";
+import { NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE } from "../diff-validator.service";
 import { WebsocketActionService } from "./websocket-action.service";
 @injectable()
 export class DiffCheckWebsocketActionService extends WebsocketActionService {
@@ -41,7 +42,7 @@ export class DiffCheckWebsocketActionService extends WebsocketActionService {
                     // tslint:disable-next-line:no-any Generic error response
                     .catch((reason: any) => {
                         if (reason.response.data && reason.response.status === Httpstatus.NOT_FOUND) {
-                            reject("");
+                            reject(NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE);
                         }
                         reject(DiffCheckWebsocketActionService.DIFF_ERR);
                     });
@@ -52,7 +53,7 @@ export class DiffCheckWebsocketActionService extends WebsocketActionService {
         const socketMessage: WebsocketMessage<Type> = {
             title: this._EVENT_TYPE,
             body: content,
-        }
+        };
         socket.emit(this._EVENT_TYPE, socketMessage);
     }
 }

@@ -8,6 +8,7 @@ import { WebsocketMessage } from "../../../../common/communication/messages/mess
 import { IDiffValidatorControllerRequest } from "../../../../common/communication/requests/diff-validator-controller.request";
 import { IDiffValidatorControllerResponse } from "../../../../common/communication/responses/diff-validator-controller.response";
 import { SocketEvent } from "../../../../common/communication/socket-events";
+import { NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE } from "../diff-validator.service";
 import { DiffCheckWebsocketActionService } from "./diff-check-websocket-action.service";
 
 class FakeSocket extends EventEmitter {
@@ -81,7 +82,7 @@ describe("A websocket service that bridges websocket and DiffValidatorController
         diffChecker.execute(fakeMessage, fakeSocket as unknown as io.Socket);
 
         return fakeSocket.waitForEmit().then(() => {
-            const val: IDiffValidatorControllerResponse = 
+            const val: IDiffValidatorControllerResponse =
             (fakeSocket.messageIntercepted.body as WebsocketMessage<IDiffValidatorControllerResponse>).body;
 
             return expect(val.differenceClusterId).to.exist;
@@ -96,7 +97,7 @@ describe("A websocket service that bridges websocket and DiffValidatorController
         return fakeSocket.waitForEmit().then(() => {
             const val: string = (fakeSocket.messageIntercepted.body as string);
 
-            return expect(val).to.be.equal("");
+            return expect(val).to.be.equal(NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE);
         });
     });
 });
