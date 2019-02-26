@@ -20,7 +20,7 @@ export class UsersCollectionService extends CollectionService<IUser> {
         }
     }
 
-    public creationSuccessMessage(data: IUser): Message {
+    protected creationSuccessMessage(data: IUser): Message {
         return {
             title: "User added",
             body: "User " + data.userName + " successfully added!",
@@ -37,7 +37,7 @@ export class UsersCollectionService extends CollectionService<IUser> {
         }
     }
 
-    public deletionSuccessMessage(id: string): Message {
+    protected deletionSuccessMessage(id: string): Message {
         return {
             title: "User deleted",
             body: "User " + id + " successfully deleted!",
