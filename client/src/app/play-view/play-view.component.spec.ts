@@ -1,7 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, } from "@angular/router";
-import {CompteurDiffComponent} from "../compteur-diff/compteur-diff.component";
+import { CompteurDiffComponent } from "../compteur-diff/compteur-diff.component";
 import { PlayViewComponent } from "./play-view.component";
 
 describe("PlayViewComponent", () => {
@@ -10,17 +10,18 @@ describe("PlayViewComponent", () => {
 
   beforeEach((done) => {
     TestBed.configureTestingModule({
-      declarations: [ PlayViewComponent, CompteurDiffComponent ],
+      declarations: [PlayViewComponent, CompteurDiffComponent],
       providers: [
         {
           provide: ActivatedRoute,
-          useValue: {queryParams: {
-            subscribe: (fn: (queryParams: string ) => void) => fn(
-              // pour donner un "parametre" au subscribe
-              "play-view?gameName=numbers"
+          useValue: {
+            queryParams: {
+              subscribe: (fn: (queryParams: string) => void) => fn(
+                // pour donner un "parametre" au subscribe
+                "play-view?gameName=numbers"
               ,
-            ),
-          },
+              ),
+            },
           },
         },
       ],

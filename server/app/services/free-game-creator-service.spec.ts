@@ -5,7 +5,7 @@ import * as IObject from "../../../common/free-game-json-interface/JSONInterface
 import { container } from "../inversify.config";
 import types from "../types";
 import { FreeGameCreatorService } from "./free-game-creator.service";
-import {Object3DCreatorService} from "./object3D-creator.service";
+import { Object3DCreatorService } from "./object3D-creator.service";
 
 const MASK: number = 0xFFFFFF;
 const mockedBaseObject: IObject.IJson3DObject = {

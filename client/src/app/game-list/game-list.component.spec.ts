@@ -2,10 +2,10 @@ import { HttpClientModule } from "@angular/common/http";
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormsModule } from "@angular/forms";
-import {Observable} from "rxjs";
+import { Observable } from "rxjs";
 import * as THREE from "three";
 import { IFreeGame } from "../../../../common/model/game/free-game";
-import {ISimpleGame} from "../../../../common/model/game/simple-game";
+import { ISimpleGame } from "../../../../common/model/game/simple-game";
 import { IScene } from "../../../scene-interface";
 import { GameService } from "../game.service";
 import { FreeGameCreatorService } from "../scene-creator/FreeGameCreator/free-game-creator.service";
@@ -41,7 +41,7 @@ describe("GameListComponent", () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [GameListComponent],
-      imports: [HttpClientModule, FormsModule ],
+      imports: [HttpClientModule, FormsModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         { provide: GameService, useValue: mockedGameService },

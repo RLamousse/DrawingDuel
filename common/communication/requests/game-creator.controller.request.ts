@@ -1,4 +1,4 @@
-import {ModificationType, Themes} from "../../free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
+import { ModificationType, Themes } from "../../free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
 
 export interface ICreateFreeGameRequest {
     gameName: string;

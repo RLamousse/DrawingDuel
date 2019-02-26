@@ -1,13 +1,13 @@
-import {NextFunction, Request, Response} from "express";
+import { NextFunction, Request, Response } from "express";
 import * as HttpStatus from "http-status-codes";
-import {Field} from "multer";
-import {Message} from "../../../common/communication/messages/message";
-import {GAME_NAME_FIELD} from "../../../common/communication/requests/game-creator.controller.request";
+import { Field } from "multer";
+import { Message } from "../../../common/communication/messages/message";
+import { GAME_NAME_FIELD } from "../../../common/communication/requests/game-creator.controller.request";
 import {
     ModificationType,
     Themes
 } from "../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
-import {EXPECTED_DIFF_NUMBER} from "../services/game-creator.service";
+import { EXPECTED_DIFF_NUMBER } from "../services/game-creator.service";
 
 export const REQUIRED_IMAGE_HEIGHT: number = 480;
 export const REQUIRED_IMAGE_WIDTH: number = 640;

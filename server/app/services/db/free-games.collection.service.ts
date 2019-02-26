@@ -1,8 +1,8 @@
-import {injectable} from "inversify";
+import { injectable } from "inversify";
 import "reflect-metadata";
-import {Message} from "../../../../common/communication/messages/message";
-import {IFreeGame} from "../../../../common/model/game/free-game";
-import {CollectionService} from "./collection.service";
+import { Message } from "../../../../common/communication/messages/message";
+import { IFreeGame } from "../../../../common/model/game/free-game";
+import { CollectionService } from "./collection.service";
 import {
     ALREADY_EXISTING_GAME_MESSAGE_ERROR,
     GAME_FORMAT_ERROR_MESSAGE, GAME_NAME_FIELD,

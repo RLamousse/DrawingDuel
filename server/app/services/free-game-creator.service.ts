@@ -1,4 +1,4 @@
-import {inject, injectable} from "inversify";
+import { inject, injectable } from "inversify";
 import { ModificationType, ObjectGeometry } from "../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
 import * as IObject from "../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
 import Types from "../types";

@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import {Router} from "@angular/router";
+import { Router } from "@angular/router";
 import { GameComponent } from "./game.component";
 
 describe("GameComponent", () => {

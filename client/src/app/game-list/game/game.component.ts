@@ -9,7 +9,7 @@ import { Router } from "@angular/router";
 
 export class GameComponent {
 
-  public constructor( private router: Router, ) {/*vide*/}
+  public constructor(private router: Router) {}
 
   @Input() public gameName: string = "test";
   @Input() public bestSoloTimes: { name: string, time: number }[];
@@ -28,9 +28,11 @@ export class GameComponent {
   }
 
   protected navigatePlayView(): void {
-   this.router.navigate(["/play-view/"], {queryParams: {
-      isSimpleGame : this.isSimpleGame, gameName: this.gameName,
-      originalImage: this.originalImage, modifiedImage: this.modifiedImage },
+    this.router.navigate(["/play-view/"], {
+      queryParams: {
+        isSimpleGame: this.isSimpleGame, gameName: this.gameName,
+        originalImage: this.originalImage, modifiedImage: this.modifiedImage,
+      },
     }).catch();
   }
 
