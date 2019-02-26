@@ -46,13 +46,10 @@ describe("SceneRendererService", () => {
   // Test loadScenes
   it("should throw an error if loadScenes is called before init(...)", () => {
     const service: SceneRendererService = TestBed.get(SceneRendererService);
-    try {
-      const original: THREE.Scene = new THREE.Scene();
-      const modified: THREE.Scene = new THREE.Scene();
-      service.loadScenes(original, modified);
-    } catch (e) {
-      expect(e).toEqual(new Error("La composante n'a pas ete initialise!"));
-    }
+    const original: THREE.Scene = new THREE.Scene();
+    const modified: THREE.Scene = new THREE.Scene();
+
+    expect(() => service.loadScenes(original, modified)).toThrowError("La composante n'a pas ete initialise!");
   });
 
   it("should asign scenes at first call", () => {
