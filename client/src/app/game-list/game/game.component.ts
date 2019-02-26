@@ -31,7 +31,7 @@ export class GameComponent {
    this.router.navigate(["/play-view/"], {queryParams: {
       isSimpleGame : this.isSimpleGame, gameName: this.gameName,
       originalImage: this.originalImage, modifiedImage: this.modifiedImage },
-    }).catch();
+    }).catch(/* catch just pour le lint, play-view existe dans le routing*/);
   }
 
   protected navigateFreeView(): void {
@@ -39,7 +39,7 @@ export class GameComponent {
       queryParams: {
         gameName: this.gameName,
       },
-    }).catch();
+    }).catch(/* catch just pour le lint, 3d-view existe dans le routing*/);
   }
 
 }
