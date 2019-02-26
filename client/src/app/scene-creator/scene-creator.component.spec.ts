@@ -19,7 +19,10 @@ describe("SceneCreatorComponent", () => {
     public called: string = "";
     public onResize(): void { this.called = "onResize"; }
     public init(): void { this.called = "init"; }
-    public loadScenes(): void { }
+
+    public loadScenes(): void {
+      // nop
+    }
   }
   const mockedRendererService: MockSceneCreatorService = new MockSceneCreatorService();
 
