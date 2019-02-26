@@ -15,9 +15,10 @@ describe("SceneCreatorComponent", () => {
   let fixture: ComponentFixture<SceneCreatorComponent>;
 
   class MockSceneCreatorService {
-    public called: string = "";
-    public onResize(): void { this.called = "onResize"; }
-    public init(): void { this.called = "init"; }
+    public resizedCalled: string = "";
+    public initCalled: string = "";
+    public onResize(): void { this.resizedCalled = "onResize"; }
+    public init(): void { this.initCalled = "init"; }
 
     public loadScenes(): void {
       // nop
@@ -36,6 +37,7 @@ describe("SceneCreatorComponent", () => {
   let mockFreeGameCreatorService: MockFreeGameCreatorService;
 
   class MockGameService {
+    public called: boolean = false;
     private mockGame: IFreeGame = {
       bestMultiTimes: [],
       bestSoloTimes: [],
@@ -43,6 +45,7 @@ describe("SceneCreatorComponent", () => {
       scenes: { modifiedObjects: [], originalObjects: [] },
     };
     public getFreeGameByName(): Observable<IFreeGame> {
+      this.called = true;
       return of(this.mockGame);
     }
   }
@@ -84,5 +87,11 @@ describe("SceneCreatorComponent", () => {
 
   it("should create", () => {
     expect(component).toBeDefined();
+  });
+
+  it("should have the right value inside each mockService after created", () => {
+    expect(mockSceneCreatorService.initCalled).toEqual("init");
+    expect(mockFreeGameCreatorService.isCalled).toEqual(true);
+    expect(mockedGameService.called).toEqual(true);
   });
 });
