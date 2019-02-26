@@ -6,8 +6,8 @@ describe("CompteurDiffComponent", () => {
   let component: CompteurDiffComponent;
   let fixture: ComponentFixture<CompteurDiffComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
+  beforeEach(async(async () => {
+    return TestBed.configureTestingModule({
       declarations: [ CompteurDiffComponent, ],
     })
     .compileComponents();
