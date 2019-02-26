@@ -19,10 +19,9 @@ describe("FreeGamePhotoService", () => {
     const size: number = 36;
     const cube: THREE.Mesh = new THREE.Mesh(new THREE.BoxGeometry(size, size, size), new THREE.MeshPhongMaterial());
     scene.add(cube);
-    let photoData: string = service.takePhoto(scene);
+    const photoData: string = service.takePhoto(scene);
     const dataHeader: string = "data:";
 
-    console.log(photoData);
     expect(photoData.substr(0, dataHeader.length)).toEqual(dataHeader);
     expect(photoData.length).toBeGreaterThan(dataHeader.length);
   });
