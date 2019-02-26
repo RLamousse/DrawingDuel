@@ -10,7 +10,7 @@ import {IPoint} from "../../../../common/model/point";
 import {playRandomSound, FOUND_DIFFERENCE_SOUNDS, NO_DIFFERENCE_SOUNDS} from "./game-sounds";
 
 export const ALREADY_FOUND_DIFFERENCE: string = "Difference was already found!";
-export const NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE: string = "There is no difference at the specified point"; // TODO: Common
+export const NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE: string = "There is no difference at the specified point";
 
 @Injectable({
               providedIn: "root",

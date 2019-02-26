@@ -5,6 +5,8 @@ import {tansformOrigin, IPoint, ORIGIN} from "../../../../../common/model/point"
 import {DEFAULT_CANVAS_HEIGHT, PixelData, SimpleGameCanvasComponent} from "./simple-game-canvas.component";
 
 describe("SimpleGameCanvasComponent", () => {
+  // tslint:disable-next-line:no-magic-numbers 0xFF for pixel channels values
+  const PIXEL: number[] = Array.of(0xFF, 0, 0, 0xFF);
   let component: SimpleGameCanvasComponent;
   let fixture: ComponentFixture<SimpleGameCanvasComponent>;
 
@@ -52,9 +54,7 @@ describe("SimpleGameCanvasComponent", () => {
 
   it("should return the correct pixels", () => {
     const context: CanvasRenderingContext2D = getCanvasContext();
-
-    const pixel: number[] = Array.of(0xFF, 0, 0, 0xFF);
-    context.putImageData(createImageData(pixel, 1, 1), 0, 0);
+    context.putImageData(createImageData(PIXEL, 1, 1), 0, 0);
 
     component["_width"] = 1;
     component["_height"] = 1;
@@ -66,14 +66,13 @@ describe("SimpleGameCanvasComponent", () => {
         [
           {
             coords: ORIGIN,
-            data: new Uint8ClampedArray(pixel),
+            data: new Uint8ClampedArray(PIXEL),
           },
         ]);
   });
 
   it("should draw given pixels successfully", () => {
     const context: CanvasRenderingContext2D = getCanvasContext();
-    const pixel: number[] = Array.of(0xFF, 0, 0, 0xFF);
 
     component["_width"] = 1;
     component["_height"] = 1;
@@ -83,11 +82,11 @@ describe("SimpleGameCanvasComponent", () => {
       [
         {
           coords: ORIGIN,
-          data: new Uint8ClampedArray(pixel),
+          data: new Uint8ClampedArray(PIXEL),
         },
       ]);
     expect(context.getImageData(0, 0, 1, 1).data)
-      .toEqual(new Uint8ClampedArray(pixel));
+      .toEqual(new Uint8ClampedArray(PIXEL));
   });
 
   it("should emit a click event on click", () => {
