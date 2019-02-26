@@ -7,7 +7,6 @@ import {
     ModificationType,
     Themes
 } from "../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
-import {ARGUMENT_ERROR_MESSAGE} from "../services/difference-evaluator.service";
 import {EXPECTED_DIFF_NUMBER} from "../services/game-creator.service";
 
 export const REQUIRED_IMAGE_HEIGHT: number = 480;
@@ -75,11 +74,11 @@ export const assertRequestSceneFields: (req: Express.Request) => void = (req: Re
     assertBodyFieldsOfRequest(req, GAME_NAME_FIELD);
 
     if (assertBasicSceneFields(req)) {
-        throw new Error(ARGUMENT_ERROR_MESSAGE);
+        throw new Error(FORMAT_ERROR_MESSAGE);
     }
     for (const modificationType of req.body.modificationTypes) {
         if (assertModificationType(modificationType)) {
-            throw new Error(ARGUMENT_ERROR_MESSAGE);
+            throw new Error(FORMAT_ERROR_MESSAGE);
         }
     }
 };
