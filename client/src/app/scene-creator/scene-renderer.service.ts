@@ -70,13 +70,6 @@ export class SceneRendererService {
     return (this.originalContainer.clientWidth) / (this.originalContainer.clientHeight);
   }
 
-  public onResize(): void {
-    this.camera.aspect = this.getAspectRatio();
-    this.camera.updateProjectionMatrix();
-    this.rendererOri.setSize(this.originalContainer.clientWidth, this.originalContainer.clientHeight);
-    this.rendererMod.setSize(this.modifiedContainer.clientWidth, this.modifiedContainer.clientHeight);
-  }
-
   public init(oriCont: HTMLDivElement, modCont: HTMLDivElement): void {
     this.originalContainer = oriCont;
     this.modifiedContainer = modCont;

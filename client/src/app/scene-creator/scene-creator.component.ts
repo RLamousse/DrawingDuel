@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild } from "@angular/core";
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { IFreeGame } from "../../../../common/model/game/free-game";
 import { IScene } from "../../../scene-interface";
@@ -33,11 +33,6 @@ export class SceneCreatorComponent implements AfterViewInit, OnInit {
 
   @ViewChild("modifiedView")
   private modifiedRef: ElementRef;
-
-  @HostListener("window:resize", ["$event"])
-  public onResize(): void {
-    this.renderService.onResize();
-  }
 
   public ngOnInit(): void {
     this.route.queryParams.subscribe((params) => {

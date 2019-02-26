@@ -1,14 +1,14 @@
-import { GameService } from "../game.service";
-import { FreeGameCreatorService } from "../scene-creator/FreeGameCreator/free-game-creator.service";
-import { SceneRendererService } from "./scene-renderer.service";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute /*, Router*/ } from "@angular/router";
-import { SceneCreatorComponent } from "./scene-creator.component";
-import { TimerComponent } from "../timer/timer.component";
-import { IScene } from "../../../scene-interface";
+import { of, Observable } from "rxjs";
 import * as THREE from "three";
 import { IFreeGame } from "../../../../common/model/game/free-game";
-import { of, Observable } from "rxjs";
+import { IScene } from "../../../scene-interface";
+import { GameService } from "../game.service";
+import { FreeGameCreatorService } from "../scene-creator/FreeGameCreator/free-game-creator.service";
+import { TimerComponent } from "../timer/timer.component";
+import { SceneCreatorComponent } from "./scene-creator.component";
+import { SceneRendererService } from "./scene-renderer.service";
 
 describe("SceneCreatorComponent", () => {
   let component: SceneCreatorComponent;
@@ -21,7 +21,7 @@ describe("SceneCreatorComponent", () => {
     public init(): void { this.initCalled = "init"; }
 
     public loadScenes(): void {
-      // nop
+      return;
     }
   }
   let mockSceneCreatorService: MockSceneCreatorService;
@@ -36,6 +36,8 @@ describe("SceneCreatorComponent", () => {
   }
   let mockFreeGameCreatorService: MockFreeGameCreatorService;
 
+  // Mocked services classes are acceptable for tests  https://angular.io/guide/testing#nested-component-tests
+  // tslint:disable-next-line:max-classes-per-file
   class MockGameService {
     public called: boolean = false;
     private mockGame: IFreeGame = {
@@ -46,11 +48,11 @@ describe("SceneCreatorComponent", () => {
     };
     public getFreeGameByName(): Observable<IFreeGame> {
       this.called = true;
+
       return of(this.mockGame);
     }
   }
   let mockedGameService: MockGameService;
-
 
   beforeEach(() => {
     mockSceneCreatorService = new MockSceneCreatorService();
@@ -69,11 +71,10 @@ describe("SceneCreatorComponent", () => {
               ,
               ),
             },
-          }
+          },
         },
         { provide: GameService, useValue: mockedGameService },
         { provide: FreeGameCreatorService, useValue: mockFreeGameCreatorService },
-
 
       ],
       declarations: [SceneCreatorComponent, TimerComponent],
