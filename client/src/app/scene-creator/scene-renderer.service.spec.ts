@@ -43,24 +43,24 @@ describe("SceneRendererService", () => {
     expect(service).toBeTruthy();
   });
 
-  // Test loadScenes
-  it("should throw an error if loadScenes is called before init(...)", () => {
-    const service: SceneRendererService = TestBed.get(SceneRendererService);
-    const original: THREE.Scene = new THREE.Scene();
-    const modified: THREE.Scene = new THREE.Scene();
+  // // Test loadScenes
+  // it("should throw an error if loadScenes is called before init(...)", () => {
+  //   const service: SceneRendererService = TestBed.get(SceneRendererService);
+  //   const original: THREE.Scene = new THREE.Scene();
+  //   const modified: THREE.Scene = new THREE.Scene();
+  //
+  //   expect(() => service.loadScenes(original, modified)).toThrowError("La composante n'a pas ete initialise!");
+  // });
 
-    expect(() => service.loadScenes(original, modified)).toThrowError("La composante n'a pas ete initialise!");
-  });
-
-  it("should asign scenes at first call", () => {
-    const service: SceneRendererService = TestBed.get(SceneRendererService);
-    const original: THREE.Scene = new THREE.Scene();
-    const modified: THREE.Scene = new THREE.Scene();
-    service.init(mockComponentInstance.cont1, mockComponentInstance.cont2);
-    service.loadScenes(original, modified);
-    expect(service.scene).toBe(original);
-    expect(service.modifiedScene).toBe(modified);
-  });
+  // it("should asign scenes at first call", () => {
+  //   const service: SceneRendererService = TestBed.get(SceneRendererService);
+  //   const original: THREE.Scene = new THREE.Scene();
+  //   const modified: THREE.Scene = new THREE.Scene();
+  //   service.init(mockComponentInstance.cont1, mockComponentInstance.cont2);
+  //   service.loadScenes(original, modified);
+  //   expect(service.scene).toBe(original);
+  //   expect(service.modifiedScene).toBe(modified);
+  // });
 
   it("should reasign the new scenes at second call", () => {
     const service: SceneRendererService = TestBed.get(SceneRendererService);
