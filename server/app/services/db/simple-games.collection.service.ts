@@ -46,14 +46,14 @@ export class SimpleGamesCollectionService extends CollectionService<ISimpleGame>
         return this.getDocument(id, NON_EXISTING_GAME_ERROR_MESSAGE);
     }
 
-    public creationSuccessMessage(data: ISimpleGame): Message {
+    protected creationSuccessMessage(data: ISimpleGame): Message {
         return {
             title: "Simple game added",
             body: "Simple game " + data.gameName + " successfully added",
         };
     }
 
-    public deletionSuccessMessage(id: string): Message {
+    protected deletionSuccessMessage(id: string): Message {
         return {
             title: "Simple game deleted",
             body: "Simple game " + id + " successfully deleted!",
