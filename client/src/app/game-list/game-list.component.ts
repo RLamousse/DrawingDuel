@@ -29,10 +29,6 @@ export class GameListComponent implements OnInit {
     this.gameService.getSimpleGames().subscribe((simpleGamesToModify: ISimpleGame[]) => {
       this.gameService.simpleGames = [];
       this.gameService.convertScoresObject(simpleGamesToModify);
-      this.gameService.convertScoresObject(MOCKED_SIMPLE_GAMES);
-      for (const test of MOCKED_SIMPLE_GAMES) {
-        this.gameService.simpleGames.push(test);
-      }
       for (const game of simpleGamesToModify) {
         this.gameService.simpleGames.push(game);
       }
