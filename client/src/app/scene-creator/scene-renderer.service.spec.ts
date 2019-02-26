@@ -1,5 +1,6 @@
 import { TestBed } from "@angular/core/testing";
 import * as THREE from "three";
+import { ComponentNotLoadedError } from "../../../../common/errors/component.errors";
 import { SceneRendererService } from "./scene-renderer.service";
 
 describe("SceneRendererService", () => {
@@ -20,7 +21,7 @@ describe("SceneRendererService", () => {
     const original: THREE.Scene = new THREE.Scene();
     const modified: THREE.Scene = new THREE.Scene();
 
-    expect(() => service.loadScenes(original, modified)).toThrowError("La composante n'a pas ete initialise!");
+    expect(() => service.loadScenes(original, modified)).toThrowError(ComponentNotLoadedError.COMPONENT_NOT_LOADED_MESSAGE_ERROR);
   });
 
   it("should asign scenes at first call", () => {
