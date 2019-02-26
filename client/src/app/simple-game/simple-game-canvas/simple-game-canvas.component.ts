@@ -21,7 +21,7 @@ export class SimpleGameCanvasComponent implements OnInit {
   @ViewChild("canvas") private canvas: ElementRef;
   private _canvasContext: CanvasRenderingContext2D;
   private _width: number;
-  private _height: number = DEFAULT_CANVAS_HEIGHT;
+  private _height: number;
 
   public get height(): number {
     return this._height;

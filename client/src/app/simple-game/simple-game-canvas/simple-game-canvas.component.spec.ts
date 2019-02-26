@@ -2,11 +2,37 @@ import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import {By} from "@angular/platform-browser";
 import {tansformOrigin, IPoint, ORIGIN} from "../../../../../common/model/point";
 
-import {DEFAULT_CANVAS_HEIGHT, SimpleGameCanvasComponent} from "./simple-game-canvas.component";
+import {DEFAULT_CANVAS_HEIGHT, PixelData, SimpleGameCanvasComponent} from "./simple-game-canvas.component";
 
 describe("SimpleGameCanvasComponent", () => {
   let component: SimpleGameCanvasComponent;
   let fixture: ComponentFixture<SimpleGameCanvasComponent>;
+
+  const getCanvasContext: () => CanvasRenderingContext2D = () => {
+    const gameCanvasComponentElement: HTMLElement = fixture.nativeElement;
+    const canvas: HTMLCanvasElement | null = gameCanvasComponentElement.querySelector("canvas");
+    if (canvas === null) {
+      fail();
+      throw new Error("Cannot get 2d canvas");
+    }
+    const context: CanvasRenderingContext2D | null = canvas.getContext("2d");
+    if (context === null) {
+      fail();
+      throw new Error("Cannot get 2d canvas context");
+    }
+
+    return context;
+  };
+
+  const createImageData: (pixel: number[], width: number, height: number) => ImageData =
+    (pixel: number[], width: number, height: number) => {
+      let pixelArray: number[] = [];
+      for (let i: number = 0; i < width * height; i++) {
+        pixelArray = pixelArray.concat(pixel);
+      }
+
+      return new ImageData(new Uint8ClampedArray(pixelArray), width, height);
+    };
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -25,15 +51,49 @@ describe("SimpleGameCanvasComponent", () => {
   });
 
   it("should return the correct pixels", () => {
-    fail();
+    const context: CanvasRenderingContext2D = getCanvasContext();
+
+    const pixel: number[] = Array.of(0xFF, 0, 0, 0xFF);
+    context.putImageData(createImageData(pixel, 1, 1), 0, 0);
+
+    component["_width"] = 1;
+    component["_height"] = 1;
+    component["_canvasContext"] = context;
+
+    const actualPixels: PixelData[] = component.getPixels([ORIGIN]);
+    expect(actualPixels)
+      .toEqual(
+        [
+          {
+            coords: ORIGIN,
+            data: new Uint8ClampedArray(pixel),
+          },
+        ]);
   });
 
   it("should draw given pixels successfully", () => {
-    fail();
+    const context: CanvasRenderingContext2D = getCanvasContext();
+    const pixel: number[] = Array.of(0xFF, 0, 0, 0xFF);
+
+    component["_width"] = 1;
+    component["_height"] = 1;
+    component["_canvasContext"] = context;
+
+    component.drawPixels(
+      [
+        {
+          coords: ORIGIN,
+          data: new Uint8ClampedArray(pixel),
+        },
+      ]);
+    expect(context.getImageData(0, 0, 1, 1).data)
+      .toEqual(new Uint8ClampedArray(pixel));
   });
 
   it("should emit a click event on click", () => {
     const point: IPoint = ORIGIN;
+
+    component["_height"] = DEFAULT_CANVAS_HEIGHT;
 
     component.pointClick
       .subscribe((event: IPoint) => {
@@ -46,5 +106,16 @@ describe("SimpleGameCanvasComponent", () => {
         offsetX: point.x,
         offsetY: point.y,
       });
+  });
+
+  it("should load an image with a given URL", (done) => {
+    component.imageSource = "assets/images/placeholder.png";
+    component.ngOnInit();
+    spyOn(getCanvasContext(), "drawImage")
+      .and.callFake(() => {
+      expect(component.height).toEqual(DEFAULT_CANVAS_HEIGHT);
+
+      return done();
+    });
   });
 });
