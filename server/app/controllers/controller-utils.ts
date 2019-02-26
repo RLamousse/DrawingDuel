@@ -23,6 +23,7 @@ export const NAME_ERROR_MESSAGE: string = "Error: The game name that you sent al
 export const BMP_ERROR_MESSAGE: string = "Error: Sent files are not in bmp format!";
 
 const NUMBER_OF_MODIFICATION_TYPES: number = 3;
+export const MAX_3D_OBJECTS: number = 1000;
 
 export const BITMAP_MULTER_FILTER:
     (req: Express.Request, file: Express.Multer.File, cb: (error: (Error | null), acceptFile: boolean) => void) => void =
@@ -60,6 +61,7 @@ const assertBasicSceneFields: (req: Request) => boolean = (req: Request): boolea
         !Array.isArray(req.body.modificationTypes) ||
         req.body.modificationTypes.length < 1 ||
         req.body.modificationTypes.length > NUMBER_OF_MODIFICATION_TYPES  ||
+        !(req.body.objectQuantity <= MAX_3D_OBJECTS && req.body.objectQuantity >= 0) ||
         (req.body.objectQuantity < EXPECTED_DIFF_NUMBER &&
             req.body.modificationTypes.indexOf(ModificationType.remove) >= 0);
 };
