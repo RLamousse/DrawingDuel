@@ -5,7 +5,6 @@ import { IFreeGame } from "../../../../common/model/game/free-game";
 import { ISimpleGame } from "../../../../common/model/game/simple-game";
 import { IScene } from "../../../scene-interface";
 import { GameService } from "../game.service";
-import { MOCKED_SIMPLE_GAMES } from "../mockGames";
 import { FreeGameCreatorService } from "../scene-creator/FreeGameCreator/free-game-creator.service";
 import { FreeGamePhotoService } from "../scene-creator/free-game-photo-service/free-game-photo.service";
 
