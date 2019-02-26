@@ -17,7 +17,7 @@ const errorResponse = (errorMessage: string) => {
     };
 };
 
-const successMessage: Message = {title: "Game created", body: "The game was successfully created!"};
+const SUCCESS_MESSAGE: Message = {title: "Game created", body: "The game was successfully created!"};
 
 describe("Game creator controller", () => {
     let app: Express.Application;
@@ -25,75 +25,81 @@ describe("Game creator controller", () => {
 
     beforeEach(() => {
         mockedGameCreatorService = mock(GameCreatorService);
-        when(mockedGameCreatorService.createSimpleGame(anyString(), anything(), anything())).thenResolve(successMessage);
+        when(mockedGameCreatorService.createSimpleGame(anyString(), anything(), anything())).thenResolve(SUCCESS_MESSAGE);
+        when(mockedGameCreatorService.createFreeGame(anyString(), anything(), anything(), anything())).thenResolve(SUCCESS_MESSAGE);
         container.rebind(types.GameCreatorService).toConstantValue(instance(mockedGameCreatorService));
         app = container.get<Application>(types.Application).app;
     });
 
-    it("should send an error when all images are missing", async () => {
-        return request(app)
-            .post("/api/game-creator/create-simple-game")
-            .field("gameName", "testDiff1")
-            .expect(HttpStatus.INTERNAL_SERVER_ERROR)
-            .then((response) => {
-                expect(response.body).to.eql(errorResponse(FORMAT_ERROR_MESSAGE));
-            });
+    describe("Create simple game", () => {
+        it("should send an error when all images are missing", async () => {
+            return request(app)
+                .post("/api/game-creator/create-simple-game")
+                .field("gameName", "testDiff1")
+                .expect(HttpStatus.INTERNAL_SERVER_ERROR)
+                .then((response) => {
+                    expect(response.body).to.eql(errorResponse(FORMAT_ERROR_MESSAGE));
+                });
+        });
+
+        it("should send an error when original image is missing", async () => {
+            return request(app)
+                .post("/api/game-creator/create-simple-game")
+                .field("gameName", "testDiff2")
+                .attach("modifiedImage", "./test/test_bitmaps/white640x480.bmp")
+                .expect(HttpStatus.INTERNAL_SERVER_ERROR)
+                .then((response) => {
+                    expect(response.body).to.eql(errorResponse(FORMAT_ERROR_MESSAGE));
+                });
+        });
+
+        it("should send an error when modified image is missing", async () => {
+            return request(app)
+                .post("/api/game-creator/create-simple-game")
+                .field("gameName", "testDiff3")
+                .attach("originalImage", "./test/test_bitmaps/white640x480.bmp")
+                .expect(HttpStatus.INTERNAL_SERVER_ERROR)
+                .then((response) => {
+                    expect(response.body).to.eql(errorResponse(FORMAT_ERROR_MESSAGE));
+                });
+        });
+
+        it("should send an error when wrong image type is sent", async () => {
+            return request(app)
+                .post("/api/game-creator/create-simple-game")
+                .field("gameName", "testDiff4")
+                .attach("originalImage", "./test/test_diffController/jobs.jpg")
+                .attach("modifiedImage", "./test/test_diffController/jobs.jpg")
+                .expect(HttpStatus.INTERNAL_SERVER_ERROR)
+                .then((response) => {
+                    expect(response.body.message).to.equal(BMP_ERROR_MESSAGE);
+                });
+        });
+
+        it("should send an error when no name specified", async () => {
+            return request(app)
+                .post("/api/game-creator/create-simple-game")
+                .attach("originalImage", "./test/test_bitmaps/black10x10.bmp")
+                .attach("modifiedImage", "./test/test_bitmaps/black10x10.bmp")
+                .expect(HttpStatus.INTERNAL_SERVER_ERROR)
+                .then((response) => {
+                    expect(response.body).to.eql(errorResponse(FORMAT_ERROR_MESSAGE));
+                });
+        });
+
+        it("should send an success response for valid data", async () => {
+            return request(app)
+                .post("/api/game-creator/create-simple-game")
+                .field("gameName", "testDiff7")
+                .attach("originalImage", "./test/test_bitmaps/pika.o.bmp")
+                .attach("modifiedImage", "./test/test_bitmaps/pika.m.bmp")
+                .expect(HttpStatus.OK)
+                .then((response) => {
+                    expect(response.body).to.eql(SUCCESS_MESSAGE);
+                });
+        });
     });
 
-    it("should send an error when original image is missing", async () => {
-        return request(app)
-            .post("/api/game-creator/create-simple-game")
-            .field("gameName", "testDiff2")
-            .attach("modifiedImage", "./test/test_bitmaps/white640x480.bmp")
-            .expect(HttpStatus.INTERNAL_SERVER_ERROR)
-            .then((response) => {
-                expect(response.body).to.eql(errorResponse(FORMAT_ERROR_MESSAGE));
-            });
-    });
-
-    it("should send an error when modified image is missing", async () => {
-        return request(app)
-            .post("/api/game-creator/create-simple-game")
-            .field("gameName", "testDiff3")
-            .attach("originalImage", "./test/test_bitmaps/white640x480.bmp")
-            .expect(HttpStatus.INTERNAL_SERVER_ERROR)
-            .then((response) => {
-                expect(response.body).to.eql(errorResponse(FORMAT_ERROR_MESSAGE));
-            });
-    });
-
-    it("should send an error when wrong image type is sent", async () => {
-        return request(app)
-            .post("/api/game-creator/create-simple-game")
-            .field("gameName", "testDiff4")
-            .attach("originalImage", "./test/test_diffController/jobs.jpg")
-            .attach("modifiedImage", "./test/test_diffController/jobs.jpg")
-            .expect(HttpStatus.INTERNAL_SERVER_ERROR)
-            .then((response) => {
-                expect(response.body.message).to.equal(BMP_ERROR_MESSAGE);
-            });
-    });
-
-    it("should send an error when no name specified", async () => {
-        return request(app)
-            .post("/api/game-creator/create-simple-game")
-            .attach("originalImage", "./test/test_bitmaps/black10x10.bmp")
-            .attach("modifiedImage", "./test/test_bitmaps/black10x10.bmp")
-            .expect(HttpStatus.INTERNAL_SERVER_ERROR)
-            .then((response) => {
-                expect(response.body).to.eql(errorResponse(FORMAT_ERROR_MESSAGE));
-            });
-    });
-
-    it("should send an success response for valid data", async () => {
-        return request(app)
-            .post("/api/game-creator/create-simple-game")
-            .field("gameName", "testDiff7")
-            .attach("originalImage", "./test/test_bitmaps/pika.o.bmp")
-            .attach("modifiedImage", "./test/test_bitmaps/pika.m.bmp")
-            .expect(HttpStatus.OK)
-            .then((response) => {
-                expect(response.body).to.eql(successMessage);
-            });
+    describe("Create free game", () => {
     });
 });
