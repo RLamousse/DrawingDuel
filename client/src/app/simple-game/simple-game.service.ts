@@ -57,7 +57,7 @@ export class SimpleGameService {
       })
       // tslint:disable-next-line:no-any Generic error response
       .catch((reason: any) => {
-        if (reason.response !== undefined && reason.response.status === Httpstatus.NOT_FOUND) {
+        if (reason.response && reason.response.status === Httpstatus.NOT_FOUND) {
           playRandomSound(NO_DIFFERENCE_SOUNDS);
           throw new Error(NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE);
         }
