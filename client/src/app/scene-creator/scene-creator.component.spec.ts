@@ -1,8 +1,11 @@
 import { HttpClientModule } from "@angular/common/http";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
+import { Observable } from "rxjs";
 import * as THREE from "three";
+import { IFreeGame } from "../../../../common/model/game/free-game";
 import { IScene } from "../../../scene-interface";
+import { GameService } from "../game.service";
 import { FreeGameCreatorService } from "../scene-creator/FreeGameCreator/free-game-creator.service";
 import { TimerComponent} from "../timer/timer.component";
 import { SceneCreatorComponent } from "./scene-creator.component";
@@ -17,7 +20,7 @@ describe("SceneCreatorComponent", () => {
     public onResize(): void { this.called = "onResize"; }
     public init(): void { this.called = "init"; }
   }
-  const mockedService: MockSceneCreatorService = new MockSceneCreatorService();
+  const mockedRendererService: MockSceneCreatorService = new MockSceneCreatorService();
 
   class MockFreeGameCreatorService {
     public isCalled: boolean = false;
@@ -29,12 +32,25 @@ describe("SceneCreatorComponent", () => {
   }
   const mockedFreeGameCreator: MockFreeGameCreatorService = new MockFreeGameCreatorService();
 
+  class MockGameService {
+    private mockGame: IFreeGame = {
+      bestMultiTimes: [],
+      bestSoloTimes: [],
+      gameName: "TEST",
+      scenes: { modifiedObjects: [], originalObjects: [] },
+    };
+    public getFreeGameByName(): Observable<IFreeGame> {
+      return Observable.create(this.mockGame);
+    }
+  }
+  const mockedGameService: MockGameService = new MockGameService();
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [SceneCreatorComponent, TimerComponent],
       imports: [HttpClientModule],
       providers: [
-        { provide: SceneRendererService, useValue: mockedService },
+        { provide: SceneRendererService, useValue: mockedRendererService },
         // tslint:disable-next-line:max-classes-per-file
         { provide: Router, useClass: class { public navigate: jasmine.Spy = jasmine.createSpy("navigate"); }, },
         {
@@ -49,6 +65,7 @@ describe("SceneCreatorComponent", () => {
           },
         },
         { provide: FreeGameCreatorService, useValue: mockedFreeGameCreator },
+        { provide: GameService, useValue: mockedGameService },
       ],
 
     });
@@ -63,16 +80,16 @@ describe("SceneCreatorComponent", () => {
 
   it("should call the service method when onResize is called", () => {
     component.onResize();
-    expect(mockedService.called).toEqual("onResize");
+    expect(mockedRendererService.called).toEqual("onResize");
   });
 
   it("should call onResize when windoe:resize event is happening", () => {
     window.dispatchEvent(new Event("resize"));
-    expect(mockedService.called).toEqual("onResize");
+    expect(mockedRendererService.called).toEqual("onResize");
   });
 
   it("should call the service method when ngAfterViewInit is called", () => {
     component.ngAfterViewInit();
-    expect(mockedService.called).toEqual("init");
+    expect(mockedRendererService.called).toEqual("init");
   });
 });
