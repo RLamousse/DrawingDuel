@@ -1,11 +1,17 @@
+/* tslint:disable:max-file-line-count */
 // tslint:disable:typedef
-import { expect } from "chai";
+import {expect} from "chai";
 import * as HttpStatus from "http-status-codes";
 import * as request from "supertest";
 import {anything, anyString, instance, mock, when} from "ts-mockito";
 import {Message} from "../../../common/communication/messages/message";
-import { Application } from "../app";
-import { container } from "../inversify.config";
+import {ICreateFreeGameRequest} from "../../../common/communication/requests/game-creator.controller.request";
+import {
+    ModificationType,
+    Themes
+} from "../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
+import {Application} from "../app";
+import {container} from "../inversify.config";
 import {GameCreatorService} from "../services/game-creator.service";
 import types from "../types";
 import {BMP_ERROR_MESSAGE, FORMAT_ERROR_MESSAGE} from "./controller-utils";
@@ -101,5 +107,270 @@ describe("Game creator controller", () => {
     });
 
     describe("Create free game", () => {
+
+        it("should send an error when there is no request", async () => {
+            return request(app)
+                .post("/api/game-creator/create-free-game")
+                .expect(HttpStatus.INTERNAL_SERVER_ERROR)
+                .then((response) => {
+                    expect(response.body).to.eql(errorResponse(FORMAT_ERROR_MESSAGE));
+                });
+        });
+
+        it("should send an error when no name is specified", async () => {
+
+            // @ts-ignore
+            const freeRequest: ICreateFreeGameRequest = {
+                objectQuantity: 1000,
+                theme: Themes.Geometry,
+                modificationTypes: [ModificationType.changeColor, ModificationType.remove, ModificationType.add],
+            };
+
+            return request(app)
+                .post("/api/game-creator/create-free-game")
+                .send(freeRequest)
+                .expect(HttpStatus.INTERNAL_SERVER_ERROR)
+                .then((response) => {
+                    expect(response.body).to.eql(errorResponse(FORMAT_ERROR_MESSAGE));
+                });
+        });
+
+        it("should send an error when no object quantity is specified", async () => {
+
+            // @ts-ignore
+            const freeRequest: ICreateFreeGameRequest = {
+                gameName: "someGameTest",
+                theme: Themes.Geometry,
+                modificationTypes: [ModificationType.changeColor, ModificationType.remove, ModificationType.add],
+            };
+
+            return request(app)
+                .post("/api/game-creator/create-free-game")
+                .send(freeRequest)
+                .expect(HttpStatus.INTERNAL_SERVER_ERROR)
+                .then((response) => {
+                    expect(response.body).to.eql(errorResponse(FORMAT_ERROR_MESSAGE));
+                });
+        });
+
+        it("should send an error when the object quantity is lesser than 7 and items are to be deleted", async () => {
+
+            const freeRequest: ICreateFreeGameRequest = {
+                gameName: "someGameTest",
+                objectQuantity: 6,
+                theme: Themes.Geometry,
+                modificationTypes: [ModificationType.remove],
+            };
+
+            return request(app)
+                .post("/api/game-creator/create-free-game")
+                .send(freeRequest)
+                .expect(HttpStatus.INTERNAL_SERVER_ERROR)
+                .then((response) => {
+                    expect(response.body).to.eql(errorResponse(FORMAT_ERROR_MESSAGE));
+                });
+        });
+
+        it("should send a success message when the object quantity is lesser than 7 and items are not to be deleted", async () => {
+
+            const freeRequest: ICreateFreeGameRequest = {
+                gameName: "someGameTest",
+                objectQuantity: 6,
+                theme: Themes.Geometry,
+                modificationTypes: [ModificationType.add],
+            };
+
+            return request(app)
+                .post("/api/game-creator/create-free-game")
+                .send(freeRequest)
+                .expect(HttpStatus.OK)
+                .then((response) => {
+                    expect(response.body).to.eql(SUCCESS_MESSAGE);
+                });
+        });
+
+        it("should send an error when the object quantity is lesser than 0", async () => {
+
+            const freeRequest: ICreateFreeGameRequest = {
+                gameName: "someGameTest",
+                objectQuantity: -1,
+                theme: Themes.Geometry,
+                modificationTypes: [ModificationType.add],
+            };
+
+            return request(app)
+                .post("/api/game-creator/create-free-game")
+                .send(freeRequest)
+                .expect(HttpStatus.INTERNAL_SERVER_ERROR)
+                .then((response) => {
+                    expect(response.body).to.eql(errorResponse(FORMAT_ERROR_MESSAGE));
+                });
+        });
+
+        it("should send an error when the object quantity is greater than 1000", async () => {
+
+            const freeRequest: ICreateFreeGameRequest = {
+                gameName: "someGameTest",
+                objectQuantity: 1001,
+                theme: Themes.Geometry,
+                modificationTypes: [ModificationType.changeColor, ModificationType.remove, ModificationType.add],
+            };
+
+            return request(app)
+                .post("/api/game-creator/create-free-game")
+                .send(freeRequest)
+                .expect(HttpStatus.INTERNAL_SERVER_ERROR)
+                .then((response) => {
+                    expect(response.body).to.eql(errorResponse(FORMAT_ERROR_MESSAGE));
+                });
+        });
+
+        it("should send an error when no theme is specified", async () => {
+
+            // @ts-ignore
+            const freeRequest: ICreateFreeGameRequest = {
+                gameName: "freeGame",
+                objectQuantity: 1000,
+                modificationTypes: [ModificationType.changeColor, ModificationType.remove, ModificationType.add],
+            };
+
+            return request(app)
+                .post("/api/game-creator/create-free-game")
+                .send(freeRequest)
+                .expect(HttpStatus.INTERNAL_SERVER_ERROR)
+                .then((response) => {
+                    expect(response.body).to.eql(errorResponse(FORMAT_ERROR_MESSAGE));
+            });
+        });
+
+        it("should send an error when the wrong theme is specified", async () => {
+
+            const freeRequest: ICreateFreeGameRequest = {
+                gameName: "freeGame",
+                objectQuantity: 1000,
+                // @ts-ignore
+                theme: "Non-existing-theme",
+                modificationTypes: [ModificationType.changeColor, ModificationType.remove, ModificationType.add],
+            };
+
+            return request(app)
+                .post("/api/game-creator/create-free-game")
+                .send(freeRequest)
+                .expect(HttpStatus.INTERNAL_SERVER_ERROR)
+                .then((response) => {
+                    expect(response.body).to.eql(errorResponse(FORMAT_ERROR_MESSAGE));
+            });
+        });
+
+        it("should send an error when the wrong theme is specified", async () => {
+
+            const freeRequest: ICreateFreeGameRequest = {
+                gameName: "freeGame",
+                objectQuantity: 1000,
+                // @ts-ignore
+                theme: "Non-existing-theme",
+                modificationTypes: [ModificationType.changeColor, ModificationType.remove, ModificationType.add],
+            };
+
+            return request(app)
+                .post("/api/game-creator/create-free-game")
+                .send(freeRequest)
+                .expect(HttpStatus.INTERNAL_SERVER_ERROR)
+                .then((response) => {
+                    expect(response.body).to.eql(errorResponse(FORMAT_ERROR_MESSAGE));
+            });
+        });
+
+        it("should send an error when no modification types are specified", async () => {
+
+            // @ts-ignore
+            const freeRequest: ICreateFreeGameRequest = {
+                gameName: "freeGame",
+                objectQuantity: 1000,
+                theme: Themes.Sanic,
+            };
+
+            return request(app)
+                .post("/api/game-creator/create-free-game")
+                .send(freeRequest)
+                .expect(HttpStatus.INTERNAL_SERVER_ERROR)
+                .then((response) => {
+                    expect(response.body).to.eql(errorResponse(FORMAT_ERROR_MESSAGE));
+            });
+        });
+
+        it("should send an error when too much modification types are requested", async () => {
+
+            // @ts-ignore
+            const freeRequest: ICreateFreeGameRequest = {
+                gameName: "freeGame",
+                objectQuantity: 1000,
+                theme: Themes.Sanic,
+                modificationTypes: [ModificationType.changeColor, ModificationType.remove, ModificationType.add, ModificationType.add],
+            };
+
+            return request(app)
+                .post("/api/game-creator/create-free-game")
+                .send(freeRequest)
+                .expect(HttpStatus.INTERNAL_SERVER_ERROR)
+                .then((response) => {
+                    expect(response.body).to.eql(errorResponse(FORMAT_ERROR_MESSAGE));
+            });
+        });
+
+        it("should send an error when none modification types are requested", async () => {
+
+            const freeRequest: ICreateFreeGameRequest = {
+                gameName: "freeGame",
+                objectQuantity: 1000,
+                theme: Themes.Sanic,
+                modificationTypes: [],
+            };
+
+            return request(app)
+                .post("/api/game-creator/create-free-game")
+                .send(freeRequest)
+                .expect(HttpStatus.INTERNAL_SERVER_ERROR)
+                .then((response) => {
+                    expect(response.body).to.eql(errorResponse(FORMAT_ERROR_MESSAGE));
+            });
+        });
+
+        it("should send an error when the modification types are wrong", async () => {
+
+            const freeRequest: ICreateFreeGameRequest = {
+                gameName: "freeGame",
+                objectQuantity: 1000,
+                theme: Themes.Sanic,
+                // tslint:disable-next-line:no-magic-numbers
+                modificationTypes: [ModificationType.add, 4],
+            };
+
+            return request(app)
+                .post("/api/game-creator/create-free-game")
+                .send(freeRequest)
+                .expect(HttpStatus.INTERNAL_SERVER_ERROR)
+                .then((response) => {
+                    expect(response.body).to.eql(errorResponse(FORMAT_ERROR_MESSAGE));
+            });
+        });
+
+        it("should send an success response for valid data", async () => {
+
+            const freeRequest: ICreateFreeGameRequest = {
+                gameName: "freeGame",
+                objectQuantity: 1000,
+                theme: Themes.Sanic,
+                modificationTypes: [ModificationType.add, ModificationType.remove],
+            };
+
+            return request(app)
+                .post("/api/game-creator/create-free-game")
+                .send(freeRequest)
+                .expect(HttpStatus.OK)
+                .then((response) => {
+                    expect(response.body).to.eql(SUCCESS_MESSAGE);
+            });
+        });
     });
 });
