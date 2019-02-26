@@ -8,19 +8,20 @@
             [bestSoloTimes]= "instance.bestSoloTimes"
             [bestMultiTimes]= "instance.bestMultiTimes"
             [rightButton]= "rightButton"
-            [leftButton]= "leftButton">
+            [leftButton]= "leftButton"
+            [isSimpleGame]= true>
         </app-game>
     </div>
     <div class="window">
         <h1>Parties Libres</h1>
-        <app-game *ngFor="let instance of gameService.freeGames" 
+        <app-game *ngFor= "let instance of gameService.extendedFreeGames" 
             [gameName]= "instance.gameName"
-            [originalImage]= "instance.originalImage"
-            [modifiedImage]= "instance.modifiedImage"
             [bestSoloTimes]= "instance.bestSoloTimes"
-            [bestMultiTimes]= "instance.bestMultiTimes" 
+            [bestMultiTimes]= "instance.bestMultiTimes"
             [rightButton]= "rightButton"
-            [leftButton]= "leftButton">
+            [leftButton]= "leftButton"
+            [isSimpleGame]= false
+            [thumbnail]= "instance.thumbnail">
         </app-game>
     </div>
 </div>

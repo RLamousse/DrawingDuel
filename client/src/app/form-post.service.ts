@@ -14,7 +14,7 @@ export class FormPostService {
   private readonly BASE_URL: string = environment.production ? document.baseURI : "http://localhost:3000/";
   public constructor(private http: HttpClient) { }
 
-  public basicPost(route: string, body: FormData | {}): Observable<Object> {
+  public submitForm(route: string, body: FormData | {}): Observable<Object> {
 
     return this.http.post<Object>(this.BASE_URL + route, body).pipe(
       catchError(this.handleError),

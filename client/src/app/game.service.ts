@@ -2,9 +2,10 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { of, Observable } from "rxjs";
 import { catchError } from "rxjs/operators";
-import {/*instanceOfFreeGame,*/ IFreeGame} from "../../../common/model/game/free-game";
-import {IGame} from "../../../common/model/game/game";
-import {instanceOfSimpleGame, ISimpleGame} from "../../../common/model/game/simple-game";
+import { IExtendedFreeGame } from "../../../common/model/game/extended-free-game";
+import { IFreeGame } from "../../../common/model/game/free-game";
+import { IGame } from "../../../common/model/game/game";
+import { ISimpleGame } from "../../../common/model/game/simple-game";
 
 @Injectable({
   providedIn: "root",
@@ -12,7 +13,9 @@ import {instanceOfSimpleGame, ISimpleGame} from "../../../common/model/game/simp
 export class GameService {
   public simpleGames: ISimpleGame[] = [];
   public freeGames: IFreeGame[] = [];
+  public extendedFreeGames: IExtendedFreeGame[] = [];
   public readonly SIMPLE_GAME_BASE_URL: string = "http://localhost:3000/api/data-base/games/simple/";
+  public readonly FREE_GAME_BASE_URL: string = "http://localhost:3000/api/data-base/games/free/";
   public constructor(private http: HttpClient) { }
 
   private convertTimeScores(seconds: number): number {
@@ -39,19 +42,21 @@ export class GameService {
     return game;
   }
 
-  public pushGames(gamesToPush: IGame[]): void {
-    for (const game of gamesToPush) {
-      if (instanceOfSimpleGame(game)) {
-        this.simpleGames.push(game);
-      } else /*if (instanceOfFreeGame(game))*/ { // feature still in progress
-        this.freeGames.push(game);
-      }
-    }
-  }
-
   public getSimpleGames(): Observable<ISimpleGame[]> {
     return this.http.get<ISimpleGame[]>(this.SIMPLE_GAME_BASE_URL).pipe(
-      catchError(this.handleError<ISimpleGame[]>("basicGet")),
+      catchError(this.handleError<ISimpleGame[]>("get simple game from server error")),
+    );
+  }
+
+  public getFreeGames(): Observable<IFreeGame[]> {
+    return this.http.get<IFreeGame[]>(this.FREE_GAME_BASE_URL).pipe(
+      catchError(this.handleError<IFreeGame[]>("get free game from server error")),
+    );
+  }
+
+  public getFreeGameByName(gameName: string): Observable<IFreeGame> {
+    return this.http.get<IFreeGame>(this.FREE_GAME_BASE_URL + gameName + "/").pipe(
+      catchError(this.handleError<IFreeGame>("get free game from server error")),
     );
   }
 

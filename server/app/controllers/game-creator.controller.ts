@@ -8,6 +8,7 @@ import Types from "../types";
 import {
     assertBodyFieldsOfRequest,
     assertRequestImageFilesFields,
+    assertRequestSceneFields,
     executePromiseSafely,
     BITMAP_MULTER_FILTER,
     MODIFIED_IMAGE_FIELD_NAME,
@@ -39,6 +40,18 @@ export class GameCreatorController {
                     req.body[GAME_NAME_FIELD],
                     req.files[ORIGINAL_IMAGE_FIELD_NAME][0].buffer,
                     req.files[MODIFIED_IMAGE_FIELD_NAME][0].buffer));
+            });
+        });
+
+        router.post("/create-free-game", async (req: Request, res: Response, next: NextFunction) => {
+            executePromiseSafely(res, next, async () => {
+                assertRequestSceneFields(req);
+
+                res.json(await this.gameCreatorService.createFreeGame(
+                    req.body[GAME_NAME_FIELD],
+                    req.body.objectQuantity,
+                    req.body.theme,
+                    req.body.modificationTypes));
             });
         });
 
