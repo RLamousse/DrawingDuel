@@ -1,6 +1,8 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import {By} from "@angular/platform-browser";
+import {IPoint, ORIGIN, tansformOrigin} from "../../../../../common/model/point";
 
-import { SimpleGameCanvasComponent } from "./simple-game-canvas.component";
+import {DEFAULT_CANVAS_HEIGHT, SimpleGameCanvasComponent} from "./simple-game-canvas.component";
 
 describe("SimpleGameCanvasComponent", () => {
   let component: SimpleGameCanvasComponent;
@@ -31,12 +33,18 @@ describe("SimpleGameCanvasComponent", () => {
   });
 
   it("should emit a click event on click", () => {
-    /*
-    fixture.debugElement.query(By.css('canvas')).triggerEventHandler('click', {
-                offsetX: expectedPoint.x,
-                offsetY: height - expectedPoint.y,
-            });
-     */
-    fail();
+    const point: IPoint = ORIGIN;
+
+    component.pointClick
+      .subscribe((event: IPoint) => {
+        expect(event)
+          .toEqual(tansformOrigin(point, DEFAULT_CANVAS_HEIGHT));
+      });
+
+    fixture.debugElement.query(By.css("canvas"))
+      .triggerEventHandler("click", {
+        offsetX: point.x,
+        offsetY: point.y,
+      });
   });
 });
