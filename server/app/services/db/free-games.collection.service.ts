@@ -12,7 +12,7 @@ import {
 @injectable()
 export class FreeGamesCollectionService extends CollectionService<IFreeGame> {
 
-    public static validate(game: IFreeGame): boolean {
+    private static validate(game: IFreeGame): boolean {
         return game.scenes !== undefined &&
             game.gameName !== "";
     }

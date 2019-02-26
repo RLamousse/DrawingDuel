@@ -4,7 +4,6 @@ import {expect} from "chai";
 import * as HttpStatus from "http-status-codes";
 import * as request from "supertest";
 import {anything, anyString, instance, mock, when} from "ts-mockito";
-import {Message} from "../../../common/communication/messages/message";
 import {ICreateFreeGameRequest} from "../../../common/communication/requests/game-creator.controller.request";
 import {
     ModificationType,
@@ -14,7 +13,7 @@ import {Application} from "../app";
 import {container} from "../inversify.config";
 import {GameCreatorService} from "../services/game-creator.service";
 import types from "../types";
-import {BMP_ERROR_MESSAGE, FORMAT_ERROR_MESSAGE} from "./controller-utils";
+import {BMP_ERROR_MESSAGE, FORMAT_ERROR_MESSAGE, GAME_CREATION_SUCCESS_MESSAGE} from "./controller-utils";
 
 const errorResponse = (errorMessage: string) => {
     return {
@@ -23,16 +22,15 @@ const errorResponse = (errorMessage: string) => {
     };
 };
 
-const SUCCESS_MESSAGE: Message = {title: "Game created", body: "The game was successfully created!"};
-
 describe("Game creator controller", () => {
     let app: Express.Application;
     let mockedGameCreatorService: GameCreatorService;
 
     beforeEach(() => {
         mockedGameCreatorService = mock(GameCreatorService);
-        when(mockedGameCreatorService.createSimpleGame(anyString(), anything(), anything())).thenResolve(SUCCESS_MESSAGE);
-        when(mockedGameCreatorService.createFreeGame(anyString(), anything(), anything(), anything())).thenResolve(SUCCESS_MESSAGE);
+        when(mockedGameCreatorService.createSimpleGame(anyString(), anything(), anything())).thenResolve(GAME_CREATION_SUCCESS_MESSAGE);
+        when(mockedGameCreatorService.createFreeGame(anyString(), anything(), anything(), anything()))
+            .thenResolve(GAME_CREATION_SUCCESS_MESSAGE);
         container.rebind(types.GameCreatorService).toConstantValue(instance(mockedGameCreatorService));
         app = container.get<Application>(types.Application).app;
     });
@@ -101,7 +99,7 @@ describe("Game creator controller", () => {
                 .attach("modifiedImage", "./test/test_bitmaps/pika.m.bmp")
                 .expect(HttpStatus.OK)
                 .then((response) => {
-                    expect(response.body).to.eql(SUCCESS_MESSAGE);
+                    expect(response.body).to.eql(GAME_CREATION_SUCCESS_MESSAGE);
                 });
         });
     });
@@ -185,7 +183,7 @@ describe("Game creator controller", () => {
                 .send(freeRequest)
                 .expect(HttpStatus.OK)
                 .then((response) => {
-                    expect(response.body).to.eql(SUCCESS_MESSAGE);
+                    expect(response.body).to.eql(GAME_CREATION_SUCCESS_MESSAGE);
                 });
         });
 
@@ -369,7 +367,7 @@ describe("Game creator controller", () => {
                 .send(freeRequest)
                 .expect(HttpStatus.OK)
                 .then((response) => {
-                    expect(response.body).to.eql(SUCCESS_MESSAGE);
+                    expect(response.body).to.eql(GAME_CREATION_SUCCESS_MESSAGE);
             });
         });
     });
