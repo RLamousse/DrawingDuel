@@ -1,8 +1,9 @@
+import { FormControl } from "@angular/forms";
 import {
   getDimensionsFromBuffer, BITMAP_HEADER_24BPP,
   HEADER_SIZE_BYTES, VALID_640x480_BITMAP_HEADER_24BPP
 } from "../../../common/image/bitmap/bitmap-utils";
-import FakeControl from "./Interfaces/fakeControl";
+import FakeControl from "./fake-control";
 import FileValidator from "./file.validator";
 
 describe("FileValidator", () => {
@@ -13,7 +14,7 @@ describe("FileValidator", () => {
         files: [new File([""], "maxime", { type: "text/html" })],
       },
     };
-    expect(FileValidator.typeValidator(fakeControl)).toEqual({ imageType: "L'image doit être de type bmp" });
+    expect(FileValidator.typeValidator(fakeControl as FormControl)).toEqual({ imageType: "L'image doit être de type bmp" });
   });
 
   it("should return file is too big", () => {
@@ -22,7 +23,7 @@ describe("FileValidator", () => {
         files: [new File(new Array(FileValidator.MAX_IMAGE_SIZE + 1).fill(0), "maxime", { type: "image/bmp" })],
       },
     };
-    expect(FileValidator.sizeValidator(fakeControl))
+    expect(FileValidator.sizeValidator(fakeControl as FormControl))
       .toEqual({ imageSize: `L'image est invalide (taille maximale de ${FileValidator.MAX_IMAGE_SIZE})` });
   });
 

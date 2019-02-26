@@ -7,7 +7,6 @@ import {
     ModificationType,
     Themes
 } from "../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
-import {ARGUMENT_ERROR_MESSAGE} from "../services/difference-evaluator.service";
 import {EXPECTED_DIFF_NUMBER} from "../services/game-creator.service";
 
 export const REQUIRED_IMAGE_HEIGHT: number = 480;
@@ -24,6 +23,7 @@ export const NAME_ERROR_MESSAGE: string = "Error: The game name that you sent al
 export const BMP_ERROR_MESSAGE: string = "Error: Sent files are not in bmp format!";
 
 const NUMBER_OF_MODIFICATION_TYPES: number = 3;
+export const MAX_3D_OBJECTS: number = 1000;
 
 export const BITMAP_MULTER_FILTER:
     (req: Express.Request, file: Express.Multer.File, cb: (error: (Error | null), acceptFile: boolean) => void) => void =
@@ -54,24 +54,33 @@ export const assertBodyFieldsOfRequest: (req: Request, ...fields: string[]) => v
     }
 };
 
-export const assertRequestSceneFields: (req: Express.Request) => void = (req: Request): void => {
-    assertBodyFieldsOfRequest(req, GAME_NAME_FIELD);
-
-    if ((req.body.theme !== Themes.Geometry &&
+const assertBasicSceneFields: (req: Request) => boolean = (req: Request): boolean => {
+    return (req.body.theme !== Themes.Geometry &&
         req.body.theme !== Themes.Sanic &&
         req.body.theme !== Themes.Forest) ||
         !Array.isArray(req.body.modificationTypes) ||
         req.body.modificationTypes.length < 1 ||
         req.body.modificationTypes.length > NUMBER_OF_MODIFICATION_TYPES  ||
+        !(req.body.objectQuantity <= MAX_3D_OBJECTS && req.body.objectQuantity >= 0) ||
         (req.body.objectQuantity < EXPECTED_DIFF_NUMBER &&
-        req.body.modificationTypes.indexOf(ModificationType.remove) >= 0)) {
-        throw new Error(ARGUMENT_ERROR_MESSAGE);
+            req.body.modificationTypes.indexOf(ModificationType.remove) >= 0);
+};
+
+const assertModificationType: (modificationType: ModificationType) => boolean = (modificationType: ModificationType): boolean => {
+    return modificationType !== ModificationType.add &&
+        modificationType !== ModificationType.remove &&
+        modificationType !== ModificationType.changeColor;
+};
+
+export const assertRequestSceneFields: (req: Express.Request) => void = (req: Request): void => {
+    assertBodyFieldsOfRequest(req, GAME_NAME_FIELD);
+
+    if (assertBasicSceneFields(req)) {
+        throw new Error(FORMAT_ERROR_MESSAGE);
     }
     for (const modificationType of req.body.modificationTypes) {
-        if (modificationType !== ModificationType.add &&
-            modificationType !== ModificationType.remove &&
-            modificationType !== ModificationType.changeColor) {
-            throw new Error(ARGUMENT_ERROR_MESSAGE);
+        if (assertModificationType(modificationType)) {
+            throw new Error(FORMAT_ERROR_MESSAGE);
         }
     }
 };

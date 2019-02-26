@@ -6,9 +6,9 @@ import { FREE_GAME_CREATION_ROUTE } from "../../../../common/communication/route
 import {
   ModificationType, Themes
 } from "../../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
-import { AVAILABLE_MODIF_TYPES, AVAILABLE_THEMES, SelectType } from "../Interfaces/selectType";
 import { AbstractForm } from "../abstract-form";
 import { FormPostService } from "../form-post.service";
+import { AVAILABLE_MODIF_TYPES, AVAILABLE_THEMES, SelectType } from "./selectType";
 @Component({
   selector: "app-create3-dgame",
   templateUrl: "./create3-dgame.component.html",
