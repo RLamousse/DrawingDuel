@@ -5,6 +5,7 @@ import * as HttpStatus from "http-status-codes";
 import * as request from "supertest";
 import {anything, anyString, instance, mock, when} from "ts-mockito";
 import {ICreateFreeGameRequest} from "../../../common/communication/requests/game-creator.controller.request";
+import {RequestFormatError} from "../../../common/errors/controller.errors";
 import {
     ModificationType,
     Themes
@@ -13,7 +14,7 @@ import {Application} from "../app";
 import {container} from "../inversify.config";
 import {GameCreatorService} from "../services/game-creator.service";
 import types from "../types";
-import {BMP_ERROR_MESSAGE, FORMAT_ERROR_MESSAGE, GAME_CREATION_SUCCESS_MESSAGE} from "./controller-utils";
+import {BMP_ERROR_MESSAGE, GAME_CREATION_SUCCESS_MESSAGE} from "./controller-utils";
 
 const errorResponse = (errorMessage: string) => {
     return {
@@ -42,7 +43,7 @@ describe("Game creator controller", () => {
                 .field("gameName", "testDiff1")
                 .expect(HttpStatus.INTERNAL_SERVER_ERROR)
                 .then((response) => {
-                    expect(response.body).to.eql(errorResponse(FORMAT_ERROR_MESSAGE));
+                    expect(response.body).to.eql(errorResponse(RequestFormatError.FORMAT_ERROR_MESSAGE));
                 });
         });
 
@@ -53,7 +54,7 @@ describe("Game creator controller", () => {
                 .attach("modifiedImage", "./test/test_bitmaps/white640x480.bmp")
                 .expect(HttpStatus.INTERNAL_SERVER_ERROR)
                 .then((response) => {
-                    expect(response.body).to.eql(errorResponse(FORMAT_ERROR_MESSAGE));
+                    expect(response.body).to.eql(errorResponse(RequestFormatError.FORMAT_ERROR_MESSAGE));
                 });
         });
 
@@ -64,7 +65,7 @@ describe("Game creator controller", () => {
                 .attach("originalImage", "./test/test_bitmaps/white640x480.bmp")
                 .expect(HttpStatus.INTERNAL_SERVER_ERROR)
                 .then((response) => {
-                    expect(response.body).to.eql(errorResponse(FORMAT_ERROR_MESSAGE));
+                    expect(response.body).to.eql(errorResponse(RequestFormatError.FORMAT_ERROR_MESSAGE));
                 });
         });
 
@@ -87,7 +88,7 @@ describe("Game creator controller", () => {
                 .attach("modifiedImage", "./test/test_bitmaps/black10x10.bmp")
                 .expect(HttpStatus.INTERNAL_SERVER_ERROR)
                 .then((response) => {
-                    expect(response.body).to.eql(errorResponse(FORMAT_ERROR_MESSAGE));
+                    expect(response.body).to.eql(errorResponse(RequestFormatError.FORMAT_ERROR_MESSAGE));
                 });
         });
 
@@ -111,7 +112,7 @@ describe("Game creator controller", () => {
                 .post("/api/game-creator/create-free-game")
                 .expect(HttpStatus.INTERNAL_SERVER_ERROR)
                 .then((response) => {
-                    expect(response.body).to.eql(errorResponse(FORMAT_ERROR_MESSAGE));
+                    expect(response.body).to.eql(errorResponse(RequestFormatError.FORMAT_ERROR_MESSAGE));
                 });
         });
 
@@ -129,7 +130,7 @@ describe("Game creator controller", () => {
                 .send(freeRequest)
                 .expect(HttpStatus.INTERNAL_SERVER_ERROR)
                 .then((response) => {
-                    expect(response.body).to.eql(errorResponse(FORMAT_ERROR_MESSAGE));
+                    expect(response.body).to.eql(errorResponse(RequestFormatError.FORMAT_ERROR_MESSAGE));
                 });
         });
 
@@ -147,7 +148,7 @@ describe("Game creator controller", () => {
                 .send(freeRequest)
                 .expect(HttpStatus.INTERNAL_SERVER_ERROR)
                 .then((response) => {
-                    expect(response.body).to.eql(errorResponse(FORMAT_ERROR_MESSAGE));
+                    expect(response.body).to.eql(errorResponse(RequestFormatError.FORMAT_ERROR_MESSAGE));
                 });
         });
 
@@ -165,7 +166,7 @@ describe("Game creator controller", () => {
                 .send(freeRequest)
                 .expect(HttpStatus.INTERNAL_SERVER_ERROR)
                 .then((response) => {
-                    expect(response.body).to.eql(errorResponse(FORMAT_ERROR_MESSAGE));
+                    expect(response.body).to.eql(errorResponse(RequestFormatError.FORMAT_ERROR_MESSAGE));
                 });
         });
 
@@ -201,7 +202,7 @@ describe("Game creator controller", () => {
                 .send(freeRequest)
                 .expect(HttpStatus.INTERNAL_SERVER_ERROR)
                 .then((response) => {
-                    expect(response.body).to.eql(errorResponse(FORMAT_ERROR_MESSAGE));
+                    expect(response.body).to.eql(errorResponse(RequestFormatError.FORMAT_ERROR_MESSAGE));
                 });
         });
 
@@ -219,7 +220,7 @@ describe("Game creator controller", () => {
                 .send(freeRequest)
                 .expect(HttpStatus.INTERNAL_SERVER_ERROR)
                 .then((response) => {
-                    expect(response.body).to.eql(errorResponse(FORMAT_ERROR_MESSAGE));
+                    expect(response.body).to.eql(errorResponse(RequestFormatError.FORMAT_ERROR_MESSAGE));
                 });
         });
 
@@ -237,7 +238,7 @@ describe("Game creator controller", () => {
                 .send(freeRequest)
                 .expect(HttpStatus.INTERNAL_SERVER_ERROR)
                 .then((response) => {
-                    expect(response.body).to.eql(errorResponse(FORMAT_ERROR_MESSAGE));
+                    expect(response.body).to.eql(errorResponse(RequestFormatError.FORMAT_ERROR_MESSAGE));
             });
         });
 
@@ -256,7 +257,7 @@ describe("Game creator controller", () => {
                 .send(freeRequest)
                 .expect(HttpStatus.INTERNAL_SERVER_ERROR)
                 .then((response) => {
-                    expect(response.body).to.eql(errorResponse(FORMAT_ERROR_MESSAGE));
+                    expect(response.body).to.eql(errorResponse(RequestFormatError.FORMAT_ERROR_MESSAGE));
             });
         });
 
@@ -275,7 +276,7 @@ describe("Game creator controller", () => {
                 .send(freeRequest)
                 .expect(HttpStatus.INTERNAL_SERVER_ERROR)
                 .then((response) => {
-                    expect(response.body).to.eql(errorResponse(FORMAT_ERROR_MESSAGE));
+                    expect(response.body).to.eql(errorResponse(RequestFormatError.FORMAT_ERROR_MESSAGE));
             });
         });
 
@@ -293,7 +294,7 @@ describe("Game creator controller", () => {
                 .send(freeRequest)
                 .expect(HttpStatus.INTERNAL_SERVER_ERROR)
                 .then((response) => {
-                    expect(response.body).to.eql(errorResponse(FORMAT_ERROR_MESSAGE));
+                    expect(response.body).to.eql(errorResponse(RequestFormatError.FORMAT_ERROR_MESSAGE));
             });
         });
 
@@ -312,7 +313,7 @@ describe("Game creator controller", () => {
                 .send(freeRequest)
                 .expect(HttpStatus.INTERNAL_SERVER_ERROR)
                 .then((response) => {
-                    expect(response.body).to.eql(errorResponse(FORMAT_ERROR_MESSAGE));
+                    expect(response.body).to.eql(errorResponse(RequestFormatError.FORMAT_ERROR_MESSAGE));
             });
         });
 
@@ -330,7 +331,7 @@ describe("Game creator controller", () => {
                 .send(freeRequest)
                 .expect(HttpStatus.INTERNAL_SERVER_ERROR)
                 .then((response) => {
-                    expect(response.body).to.eql(errorResponse(FORMAT_ERROR_MESSAGE));
+                    expect(response.body).to.eql(errorResponse(RequestFormatError.FORMAT_ERROR_MESSAGE));
             });
         });
 
@@ -349,7 +350,7 @@ describe("Game creator controller", () => {
                 .send(freeRequest)
                 .expect(HttpStatus.INTERNAL_SERVER_ERROR)
                 .then((response) => {
-                    expect(response.body).to.eql(errorResponse(FORMAT_ERROR_MESSAGE));
+                    expect(response.body).to.eql(errorResponse(RequestFormatError.FORMAT_ERROR_MESSAGE));
             });
         });
 

@@ -2,6 +2,7 @@
 import { expect } from "chai";
 import * as Httpstatus from "http-status-codes";
 import * as request from "supertest";
+import {NoUsernameInRequestError} from "../../../common/errors/controller.errors";
 import { Application } from "../app";
 import { container } from "../inversify.config";
 import types from "../types";
@@ -40,7 +41,7 @@ describe("username controller", () => {
             .expect(Httpstatus.INTERNAL_SERVER_ERROR)
             .then((response) => {
                 expect(response.body).to.eql(
-                    errorResponse("Error: no username to add was included in the request"));
+                    errorResponse(NoUsernameInRequestError.NO_USERNAME_IN_REQUEST_ERROR_MESSAGE));
             });
     });
 
@@ -62,7 +63,7 @@ describe("username controller", () => {
             .expect(Httpstatus.INTERNAL_SERVER_ERROR)
             .then((response) => {
                 expect(response.body).to.eql(
-                    errorResponse("Error: no username to release included in the request"));
+                    errorResponse(NoUsernameInRequestError.NO_USERNAME_IN_REQUEST_ERROR_MESSAGE));
             });
     });
 

@@ -2,11 +2,12 @@
 import { expect } from "chai";
 import * as HttpStatus from "http-status-codes";
 import * as request from "supertest";
+import {RequestFormatError} from "../../../common/errors/controller.errors";
 import { Bitmap } from "../../../common/image/bitmap/bitmap";
 import { Application } from "../app";
 import { container } from "../inversify.config";
 import types from "../types";
-import { BMP_ERROR_MESSAGE, FORMAT_ERROR_MESSAGE } from "./controller-utils";
+import {BMP_ERROR_MESSAGE} from "./controller-utils";
 
 const errorResponse = (errorMessage: string) => {
     return {
@@ -38,7 +39,7 @@ describe("Bitmap diff controller", () => {
             .field("name", "testDiff1")
             .expect(HttpStatus.INTERNAL_SERVER_ERROR)
             .then((response) => {
-                expect(response.body).to.eql(errorResponse(FORMAT_ERROR_MESSAGE));
+                expect(response.body).to.eql(errorResponse(RequestFormatError.FORMAT_ERROR_MESSAGE));
             });
     });
 
@@ -49,7 +50,7 @@ describe("Bitmap diff controller", () => {
             .attach("modifiedImage", "./test/test_bitmaps/white640x480.bmp")
             .expect(HttpStatus.INTERNAL_SERVER_ERROR)
             .then((response) => {
-                expect(response.body).to.eql(errorResponse(FORMAT_ERROR_MESSAGE));
+                expect(response.body).to.eql(errorResponse(RequestFormatError.FORMAT_ERROR_MESSAGE));
             });
     });
 
@@ -60,7 +61,7 @@ describe("Bitmap diff controller", () => {
             .attach("originalImage", "./test/test_bitmaps/white640x480.bmp")
             .expect(HttpStatus.INTERNAL_SERVER_ERROR)
             .then((response) => {
-                expect(response.body).to.eql(errorResponse(FORMAT_ERROR_MESSAGE));
+                expect(response.body).to.eql(errorResponse(RequestFormatError.FORMAT_ERROR_MESSAGE));
             });
     });
 
@@ -95,7 +96,7 @@ describe("Bitmap diff controller", () => {
             .attach("modifiedImage", "./test/test_bitmaps/black10x10.bmp")
             .expect(HttpStatus.INTERNAL_SERVER_ERROR)
             .then((response) => {
-                expect(response.body).to.eql(errorResponse(FORMAT_ERROR_MESSAGE));
+                expect(response.body).to.eql(errorResponse(RequestFormatError.FORMAT_ERROR_MESSAGE));
             });
     });
 

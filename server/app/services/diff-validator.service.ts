@@ -1,6 +1,7 @@
 import Axios, {AxiosResponse} from "axios";
 import {injectable} from "inversify";
 import "reflect-metadata";
+import {NoDifferenceAtPointError} from "../../../common/errors/services.errors";
 import {
     DifferenceCluster,
     DIFFERENCE_CLUSTER_POINTS_INDEX,
@@ -10,7 +11,6 @@ import {
 import {IPoint} from "../../../common/model/point";
 
 export const INVALID_POINT_ERROR_MESSAGE: string = "Invalid point: out of bounds";
-export const NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE: string = "There is no difference at the specified point";
 
 @injectable()
 export class DiffValidatorService {
@@ -39,7 +39,7 @@ export class DiffValidatorService {
         const differenceGroup: DifferenceCluster | undefined = DiffValidatorService.getDifferenceClusterOfPoint(diffData, point);
 
         if (differenceGroup === undefined) {
-            throw new Error(NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE);
+            throw new NoDifferenceAtPointError();
         }
 
         return differenceGroup;
