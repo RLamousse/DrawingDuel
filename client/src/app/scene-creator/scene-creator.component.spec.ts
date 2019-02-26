@@ -1,15 +1,15 @@
-import { HttpClientModule } from "@angular/common/http";
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { ActivatedRoute, Router } from "@angular/router";
-import { Observable } from "rxjs";
+import {HttpClientModule} from "@angular/common/http";
+import {ComponentFixture, TestBed} from "@angular/core/testing";
+import {ActivatedRoute, Router} from "@angular/router";
+import {Observable} from "rxjs";
 import * as THREE from "three";
-import { IFreeGame } from "../../../../common/model/game/free-game";
-import { IScene } from "../../../scene-interface";
-import { GameService } from "../game.service";
-import { FreeGameCreatorService } from "../scene-creator/FreeGameCreator/free-game-creator.service";
-import { TimerComponent} from "../timer/timer.component";
-import { SceneCreatorComponent } from "./scene-creator.component";
-import { SceneRendererService } from "./scene-renderer.service";
+import {IFreeGame} from "../../../../common/model/game/free-game";
+import {IScene} from "../../../scene-interface";
+import {GameService} from "../game.service";
+import {TimerComponent} from "../timer/timer.component";
+import {FreeGameCreatorService} from "./FreeGameCreator/free-game-creator.service";
+import {SceneCreatorComponent} from "./scene-creator.component";
+import {SceneRendererService} from "./scene-renderer.service";
 
 describe("SceneCreatorComponent", () => {
   let component: SceneCreatorComponent;
@@ -32,6 +32,8 @@ describe("SceneCreatorComponent", () => {
   }
   const mockedFreeGameCreator: MockFreeGameCreatorService = new MockFreeGameCreatorService();
 
+  // Mocked services classes are acceptable for tests  https://angular.io/guide/testing#nested-component-tests
+  // tslint:disable-next-line:max-classes-per-file
   class MockGameService {
     private mockGame: IFreeGame = {
       bestMultiTimes: [],
