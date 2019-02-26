@@ -45,6 +45,15 @@ export const assertRequestImageFilesFields: (req: Express.Request) => void = (re
     }
 };
 
+export const assertBodyFieldsOfRequest: (req: Request, ...fields: string[]) => void = (req: Request, ...fields: string[]): void => {
+    let field: string;
+    for (field of fields) {
+        if (typeof req.body[field] === "undefined" || req.body[field] === "") {
+            throw new Error(FORMAT_ERROR_MESSAGE);
+        }
+    }
+};
+
 export const assertRequestSceneFields: (req: Express.Request) => void = (req: Request): void => {
     assertBodyFieldsOfRequest(req, GAME_NAME_FIELD);
 
@@ -63,15 +72,6 @@ export const assertRequestSceneFields: (req: Express.Request) => void = (req: Re
             modificationType !== ModificationType.remove &&
             modificationType !== ModificationType.changeColor) {
             throw new Error(ARGUMENT_ERROR_MESSAGE);
-        }
-    }
-};
-
-export const assertBodyFieldsOfRequest: (req: Request, ...fields: string[]) => void = (req: Request, ...fields: string[]): void => {
-    let field: string;
-    for (field of fields) {
-        if (typeof req.body[field] === "undefined" || req.body[field] === "") {
-            throw new Error(FORMAT_ERROR_MESSAGE);
         }
     }
 };
