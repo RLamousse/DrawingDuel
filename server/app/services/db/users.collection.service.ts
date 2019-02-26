@@ -5,7 +5,7 @@ import {IUser} from "../../../../common/model/user";
 import {CollectionService} from "./collection.service";
 
 export const USER_NAME_FIELD: string = "userName";
-export const NON_EXISTING_USER_ERROR_MESSAGE: string = "ERROR: the specified usename does no exist!";
+export const NON_EXISTING_USER_ERROR_MESSAGE: string = "ERROR: the specified usename does not exist!";
 export const ALREADY_EXISTING_USER_MESSAGE_ERROR: string = "ERROR: the specified usename already exists!";
 
 @injectable()
