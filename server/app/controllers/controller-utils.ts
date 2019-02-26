@@ -54,23 +54,31 @@ export const assertBodyFieldsOfRequest: (req: Request, ...fields: string[]) => v
     }
 };
 
-export const assertRequestSceneFields: (req: Express.Request) => void = (req: Request): void => {
-    assertBodyFieldsOfRequest(req, GAME_NAME_FIELD);
-
-    if ((req.body.theme !== Themes.Geometry &&
+const assertBasicSceneFields: (req: Request) => boolean = (req: Request): boolean => {
+    return (req.body.theme !== Themes.Geometry &&
         req.body.theme !== Themes.Sanic &&
         req.body.theme !== Themes.Forest) ||
         !Array.isArray(req.body.modificationTypes) ||
         req.body.modificationTypes.length < 1 ||
         req.body.modificationTypes.length > NUMBER_OF_MODIFICATION_TYPES  ||
         (req.body.objectQuantity < EXPECTED_DIFF_NUMBER &&
-        req.body.modificationTypes.indexOf(ModificationType.remove) >= 0)) {
+            req.body.modificationTypes.indexOf(ModificationType.remove) >= 0);
+};
+
+const assertModificationType: (modificationType: ModificationType) => boolean = (modificationType: ModificationType): boolean => {
+    return modificationType !== ModificationType.add &&
+        modificationType !== ModificationType.remove &&
+        modificationType !== ModificationType.changeColor;
+};
+
+export const assertRequestSceneFields: (req: Express.Request) => void = (req: Request): void => {
+    assertBodyFieldsOfRequest(req, GAME_NAME_FIELD);
+
+    if (assertBasicSceneFields(req)) {
         throw new Error(ARGUMENT_ERROR_MESSAGE);
     }
     for (const modificationType of req.body.modificationTypes) {
-        if (modificationType !== ModificationType.add &&
-            modificationType !== ModificationType.remove &&
-            modificationType !== ModificationType.changeColor) {
+        if (assertModificationType(modificationType)) {
             throw new Error(ARGUMENT_ERROR_MESSAGE);
         }
     }
