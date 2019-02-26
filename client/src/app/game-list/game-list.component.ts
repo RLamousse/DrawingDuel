@@ -22,7 +22,7 @@ export class GameListComponent implements OnInit {
     private gameService: GameService,
     private photoService: FreeGamePhotoService,
     private freeGameCreatorService: FreeGameCreatorService,
-  ) {/*vide*/ }
+  ) {}
 
   public ngOnInit(): void {
     this.gameService.getSimpleGames().subscribe((simpleGamesToModify: ISimpleGame[]) => {
