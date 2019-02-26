@@ -14,7 +14,7 @@ import { SceneRendererService } from "./scene-renderer.service";
 export class SceneCreatorComponent implements AfterViewInit, OnInit {
 
   public constructor(private renderService: SceneRendererService, private route: ActivatedRoute,
-    private freeGameCreator: FreeGameCreatorService, private gameService: GameService, ) { }
+                     private freeGameCreator: FreeGameCreatorService, private gameService: GameService, ) { }
 
   protected gameName: string;
   protected isSimpleGame: boolean;
