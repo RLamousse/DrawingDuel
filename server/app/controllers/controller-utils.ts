@@ -54,7 +54,7 @@ export const assertBodyFieldsOfRequest: (req: Request, ...fields: string[]) => v
     }
 };
 
-function assertBasicSceneFields(req: Request): boolean {
+const assertBasicSceneFields: (req: Request) => boolean = (req: Request): boolean => {
     return (req.body.theme !== Themes.Geometry &&
         req.body.theme !== Themes.Sanic &&
         req.body.theme !== Themes.Forest) ||
@@ -63,13 +63,13 @@ function assertBasicSceneFields(req: Request): boolean {
         req.body.modificationTypes.length > NUMBER_OF_MODIFICATION_TYPES  ||
         (req.body.objectQuantity < EXPECTED_DIFF_NUMBER &&
             req.body.modificationTypes.indexOf(ModificationType.remove) >= 0);
-}
+};
 
-function assertModificationType(modificationType: ModificationType): boolean {
+const assertModificationType: (modificationType: ModificationType) => boolean = (modificationType: ModificationType): boolean => {
     return modificationType !== ModificationType.add &&
         modificationType !== ModificationType.remove &&
         modificationType !== ModificationType.changeColor;
-}
+};
 
 export const assertRequestSceneFields: (req: Express.Request) => void = (req: Request): void => {
     assertBodyFieldsOfRequest(req, GAME_NAME_FIELD);
