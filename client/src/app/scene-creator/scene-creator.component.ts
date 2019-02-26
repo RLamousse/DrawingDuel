@@ -1,9 +1,9 @@
 import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild } from "@angular/core";
-import { ActivatedRoute} from "@angular/router";
+import { ActivatedRoute } from "@angular/router";
 import { IFreeGame } from "../../../../common/model/game/free-game";
 import { IScene } from "../../../scene-interface";
 import { GameService } from "../game.service";
-import { FreeGameCreatorService} from "../scene-creator/FreeGameCreator/free-game-creator.service";
+import { FreeGameCreatorService } from "../scene-creator/FreeGameCreator/free-game-creator.service";
 import { SceneRendererService } from "./scene-renderer.service";
 
 @Component({
@@ -51,8 +51,8 @@ export class SceneCreatorComponent implements AfterViewInit, OnInit {
         const freeScenes: IScene = this.freeGameCreator.createScenes(freeGame.scenes);
         resolve(freeScenes);
       });
-  });
-}
+    });
+  }
 
   public ngAfterViewInit(): void {
     const errMsg: string = "An error occured when trying to render the free view games";

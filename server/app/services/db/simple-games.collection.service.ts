@@ -12,7 +12,7 @@ export const ALREADY_EXISTING_GAME_MESSAGE_ERROR: string = "ERROR: a game with t
 @injectable()
 export class SimpleGamesCollectionService extends CollectionService<ISimpleGame> {
 
-    public static validate(game: ISimpleGame): boolean {
+    private static validate(game: ISimpleGame): boolean {
         return game.diffData !== undefined &&
             game.originalImage !== "" &&
             game.modifiedImage !== "" &&

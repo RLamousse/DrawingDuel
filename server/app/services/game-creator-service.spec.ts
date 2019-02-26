@@ -4,22 +4,22 @@ import Axios from "axios";
 import AxiosAdapter from "axios-mock-adapter";
 // tslint:disable-next-line:no-duplicate-imports Weird interaction between singletons and interface (olivier st-o approved)
 import MockAdapter from "axios-mock-adapter";
-import {expect} from "chai";
+import { expect } from "chai";
 import * as fs from "fs";
 import * as HttpStatus from "http-status-codes";
-import {anything, instance, mock, when} from "ts-mockito";
+import { anything, instance, mock, when } from "ts-mockito";
 import {
     ModificationType,
     Themes
 } from "../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
-import {ISimpleDifferenceData} from "../../../common/model/game/simple-game";
-import {IPoint, ORIGIN} from "../../../common/model/point";
-import {DIFFERENCE_ERROR_MESSAGE, NAME_ERROR_MESSAGE, NON_EXISTING_THEME} from "../controllers/controller-utils";
-import {NON_EXISTING_GAME_ERROR_MESSAGE} from "./db/simple-games.collection.service";
-import {DifferenceEvaluatorService} from "./difference-evaluator.service";
-import {FreeGameCreatorService} from "./free-game-creator.service";
-import {EXPECTED_DIFF_NUMBER, GameCreatorService} from "./game-creator.service";
-import {ImageUploadService} from "./image-upload.service";
+import { ISimpleDifferenceData } from "../../../common/model/game/simple-game";
+import { IPoint, ORIGIN } from "../../../common/model/point";
+import { DIFFERENCE_ERROR_MESSAGE, NAME_ERROR_MESSAGE, NON_EXISTING_THEME } from "../controllers/controller-utils";
+import { NON_EXISTING_GAME_ERROR_MESSAGE } from "./db/simple-games.collection.service";
+import { DifferenceEvaluatorService } from "./difference-evaluator.service";
+import { FreeGameCreatorService } from "./free-game-creator.service";
+import { EXPECTED_DIFF_NUMBER, GameCreatorService } from "./game-creator.service";
+import { ImageUploadService } from "./image-upload.service";
 
 describe("A service that creates a game", () => {
 

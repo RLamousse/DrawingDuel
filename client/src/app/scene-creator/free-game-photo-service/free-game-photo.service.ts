@@ -13,7 +13,7 @@ export class FreeGamePhotoService {
   private readonly cameraY: number = 0;
   private readonly cameraZ: number = 200;
 
-  public takePhoto(originScene: THREE.Scene): string {
+  public takePhoto(scene: THREE.Scene): string {
     const divElem: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
     const camera: THREE.PerspectiveCamera = new THREE.PerspectiveCamera(
       this.fieldOfView,
@@ -31,7 +31,7 @@ export class FreeGamePhotoService {
     renderer.setSize(this.renderSize, this.renderSize);
     divElem.appendChild(renderer.domElement);
 
-    renderer.render(originScene, camera);
+    renderer.render(scene, camera);
 
     return (divElem.children[0] as HTMLCanvasElement).toDataURL();
   }

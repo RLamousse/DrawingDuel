@@ -10,10 +10,10 @@ export class FreeGameCreatorService {
 
   private scene: THREE.Scene;
   private modifiedScene: THREE.Scene;
+  private formService: Form3DService;
 
   public objects: THREE.Mesh[];
   public modifiedObjects: THREE.Mesh[];
-  private formService: Form3DService;
   public constructor() {
     this.objects = [];
     this.modifiedObjects = [];
@@ -70,21 +70,27 @@ export class FreeGameCreatorService {
     switch (obj.type) {
       case ObjectGeometry.sphere: {
         createdObject = this.formService.createSphere(obj as IObject.ISphere);
-        break; }
+        break;
+      }
       case ObjectGeometry.cube: {
         createdObject = this.formService.createCube(obj as IObject.ICube);
-        break; }
+        break;
+      }
       case ObjectGeometry.cone: {
         createdObject = this.formService.createCone(obj as IObject.ICone);
-        break; }
+        break;
+      }
       case ObjectGeometry.cylinder: {
         createdObject = this.formService.createCylinder(obj as IObject.ICylinder);
-        break; }
+        break;
+      }
       case ObjectGeometry.pyramid: {
         createdObject = this.formService.createPyramid(obj as IObject.IPyramid);
-        break; }
+        break;
+      }
       default: {
-        createdObject = new THREE.Mesh(); }
+        createdObject = new THREE.Mesh();
+      }
     }
 
     return createdObject;

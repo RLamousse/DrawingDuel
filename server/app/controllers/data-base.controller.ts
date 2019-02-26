@@ -1,12 +1,12 @@
-import {NextFunction, Request, Response, Router} from "express";
+import { NextFunction, Request, Response, Router } from "express";
 import * as Httpstatus from "http-status-codes";
 import { inject, injectable } from "inversify";
-import {IFreeGame} from "../../../common/model/game/free-game";
-import {ISimpleGame} from "../../../common/model/game/simple-game";
-import {DataBaseService} from "../services/data-base.service";
-import {NON_EXISTING_GAME_ERROR_MESSAGE} from "../services/db/simple-games.collection.service";
+import { IFreeGame } from "../../../common/model/game/free-game";
+import { ISimpleGame } from "../../../common/model/game/simple-game";
+import { DataBaseService } from "../services/data-base.service";
+import { NON_EXISTING_GAME_ERROR_MESSAGE } from "../services/db/simple-games.collection.service";
 import Types from "../types";
-import {executePromiseSafely} from "./controller-utils";
+import { executePromiseSafely } from "./controller-utils";
 
 @injectable()
 export class DataBaseController {

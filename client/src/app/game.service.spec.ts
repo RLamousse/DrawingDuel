@@ -1,9 +1,8 @@
 import { HttpClientModule } from "@angular/common/http";
 import { async, TestBed } from "@angular/core/testing";
-// import * as THREE from "three";
-import {IFreeGame} from "../../../common/model/game/free-game";
-import {IGame} from "../../../common/model/game/game";
-import {ISimpleGame} from "../../../common/model/game/simple-game";
+import { IFreeGame } from "../../../common/model/game/free-game";
+import { IGame } from "../../../common/model/game/game";
+import { ISimpleGame } from "../../../common/model/game/simple-game";
 import { GameService } from "./game.service";
 
 describe("GameService", () => {
@@ -41,7 +40,7 @@ describe("GameService", () => {
     TestBed.configureTestingModule({
       imports: [HttpClientModule],
       providers: [
-        { provide: GameService, useValue: spyService}, GameService],
+        { provide: GameService, useValue: spyService }, GameService],
     });
   });
 

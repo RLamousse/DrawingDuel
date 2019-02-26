@@ -1,14 +1,13 @@
-import {NextFunction, Request, Response} from "express";
+import { NextFunction, Request, Response } from "express";
 import * as HttpStatus from "http-status-codes";
-import {Field} from "multer";
-import {Message} from "../../../common/communication/messages/message";
-import {GAME_NAME_FIELD} from "../../../common/communication/requests/game-creator.controller.request";
+import { Field } from "multer";
+import { Message } from "../../../common/communication/messages/message";
+import { GAME_NAME_FIELD } from "../../../common/communication/requests/game-creator.controller.request";
 import {
     ModificationType,
     Themes
 } from "../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
-import {ARGUMENT_ERROR_MESSAGE} from "../services/difference-evaluator.service";
-import {EXPECTED_DIFF_NUMBER} from "../services/game-creator.service";
+import { EXPECTED_DIFF_NUMBER } from "../services/game-creator.service";
 
 export const REQUIRED_IMAGE_HEIGHT: number = 480;
 export const REQUIRED_IMAGE_WIDTH: number = 640;
@@ -24,6 +23,7 @@ export const NAME_ERROR_MESSAGE: string = "Error: The game name that you sent al
 export const BMP_ERROR_MESSAGE: string = "Error: Sent files are not in bmp format!";
 
 const NUMBER_OF_MODIFICATION_TYPES: number = 3;
+export const MAX_3D_OBJECTS: number = 1000;
 
 export const BITMAP_MULTER_FILTER:
     (req: Express.Request, file: Express.Multer.File, cb: (error: (Error | null), acceptFile: boolean) => void) => void =
@@ -61,6 +61,7 @@ const assertBasicSceneFields: (req: Request) => boolean = (req: Request): boolea
         !Array.isArray(req.body.modificationTypes) ||
         req.body.modificationTypes.length < 1 ||
         req.body.modificationTypes.length > NUMBER_OF_MODIFICATION_TYPES  ||
+        !(req.body.objectQuantity <= MAX_3D_OBJECTS && req.body.objectQuantity >= 0) ||
         (req.body.objectQuantity < EXPECTED_DIFF_NUMBER &&
             req.body.modificationTypes.indexOf(ModificationType.remove) >= 0);
 };
@@ -75,11 +76,11 @@ export const assertRequestSceneFields: (req: Express.Request) => void = (req: Re
     assertBodyFieldsOfRequest(req, GAME_NAME_FIELD);
 
     if (assertBasicSceneFields(req)) {
-        throw new Error(ARGUMENT_ERROR_MESSAGE);
+        throw new Error(FORMAT_ERROR_MESSAGE);
     }
     for (const modificationType of req.body.modificationTypes) {
         if (assertModificationType(modificationType)) {
-            throw new Error(ARGUMENT_ERROR_MESSAGE);
+            throw new Error(FORMAT_ERROR_MESSAGE);
         }
     }
 };

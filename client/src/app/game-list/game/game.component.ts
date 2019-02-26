@@ -9,7 +9,7 @@ import { Router } from "@angular/router";
 
 export class GameComponent {
 
-  public constructor( private router: Router, ) {/*vide*/}
+  public constructor(private router: Router) {}
 
   @Input() public gameName: string = "test";
   @Input() public bestSoloTimes: { name: string, time: number }[];

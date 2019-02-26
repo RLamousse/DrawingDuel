@@ -1,7 +1,6 @@
 import { TestBed } from "@angular/core/testing";
 import { ObjectGeometry } from "../../../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
 import * as IObject from "../../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
-// import * as THREE from "three";
 import { Form3DService } from "./3-dform.service";
 
 /* tslint:disable:no-magic-numbers */
