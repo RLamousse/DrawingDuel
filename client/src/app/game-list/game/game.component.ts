@@ -23,19 +23,23 @@ export class GameComponent {
 
   protected leftButtonClick(): void {
     if (this.leftButton === "jouer") {
-      if (this.isSimpleGame) {
-        this.router.navigate(["/play-view/"], {queryParams: {
-          isSimpleGame : this.isSimpleGame, gameName: this.gameName,
-          originalImage: this.originalImage, modifiedImage: this.modifiedImage },
-        }).catch();
-      } else {
-          this.router.navigate(["/3d-view/"], {
-            queryParams: {
-              gameName: this.gameName,
-            },
-          }).catch();
-      }
+      this.isSimpleGame ? this.navigatePlayView() : this.navigateFreeView();
     }
+  }
+
+  protected navigatePlayView(): void {
+   this.router.navigate(["/play-view/"], {queryParams: {
+      isSimpleGame : this.isSimpleGame, gameName: this.gameName,
+      originalImage: this.originalImage, modifiedImage: this.modifiedImage },
+    }).catch();
+  }
+
+  protected navigateFreeView(): void {
+    this.router.navigate(["/3d-view/"], {
+      queryParams: {
+        gameName: this.gameName,
+      },
+    }).catch();
   }
 
 }

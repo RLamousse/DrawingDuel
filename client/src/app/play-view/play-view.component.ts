@@ -11,10 +11,10 @@ export class PlayViewComponent implements OnInit {
   public constructor(
   private route: ActivatedRoute, ) {/*vide*/ }
 
-  public gameName: string;
-  public originalImage: string;
-  public modifiedImage: string;
-  public isSimpleGame: boolean;
+  protected gameName: string;
+  protected originalImage: string;
+  protected modifiedImage: string;
+  protected isSimpleGame: boolean;
   public ngOnInit(): void {
     this.route.queryParams.subscribe((params) => {
       this.isSimpleGame = params ["isSimpleGame"];

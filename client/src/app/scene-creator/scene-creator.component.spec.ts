@@ -57,7 +57,7 @@ describe("SceneCreatorComponent", () => {
           provide: ActivatedRoute,
           useValue: {queryParams: {
             subscribe: (fn: (queryParams: string ) => void) => fn(
-              // tslint:disable-next-line:max-line-length
+              // pour donner un "parametre" au subscribe
               "3d-view?gameName=freeGame100"
               ,
             ),
