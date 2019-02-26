@@ -43,13 +43,6 @@ describe("SceneRendererService", () => {
     expect(service).toBeTruthy();
   });
 
-  it("should asign the div container to the attributes after init is call", () => {
-    const service: SceneRendererService = TestBed.get(SceneRendererService);
-    service.init(mockComponentInstance.cont1, mockComponentInstance.cont2);
-    expect(service.originalContainer).toBe(mockComponentInstance.cont1);
-    expect(service.modifiedContainer).toBe(mockComponentInstance.cont2);
-  });
-
   // Test loadScenes
   it("should throw an error if loadScenes is called before init(...)", () => {
     const service: SceneRendererService = TestBed.get(SceneRendererService);

@@ -9,7 +9,6 @@ import {ISimpleGame} from "../../../../common/model/game/simple-game";
 import { IScene } from "../../../scene-interface";
 import { GameService } from "../game.service";
 import { FreeGameCreatorService } from "../scene-creator/FreeGameCreator/free-game-creator.service";
-// import { GameComponent } from "./game/game.component";
 import { FreeGamePhotoService } from "../scene-creator/free-game-photo-service/free-game-photo.service";
 import { GameListComponent } from "./game-list.component";
 
@@ -39,7 +38,7 @@ describe("GameListComponent", () => {
   }
   const mockedFreeGameCreator: MockFreeGameCreatorService = new MockFreeGameCreatorService();
 
-  beforeEach((done) => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [GameListComponent],
       imports: [HttpClientModule, FormsModule ],
