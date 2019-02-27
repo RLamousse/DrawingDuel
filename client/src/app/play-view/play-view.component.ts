@@ -9,7 +9,7 @@ import {SimpleGameService} from "../simple-game/simple-game.service";
            })
 export class PlayViewComponent implements OnInit {
 
-  private _gameName: string;
+  protected gameName: string;
   protected originalImage: string;
   protected modifiedImage: string;
 
@@ -18,11 +18,11 @@ export class PlayViewComponent implements OnInit {
 
   public ngOnInit(): void {
     this.route.queryParams.subscribe((params) => {
-      this._gameName = params["gameName"];
+      this.gameName = params["gameName"];
       this.originalImage = params["originalImage"];
       this.modifiedImage = params["modifiedImage"];
 
-      this.simpleGameService.gameName = this._gameName;
+      this.simpleGameService.gameName = this.gameName;
     });
   }
 }

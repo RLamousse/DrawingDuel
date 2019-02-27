@@ -16,7 +16,7 @@ export class SceneCreatorComponent implements AfterViewInit, OnInit {
   public constructor(private renderService: SceneRendererService, private route: ActivatedRoute,
                      private freeGameCreator: FreeGameCreatorService, private gameService: GameService, ) { }
 
-  private gameName: string;
+  protected gameName: string;
 
   private get originalContainer(): HTMLDivElement {
     return this.originalRef.nativeElement;
