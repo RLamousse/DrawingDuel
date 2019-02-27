@@ -1,38 +1,52 @@
 @import "~@angular/material/prebuilt-themes/indigo-pink.css";
 
 body {
-    background-color: lightblue;
+  font-family: Orbitron, serif;
+  background-color: rgb(65, 62, 62);
+  color: white;
 }
 
 .window {
-    width: 30%;
-    border: 1px black solid;
-    min-height: 30%;
+  width: 30%;
+  border: 1px black solid;
+  min-height: 30%;
 }
 
 app-simple-game-container {
-    margin: auto;
-    width: 1320px;
-    border: 3px solid green;
-    padding: 10px;
-    font: 25px arial serif;
-    display: block;
+  margin: auto;
+  width: 1350px;
+  padding: 10px;
+  font: 25px arial serif;
+  display: block;
 }
 
-.centeredText {
-    text-align: center;
-    font-size: 16px;
+h1 {
+  text-align: center;
+  font-size: 50px;
+  margin-top: 0;
+  padding-top: 20px;
+}
+
+.timer {
+  color: rgb(243, 44, 44);
+  font-size: 60px;
 }
 
 .compteur {
-    margin: 10px;
-    font: 20px arial serif;
+  margin: 10px;
+  font: 20px arial serif;
 }
 
 .eventNotif {
-    margin: auto;
-    width: 1320px;
-    border: 3px solid green;
-    padding: 10px;
-    min-height: 300px;
+  margin: auto;
+  width: 1320px;
+  border: 5px rgb(194, 185, 185) solid;
+  padding: 10px;
+  min-height: 200px;
+}
+
+.centered {
+  text-align: center;
+  font-size: 50px;
+  margin-top: 0;
 }
