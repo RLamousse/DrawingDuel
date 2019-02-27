@@ -2,7 +2,6 @@ import {Collection, MongoError} from "mongodb";
 import {Message} from "../../../../common/communication/messages/message";
 import {DatabaseError, EmptyIdError} from "../../../../common/errors/database.errors";
 
-
 export abstract class CollectionService<T> {
 
     public constructor(collection: Collection<T>) {

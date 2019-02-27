@@ -55,7 +55,7 @@ import { WindowEventHandlerDirective } from "./window-event-handler.directive";
     SceneCreatorComponent,
     SimpleGameCanvasComponent,
     SimpleGameContainerComponent,
-    TimerComponent
+    TimerComponent,
   ],
   imports: [
     BrowserModule,
