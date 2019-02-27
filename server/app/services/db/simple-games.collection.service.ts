@@ -11,7 +11,8 @@ export const GAME_NAME_FIELD: string = "gameName";
 export class SimpleGamesCollectionService extends CollectionService<ISimpleGame> {
 
     private static validate(game: ISimpleGame): boolean {
-        return game.diffData !== undefined &&
+        return game != undefined &&
+            game.diffData !== undefined &&
             game.originalImage !== "" &&
             game.modifiedImage !== "" &&
             game.gameName !== "";
