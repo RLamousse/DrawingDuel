@@ -13,7 +13,8 @@ import {
 export class FreeGamesCollectionService extends CollectionService<IFreeGame> {
 
     private static validate(game: IFreeGame): boolean {
-        return game.scenes !== undefined &&
+        return game != undefined &&
+            game.scenes !== undefined &&
             game.gameName !== "";
     }
 

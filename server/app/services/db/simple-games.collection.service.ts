@@ -13,7 +13,8 @@ export const ALREADY_EXISTING_GAME_MESSAGE_ERROR: string = "ERROR: a game with t
 export class SimpleGamesCollectionService extends CollectionService<ISimpleGame> {
 
     private static validate(game: ISimpleGame): boolean {
-        return game.diffData !== undefined &&
+        return game != undefined &&
+            game.diffData !== undefined &&
             game.originalImage !== "" &&
             game.modifiedImage !== "" &&
             game.gameName !== "";
