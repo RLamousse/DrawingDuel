@@ -1,19 +1,19 @@
- // Test file have too much lines
- /* tslint:disable:max-file-line-count */
- // we have some numbers in the expects
- // tslint:disable:no-magic-numbers
+// Test file have too much lines
+/* tslint:disable:max-file-line-count */
+// we have some numbers in the expects
+// tslint:disable:no-magic-numbers
 import {expect} from "chai";
+import {
+    AlreadyExistentGameError,
+    AlreadyExistentUserError,
+    EmptyIdError,
+    InvalidGameError, NonExistentGameError,
+    NonExistentUserError
+} from "../../../common/errors/database.errors";
 import {IFreeGame} from "../../../common/model/game/free-game";
 import {ISimpleGame} from "../../../common/model/game/simple-game";
 import {IUser} from "../../../common/model/user";
 import {DataBaseService} from "./data-base.service";
-import {EMPTY_ID_ERROR_MESSAGE} from "./db/collection.service";
-import {
-    ALREADY_EXISTING_GAME_MESSAGE_ERROR,
-    GAME_FORMAT_ERROR_MESSAGE,
-    NON_EXISTING_GAME_ERROR_MESSAGE
-} from "./db/simple-games.collection.service";
-import {ALREADY_EXISTING_USER_MESSAGE_ERROR, NON_EXISTING_USER_ERROR_MESSAGE} from "./db/users.collection.service";
 
 import {customIndexOf, deepCompare} from "../../../common/util/util";
 
@@ -31,7 +31,7 @@ describe("A service that communicates with the data-base", () => {
                     // @ts-ignore
                     await dataBaseService.users.create({userName: ""});
                 } catch (error) {
-                    return expect(error.message).to.equal(EMPTY_ID_ERROR_MESSAGE);
+                    return expect(error.message).to.equal(EmptyIdError.EMPTY_ID_ERROR_MESSAGE);
                 }
 
                 return expect.fail();
@@ -43,11 +43,11 @@ describe("A service that communicates with the data-base", () => {
                     await dataBaseService.users.create({userName: "alreadyExistingUserTest"});
                 } catch (error) {
                     // cleanup
-                    if (error.message === ALREADY_EXISTING_USER_MESSAGE_ERROR) {
+                    if (error.message === AlreadyExistentUserError.ALREADY_EXISTENT_USER_ERROR_MESSAGE) {
                         await dataBaseService.users.delete("alreadyExistingUserTest");
                     }
 
-                    return expect(error.message).to.equal(ALREADY_EXISTING_USER_MESSAGE_ERROR);
+                    return expect(error.message).to.equal(AlreadyExistentUserError.ALREADY_EXISTENT_USER_ERROR_MESSAGE);
                 }
 
                 return expect.fail();
@@ -67,7 +67,7 @@ describe("A service that communicates with the data-base", () => {
                 try {
                     await dataBaseService.users.delete("");
                 } catch (error) {
-                    return expect(error.message).to.equal(EMPTY_ID_ERROR_MESSAGE);
+                    return expect(error.message).to.equal(EmptyIdError.EMPTY_ID_ERROR_MESSAGE);
                 }
 
                 return expect.fail();
@@ -77,7 +77,7 @@ describe("A service that communicates with the data-base", () => {
                 try {
                     await dataBaseService.users.delete("notExistingUserTest");
                 } catch (error) {
-                    return expect(error.message).to.equal(NON_EXISTING_USER_ERROR_MESSAGE);
+                    return expect(error.message).to.equal(NonExistentUserError.NON_EXISTENT_USER_ERROR_MESSAGE);
                 }
 
                 return expect.fail();
@@ -96,7 +96,7 @@ describe("A service that communicates with the data-base", () => {
                 try {
                     await dataBaseService.users.getFromId("");
                 } catch (error) {
-                    return expect(error.message).to.equal(EMPTY_ID_ERROR_MESSAGE);
+                    return expect(error.message).to.equal(EmptyIdError.EMPTY_ID_ERROR_MESSAGE);
                 }
 
                 return expect.fail();
@@ -106,7 +106,7 @@ describe("A service that communicates with the data-base", () => {
                 try {
                     await dataBaseService.users.getFromId("notExistingUserTest");
                 } catch (error) {
-                    return expect(error.message).to.equal(NON_EXISTING_USER_ERROR_MESSAGE);
+                    return expect(error.message).to.equal(NonExistentUserError.NON_EXISTENT_USER_ERROR_MESSAGE);
                 }
 
                 return expect.fail();
@@ -129,8 +129,10 @@ describe("A service that communicates with the data-base", () => {
                 await dataBaseService.users.create(USERS_ARRAY[0]);
                 await dataBaseService.users.create(USERS_ARRAY[1]);
                 await dataBaseService.users.create(USERS_ARRAY[2]);
-                // @ts-ignore the data-base modifies the attributes given ti it by a create, and generates an id_ attribute
-                USERS_ARRAY.forEach((item: IUser) => { delete item._id; });
+                USERS_ARRAY.forEach((item: IUser) => {
+                    // @ts-ignore the data-base modifies the attributes given ti it by a create, and generates an id_ attribute
+                    delete item._id;
+                });
                 expect((await dataBaseService.users.getAll())).to.eql(USERS_ARRAY);
                 await dataBaseService.users.delete("someUserTest");
                 await dataBaseService.users.delete("someUserTest2");
@@ -149,7 +151,7 @@ describe("A service that communicates with the data-base", () => {
                     // @ts-ignore we need to give a null argument for testing
                     await dataBaseService.simpleGames.create(null);
                 } catch (error) {
-                    return expect(error.message).to.equal(GAME_FORMAT_ERROR_MESSAGE);
+                    return expect(error.message).to.equal(InvalidGameError.GAME_FORMAT_ERROR_MESSAGE);
                 }
 
                 return expect.fail();
@@ -168,7 +170,7 @@ describe("A service that communicates with the data-base", () => {
                 try {
                     await dataBaseService.simpleGames.create(partialGame);
                 } catch (error) {
-                    return expect(error.message).to.equal(GAME_FORMAT_ERROR_MESSAGE);
+                    return expect(error.message).to.equal(InvalidGameError.GAME_FORMAT_ERROR_MESSAGE);
                 }
 
                 return expect.fail();
@@ -188,11 +190,11 @@ describe("A service that communicates with the data-base", () => {
                     await dataBaseService.simpleGames.create(alreadyExistingGame);
                 } catch (error) {
                     // cleanup
-                    if (error.message === ALREADY_EXISTING_GAME_MESSAGE_ERROR) {
+                    if (error.message === AlreadyExistentGameError.ALREADY_EXISTENT_GAME_ERROR_MESSAGE) {
                         await dataBaseService.simpleGames.delete("someGameTest");
                     }
 
-                    return expect(error.message).to.equal(ALREADY_EXISTING_GAME_MESSAGE_ERROR);
+                    return expect(error.message).to.equal(AlreadyExistentGameError.ALREADY_EXISTENT_GAME_ERROR_MESSAGE);
                 }
 
                 return expect.fail();
@@ -220,7 +222,7 @@ describe("A service that communicates with the data-base", () => {
                 try {
                     await dataBaseService.simpleGames.delete("");
                 } catch (error) {
-                    return expect(error.message).to.equal(EMPTY_ID_ERROR_MESSAGE);
+                    return expect(error.message).to.equal(EmptyIdError.EMPTY_ID_ERROR_MESSAGE);
                 }
 
                 return expect.fail();
@@ -230,7 +232,7 @@ describe("A service that communicates with the data-base", () => {
                 try {
                     await dataBaseService.simpleGames.delete("notExistingGameTest");
                 } catch (error) {
-                    return expect(error.message).to.equal(NON_EXISTING_GAME_ERROR_MESSAGE);
+                    return expect(error.message).to.equal(NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE);
                 }
 
                 return expect.fail();
@@ -280,8 +282,8 @@ describe("A service that communicates with the data-base", () => {
                 delete someGame._id;
                 expect(customIndexOf(await dataBaseService.simpleGames.getAll(), someGame,
                                      (a: ISimpleGame, b: ISimpleGame): boolean => {
-                        return deepCompare(a, b);
-                    })).to.be.greaterThan(-1);
+                                         return deepCompare(a, b);
+                                     })).to.be.greaterThan(-1);
                 // cleanup
                 await dataBaseService.simpleGames.delete("someGameTest");
             });
@@ -293,7 +295,7 @@ describe("A service that communicates with the data-base", () => {
                 try {
                     await dataBaseService.simpleGames.getFromId("");
                 } catch (error) {
-                    return expect(error.message).to.equal(EMPTY_ID_ERROR_MESSAGE);
+                    return expect(error.message).to.equal(EmptyIdError.EMPTY_ID_ERROR_MESSAGE);
                 }
 
                 return expect.fail();
@@ -303,7 +305,7 @@ describe("A service that communicates with the data-base", () => {
                 try {
                     await dataBaseService.simpleGames.getFromId("notExistingGameTest");
                 } catch (error) {
-                    return expect(error.message).to.equal(NON_EXISTING_GAME_ERROR_MESSAGE);
+                    return expect(error.message).to.equal(NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE);
                 }
 
                 return expect.fail();
@@ -343,8 +345,8 @@ describe("A service that communicates with the data-base", () => {
                 delete someGame._id;
                 expect(customIndexOf(await dataBaseService.simpleGames.getAll(), someGame,
                                      (a: ISimpleGame, b: ISimpleGame): boolean => {
-                        return deepCompare(a, b);
-                    })).to.be.greaterThan(-1);
+                                         return deepCompare(a, b);
+                                     })).to.be.greaterThan(-1);
                 // cleanup
                 await dataBaseService.simpleGames.delete("someGameTest");
             });
@@ -361,7 +363,7 @@ describe("A service that communicates with the data-base", () => {
                     // @ts-ignore we need to give a null argument for testing
                     await dataBaseService.freeGames.create(null);
                 } catch (error) {
-                    return expect(error.message).to.equal(GAME_FORMAT_ERROR_MESSAGE);
+                    return expect(error.message).to.equal(InvalidGameError.GAME_FORMAT_ERROR_MESSAGE);
                 }
 
                 return expect.fail();
@@ -378,7 +380,7 @@ describe("A service that communicates with the data-base", () => {
                 try {
                     await dataBaseService.freeGames.create(partialGame);
                 } catch (error) {
-                    return expect(error.message).to.equal(GAME_FORMAT_ERROR_MESSAGE);
+                    return expect(error.message).to.equal(InvalidGameError.GAME_FORMAT_ERROR_MESSAGE);
                 }
 
                 return expect.fail();
@@ -396,11 +398,11 @@ describe("A service that communicates with the data-base", () => {
                     await dataBaseService.freeGames.create(alreadyExistingGame);
                 } catch (error) {
                     // cleanup
-                    if (error.message === ALREADY_EXISTING_GAME_MESSAGE_ERROR) {
+                    if (error.message === AlreadyExistentGameError.ALREADY_EXISTENT_GAME_ERROR_MESSAGE) {
                         await dataBaseService.freeGames.delete("someGameTest");
                     }
 
-                    return expect(error.message).to.equal(ALREADY_EXISTING_GAME_MESSAGE_ERROR);
+                    return expect(error.message).to.equal(AlreadyExistentGameError.ALREADY_EXISTENT_GAME_ERROR_MESSAGE);
                 }
 
                 return expect.fail();
@@ -426,7 +428,7 @@ describe("A service that communicates with the data-base", () => {
                 try {
                     await dataBaseService.freeGames.delete("");
                 } catch (error) {
-                    return expect(error.message).to.equal(EMPTY_ID_ERROR_MESSAGE);
+                    return expect(error.message).to.equal(EmptyIdError.EMPTY_ID_ERROR_MESSAGE);
                 }
 
                 return expect.fail();
@@ -436,7 +438,7 @@ describe("A service that communicates with the data-base", () => {
                 try {
                     await dataBaseService.freeGames.delete("notExistingGameTest");
                 } catch (error) {
-                    return expect(error.message).to.equal(NON_EXISTING_GAME_ERROR_MESSAGE);
+                    return expect(error.message).to.equal(NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE);
                 }
 
                 return expect.fail();
@@ -482,8 +484,8 @@ describe("A service that communicates with the data-base", () => {
                 delete someGame._id;
                 expect(customIndexOf(await dataBaseService.simpleGames.getAll(), someGame,
                                      (a: ISimpleGame, b: ISimpleGame): boolean => {
-                        return deepCompare(a, b);
-                    })).to.be.greaterThan(-1);
+                                         return deepCompare(a, b);
+                                     })).to.be.greaterThan(-1);
                 // cleanup
                 await dataBaseService.simpleGames.delete("someGameTest");
             });
@@ -495,7 +497,7 @@ describe("A service that communicates with the data-base", () => {
                 try {
                     await dataBaseService.freeGames.getFromId("");
                 } catch (error) {
-                    return expect(error.message).to.equal(EMPTY_ID_ERROR_MESSAGE);
+                    return expect(error.message).to.equal(EmptyIdError.EMPTY_ID_ERROR_MESSAGE);
                 }
 
                 return expect.fail();
@@ -505,7 +507,7 @@ describe("A service that communicates with the data-base", () => {
                 try {
                     await dataBaseService.freeGames.getFromId("notExistingGameTest");
                 } catch (error) {
-                    return expect(error.message).to.equal(NON_EXISTING_GAME_ERROR_MESSAGE);
+                    return expect(error.message).to.equal(NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE);
                 }
 
                 return expect.fail();
@@ -541,8 +543,8 @@ describe("A service that communicates with the data-base", () => {
                 delete someGame._id;
                 expect(customIndexOf(await dataBaseService.freeGames.getAll(), someGame,
                                      (a: IFreeGame, b: IFreeGame): boolean => {
-                        return deepCompare(a, b);
-                    })).to.be.greaterThan(-1);
+                                         return deepCompare(a, b);
+                                     })).to.be.greaterThan(-1);
                 // cleanup
                 await dataBaseService.freeGames.delete("someGameTest");
             });
