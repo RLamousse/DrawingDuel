@@ -8,6 +8,7 @@ import {expect} from "chai";
 import * as fs from "fs";
 import * as HttpStatus from "http-status-codes";
 import {anything, instance, mock, when} from "ts-mockito";
+import {DB_FREE_GAME, DB_SIMPLE_GAME, DIFF_CREATOR_BASE, SERVER_BASE_URL} from "../../../common/communication/routes";
 import {AlreadyExistentGameError, NonExistentGameError, NonExistentThemeError} from "../../../common/errors/database.errors";
 import {DifferenceCountError} from "../../../common/errors/services.errors";
 import {
@@ -63,7 +64,7 @@ describe("A service that creates a game", () => {
 
         it("should throw a name error if the game name is already in the data base", async () => {
 
-            axiosMock.onGet("http://localhost:3000/api/data-base/games/simple/nonExistingGameTest")
+            axiosMock.onGet(SERVER_BASE_URL + DB_SIMPLE_GAME + "nonExistingGameTest")
                 .reply(HttpStatus.OK);
 
             try {
@@ -80,12 +81,12 @@ describe("A service that creates a game", () => {
 
         it("should throw a difference error if there are less than 7 differences", async () => {
 
-            axiosMock.onGet("http://localhost:3000/api/data-base/games/simple/someGameTest")
+            axiosMock.onGet(SERVER_BASE_URL + DB_SIMPLE_GAME + "someGameTest")
                 .reply(HttpStatus.NOT_FOUND, {message: NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE});
-            axiosMock.onGet("http://localhost:3000/api/data-base/games/free/someGameTest")
+            axiosMock.onGet(SERVER_BASE_URL + DB_FREE_GAME + "someGameTest")
                 .reply(HttpStatus.NOT_FOUND, {message: NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE});
 
-            axiosMock.onPost("http://localhost:3000/api/image-diff/")
+            axiosMock.onPost(SERVER_BASE_URL + DIFF_CREATOR_BASE)
                 .reply(HttpStatus.OK, fs.readFileSync("test/test_files_for_game_creator_service/6diff-modified.bmp"));
 
             when(mockedDifferenceEvaluatorServiceMock.getSimpleNDifferences(anything()))
@@ -105,12 +106,12 @@ describe("A service that creates a game", () => {
 
         it("should throw a difference error if there are more than 7 differences", async () => {
 
-            axiosMock.onGet("http://localhost:3000/api/data-base/games/simple/someGameTest")
+            axiosMock.onGet(SERVER_BASE_URL + DB_SIMPLE_GAME + "/someGameTest")
                 .reply(HttpStatus.NOT_FOUND, {message: NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE});
-            axiosMock.onGet("http://localhost:3000/api/data-base/games/free/someGameTest")
+            axiosMock.onGet(SERVER_BASE_URL + DB_FREE_GAME + "/someGameTest")
                 .reply(HttpStatus.NOT_FOUND, {message: NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE});
 
-            axiosMock.onPost("http://localhost:3000/api/image-diff/")
+            axiosMock.onPost(SERVER_BASE_URL + DIFF_CREATOR_BASE)
                 .reply(HttpStatus.OK, fs.readFileSync("test/test_files_for_game_creator_service/8diff-modified.bmp"));
 
             when(mockedDifferenceEvaluatorServiceMock.getSimpleNDifferences(anything()))
@@ -129,12 +130,12 @@ describe("A service that creates a game", () => {
         });
 
         it("should throw on diff image microservice call error", async () => {
-            axiosMock.onGet("http://localhost:3000/api/data-base/games/simple/someGameTest")
+            axiosMock.onGet(SERVER_BASE_URL + DB_SIMPLE_GAME + "/someGameTest")
                 .reply(HttpStatus.NOT_FOUND, {message: NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE});
-            axiosMock.onGet("http://localhost:3000/api/data-base/games/free/someGameTest")
+            axiosMock.onGet(SERVER_BASE_URL + DB_FREE_GAME + "/someGameTest")
                 .reply(HttpStatus.NOT_FOUND, {message: NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE});
 
-            axiosMock.onPost("http://localhost:3000/api/image-diff/")
+            axiosMock.onPost(SERVER_BASE_URL + DIFF_CREATOR_BASE)
                 .reply(HttpStatus.INTERNAL_SERVER_ERROR, {message: "error"});
 
             return getMockedService()
@@ -148,12 +149,12 @@ describe("A service that creates a game", () => {
         });
 
         it("should throw on differenceEvaluatorService call error", async () => {
-            axiosMock.onGet("http://localhost:3000/api/data-base/games/simple/someGameTest")
+            axiosMock.onGet(SERVER_BASE_URL + DB_SIMPLE_GAME + "/someGameTest")
                 .reply(HttpStatus.NOT_FOUND, {message: NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE});
-            axiosMock.onGet("http://localhost:3000/api/data-base/games/free/someGameTest")
+            axiosMock.onGet(SERVER_BASE_URL + DB_FREE_GAME + "/someGameTest")
                 .reply(HttpStatus.NOT_FOUND, {message: NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE});
 
-            axiosMock.onPost("http://localhost:3000/api/image-diff/")
+            axiosMock.onPost(SERVER_BASE_URL + DIFF_CREATOR_BASE)
                 .reply(HttpStatus.OK, fs.readFileSync("test/test_files_for_game_creator_service/7diff-modified.bmp"));
 
             when(mockedDifferenceEvaluatorServiceMock.getSimpleNDifferences(anything())).thenThrow(new Error("error"));
@@ -169,7 +170,7 @@ describe("A service that creates a game", () => {
         });
 
         it("should throw on db get game call error", async () => {
-            axiosMock.onGet("http://localhost:3000/api/data-base/games/simple/someGameTest")
+            axiosMock.onGet(SERVER_BASE_URL + DB_SIMPLE_GAME + "someGameTest")
                 .reply(HttpStatus.INTERNAL_SERVER_ERROR, {message: "error"});
 
             return getMockedService()
@@ -183,12 +184,12 @@ describe("A service that creates a game", () => {
         });
 
         it("should throw on ImageUploadService call error", async () => {
-            axiosMock.onGet("http://localhost:3000/api/data-base/games/simple/someGameTest")
+            axiosMock.onGet(SERVER_BASE_URL + DB_SIMPLE_GAME + "/someGameTest")
                 .reply(HttpStatus.NOT_FOUND, {message: NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE});
-            axiosMock.onGet("http://localhost:3000/api/data-base/games/free/someGameTest")
+            axiosMock.onGet(SERVER_BASE_URL + DB_FREE_GAME + "/someGameTest")
                 .reply(HttpStatus.NOT_FOUND, {message: NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE});
 
-            axiosMock.onPost("http://localhost:3000/api/image-diff/")
+            axiosMock.onPost(SERVER_BASE_URL + DIFF_CREATOR_BASE)
                 .reply(HttpStatus.OK, fs.readFileSync("test/test_files_for_game_creator_service/7diff-modified.bmp"));
 
             when(mockedImageUploadService.uploadImage(anything())).thenThrow(new Error("error"));
@@ -205,15 +206,15 @@ describe("A service that creates a game", () => {
 
         it("should throw on db create game call error", async () => {
 
-            axiosMock.onGet("http://localhost:3000/api/data-base/games/simple/someGameTest")
+            axiosMock.onGet(SERVER_BASE_URL + DB_SIMPLE_GAME + "/someGameTest")
                 .reply(HttpStatus.NOT_FOUND, {message: NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE});
-            axiosMock.onGet("http://localhost:3000/api/data-base/games/free/someGameTest")
+            axiosMock.onGet(SERVER_BASE_URL + DB_FREE_GAME + "/someGameTest")
                 .reply(HttpStatus.NOT_FOUND, {message: NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE});
 
-            axiosMock.onPost("http://localhost:3000/api/image-diff/")
+            axiosMock.onPost(SERVER_BASE_URL + DIFF_CREATOR_BASE)
                 .reply(HttpStatus.OK, fs.readFileSync("test/test_files_for_game_creator_service/7diff-modified.bmp"));
 
-            axiosMock.onPost("http://localhost:3000/api/data-base/games/simple/")
+            axiosMock.onPost(SERVER_BASE_URL + DB_SIMPLE_GAME)
                 .reply(HttpStatus.INTERNAL_SERVER_ERROR, new Error("error"));
 
             return getMockedService()
@@ -228,15 +229,15 @@ describe("A service that creates a game", () => {
 
         it("should return a success message if everything is good", async () => {
 
-            axiosMock.onGet("http://localhost:3000/api/data-base/games/simple/someGameTest")
+            axiosMock.onGet(SERVER_BASE_URL + DB_SIMPLE_GAME + "/someGameTest")
                 .reply(HttpStatus.NOT_FOUND, {message: NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE});
-            axiosMock.onGet("http://localhost:3000/api/data-base/games/free/someGameTest")
+            axiosMock.onGet(SERVER_BASE_URL + DB_FREE_GAME + "/someGameTest")
                 .reply(HttpStatus.NOT_FOUND, {message: NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE});
 
-            axiosMock.onPost("http://localhost:3000/api/image-diff/")
+            axiosMock.onPost(SERVER_BASE_URL + DIFF_CREATOR_BASE)
                 .reply(HttpStatus.OK, fs.readFileSync("test/test_files_for_game_creator_service/7diff-modified.bmp"));
 
-            axiosMock.onPost("http://localhost:3000/api/data-base/games/simple/")
+            axiosMock.onPost(SERVER_BASE_URL + DB_SIMPLE_GAME)
                 .reply(HttpStatus.OK);
 
             when(mockedDifferenceEvaluatorServiceMock.getSimpleNDifferences(anything()))
@@ -255,9 +256,9 @@ describe("A service that creates a game", () => {
 
         it("should throw a name error if the game name is already in the free games data base(simple game name existence)", async () => {
 
-            axiosMock.onGet("http://localhost:3000/api/data-base/games/simple/nonExistingGameTest")
+            axiosMock.onGet(SERVER_BASE_URL + DB_SIMPLE_GAME + "nonExistingGameTest")
                 .reply(HttpStatus.NOT_FOUND);
-            axiosMock.onGet("http://localhost:3000/api/data-base/games/free/nonExistingGameTest")
+            axiosMock.onGet(SERVER_BASE_URL + DB_FREE_GAME + "nonExistingGameTest")
                 .reply(HttpStatus.OK);
 
             try {
@@ -275,7 +276,7 @@ describe("A service that creates a game", () => {
 
         it("should throw a name error if the game name is already in the simple games data base(free game name existence)", async () => {
 
-            axiosMock.onGet("http://localhost:3000/api/data-base/games/simple/nonExistingGameTest")
+            axiosMock.onGet(SERVER_BASE_URL + DB_SIMPLE_GAME + "nonExistingGameTest")
                 .reply(HttpStatus.OK);
 
             try {
@@ -292,7 +293,7 @@ describe("A service that creates a game", () => {
         });
 
         it("should throw error on db get simple game call", async () => {
-            axiosMock.onGet("http://localhost:3000/api/data-base/games/simple/someGameTest")
+            axiosMock.onGet(SERVER_BASE_URL + DB_SIMPLE_GAME + "someGameTest")
                 .reply(HttpStatus.INTERNAL_SERVER_ERROR, {message: "error"});
 
             return getMockedService()
@@ -307,9 +308,9 @@ describe("A service that creates a game", () => {
 
         it("should throw error on db get free game call", async () => {
 
-            axiosMock.onGet("http://localhost:3000/api/data-base/games/simple/someGameTest")
+            axiosMock.onGet(SERVER_BASE_URL + DB_SIMPLE_GAME + "someGameTest")
                 .reply(HttpStatus.NOT_FOUND, {message: NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE});
-            axiosMock.onGet("http://localhost:3000/api/data-base/games/free/someGameTest")
+            axiosMock.onGet(SERVER_BASE_URL + DB_FREE_GAME + "someGameTest")
                 .reply(HttpStatus.INTERNAL_SERVER_ERROR, {message: "error"});
 
             return getMockedService()
@@ -324,12 +325,12 @@ describe("A service that creates a game", () => {
 
         it("should throw error if the theme is other than Geometry", async () => {
 
-            axiosMock.onGet("http://localhost:3000/api/data-base/games/simple/someGameTest")
+            axiosMock.onGet(SERVER_BASE_URL + DB_SIMPLE_GAME + "someGameTest")
                 .reply(HttpStatus.NOT_FOUND, {message: NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE});
-            axiosMock.onGet("http://localhost:3000/api/data-base/games/free/someGameTest")
+            axiosMock.onGet(SERVER_BASE_URL + DB_FREE_GAME + "someGameTest")
                 .reply(HttpStatus.NOT_FOUND, {message: NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE});
 
-            axiosMock.onPost("http://localhost:3000/api/data-base/games/free/")
+            axiosMock.onPost(SERVER_BASE_URL + DB_FREE_GAME)
                 .reply(HttpStatus.INTERNAL_SERVER_ERROR, new Error("error"));
 
             return getMockedService()
@@ -344,12 +345,12 @@ describe("A service that creates a game", () => {
 
         it("should throw error on db create game call", async () => {
 
-            axiosMock.onGet("http://localhost:3000/api/data-base/games/simple/someGameTest")
+            axiosMock.onGet(SERVER_BASE_URL + DB_SIMPLE_GAME + "/someGameTest")
                 .reply(HttpStatus.NOT_FOUND, {message: NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE});
-            axiosMock.onGet("http://localhost:3000/api/data-base/games/free/someGameTest")
+            axiosMock.onGet(SERVER_BASE_URL + DB_FREE_GAME + "/someGameTest")
                 .reply(HttpStatus.NOT_FOUND, {message: NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE});
 
-            axiosMock.onPost("http://localhost:3000/api/data-base/games/free/")
+            axiosMock.onPost(SERVER_BASE_URL + DB_FREE_GAME)
                 .reply(HttpStatus.INTERNAL_SERVER_ERROR, new Error("error"));
 
             return getMockedService()
@@ -364,12 +365,12 @@ describe("A service that creates a game", () => {
 
         it("should return a success message if everything is good", async () => {
 
-            axiosMock.onGet("http://localhost:3000/api/data-base/games/simple/someGameTest")
+            axiosMock.onGet(SERVER_BASE_URL + DB_SIMPLE_GAME + "/someGameTest")
                 .reply(HttpStatus.NOT_FOUND, {message: NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE});
-            axiosMock.onGet("http://localhost:3000/api/data-base/games/free/someGameTest")
+            axiosMock.onGet(SERVER_BASE_URL + DB_FREE_GAME + "/someGameTest")
                 .reply(HttpStatus.NOT_FOUND, {message: NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE});
 
-            axiosMock.onPost("http://localhost:3000/api/data-base/games/free/")
+            axiosMock.onPost(SERVER_BASE_URL + DB_FREE_GAME)
                 .reply(HttpStatus.OK);
 
             when(mockedFreeGameCreatorService.generateIScenes(anything(), anything()))

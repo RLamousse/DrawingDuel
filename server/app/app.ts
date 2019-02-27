@@ -4,6 +4,7 @@ import * as cors from "cors";
 import * as express from "express";
 import { inject, injectable } from "inversify";
 import * as logger from "morgan";
+import {DB_BASE, DIFF_CREATOR_BASE, DIFF_VALIDATOR_BASE, GAME_CREATOR_BASE, USERNAME_BASE} from "../../common/communication/routes";
 import {BitmapDiffController} from "./controllers/bitmap-diff.controller";
 import {DataBaseController} from "./controllers/data-base.controller";
 import {DiffValidatorController} from "./controllers/diff-validator.controller";
@@ -41,11 +42,11 @@ export class Application {
     }
 
     public bindRoutes(): void {
-        this.app.use("/api/usernames", this.userController.router);
-        this.app.use("/api/image-diff", this.bitmapDiffController.router);
-        this.app.use("/api/game-creator", this.gameCreatorController.router);
-        this.app.use("/api/data-base", this.dataBaseController.router);
-        this.app.use("/api/diff-validator", this.diffValidatorController.router);
+        this.app.use(USERNAME_BASE, this.userController.router);
+        this.app.use(DIFF_CREATOR_BASE, this.bitmapDiffController.router);
+        this.app.use(GAME_CREATOR_BASE, this.gameCreatorController.router);
+        this.app.use(DB_BASE, this.dataBaseController.router);
+        this.app.use(DIFF_VALIDATOR_BASE, this.diffValidatorController.router);
         this.errorHandeling();
     }
 
