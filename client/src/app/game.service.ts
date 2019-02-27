@@ -2,6 +2,7 @@ import {HttpClient} from "@angular/common/http";
 import {Injectable} from "@angular/core";
 import {of, Observable} from "rxjs";
 import {catchError} from "rxjs/operators";
+import {SERVER_BASE_URL, DB_FREE_GAME, DB_SIMPLE_GAME} from "../../../common/communication/routes";
 import {IExtendedFreeGame} from "../../../common/model/game/extended-free-game";
 import {IFreeGame} from "../../../common/model/game/free-game";
 import {IGame} from "../../../common/model/game/game";
@@ -17,8 +18,8 @@ export class GameService {
   public simpleGames: ISimpleGame[] = [];
   public freeGames: IFreeGame[] = [];
   public extendedFreeGames: IExtendedFreeGame[] = [];
-  public readonly SIMPLE_GAME_BASE_URL: string = "http://localhost:3000/api/data-base/games/simple/";
-  public readonly FREE_GAME_BASE_URL: string = "http://localhost:3000/api/data-base/games/free/";
+  public readonly SIMPLE_GAME_BASE_URL: string = SERVER_BASE_URL + DB_SIMPLE_GAME;
+  public readonly FREE_GAME_BASE_URL: string = SERVER_BASE_URL + DB_FREE_GAME;
 
   private readonly GET_SIMPLEGAME_ERROR: string = "get simple game from server error";
   private readonly GET_FREEGAME_ERROR: string = "get free game from server error";

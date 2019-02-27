@@ -5,6 +5,7 @@ import * as HttpStatus from "http-status-codes";
 import * as request from "supertest";
 import {anything, anyString, instance, mock, when} from "ts-mockito";
 import {ICreateFreeGameRequest} from "../../../common/communication/requests/game-creator.controller.request";
+import {FREE_GAME_CREATION_ROUTE, SIMPLE_GAME_CREATION_ROUTE} from "../../../common/communication/routes";
 import {IllegalImageFormatError} from "../../../common/errors/bitmap.errors";
 import {RequestFormatError} from "../../../common/errors/controller.errors";
 import {
@@ -40,7 +41,7 @@ describe("Game creator controller", () => {
     describe("Create simple game", () => {
         it("should send an error when all images are missing", async () => {
             return request(app)
-                .post("/api/game-creator/create-simple-game")
+                .post(SIMPLE_GAME_CREATION_ROUTE)
                 .field("gameName", "testDiff1")
                 .expect(HttpStatus.INTERNAL_SERVER_ERROR)
                 .then((response) => {
@@ -50,7 +51,7 @@ describe("Game creator controller", () => {
 
         it("should send an error when original image is missing", async () => {
             return request(app)
-                .post("/api/game-creator/create-simple-game")
+                .post(SIMPLE_GAME_CREATION_ROUTE)
                 .field("gameName", "testDiff2")
                 .attach("modifiedImage", "./test/test_bitmaps/white640x480.bmp")
                 .expect(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -61,7 +62,7 @@ describe("Game creator controller", () => {
 
         it("should send an error when modified image is missing", async () => {
             return request(app)
-                .post("/api/game-creator/create-simple-game")
+                .post(SIMPLE_GAME_CREATION_ROUTE)
                 .field("gameName", "testDiff3")
                 .attach("originalImage", "./test/test_bitmaps/white640x480.bmp")
                 .expect(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -72,7 +73,7 @@ describe("Game creator controller", () => {
 
         it("should send an error when wrong image type is sent", async () => {
             return request(app)
-                .post("/api/game-creator/create-simple-game")
+                .post(SIMPLE_GAME_CREATION_ROUTE)
                 .field("gameName", "testDiff4")
                 .attach("originalImage", "./test/test_diffController/jobs.jpg")
                 .attach("modifiedImage", "./test/test_diffController/jobs.jpg")
@@ -85,7 +86,7 @@ describe("Game creator controller", () => {
 
         it("should send an error when no name specified", async () => {
             return request(app)
-                .post("/api/game-creator/create-simple-game")
+                .post(SIMPLE_GAME_CREATION_ROUTE)
                 .attach("originalImage", "./test/test_bitmaps/black10x10.bmp")
                 .attach("modifiedImage", "./test/test_bitmaps/black10x10.bmp")
                 .expect(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -96,7 +97,7 @@ describe("Game creator controller", () => {
 
         it("should send an success response for valid data", async () => {
             return request(app)
-                .post("/api/game-creator/create-simple-game")
+                .post(SIMPLE_GAME_CREATION_ROUTE)
                 .field("gameName", "testDiff7")
                 .attach("originalImage", "./test/test_bitmaps/pika.o.bmp")
                 .attach("modifiedImage", "./test/test_bitmaps/pika.m.bmp")
@@ -111,7 +112,7 @@ describe("Game creator controller", () => {
 
         it("should send an error when there is no request", async () => {
             return request(app)
-                .post("/api/game-creator/create-free-game")
+                .post(FREE_GAME_CREATION_ROUTE)
                 .expect(HttpStatus.INTERNAL_SERVER_ERROR)
                 .then((response) => {
                     expect(response.body).to.eql(errorResponse(RequestFormatError.FORMAT_ERROR_MESSAGE));
@@ -128,7 +129,7 @@ describe("Game creator controller", () => {
             };
 
             return request(app)
-                .post("/api/game-creator/create-free-game")
+                .post(FREE_GAME_CREATION_ROUTE)
                 .send(freeRequest)
                 .expect(HttpStatus.INTERNAL_SERVER_ERROR)
                 .then((response) => {
@@ -146,7 +147,7 @@ describe("Game creator controller", () => {
             };
 
             return request(app)
-                .post("/api/game-creator/create-free-game")
+                .post(FREE_GAME_CREATION_ROUTE)
                 .send(freeRequest)
                 .expect(HttpStatus.INTERNAL_SERVER_ERROR)
                 .then((response) => {
@@ -164,7 +165,7 @@ describe("Game creator controller", () => {
             };
 
             return request(app)
-                .post("/api/game-creator/create-free-game")
+                .post(FREE_GAME_CREATION_ROUTE)
                 .send(freeRequest)
                 .expect(HttpStatus.INTERNAL_SERVER_ERROR)
                 .then((response) => {
@@ -182,7 +183,7 @@ describe("Game creator controller", () => {
             };
 
             return request(app)
-                .post("/api/game-creator/create-free-game")
+                .post(FREE_GAME_CREATION_ROUTE)
                 .send(freeRequest)
                 .expect(HttpStatus.OK)
                 .then((response) => {
@@ -200,7 +201,7 @@ describe("Game creator controller", () => {
             };
 
             return request(app)
-                .post("/api/game-creator/create-free-game")
+                .post(FREE_GAME_CREATION_ROUTE)
                 .send(freeRequest)
                 .expect(HttpStatus.INTERNAL_SERVER_ERROR)
                 .then((response) => {
@@ -218,7 +219,7 @@ describe("Game creator controller", () => {
             };
 
             return request(app)
-                .post("/api/game-creator/create-free-game")
+                .post(FREE_GAME_CREATION_ROUTE)
                 .send(freeRequest)
                 .expect(HttpStatus.INTERNAL_SERVER_ERROR)
                 .then((response) => {
@@ -236,7 +237,7 @@ describe("Game creator controller", () => {
             };
 
             return request(app)
-                .post("/api/game-creator/create-free-game")
+                .post(FREE_GAME_CREATION_ROUTE)
                 .send(freeRequest)
                 .expect(HttpStatus.INTERNAL_SERVER_ERROR)
                 .then((response) => {
@@ -255,7 +256,7 @@ describe("Game creator controller", () => {
             };
 
             return request(app)
-                .post("/api/game-creator/create-free-game")
+                .post(FREE_GAME_CREATION_ROUTE)
                 .send(freeRequest)
                 .expect(HttpStatus.INTERNAL_SERVER_ERROR)
                 .then((response) => {
@@ -274,7 +275,7 @@ describe("Game creator controller", () => {
             };
 
             return request(app)
-                .post("/api/game-creator/create-free-game")
+                .post(FREE_GAME_CREATION_ROUTE)
                 .send(freeRequest)
                 .expect(HttpStatus.INTERNAL_SERVER_ERROR)
                 .then((response) => {
@@ -292,7 +293,7 @@ describe("Game creator controller", () => {
             };
 
             return request(app)
-                .post("/api/game-creator/create-free-game")
+                .post(FREE_GAME_CREATION_ROUTE)
                 .send(freeRequest)
                 .expect(HttpStatus.INTERNAL_SERVER_ERROR)
                 .then((response) => {
@@ -311,7 +312,7 @@ describe("Game creator controller", () => {
             };
 
             return request(app)
-                .post("/api/game-creator/create-free-game")
+                .post(FREE_GAME_CREATION_ROUTE)
                 .send(freeRequest)
                 .expect(HttpStatus.INTERNAL_SERVER_ERROR)
                 .then((response) => {
@@ -329,7 +330,7 @@ describe("Game creator controller", () => {
             };
 
             return request(app)
-                .post("/api/game-creator/create-free-game")
+                .post(FREE_GAME_CREATION_ROUTE)
                 .send(freeRequest)
                 .expect(HttpStatus.INTERNAL_SERVER_ERROR)
                 .then((response) => {
@@ -348,7 +349,7 @@ describe("Game creator controller", () => {
             };
 
             return request(app)
-                .post("/api/game-creator/create-free-game")
+                .post(FREE_GAME_CREATION_ROUTE)
                 .send(freeRequest)
                 .expect(HttpStatus.INTERNAL_SERVER_ERROR)
                 .then((response) => {
@@ -366,7 +367,7 @@ describe("Game creator controller", () => {
             };
 
             return request(app)
-                .post("/api/game-creator/create-free-game")
+                .post(FREE_GAME_CREATION_ROUTE)
                 .send(freeRequest)
                 .expect(HttpStatus.OK)
                 .then((response) => {

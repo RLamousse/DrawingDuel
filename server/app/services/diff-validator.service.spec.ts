@@ -4,6 +4,7 @@ import MockAdapter from "axios-mock-adapter";
 import AxiosAdapter from "axios-mock-adapter";
 import {expect} from "chai";
 import * as HttpStatus from "http-status-codes";
+import {SERVER_BASE_URL, DB_SIMPLE_GAME} from "../../../common/communication/routes";
 import {NonExistentGameError} from "../../../common/errors/database.errors";
 import {InvalidPointError, NoDifferenceAtPointError} from "../../../common/errors/services.errors";
 import {DifferenceCluster, ISimpleDifferenceData, ISimpleGame} from "../../../common/model/game/simple-game";
@@ -51,7 +52,7 @@ describe("A service validating if there is a difference at a coord for a game", 
             });
     });
     it("should throw if the specified gameName is not valid", async () => {
-        axiosMock.onGet("http://localhost:3000/api/data-base/games/simple/notAValidGame")
+        axiosMock.onGet(SERVER_BASE_URL + DB_SIMPLE_GAME + "/notAValidGame")
             .reply(HttpStatus.NOT_FOUND, {message: NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE});
 
         return diffValidatorService.getDifferenceCluster("notAValidGame", ORIGIN)
@@ -60,7 +61,7 @@ describe("A service validating if there is a difference at a coord for a game", 
             });
     });
     it("should return an empty list when the point is not part of a difference group", async () => {
-        axiosMock.onGet("http://localhost:3000/api/data-base/games/simple/game")
+        axiosMock.onGet(SERVER_BASE_URL + DB_SIMPLE_GAME + "/game")
             .reply(HttpStatus.OK, mockedSimpleGame);
 
         return diffValidatorService.getDifferenceCluster("game", {x: 42, y: 42})
@@ -69,7 +70,7 @@ describe("A service validating if there is a difference at a coord for a game", 
             });
     });
     it("should return a difference group", async () => {
-        axiosMock.onGet("http://localhost:3000/api/data-base/games/simple/game")
+        axiosMock.onGet(SERVER_BASE_URL + DB_SIMPLE_GAME + "/game")
             .reply(HttpStatus.OK, mockedSimpleGame);
 
         return diffValidatorService.getDifferenceCluster("game", {x: 0, y: 0})

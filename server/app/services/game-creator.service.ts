@@ -4,6 +4,7 @@ import * as Httpstatus from "http-status-codes";
 import {inject, injectable} from "inversify";
 import "reflect-metadata";
 import {Message} from "../../../common/communication/messages/message";
+import {SERVER_BASE_URL, DB_FREE_GAME, DB_SIMPLE_GAME, DIFF_CREATOR_BASE} from "../../../common/communication/routes";
 import {AlreadyExistentGameError, NonExistentGameError, NonExistentThemeError} from "../../../common/errors/database.errors";
 import {DifferenceCountError} from "../../../common/errors/services.errors";
 import {
@@ -54,13 +55,13 @@ export class GameCreatorService {
 
     private static async testNameExistence(gameName: string): Promise<void> {
         try {
-            await Axios.get<ISimpleGame>("http://localhost:3000/api/data-base/games/simple/" + gameName);
+            await Axios.get<ISimpleGame>(SERVER_BASE_URL + DB_SIMPLE_GAME + "/" + gameName);
         } catch (error) {
             if (error.response.status !== Httpstatus.NOT_FOUND) {
                 throw new Error("dataBase: " + error.response.data.message);
             }
             try {
-                await Axios.get<IFreeGame>("http://localhost:3000/api/data-base/games/free/" + gameName);
+                await Axios.get<IFreeGame>(SERVER_BASE_URL + DB_FREE_GAME + "/" + gameName);
             } catch (error) {
                 if (error.response.status !== Httpstatus.NOT_FOUND) {
                     throw new Error("dataBase: " + error.response.data.message);
@@ -79,7 +80,7 @@ export class GameCreatorService {
             requestFormData.append(ORIGINAL_IMAGE_FIELD_NAME, originalImageFile, {contentType: BITMAP_MEME_TYPE, filename: "original.bmp"});
             requestFormData.append(MODIFIED_IMAGE_FIELD_NAME, modifiedImageFile, {contentType: BITMAP_MEME_TYPE, filename: "modified.bmp"});
             const response: AxiosResponse<ArrayBuffer> = await Axios.post<ArrayBuffer>(
-                "http://localhost:3000/api/image-diff/",
+                SERVER_BASE_URL + DIFF_CREATOR_BASE,
                 requestFormData,
                 {
                     headers: requestFormData.getHeaders(),
@@ -141,7 +142,7 @@ export class GameCreatorService {
             modifiedImage: imagesUrls[1],
             diffData: differenceData,
         };
-        await Axios.post<Message>("http://localhost:3000/api/data-base/games/simple/", game)
+        await Axios.post<Message>(SERVER_BASE_URL + DB_SIMPLE_GAME, game)
             // tslint:disable-next-line:no-any Generic error response
             .catch((reason: any) => {
                 throw new Error("Unable to create game: " + reason.response.data.message);
@@ -155,7 +156,7 @@ export class GameCreatorService {
             bestMultiTimes: this.createRandomScores(),
             scenes: scenes,
         };
-        await Axios.post<Message>("http://localhost:3000/api/data-base/games/free/", game)
+        await Axios.post<Message>(SERVER_BASE_URL + DB_FREE_GAME, game)
             // tslint:disable-next-line:no-any Generic error response
             .catch((reason: any) => {
                 throw new Error("dataBase: Unable to create game: " + reason.response.data.message);

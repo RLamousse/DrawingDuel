@@ -3,11 +3,12 @@ import { Injectable } from "@angular/core";
 import { of, Observable } from "rxjs";
 import { catchError } from "rxjs/operators";
 import { UserValidationMessage } from "../../../common/communication/messages/user-validation-message";
+import {SERVER_BASE_URL, USERNAME_BASE} from "../../../common/communication/routes";
 
 @Injectable()
 export class UNListService {
 
-  private static readonly BASE_URL: string = "http://localhost:3000/api/usernames";
+  private static readonly BASE_URL: string = SERVER_BASE_URL + USERNAME_BASE;
   public constructor(private http: HttpClient) {}
 
   public static username: string = "";
