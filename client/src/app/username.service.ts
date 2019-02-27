@@ -17,6 +17,7 @@ export class UNListService {
   public response: UserValidationMessage = {
     username: "", available: true,
   };
+  private readonly regex: RegExp = /^[a-zA-Z0-9]+$/i;
 
   public async sendReleaseRequest(): Promise<UserValidationMessage> {
     return this.http.post<UserValidationMessage>(UNListService.BASE_URL + "/release", {
@@ -38,7 +39,7 @@ export class UNListService {
   }
 
   public isAlphanumeric(testString: string): boolean {
-    if (testString.match(/^[a-zA-Z0-9]+$/i) !== null) {
+    if (testString.match(this.regex) !== null) {
 
       return true;
     } else {
