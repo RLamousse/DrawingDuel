@@ -5,6 +5,7 @@ import * as request from "supertest";
 import {anything, anyString, instance, mock, when} from "ts-mockito";
 import {IDiffValidatorControllerRequest} from "../../../common/communication/requests/diff-validator-controller.request";
 import {IDiffValidatorControllerResponse} from "../../../common/communication/responses/diff-validator-controller.response";
+import {DIFF_VALIDATOR_BASE} from "../../../common/communication/routes";
 import {RequestFormatError} from "../../../common/errors/controller.errors";
 import {NoDifferenceAtPointError} from "../../../common/errors/services.errors";
 import {Application} from "../app";
@@ -35,7 +36,7 @@ describe("Diff validator controller", () => {
 
     it("should send an error if the game name is missing", async () => {
         return request(app)
-            .get("/api/diff-validator")
+            .get(DIFF_VALIDATOR_BASE)
             .query({coordX: 0, coordY: 0})
             .expect(HttpStatus.INTERNAL_SERVER_ERROR)
             .then((response) => {
@@ -45,7 +46,7 @@ describe("Diff validator controller", () => {
 
     it("should send an error if the clicked coord is missing", async () => {
         return request(app)
-            .get("/api/diff-validator")
+            .get(DIFF_VALIDATOR_BASE)
             .query({gameName: "ayylmao"})
             .expect(HttpStatus.INTERNAL_SERVER_ERROR)
             .then((response) => {
@@ -66,7 +67,7 @@ describe("Diff validator controller", () => {
         container.rebind(types.DiffValidatorService).toConstantValue(instance(mockedDiffValidatorService));
 
         return request(app)
-            .get("/api/diff-validator")
+            .get(DIFF_VALIDATOR_BASE)
             .query(query)
             .expect(HttpStatus.NOT_FOUND)
             .then((value) => {
@@ -86,7 +87,7 @@ describe("Diff validator controller", () => {
         };
 
         return request(app)
-            .get("/api/diff-validator")
+            .get(DIFF_VALIDATOR_BASE)
             .query(query)
             .expect(HttpStatus.OK)
             .then((response) => {

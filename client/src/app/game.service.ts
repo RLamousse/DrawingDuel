@@ -1,24 +1,25 @@
-import { HttpClient } from "@angular/common/http";
-import { Injectable } from "@angular/core";
-import { of, Observable } from "rxjs";
-import { catchError } from "rxjs/operators";
-import { IExtendedFreeGame } from "../../../common/model/game/extended-free-game";
-import { IFreeGame } from "../../../common/model/game/free-game";
-import { IGame } from "../../../common/model/game/game";
-import { ISimpleGame } from "../../../common/model/game/simple-game";
-import { IScene } from "./../../scene-interface";
-import { FreeGameCreatorService } from "./scene-creator/FreeGameCreator/free-game-creator.service";
-import { FreeGamePhotoService } from "./scene-creator/free-game-photo-service/free-game-photo.service";
+import {HttpClient} from "@angular/common/http";
+import {Injectable} from "@angular/core";
+import {of, Observable} from "rxjs";
+import {catchError} from "rxjs/operators";
+import {DB_FREE_GAME, DB_SIMPLE_GAME, SERVER_BASE_URL} from "../../../common/communication/routes";
+import {IExtendedFreeGame} from "../../../common/model/game/extended-free-game";
+import {IFreeGame} from "../../../common/model/game/free-game";
+import {IGame} from "../../../common/model/game/game";
+import {ISimpleGame} from "../../../common/model/game/simple-game";
+import {FreeGameCreatorService} from "./scene-creator/FreeGameCreator/free-game-creator.service";
+import {FreeGamePhotoService} from "./scene-creator/free-game-photo-service/free-game-photo.service";
+import {IScene} from "./scene-interface";
 
 @Injectable({
-  providedIn: "root",
-})
+              providedIn: "root",
+            })
 export class GameService {
   public simpleGames: ISimpleGame[] = [];
   public freeGames: IFreeGame[] = [];
   public extendedFreeGames: IExtendedFreeGame[] = [];
-  public readonly SIMPLE_GAME_BASE_URL: string = "http://localhost:3000/api/data-base/games/simple/";
-  public readonly FREE_GAME_BASE_URL: string = "http://localhost:3000/api/data-base/games/free/";
+  public readonly SIMPLE_GAME_BASE_URL: string = SERVER_BASE_URL + DB_SIMPLE_GAME;
+  public readonly FREE_GAME_BASE_URL: string = SERVER_BASE_URL + DB_FREE_GAME;
 
   private readonly GET_SIMPLEGAME_ERROR: string = "get simple game from server error";
   private readonly GET_FREEGAME_ERROR: string = "get free game from server error";
@@ -28,7 +29,8 @@ export class GameService {
     private http: HttpClient,
     private photoService: FreeGamePhotoService,
     private freeGameCreatorService: FreeGameCreatorService,
-  ) { }
+  ) {
+  }
 
   private convertTimeScores(seconds: number): number {
     const COEFFICIENT: number = 0.6;
@@ -72,12 +74,12 @@ export class GameService {
     for (const game of this.freeGames) {
       const scenes: IScene = this.freeGameCreatorService.createScenes(game.scenes);
       const extendedFreeGame: IExtendedFreeGame = {
-                                                  thumbnail: this.photoService.takePhoto(scenes.scene),
-                                                  scenes: game.scenes,
-                                                  gameName: game.gameName,
-                                                  bestSoloTimes: game.bestSoloTimes,
-                                                  bestMultiTimes: game.bestMultiTimes,
-                                                 };
+        thumbnail: this.photoService.takePhoto(scenes.scene),
+        scenes: game.scenes,
+        gameName: game.gameName,
+        bestSoloTimes: game.bestSoloTimes,
+        bestMultiTimes: game.bestMultiTimes,
+      };
       this.extendedFreeGames.push(extendedFreeGame);
     }
   }
@@ -103,7 +105,7 @@ export class GameService {
   private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {
 
     return (error: Error): Observable<T> => {
-        return of(result as T);
+      return of(result as T);
     };
   }
 }

@@ -1,6 +1,7 @@
 import Axios, {AxiosResponse} from "axios";
 import {injectable} from "inversify";
 import "reflect-metadata";
+import {DB_SIMPLE_GAME, SERVER_BASE_URL} from "../../../common/communication/routes";
 import {InvalidPointError, NoDifferenceAtPointError} from "../../../common/errors/services.errors";
 import {
     DifferenceCluster,
@@ -44,7 +45,7 @@ export class DiffValidatorService {
     }
 
     private async getGame(gameName: string): Promise<ISimpleGame> {
-        return Axios.get<ISimpleGame>(`http://localhost:3000/api/data-base/games/simple/${gameName}`)
+        return Axios.get<ISimpleGame>(SERVER_BASE_URL + DB_SIMPLE_GAME + gameName)
             .then((value: AxiosResponse<ISimpleGame>) => value.data)
             // tslint:disable-next-line:no-any Since Axios defines reason as `any`
             .catch((reason: any) => {

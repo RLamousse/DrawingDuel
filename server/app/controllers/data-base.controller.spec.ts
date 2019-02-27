@@ -5,6 +5,7 @@ import * as HttpStatus from "http-status-codes";
 import * as request from "supertest";
 import {anything, instance, mock, when} from "ts-mockito";
 import {Message} from "../../../common/communication/messages/message";
+import {DB_FREE_GAME, DB_SIMPLE_GAME, DB_USERS} from "../../../common/communication/routes";
 import {DatabaseError, NonExistentGameError} from "../../../common/errors/database.errors";
 import {IFreeGame} from "../../../common/model/game/free-game";
 import {ISimpleGame} from "../../../common/model/game/simple-game";
@@ -59,7 +60,7 @@ describe("Data-base controller", () => {
             const requestToSend: IUser = {userName: "mike"};
 
             return request(app)
-                .post("/api/data-base/users")
+                .post(DB_USERS)
                 .send(requestToSend)
                 .expect(HttpStatus.OK)
                 .then((response) => {
@@ -68,7 +69,7 @@ describe("Data-base controller", () => {
         });
         it("should send a success message on delete", async () => {
             return request(app)
-                .delete("/api/data-base/users/mike")
+                .delete(DB_USERS + "mike")
                 .expect(HttpStatus.OK)
                 .then((response) => {
                     expect(response.body).to.eql(SUCCESS_MESSAGE);
@@ -78,16 +79,17 @@ describe("Data-base controller", () => {
 
     describe("Simple Games", () => {
         it("should send a success message on create", async () => {
-            const requestToSend: ISimpleGame = {gameName: "someGameTest",
-                                                bestSoloTimes: [],
-                                                bestMultiTimes: [],
-                                                originalImage: "",
-                                                modifiedImage: "",
-                                                diffData: [],
+            const requestToSend: ISimpleGame = {
+                gameName: "someGameTest",
+                bestSoloTimes: [],
+                bestMultiTimes: [],
+                originalImage: "",
+                modifiedImage: "",
+                diffData: [],
             };
 
             return request(app)
-                .post("/api/data-base/games/simple")
+                .post(DB_SIMPLE_GAME)
                 .send(requestToSend)
                 .expect(HttpStatus.OK)
                 .then((response) => {
@@ -96,7 +98,7 @@ describe("Data-base controller", () => {
         });
         it("should send a success message on delete", async () => {
             return request(app)
-                .delete("/api/data-base/games/simple/someGameTest")
+                .delete(DB_SIMPLE_GAME + "someGameTest")
                 .expect(HttpStatus.OK)
                 .then((response) => {
                     expect(response.body).to.eql(SUCCESS_MESSAGE);
@@ -104,7 +106,7 @@ describe("Data-base controller", () => {
         });
         it("should send a success message on get all", async () => {
             return request(app)
-                .get("/api/data-base/games/simple")
+                .get(DB_SIMPLE_GAME)
                 .expect(HttpStatus.OK)
                 .then((response) => {
                     expect(response.body).to.eql([]);
@@ -112,7 +114,7 @@ describe("Data-base controller", () => {
         });
         it("should send a success message on get one game", async () => {
             return request(app)
-                .get("/api/data-base/games/simple/someGameTest")
+                .get(DB_SIMPLE_GAME + "someGameTest")
                 .expect(HttpStatus.OK)
                 .then((response) => {
                     expect(true).to.be.equal(true);
@@ -122,7 +124,7 @@ describe("Data-base controller", () => {
             when(mockSimpleGames.getFromId(anything())).thenReject(new NonExistentGameError());
 
             return request(app)
-                .get("/api/data-base/games/simple/notExistingGame")
+                .get(DB_SIMPLE_GAME + "notExistingGame")
                 .expect(HttpStatus.NOT_FOUND)
                 .then((response) => {
                     expect(true).to.be.equal(true);
@@ -132,7 +134,7 @@ describe("Data-base controller", () => {
             when(mockSimpleGames.getFromId(anything())).thenReject(new DatabaseError());
 
             return request(app)
-                .get("/api/data-base/games/simple/notExistingGame")
+                .get(DB_SIMPLE_GAME + "/notExistingGame")
                 .expect(HttpStatus.INTERNAL_SERVER_ERROR)
                 .then((response) => {
                     expect(true).to.be.equal(true);
@@ -142,17 +144,18 @@ describe("Data-base controller", () => {
 
     describe("Free Games", () => {
         it("should send an success message on create", async () => {
-            const requestToSend: IFreeGame = {gameName: "someGameTest",
-                                              bestSoloTimes: [],
-                                              bestMultiTimes: [],
-                                              scenes: {
-                                                  originalObjects: [],
-                                                  modifiedObjects: [],
-                                              },
+            const requestToSend: IFreeGame = {
+                gameName: "someGameTest",
+                bestSoloTimes: [],
+                bestMultiTimes: [],
+                scenes: {
+                    originalObjects: [],
+                    modifiedObjects: [],
+                },
             };
 
             return request(app)
-                .post("/api/data-base/games/free")
+                .post(DB_FREE_GAME)
                 .send(requestToSend)
                 .expect(HttpStatus.OK)
                 .then((response) => {
@@ -161,7 +164,7 @@ describe("Data-base controller", () => {
         });
         it("should send a success message on delete", async () => {
             return request(app)
-                .delete("/api/data-base/games/free/someGameTest")
+                .delete(DB_FREE_GAME + "someGameTest")
                 .expect(HttpStatus.OK)
                 .then((response) => {
                     expect(response.body).to.eql(SUCCESS_MESSAGE);
@@ -169,7 +172,7 @@ describe("Data-base controller", () => {
         });
         it("should send a success message on get all", async () => {
             return request(app)
-                .get("/api/data-base/games/free")
+                .get(DB_FREE_GAME)
                 .expect(HttpStatus.OK)
                 .then((response) => {
                     expect(response.body).to.eql([]);
@@ -177,7 +180,7 @@ describe("Data-base controller", () => {
         });
         it("should send a success message on get one game", async () => {
             return request(app)
-                .get("/api/data-base/games/free/someGameTest")
+                .get(DB_FREE_GAME + "someGameTest")
                 .expect(HttpStatus.OK)
                 .then((response) => {
                     expect(true).to.be.equal(true);
@@ -187,7 +190,7 @@ describe("Data-base controller", () => {
             when(mockFreeGames.getFromId(anything())).thenReject(new NonExistentGameError());
 
             return request(app)
-                .get("/api/data-base/games/free/notExistingGame")
+                .get(DB_FREE_GAME + "notExistingGame")
                 .expect(HttpStatus.NOT_FOUND)
                 .then((response) => {
                     expect(true).to.be.equal(true);
@@ -197,7 +200,7 @@ describe("Data-base controller", () => {
             when(mockFreeGames.getFromId(anything())).thenReject(new DatabaseError());
 
             return request(app)
-                .get("/api/data-base/games/free/notExistingGame")
+                .get(DB_FREE_GAME + "/notExistingGame")
                 .expect(HttpStatus.INTERNAL_SERVER_ERROR)
                 .then((response) => {
                     expect(true).to.be.equal(true);

@@ -2,6 +2,7 @@
 import {expect} from "chai";
 import * as Httpstatus from "http-status-codes";
 import * as request from "supertest";
+import {USERNAME_ADD, USERNAME_RELEASE} from "../../../common/communication/routes";
 import {NoUsernameInRequestError} from "../../../common/errors/controller.errors";
 import {Application} from "../app";
 import {container} from "../inversify.config";
@@ -37,7 +38,7 @@ describe("username controller", () => {
     // Test postRequest to add username
     it("should send an error when no username is passed to add", async () => {
         return request(app)
-            .post("/api/usernames/add")
+            .post(USERNAME_ADD)
             .expect(Httpstatus.INTERNAL_SERVER_ERROR)
             .then((response) => {
                 expect(response.body).to.eql(
@@ -47,7 +48,7 @@ describe("username controller", () => {
 
     it("should send an okResponse with available=true with right username when a username is add", async () => {
         return request(app)
-            .post("/api/usernames/add")
+            .post(USERNAME_ADD)
             .send("mockedString")
             .expect(Httpstatus.OK)
             .then((response) => {
@@ -59,7 +60,7 @@ describe("username controller", () => {
     // Test postRequest to release username
     it("should send an error when no username is passed to release", async () => {
         return request(app)
-            .post("/api/usernames/release")
+            .post(USERNAME_RELEASE)
             .expect(Httpstatus.INTERNAL_SERVER_ERROR)
             .then((response) => {
                 expect(response.body).to.eql(
@@ -69,7 +70,7 @@ describe("username controller", () => {
 
     it("should send an okResponse with available=true with right username when a username is released", async () => {
         return request(app)
-            .post("/api/usernames/release")
+            .post(USERNAME_RELEASE)
             .send("mockedString")
             .expect(Httpstatus.OK)
             .then((response) => {
