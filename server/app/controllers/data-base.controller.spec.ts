@@ -1,4 +1,4 @@
-/* tslint:disable:max-file-line-count */
+// responses are generique so we don't want to define the tests in this file
 // tslint:disable:typedef
 import {expect} from "chai";
 import * as HttpStatus from "http-status-codes";
@@ -23,9 +23,7 @@ describe("Data-base controller", () => {
     let app: Express.Application;
     let mockDataBaseService: DataBaseService;
     let mockUsers: UsersCollectionService;
-    // @ts-ignore
     let mockSimpleGames: SimpleGamesCollectionService;
-    // @ts-ignore
     let mockFreeGames: FreeGamesCollectionService;
 
     beforeEach(() => {

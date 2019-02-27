@@ -1,4 +1,6 @@
+// test file is too long
 /* tslint:disable:max-file-line-count */
+// responses are generique so we don't want to define the tests in this file
 // tslint:disable:typedef
 import {expect} from "chai";
 import * as HttpStatus from "http-status-codes";
@@ -119,7 +121,7 @@ describe("Game creator controller", () => {
         });
 
         it("should send an error when no name is specified", async () => {
-
+            // we are expecting an error, so we don't want tslint shinanigans
             // @ts-ignore
             const freeRequest: ICreateFreeGameRequest = {
                 objectQuantity: 1000,
@@ -137,7 +139,7 @@ describe("Game creator controller", () => {
         });
 
         it("should send an error when no object quantity is specified", async () => {
-
+            // we are expecting an error, so we don't want tslint shinanigans
             // @ts-ignore
             const freeRequest: ICreateFreeGameRequest = {
                 gameName: "someGameTest",
@@ -227,7 +229,7 @@ describe("Game creator controller", () => {
         });
 
         it("should send an error when no theme is specified", async () => {
-
+            // we are expecting an error, so we don't want tslint shinanigans
             // @ts-ignore
             const freeRequest: ICreateFreeGameRequest = {
                 gameName: "freeGame",
@@ -249,6 +251,7 @@ describe("Game creator controller", () => {
             const freeRequest: ICreateFreeGameRequest = {
                 gameName: "freeGame",
                 objectQuantity: 1000,
+                // we are expecting an error, so we don't want tslint shinanigans
                 // @ts-ignore
                 theme: "Non-existing-theme",
                 modificationTypes: [ModificationType.changeColor, ModificationType.remove, ModificationType.add],
@@ -284,6 +287,7 @@ describe("Game creator controller", () => {
 
         it("should send an error when no modification types are specified", async () => {
 
+            // we are expecting an error, so we don't want tslint shinanigans
             // @ts-ignore
             const freeRequest: ICreateFreeGameRequest = {
                 gameName: "freeGame",
@@ -302,6 +306,7 @@ describe("Game creator controller", () => {
 
         it("should send an error when too much modification types are requested", async () => {
 
+            // we are expecting an error, so we don't want tslint shinanigans
             // @ts-ignore
             const freeRequest: ICreateFreeGameRequest = {
                 gameName: "freeGame",
@@ -343,6 +348,7 @@ describe("Game creator controller", () => {
                 gameName: "freeGame",
                 objectQuantity: 1000,
                 theme: Themes.Sanic,
+                // we are expecting an error, so we don't want tslint shinanigans
                 // tslint:disable-next-line:no-magic-numbers
                 modificationTypes: [ModificationType.add, 4],
             };

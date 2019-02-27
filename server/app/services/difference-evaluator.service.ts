@@ -115,6 +115,7 @@ export class DifferenceEvaluatorService {
             for (let j: number = 0; j < arrayOfLabels[0].length; j++) {
                 if (arrayOfLabels[i][j]) {
                     if (DIFF_ZONES_MAP.has(this.findRoot(arrayOfLabels[i][j], parentTable))) {
+                        // the argument of the get is present in the DIFF_ZONES_MAP as tested in the line above
                         // @ts-ignore
                         DIFF_ZONES_MAP.get(this.findRoot(arrayOfLabels[i][j], parentTable)).push({x: j, y: i});
                     } else {

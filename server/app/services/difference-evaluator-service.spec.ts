@@ -51,24 +51,28 @@ describe("Difference evaluator service", () => {
         });
 
         it("Should throw a format error if the input is not an array(string)", () => {
+            // we need to put the wrong format of input to get an error
             // @ts-ignore
             expect(() => DIFFERENCE_EVALUATOR_SERVICE.getSimpleNDifferences("abs"))
                 .to.throw(IllegalArgumentError.ARGUMENT_ERROR_MESSAGE);
         });
 
         it("Should throw a format error if the input is not an array(undefined)", () => {
+            // we need to put the wrong format of input to get an error
             // @ts-ignore
             expect(() => DIFFERENCE_EVALUATOR_SERVICE.getSimpleNDifferences(null))
                 .to.throw(IllegalArgumentError.ARGUMENT_ERROR_MESSAGE);
         });
 
         it("Should throw a format error if the input is not an array of numbers(strings)", () => {
+            // we need to put the wrong format of input to get an error
             // @ts-ignore
             expect(() => DIFFERENCE_EVALUATOR_SERVICE.getSimpleNDifferences([[""]]))
                 .to.throw(IllegalArgumentError.ARGUMENT_ERROR_MESSAGE);
         });
 
         it("Should throw a format error if the input is not an array of numbers(undefined)", () => {
+            // we need to put the wrong format of input to get an error
             // @ts-ignore
             expect(() => DIFFERENCE_EVALUATOR_SERVICE.getSimpleNDifferences([[null]]))
                 .to.throw(IllegalArgumentError.ARGUMENT_ERROR_MESSAGE);
