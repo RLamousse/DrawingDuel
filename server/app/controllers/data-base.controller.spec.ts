@@ -21,14 +21,6 @@ import {UsersCollectionService} from "../services/db/users.collection.service";
 import types from "../types";
 
 // @ts-ignore
-const errorResponse = (errorMessage: string) => {
-    return {
-        message: errorMessage,
-        error: {},
-    };
-};
-
-// @ts-ignore
 const SUCCESS_MESSAGE: Message = {title: "success", body: "success"};
 
 describe("Data-base controller", () => {
