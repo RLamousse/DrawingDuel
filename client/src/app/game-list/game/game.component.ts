@@ -1,5 +1,6 @@
-import { Component, Input } from "@angular/core";
-import { Router } from "@angular/router";
+import {Component, Input} from "@angular/core";
+import {Router} from "@angular/router";
+import {IRecordTime} from "../../../../../common/model/game/record-time";
 
 @Component({
   selector: "app-game",
@@ -12,8 +13,8 @@ export class GameComponent {
   public constructor(private router: Router) {}
 
   @Input() public gameName: string = "test";
-  @Input() public bestSoloTimes: { name: string, time: number }[];
-  @Input() public bestMultiTimes: { name: string, time: number }[];
+  @Input() public bestSoloTimes: IRecordTime[];
+  @Input() public bestMultiTimes: IRecordTime[];
   @Input() public originalImage: string;
   @Input() public modifiedImage: string;
   @Input() public thumbnail: string;
@@ -30,7 +31,11 @@ export class GameComponent {
   private navigatePlayView(): void {
    this.router.navigate(["/play-view/"], {queryParams: {
       gameName: this.gameName, originalImage: this.originalImage, modifiedImage: this.modifiedImage },
-    }).catch(/* catch just pour le lint, play-view existe dans le routing*/);
+    })
+      // tslint:disable-next-line:no-any Generic error response
+     .catch((reason: any) => {
+       throw new Error(reason);
+     });
   }
 
   private navigateFreeView(): void {
@@ -38,7 +43,11 @@ export class GameComponent {
       queryParams: {
         gameName: this.gameName,
       },
-    }).catch(/* catch just pour le lint, 3d-view existe dans le routing*/);
+    })
+      // tslint:disable-next-line:no-any Generic error response
+      .catch((reason: any) => {
+        throw new Error(reason);
+      });
   }
 
 }

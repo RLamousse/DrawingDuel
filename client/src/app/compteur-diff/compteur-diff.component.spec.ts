@@ -19,7 +19,7 @@ describe("CompteurDiffComponent", () => {
     fixture.detectChanges();
   });
 
-  it("should create", () => {
-    expect(component).toBeTruthy();
+  it("should create", async () => {
+    return expect(component).toBeTruthy();
   });
 });

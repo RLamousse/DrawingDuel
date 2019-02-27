@@ -25,7 +25,6 @@ export class DiffValidatorController {
                                y: parseInt(req.query.coordY, 10),
                            }).then((differenceCluster: DifferenceCluster) => {
                                const response: IDiffValidatorControllerResponse = {
-                                   validDifference: true,
                                    differenceClusterId: differenceCluster[DIFFERENCE_CLUSTER_ID_INDEX],
                                    differenceClusterCoords: differenceCluster[DIFFERENCE_CLUSTER_POINTS_INDEX],
                                };

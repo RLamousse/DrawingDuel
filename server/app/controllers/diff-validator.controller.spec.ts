@@ -80,7 +80,6 @@ describe("Diff validator controller", () => {
             coordY: 0,
         };
         const expectedResponse: IDiffValidatorControllerResponse = {
-            validDifference: true,
             differenceClusterId: 0,
             differenceClusterCoords: [],
         };
