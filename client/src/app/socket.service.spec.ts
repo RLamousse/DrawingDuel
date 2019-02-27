@@ -1,4 +1,3 @@
-// tslint:disable: no-floating-promises
 import { TestBed } from "@angular/core/testing";
 import { Observable } from "rxjs";
 import { WebsocketMessage } from "../../../common/communication/messages/message";

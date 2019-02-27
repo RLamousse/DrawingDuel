@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, Input } from "@angular/core";
 import { Router } from "@angular/router";
 import { UNListService } from "../username.service";
 
@@ -7,7 +7,7 @@ import { UNListService } from "../username.service";
   templateUrl: "./initial-view.component.html",
   styleUrls: ["./initial-view.component.css"],
 })
-export class InitialViewComponent implements OnInit {
+export class InitialViewComponent {
 
   @Input() public newUsername: string;
   public username: string = "inconnu";
@@ -19,8 +19,6 @@ export class InitialViewComponent implements OnInit {
     public userService: UNListService,
     private router: Router,
   ) { }
-
-  public ngOnInit(): void {/*void*/}
 
   public async updateUsername(): Promise<void> {
     if (await this.userService.validateName(this.newUsername)) {
