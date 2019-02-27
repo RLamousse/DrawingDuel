@@ -3,6 +3,7 @@ import * as HttpStatus from "http-status-codes";
 import { Field } from "multer";
 import { Message } from "../../../common/communication/messages/message";
 import { GAME_NAME_FIELD } from "../../../common/communication/requests/game-creator.controller.request";
+import {IllegalImageFormatError} from "../../../common/errors/bitmap.errors";
 import {RequestFormatError} from "../../../common/errors/controller.errors";
 import {
     ModificationType,
@@ -14,13 +15,9 @@ export const REQUIRED_IMAGE_HEIGHT: number = 480;
 export const REQUIRED_IMAGE_WIDTH: number = 640;
 export const OUTPUT_FILE_NAME_FIELD_NAME: string = "name";
 export const ORIGINAL_IMAGE_FIELD_NAME: string = "originalImage";
-export const NON_EXISTING_THEME: string = "ERROR: The theme is not supported yet!";
 export const MODIFIED_IMAGE_FIELD_NAME: string = "modifiedImage";
 export const EXPECTED_FILES_FORMAT: string = "image/bmp";
-export const DIFFERENCE_ERROR_MESSAGE: string = "Error: The data that you sent doesn't have seven differences!";
 export const GAME_CREATION_SUCCESS_MESSAGE: Message = {title: "Game created", body: "The game was successfully created!"};
-export const NAME_ERROR_MESSAGE: string = "Error: The game name that you sent already exists!";
-export const BMP_ERROR_MESSAGE: string = "Error: Sent files are not in bmp format!";
 
 const NUMBER_OF_MODIFICATION_TYPES: number = 3;
 export const MAX_3D_OBJECTS: number = 1000;
@@ -29,7 +26,7 @@ export const BITMAP_MULTER_FILTER:
     (req: Express.Request, file: Express.Multer.File, cb: (error: (Error | null), acceptFile: boolean) => void) => void =
     (req: Express.Request, file: Express.Multer.File, cb: (error: Error | null, acceptFile: boolean) => void) => {
         if (file.mimetype !== EXPECTED_FILES_FORMAT) {
-            return cb(new Error(BMP_ERROR_MESSAGE), false);
+            return cb(new IllegalImageFormatError(), false);
         }
 
         return cb(null, true);

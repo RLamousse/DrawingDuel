@@ -1,7 +1,7 @@
 import Axios, {AxiosResponse} from "axios";
 import {injectable} from "inversify";
 import "reflect-metadata";
-import {NoDifferenceAtPointError} from "../../../common/errors/services.errors";
+import {InvalidPointError, NoDifferenceAtPointError} from "../../../common/errors/services.errors";
 import {
     DifferenceCluster,
     DIFFERENCE_CLUSTER_POINTS_INDEX,
@@ -10,14 +10,12 @@ import {
 } from "../../../common/model/game/simple-game";
 import {IPoint} from "../../../common/model/point";
 
-export const INVALID_POINT_ERROR_MESSAGE: string = "Invalid point: out of bounds";
-
 @injectable()
 export class DiffValidatorService {
 
     private static assertPoint(point: IPoint): void {
         if (point.x < 0 || point.y < 0) {
-            throw new Error(INVALID_POINT_ERROR_MESSAGE);
+            throw new InvalidPointError();
         }
     }
 

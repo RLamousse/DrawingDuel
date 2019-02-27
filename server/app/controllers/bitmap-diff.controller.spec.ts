@@ -2,12 +2,12 @@
 import { expect } from "chai";
 import * as HttpStatus from "http-status-codes";
 import * as request from "supertest";
+import {IllegalImageFormatError} from "../../../common/errors/bitmap.errors";
 import {RequestFormatError} from "../../../common/errors/controller.errors";
 import { Bitmap } from "../../../common/image/bitmap/bitmap";
 import { Application } from "../app";
 import { container } from "../inversify.config";
 import types from "../types";
-import {BMP_ERROR_MESSAGE} from "./controller-utils";
 
 const errorResponse = (errorMessage: string) => {
     return {
@@ -73,7 +73,8 @@ describe("Bitmap diff controller", () => {
             .attach("modifiedImage", "./test/test_diffController/jobs.jpg")
             .expect(HttpStatus.INTERNAL_SERVER_ERROR)
             .then((response) => {
-                expect(response.body.message).to.equal(BMP_ERROR_MESSAGE);
+                expect(response.body.message)
+                    .to.equal(IllegalImageFormatError.ILLEGAL_IMAGE_FORMAT_MESSAGE_ERROR);
             });
     });
 
