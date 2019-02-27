@@ -9,6 +9,10 @@ form {
     min-width: 50vw;
 }
 
+mat-form-field{
+    margin-top: 10px;
+}
+
 mat-checkbox {
     user-select: none;
     margin: 5px 0 5px 0;

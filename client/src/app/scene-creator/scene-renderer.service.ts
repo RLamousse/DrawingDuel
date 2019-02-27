@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import * as THREE from "three";
+import { ComponentNotLoadedError } from "../../../../common/errors/component.errors";
 require("three-first-person-controls")(THREE);
 
 @Injectable()
@@ -70,13 +71,6 @@ export class SceneRendererService {
     return (this.originalContainer.clientWidth) / (this.originalContainer.clientHeight);
   }
 
-  public onResize(): void {
-    this.camera.aspect = this.getAspectRatio();
-    this.camera.updateProjectionMatrix();
-    this.rendererOri.setSize(this.originalContainer.clientWidth, this.originalContainer.clientHeight);
-    this.rendererMod.setSize(this.modifiedContainer.clientWidth, this.modifiedContainer.clientHeight);
-  }
-
   public init(oriCont: HTMLDivElement, modCont: HTMLDivElement): void {
     this.originalContainer = oriCont;
     this.modifiedContainer = modCont;
@@ -86,8 +80,7 @@ export class SceneRendererService {
 
   public loadScenes(original: THREE.Scene, modified: THREE.Scene): void {
     if (this.originalContainer === undefined || this.modifiedContainer === undefined) {
-      const errorMsg: string = "La composante n'a pas ete initialise!";
-      throw (new Error(errorMsg));
+      throw (new ComponentNotLoadedError());
     }
     this.scene = original;
     this.modifiedScene = modified;

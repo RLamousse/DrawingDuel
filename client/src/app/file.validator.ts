@@ -1,13 +1,12 @@
 import { FormControl, ValidationErrors } from "@angular/forms";
 import { Dimension } from "../../../common/image/bitmap/IDimension";
 import { getDimensionsFromBuffer } from "../../../common/image/bitmap/bitmap-utils";
-import FakeControl from "./Interfaces/fakeControl";
 
 export default class FileValidator {
   public static readonly MAX_IMAGE_SIZE: number = 1000000;
 
   // To test, we let objects with value.files attribute as params
-  public static async dimensionValidator(control: FormControl | FakeControl): Promise<ValidationErrors | null> {
+  public static async dimensionValidator(control: FormControl): Promise<ValidationErrors | null> {
     if (control.value) {
       const file: File = control.value.files[0];
       const dimensionsOk: boolean = await FileValidator.checkFile(file);
@@ -19,7 +18,7 @@ export default class FileValidator {
     return null;
   }
 
-  public static typeValidator(control: FormControl | FakeControl): ValidationErrors | null {
+  public static typeValidator(control: FormControl): ValidationErrors | null {
     if (control.value) {
       const file: File = control.value.files[0];
       if (file.type !== "image/bmp") {
@@ -30,7 +29,7 @@ export default class FileValidator {
     return null;
   }
 
-  public static sizeValidator(control: FormControl | FakeControl): ValidationErrors | null {
+  public static sizeValidator(control: FormControl): ValidationErrors | null {
     if (control.value) {
       const file: File = control.value.files[0];
       if (file.size > FileValidator.MAX_IMAGE_SIZE) {

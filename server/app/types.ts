@@ -15,5 +15,7 @@ export default  {
         DiffValidatorService: Symbol("DiffValidatorService"),
         WebsocketController: Symbol("WebSocketController"),
         ImageUploadService: Symbol("ImageUploadService"),
+        FreeGameCreatorService: Symbol("FreeGameCreatorService"),
+        Object3DCreatorService: Symbol("Object3DCreatorService"),
         DummyWebsocketActionService: Symbol("DummyWebsocketActionService"),
 };
