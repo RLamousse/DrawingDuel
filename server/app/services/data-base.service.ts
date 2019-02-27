@@ -8,7 +8,7 @@ import { UsersCollectionService } from "./db/users.collection.service";
 @injectable()
 export class DataBaseService {
 
-    private readonly DB_EXIT_CODE = -1;
+    private readonly DB_EXIT_CODE: number = -1;
     private readonly DB_USER: string = "server";
     private readonly DB_PASSWORD: string = "RZDpcD8vqu8hmjX";
     private readonly DB_DB: string = "projet";
