@@ -79,9 +79,7 @@ describe("SceneCreatorComponent", () => {
               queryParams: {
                 subscribe: (fn: (queryParams: string) => void) => fn(
                   // pour donner un "parametre" au subscribe
-                  "3d-view?gameName=freeGame100"
-                  ,
-                ),
+                  "3d-view?gameName=freeGame100"),
               },
             },
           },
