@@ -100,7 +100,7 @@ describe("Data-base controller", () => {
         });
         it("should send a success message on delete", async () => {
             return request(app)
-                .delete(DB_SIMPLE_GAME + "someGameTest")
+                .delete(DB_SIMPLE_GAME + "/someGameTest")
                 .expect(HttpStatus.OK)
                 .then((response) => {
                     expect(response.body).to.eql(SUCCESS_MESSAGE);

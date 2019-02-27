@@ -214,7 +214,7 @@ describe("A service that creates a game", () => {
             axiosMock.onPost(SERVER_BASE_URL + DIFF_CREATOR_BASE)
                 .reply(HttpStatus.OK, fs.readFileSync("test/test_files_for_game_creator_service/7diff-modified.bmp"));
 
-            axiosMock.onPost(SERVER_BASE_URL + DB_SIMPLE_GAME + "/")
+            axiosMock.onPost(SERVER_BASE_URL + DB_SIMPLE_GAME)
                 .reply(HttpStatus.INTERNAL_SERVER_ERROR, new Error("error"));
 
             return getMockedService()
@@ -237,7 +237,7 @@ describe("A service that creates a game", () => {
             axiosMock.onPost(SERVER_BASE_URL + DIFF_CREATOR_BASE)
                 .reply(HttpStatus.OK, fs.readFileSync("test/test_files_for_game_creator_service/7diff-modified.bmp"));
 
-            axiosMock.onPost(SERVER_BASE_URL + DB_SIMPLE_GAME + "/")
+            axiosMock.onPost(SERVER_BASE_URL + DB_SIMPLE_GAME)
                 .reply(HttpStatus.OK);
 
             when(mockedDifferenceEvaluatorServiceMock.getSimpleNDifferences(anything()))
@@ -350,7 +350,7 @@ describe("A service that creates a game", () => {
             axiosMock.onGet(SERVER_BASE_URL + DB_FREE_GAME + "/someGameTest")
                 .reply(HttpStatus.NOT_FOUND, {message: NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE});
 
-            axiosMock.onPost(SERVER_BASE_URL + DB_FREE_GAME + "/")
+            axiosMock.onPost(SERVER_BASE_URL + DB_FREE_GAME)
                 .reply(HttpStatus.INTERNAL_SERVER_ERROR, new Error("error"));
 
             return getMockedService()
@@ -370,7 +370,7 @@ describe("A service that creates a game", () => {
             axiosMock.onGet(SERVER_BASE_URL + DB_FREE_GAME + "/someGameTest")
                 .reply(HttpStatus.NOT_FOUND, {message: NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE});
 
-            axiosMock.onPost(SERVER_BASE_URL + DB_FREE_GAME + "/")
+            axiosMock.onPost(SERVER_BASE_URL + DB_FREE_GAME)
                 .reply(HttpStatus.OK);
 
             when(mockedFreeGameCreatorService.generateIScenes(anything(), anything()))
