@@ -9,6 +9,8 @@ import {SERVER_BASE_URL} from "../../../common/communication/routes";
   providedIn: "root",
 })
 export class FormPostService {
+  public static readonly NETWORK_ERROR_MESSAGE: string = "La requête n'a pas pu être acheminée depuis le client";
+  public static readonly BACKEND_ERROR_MESSAGE: string = "La requête n'a pas pu être acheminée depuis le client";
 
   public constructor(private http: HttpClient) { }
 
@@ -26,7 +28,7 @@ export class FormPostService {
       console.error("An error occurred:", error.error.message);
       err = {
         name: "Network Error",
-        message: "La requête n'a pas pu être acheminée depuis le client",
+        message: FormPostService.NETWORK_ERROR_MESSAGE,
       };
     } else {
       // The backend returned an unsuccessful response code.
@@ -36,7 +38,7 @@ export class FormPostService {
         `body was: ${error.error}`);
       err = {
         name: "Backend Error",
-        message: error.error.message ? error.error.message : "La requête n'a pas pu être traitée par le serveur",
+        message: error.error.message ? error.error.message : FormPostService.BACKEND_ERROR_MESSAGE,
       };
     }
     // return an observable with a user-facing error message

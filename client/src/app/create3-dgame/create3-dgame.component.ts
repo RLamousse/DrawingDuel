@@ -79,7 +79,7 @@ export class Create3DGameComponent extends AbstractForm implements OnInit {
     );
   }
 
-  protected onSubmit(): void {
+  public onSubmit(): void {
     this.disableButton = true;
     const modificationTypes: ModificationType[] = Array.from(this.checkboxes.modificationTypes);
     const requestData: ICreateFreeGameRequest = {

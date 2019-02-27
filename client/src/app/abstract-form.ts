@@ -2,7 +2,7 @@ import { FormBuilder, FormGroup } from "@angular/forms";
 import { MatDialogRef } from "@angular/material";
 import { FormPostService } from "./form-post.service";
 
-export class AbstractForm {
+export abstract class AbstractForm {
   public formDoc: FormGroup;
   protected disableButton: boolean = false;
 
