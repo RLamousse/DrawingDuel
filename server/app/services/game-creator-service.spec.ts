@@ -8,7 +8,7 @@ import {expect} from "chai";
 import * as fs from "fs";
 import * as HttpStatus from "http-status-codes";
 import {anything, instance, mock, when} from "ts-mockito";
-import {SERVER_BASE_URL, DB_FREE_GAME, DB_SIMPLE_GAME, DIFF_CREATOR_BASE} from "../../../common/communication/routes";
+import {DB_FREE_GAME, DB_SIMPLE_GAME, DIFF_CREATOR_BASE, SERVER_BASE_URL} from "../../../common/communication/routes";
 import {AlreadyExistentGameError, NonExistentGameError, NonExistentThemeError} from "../../../common/errors/database.errors";
 import {DifferenceCountError} from "../../../common/errors/services.errors";
 import {

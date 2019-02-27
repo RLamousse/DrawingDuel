@@ -4,7 +4,7 @@ import MockAdapter from "axios-mock-adapter";
 import AxiosAdapter from "axios-mock-adapter";
 import {expect} from "chai";
 import * as HttpStatus from "http-status-codes";
-import {SERVER_BASE_URL, DB_SIMPLE_GAME} from "../../../common/communication/routes";
+import {DB_SIMPLE_GAME, SERVER_BASE_URL} from "../../../common/communication/routes";
 import {NonExistentGameError} from "../../../common/errors/database.errors";
 import {InvalidPointError, NoDifferenceAtPointError} from "../../../common/errors/services.errors";
 import {DifferenceCluster, ISimpleDifferenceData, ISimpleGame} from "../../../common/model/game/simple-game";

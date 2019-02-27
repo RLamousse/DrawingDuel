@@ -4,7 +4,7 @@ import * as Httpstatus from "http-status-codes";
 import {inject, injectable} from "inversify";
 import "reflect-metadata";
 import {Message} from "../../../common/communication/messages/message";
-import {SERVER_BASE_URL, DB_FREE_GAME, DB_SIMPLE_GAME, DIFF_CREATOR_BASE} from "../../../common/communication/routes";
+import {DB_FREE_GAME, DB_SIMPLE_GAME, DIFF_CREATOR_BASE, SERVER_BASE_URL} from "../../../common/communication/routes";
 import {AlreadyExistentGameError, NonExistentGameError, NonExistentThemeError} from "../../../common/errors/database.errors";
 import {DifferenceCountError} from "../../../common/errors/services.errors";
 import {
@@ -38,7 +38,8 @@ export class GameCreatorService {
     public constructor(
         @inject(Types.DifferenceEvaluatorService) private differenceEvaluatorService: DifferenceEvaluatorService,
         @inject(Types.ImageUploadService) private imageUploadService: ImageUploadService,
-        @inject(Types.FreeGameCreatorService) private freeGameCreatorService: FreeGameCreatorService) {}
+        @inject(Types.FreeGameCreatorService) private freeGameCreatorService: FreeGameCreatorService) {
+    }
 
     private readonly _MIN_GENERATED_SCORE: number = 120;
     private readonly _MAX_GENERATED_SCORE: number = 360;
@@ -143,7 +144,7 @@ export class GameCreatorService {
             diffData: differenceData,
         };
         await Axios.post<Message>(SERVER_BASE_URL + DB_SIMPLE_GAME, game)
-            // tslint:disable-next-line:no-any Generic error response
+        // tslint:disable-next-line:no-any Generic error response
             .catch((reason: any) => {
                 throw new Error("Unable to create game: " + reason.response.data.message);
             });
@@ -157,7 +158,7 @@ export class GameCreatorService {
             scenes: scenes,
         };
         await Axios.post<Message>(SERVER_BASE_URL + DB_FREE_GAME, game)
-            // tslint:disable-next-line:no-any Generic error response
+        // tslint:disable-next-line:no-any Generic error response
             .catch((reason: any) => {
                 throw new Error("dataBase: Unable to create game: " + reason.response.data.message);
             });

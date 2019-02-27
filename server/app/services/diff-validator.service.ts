@@ -1,7 +1,7 @@
 import Axios, {AxiosResponse} from "axios";
 import {injectable} from "inversify";
 import "reflect-metadata";
-import {SERVER_BASE_URL, DB_SIMPLE_GAME} from "../../../common/communication/routes";
+import {DB_SIMPLE_GAME, SERVER_BASE_URL} from "../../../common/communication/routes";
 import {InvalidPointError, NoDifferenceAtPointError} from "../../../common/errors/services.errors";
 import {
     DifferenceCluster,

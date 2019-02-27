@@ -4,7 +4,7 @@ import * as Httpstatus from "http-status-codes";
 import {Observable, Subject} from "rxjs";
 import {IDiffValidatorControllerRequest} from "../../../../common/communication/requests/diff-validator-controller.request";
 import {IDiffValidatorControllerResponse} from "../../../../common/communication/responses/diff-validator-controller.response";
-import {SERVER_BASE_URL, DIFF_VALIDATOR_BASE} from "../../../../common/communication/routes";
+import {DIFF_VALIDATOR_BASE, SERVER_BASE_URL} from "../../../../common/communication/routes";
 import {AlreadyFoundDifferenceError, NoDifferenceAtPointError} from "../../../../common/errors/services.errors";
 import {DifferenceCluster, DIFFERENCE_CLUSTER_POINTS_INDEX} from "../../../../common/model/game/simple-game";
 import ISimpleGameState from "../../../../common/model/game/simple-game-state";

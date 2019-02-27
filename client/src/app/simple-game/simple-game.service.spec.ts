@@ -5,7 +5,7 @@ import MockAdapter from "axios-mock-adapter";
 import AxiosAdapter from "axios-mock-adapter";
 import * as HttpStatus from "http-status-codes";
 import {IDiffValidatorControllerResponse} from "../../../../common/communication/responses/diff-validator-controller.response";
-import {SERVER_BASE_URL, DIFF_VALIDATOR_BASE} from "../../../../common/communication/routes";
+import {DIFF_VALIDATOR_BASE, SERVER_BASE_URL} from "../../../../common/communication/routes";
 import {AlreadyFoundDifferenceError, NoDifferenceAtPointError} from "../../../../common/errors/services.errors";
 import {DifferenceCluster, DIFFERENCE_CLUSTER_POINTS_INDEX} from "../../../../common/model/game/simple-game";
 import {ORIGIN} from "../../../../common/model/point";
