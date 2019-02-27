@@ -56,14 +56,14 @@ describe("GameService", () => {
       thumbnail: "",
       bestSoloTimes: [{ name: "mockedUser1", time: 120 }],
       bestMultiTimes: [{ name: "mockedUser2", time: 23 }],
-      scenes: {originalObjects:[], modifiedObjects: []},
+      scenes: {originalObjects: [], modifiedObjects: []},
     },
     {
       gameName: "mockedSimpleName",
       thumbnail: "",
       bestSoloTimes: [{ name: "mockedUser1", time: 120 }],
       bestMultiTimes: [{ name: "mockedUser2", time: 23 }],
-      scenes: {originalObjects:[], modifiedObjects: []},
+      scenes: {originalObjects: [], modifiedObjects: []},
     },
   ];
 
@@ -125,11 +125,13 @@ describe("GameService", () => {
 
   it ("pushFreeGames should push in extendedFreeGames", () => {
     serviceGame.pushFreeGames(mockExtendedFreeGameList);
-    expect(serviceGame.extendedFreeGames).not.toBeNull;
-  })
+
+    return expect(serviceGame.extendedFreeGames).not.toBeNull;
+  });
 
   it ("pushSimpleGames should push in simpleGames", () => {
     serviceGame.pushSimpleGames(mockSimpleGameList);
-    expect(serviceGame.simpleGames).not.toBeNull;
-  })
+
+    return expect(serviceGame.simpleGames).not.toBeNull;
+  });
 });

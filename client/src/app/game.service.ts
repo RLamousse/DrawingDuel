@@ -19,6 +19,11 @@ export class GameService {
   public extendedFreeGames: IExtendedFreeGame[] = [];
   public readonly SIMPLE_GAME_BASE_URL: string = "http://localhost:3000/api/data-base/games/simple/";
   public readonly FREE_GAME_BASE_URL: string = "http://localhost:3000/api/data-base/games/free/";
+
+  private readonly GET_SIMPLEGAME_ERROR: string = "get simple game from server error";
+  private readonly GET_FREEGAME_ERROR: string = "get free game from server error";
+  private readonly GET_FREEGAME_BY_NAME_ERROR: string = "get free game by name from server error";
+
   public constructor(
     private http: HttpClient,
     private photoService: FreeGamePhotoService,
@@ -79,19 +84,19 @@ export class GameService {
 
   public getSimpleGames(): Observable<ISimpleGame[]> {
     return this.http.get<ISimpleGame[]>(this.SIMPLE_GAME_BASE_URL).pipe(
-      catchError(this.handleError<ISimpleGame[]>("get simple game from server error")),
+      catchError(this.handleError<ISimpleGame[]>(this.GET_SIMPLEGAME_ERROR)),
     );
   }
 
   public getFreeGames(): Observable<IFreeGame[]> {
     return this.http.get<IFreeGame[]>(this.FREE_GAME_BASE_URL).pipe(
-      catchError(this.handleError<IFreeGame[]>("get free game from server error")),
+      catchError(this.handleError<IFreeGame[]>(this.GET_FREEGAME_ERROR)),
     );
   }
 
   public getFreeGameByName(gameName: string): Observable<IFreeGame> {
     return this.http.get<IFreeGame>(this.FREE_GAME_BASE_URL + gameName + "/").pipe(
-      catchError(this.handleError<IFreeGame>("get free game from server error")),
+      catchError(this.handleError<IFreeGame>(this.GET_FREEGAME_BY_NAME_ERROR)),
     );
   }
 
