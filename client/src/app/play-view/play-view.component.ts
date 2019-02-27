@@ -9,14 +9,12 @@ import {SimpleGameService} from "../simple-game/simple-game.service";
            })
 export class PlayViewComponent implements OnInit {
 
-  public constructor(
-    private route: ActivatedRoute, ) {}
-
   protected gameName: string;
   protected originalImage: string;
   protected modifiedImage: string;
 
-  public constructor(private route: ActivatedRoute, private simpleGameService: SimpleGameService) { /*vide*/
+  public constructor(private route: ActivatedRoute, private simpleGameService: SimpleGameService) {
+    /*vide*/
   }
 
   public ngOnInit(): void {
