@@ -1,12 +1,9 @@
 // tslint:disable:no-magic-numbers
 import { expect } from "chai";
 import * as fs from "fs";
+import {EmptyArrayError, IllegalArgumentError} from "../../../common/errors/services.errors";
 import {BitmapFactory} from "../images/bitmap/bitmap-factory";
-import {
-    ARGUMENT_ERROR_MESSAGE,
-    DifferenceEvaluatorService,
-    EMPTY_ARRAY_ERROR_MESSAGE
-} from "./difference-evaluator.service";
+import {DifferenceEvaluatorService} from "./difference-evaluator.service";
 
 const DIFFERENCE_EVALUATOR_SERVICE: DifferenceEvaluatorService = new DifferenceEvaluatorService();
 const TEST_FILES: string[] = ["0-zones-test.bmp", "1-zone_test.bmp", "6-zones-test.bmp",
@@ -54,37 +51,41 @@ describe("Difference evaluator service", () => {
         });
 
         it("Should throw a format error if the input is not an array(string)", () => {
+            // we need to put the wrong format of input to get an error
             // @ts-ignore
             expect(() => DIFFERENCE_EVALUATOR_SERVICE.getSimpleNDifferences("abs"))
-                .to.throw(ARGUMENT_ERROR_MESSAGE);
+                .to.throw(IllegalArgumentError.ARGUMENT_ERROR_MESSAGE);
         });
 
         it("Should throw a format error if the input is not an array(undefined)", () => {
+            // we need to put the wrong format of input to get an error
             // @ts-ignore
             expect(() => DIFFERENCE_EVALUATOR_SERVICE.getSimpleNDifferences(null))
-                .to.throw(ARGUMENT_ERROR_MESSAGE);
+                .to.throw(IllegalArgumentError.ARGUMENT_ERROR_MESSAGE);
         });
 
         it("Should throw a format error if the input is not an array of numbers(strings)", () => {
+            // we need to put the wrong format of input to get an error
             // @ts-ignore
             expect(() => DIFFERENCE_EVALUATOR_SERVICE.getSimpleNDifferences([[""]]))
-                .to.throw(ARGUMENT_ERROR_MESSAGE);
+                .to.throw(IllegalArgumentError.ARGUMENT_ERROR_MESSAGE);
         });
 
         it("Should throw a format error if the input is not an array of numbers(undefined)", () => {
+            // we need to put the wrong format of input to get an error
             // @ts-ignore
             expect(() => DIFFERENCE_EVALUATOR_SERVICE.getSimpleNDifferences([[null]]))
-                .to.throw(ARGUMENT_ERROR_MESSAGE);
+                .to.throw(IllegalArgumentError.ARGUMENT_ERROR_MESSAGE);
         });
 
         it("Should throw an empty array error if the input is an empty array", () => {
             expect(() => DIFFERENCE_EVALUATOR_SERVICE.getSimpleNDifferences([]))
-                .to.throw(EMPTY_ARRAY_ERROR_MESSAGE);
+                .to.throw(EmptyArrayError.EMPTY_ARRAY_ERROR_MESSAGE);
         });
 
         it("Should throw an empty array error if the input is an array of empty arrays", () => {
             expect(() => DIFFERENCE_EVALUATOR_SERVICE.getSimpleNDifferences([[]]))
-                .to.throw(EMPTY_ARRAY_ERROR_MESSAGE);
+                .to.throw(EmptyArrayError.EMPTY_ARRAY_ERROR_MESSAGE);
         });
     });
 });

@@ -1,8 +1,6 @@
 import {Collection, MongoError} from "mongodb";
 import {Message} from "../../../../common/communication/messages/message";
-
-export const DATA_BASE_MESSAGE_ERROR: string = "ERROR: something went wrong with the database!";
-export const EMPTY_ID_ERROR_MESSAGE: string = "ERROR: Specified ID is empty!";
+import {DatabaseError, EmptyIdError} from "../../../../common/errors/database.errors";
 
 export abstract class CollectionService<T> {
 
@@ -14,7 +12,7 @@ export abstract class CollectionService<T> {
 
     protected static assertId(id: string): void {
         if (id === "") {
-            throw new Error(EMPTY_ID_ERROR_MESSAGE);
+            throw new EmptyIdError();
         }
     }
 
@@ -32,7 +30,7 @@ export abstract class CollectionService<T> {
         return new Promise<T[]>((resolve: (value?: T[] | PromiseLike<T[]>) => void, reject: (reason?: Error) => void) => {
             this._collection.find().toArray((error: MongoError, res: T[]) => {
                 if (error) {
-                    reject( new Error(DATA_BASE_MESSAGE_ERROR));
+                    reject(new DatabaseError());
                 }
                 // @ts-ignore even thought item is red as a T type(IGame or IUser), mongo generates _id, and we want it removed!
                 res.forEach((item: T) => { delete item._id; });
@@ -45,7 +43,7 @@ export abstract class CollectionService<T> {
         try {
             return this._collection.countDocuments({[this.idFieldName]: {$eq: id}});
         } catch (error) {
-            throw new Error(DATA_BASE_MESSAGE_ERROR);
+            throw new DatabaseError();
         }
     }
 
@@ -54,7 +52,7 @@ export abstract class CollectionService<T> {
 
             this._collection.insertOne(data, (error: MongoError) => {
                 if (error) {
-                    reject(new Error(DATA_BASE_MESSAGE_ERROR));
+                    reject(new DatabaseError());
                 }
                 resolve(this.creationSuccessMessage(data));
             });
@@ -65,7 +63,7 @@ export abstract class CollectionService<T> {
         return new Promise<Message>((resolve: (value?: Message | PromiseLike<Message>) => void, reject: (reason?: Error) => void) => {
             this._collection.deleteOne({[this.idFieldName]: {$eq: id}}, (error: MongoError) => {
                 if (error) {
-                    reject(new Error(DATA_BASE_MESSAGE_ERROR));
+                    reject(new DatabaseError());
                 }
                 resolve(this.deletionSuccessMessage(id));
             });
@@ -76,7 +74,7 @@ export abstract class CollectionService<T> {
         return new Promise<T>((resolve: (value?: T | PromiseLike<T>) => void, reject: (reason?: Error) => void) => {
             this._collection.find({[this.idFieldName] : {$eq : id}}).toArray((error: MongoError, res: T[]) => {
                 if (error) {
-                    return reject(new Error(DATA_BASE_MESSAGE_ERROR));
+                    return reject(new DatabaseError());
                 } else if (res.length === 0) {
                     return reject(new Error(errorMessage));
                 }
