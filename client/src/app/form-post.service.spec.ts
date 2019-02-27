@@ -49,7 +49,7 @@ describe("FormPostService", () => {
         done();
       },
     );
-    const req: TestRequest = httpMock.expectOne("http://localhost:3000/");
+    const req: TestRequest = httpMock.expectOne("http://localhost:3000");
     req.error(errorSent as ErrorEvent);
     expect(req.request.method).toBe("POST");
   });
@@ -69,7 +69,7 @@ describe("FormPostService", () => {
         done();
       },
     );
-    const req: TestRequest = httpMock.expectOne("http://localhost:3000/");
+    const req: TestRequest = httpMock.expectOne("http://localhost:3000");
     req.error(errorSent as ErrorEvent);
     expect(req.request.method).toBe("POST");
   });

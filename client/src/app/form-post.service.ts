@@ -9,7 +9,6 @@ import {SERVER_BASE_URL} from "../../../common/communication/routes";
   providedIn: "root",
 })
 export class FormPostService {
-  public constructor(private http: HttpClient) { }
   public static readonly NETWORK_ERROR_MESSAGE: string = "La requête n'a pas pu être acheminée depuis le client";
   public static readonly BACKEND_ERROR_MESSAGE: string = "La requête n'a pas pu être acheminée depuis le client";
 
