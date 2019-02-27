@@ -96,6 +96,7 @@ describe("GameService", () => {
 
   it("should have the right time format and not modify the name", () => {
     serviceGame.convertScoresObject(mockMixGameList);
+    // we expect our time to be equal to a number
     // tslint:disable-next-line:no-magic-numbers
     expect(mockMixGameList[0].bestSoloTimes[0].time).toEqual(0.02);
     expect(mockMixGameList[0].bestSoloTimes[0].name).toBe("mockedUser1");
