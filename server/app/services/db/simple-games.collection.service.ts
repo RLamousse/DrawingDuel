@@ -11,6 +11,8 @@ export const GAME_NAME_FIELD: string = "gameName";
 export class SimpleGamesCollectionService extends CollectionService<ISimpleGame> {
 
     private static validate(game: ISimpleGame): boolean {
+        // we want to assert for everytype of undefines, not just for null
+        // tslint:disable-next-line:triple-equals
         return game != undefined &&
             game.diffData !== undefined &&
             game.originalImage !== "" &&

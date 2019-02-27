@@ -10,6 +10,8 @@ import {GAME_NAME_FIELD} from "./simple-games.collection.service";
 export class FreeGamesCollectionService extends CollectionService<IFreeGame> {
 
     private static validate(game: IFreeGame): boolean {
+        // we want to assert for everytype of undefines, not just for null
+        // tslint:disable-next-line:triple-equals
         return game != undefined &&
             game.scenes !== undefined &&
             game.gameName !== "";
