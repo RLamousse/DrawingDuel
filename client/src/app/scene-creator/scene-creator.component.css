@@ -12,7 +12,6 @@ body {
 
 .row {
   display: flex;
-  margin-left: 10%;
   flex-direction: row;
 }
 
