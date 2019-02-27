@@ -1,12 +1,12 @@
 // tslint:disable:typedef
-import { expect } from "chai";
+import {expect} from "chai";
 import * as HttpStatus from "http-status-codes";
 import * as request from "supertest";
 import {IllegalImageFormatError} from "../../../common/errors/bitmap.errors";
 import {RequestFormatError} from "../../../common/errors/controller.errors";
-import { Bitmap } from "../../../common/image/bitmap/bitmap";
-import { Application } from "../app";
-import { container } from "../inversify.config";
+import {Bitmap} from "../../../common/image/bitmap/bitmap";
+import {Application} from "../app";
+import {container} from "../inversify.config";
 import types from "../types";
 
 const errorResponse = (errorMessage: string) => {

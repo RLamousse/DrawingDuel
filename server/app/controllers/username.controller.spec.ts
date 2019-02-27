@@ -1,29 +1,29 @@
 // tslint:disable:typedef
-import { expect } from "chai";
+import {expect} from "chai";
 import * as Httpstatus from "http-status-codes";
 import * as request from "supertest";
 import {NoUsernameInRequestError} from "../../../common/errors/controller.errors";
-import { Application } from "../app";
-import { container } from "../inversify.config";
+import {Application} from "../app";
+import {container} from "../inversify.config";
 import types from "../types";
 
 const mockedUsernameService = {
-    checkAvailability: () => ({ username: "validUsernameAdd", available: true }),
-    releaseUsername: () => ({ username: "validUsernameRelease", available: true }),
+    checkAvailability: () => ({username: "validUsernameAdd", available: true}),
+    releaseUsername: () => ({username: "validUsernameRelease", available: true}),
 };
 
 const errorResponse = (errorMessage: string) => {
-        return {
-            status: "error",
-            error: errorMessage,
-        };
+    return {
+        status: "error",
+        error: errorMessage,
+    };
 };
 
 const okResponse = (username: string, available: boolean) => {
-        return {
-            username: username,
-            available: available,
-        };
+    return {
+        username: username,
+        available: available,
+    };
 };
 
 describe("username controller", () => {

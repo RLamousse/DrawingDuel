@@ -1,15 +1,15 @@
-import { NextFunction, Request, Response } from "express";
+import {NextFunction, Request, Response} from "express";
 import * as HttpStatus from "http-status-codes";
-import { Field } from "multer";
-import { Message } from "../../../common/communication/messages/message";
-import { GAME_NAME_FIELD } from "../../../common/communication/requests/game-creator.controller.request";
+import {Field} from "multer";
+import {Message} from "../../../common/communication/messages/message";
+import {GAME_NAME_FIELD} from "../../../common/communication/requests/game-creator.controller.request";
 import {IllegalImageFormatError} from "../../../common/errors/bitmap.errors";
 import {RequestFormatError} from "../../../common/errors/controller.errors";
 import {
     ModificationType,
     Themes
 } from "../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
-import { EXPECTED_DIFF_NUMBER } from "../services/game-creator.service";
+import {EXPECTED_DIFF_NUMBER} from "../services/game-creator.service";
 
 export const REQUIRED_IMAGE_HEIGHT: number = 480;
 export const REQUIRED_IMAGE_WIDTH: number = 640;
@@ -57,7 +57,7 @@ const assertBasicSceneFields: (req: Request) => boolean = (req: Request): boolea
         req.body.theme !== Themes.Forest) ||
         !Array.isArray(req.body.modificationTypes) ||
         req.body.modificationTypes.length < 1 ||
-        req.body.modificationTypes.length > NUMBER_OF_MODIFICATION_TYPES  ||
+        req.body.modificationTypes.length > NUMBER_OF_MODIFICATION_TYPES ||
         !(req.body.objectQuantity <= MAX_3D_OBJECTS && req.body.objectQuantity >= 0) ||
         (req.body.objectQuantity < EXPECTED_DIFF_NUMBER &&
             req.body.modificationTypes.indexOf(ModificationType.remove) >= 0);
