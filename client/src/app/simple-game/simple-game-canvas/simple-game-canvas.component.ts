@@ -40,7 +40,6 @@ export class SimpleGameCanvasComponent implements OnInit {
 
       const canvasContext: CanvasRenderingContext2D | null = canvasElement.getContext("2d");
       if (canvasContext === null) {
-        // ¯\_(ツ)_/¯
         return;
       }
       this._canvasContext = canvasContext;

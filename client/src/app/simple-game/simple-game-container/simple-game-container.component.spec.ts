@@ -1,11 +1,10 @@
 import {Component, NO_ERRORS_SCHEMA} from "@angular/core";
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import {async, ComponentFixture, TestBed} from "@angular/core/testing";
 import {DifferenceCluster} from "../../../../../common/model/game/simple-game";
 import {IPoint, ORIGIN} from "../../../../../common/model/point";
 import {PixelData} from "../simple-game-canvas/simple-game-canvas.component";
 import {ALREADY_FOUND_DIFFERENCE, NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE, SimpleGameService} from "../simple-game.service";
-
-import { SimpleGameContainerComponent } from "./simple-game-container.component";
+import {SimpleGameContainerComponent} from "./simple-game-container.component";
 
 describe("SimpleGameContainerComponent", () => {
 
@@ -25,7 +24,7 @@ describe("SimpleGameContainerComponent", () => {
     }
 
     public drawPixels(pixels: PixelData[]): void {
-      // nop
+      return;
     }
   }
 
