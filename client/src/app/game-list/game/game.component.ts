@@ -1,4 +1,6 @@
-import { Component, Input } from "@angular/core";
+import {Component, Input} from "@angular/core";
+import {Router} from "@angular/router";
+import {IRecordTime} from "../../../../../common/model/game/record-time";
 
 @Component({
   selector: "app-game",
@@ -8,12 +10,44 @@ import { Component, Input } from "@angular/core";
 
 export class GameComponent {
 
-  public constructor() {/*vide*/}
+  public constructor(private router: Router) {}
 
   @Input() public gameName: string = "test";
-  @Input() public bestSoloTimes: { name: string, time: number }[];
-  @Input() public bestMultiTimes: { name: string, time: number }[];
-  @Input() public originalImage: string = "test";
+  @Input() public bestSoloTimes: IRecordTime[];
+  @Input() public bestMultiTimes: IRecordTime[];
+  @Input() public originalImage: string;
+  @Input() public modifiedImage: string;
+  @Input() public thumbnail: string;
   @Input() public rightButton: string;
   @Input() public leftButton: string;
+  @Input() public isSimpleGame: boolean;
+
+  protected leftButtonClick(): void {
+    if (this.leftButton === "jouer") {
+      this.isSimpleGame ? this.navigatePlayView() : this.navigateFreeView();
+    }
+  }
+
+  private navigatePlayView(): void {
+   this.router.navigate(["/play-view/"], {queryParams: {
+      gameName: this.gameName, originalImage: this.originalImage, modifiedImage: this.modifiedImage },
+    })
+      // tslint:disable-next-line:no-any Generic error response
+     .catch((reason: any) => {
+       throw new Error(reason);
+     });
+  }
+
+  private navigateFreeView(): void {
+    this.router.navigate(["/3d-view/"], {
+      queryParams: {
+        gameName: this.gameName,
+      },
+    })
+      // tslint:disable-next-line:no-any Generic error response
+      .catch((reason: any) => {
+        throw new Error(reason);
+      });
+  }
+
 }

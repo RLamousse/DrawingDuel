@@ -2,33 +2,39 @@
 <div class="window" appUnloadEvent>
     <h1>{{gameName}}</h1>
     <div class="horizontalWindow">
-        <div>
-            <img src={{originalImage}}>
-        </div>
-        <div class="scoreTable">
-            <table>
-                <tr>
-                    <td></td>
-                    <td>Solo</td>
-                    <td>1 vs 1</td>
-                </tr>
-                <tr>
-                    <td>Premier:</td>
-                    <td>{{bestSoloTimes[0].time}} {{bestSoloTimes[0].name}}</td>
-                    <td>{{bestMultiTimes[0].time}} {{bestMultiTimes[0].name}}</td>
-                </tr>
-                <tr>
-                    <td>Deuxieme:</td>
-                    <td>{{bestSoloTimes[1].time}} {{bestSoloTimes[1].name}}</td>
-                    <td>{{bestMultiTimes[1].time}} {{bestMultiTimes[1].name}}</td>
-                </tr>
-                <tr>
-                    <td>Troisième:</td>
-                    <td>{{bestSoloTimes[2].time}} {{bestSoloTimes[2].name}}</td>
-                    <td>{{bestMultiTimes[2].time}} {{bestMultiTimes[2].name}}</td>
-                </tr>
-            </table>
-        </div>
+      <div *ngIf="isSimpleGame;  then thenBlock else elseBlock"></div>
+      <ng-template #thenBlock>
+        <img class="image" src={{originalImage}}>
+      </ng-template>
+      <ng-template #elseBlock>
+        <img class="image" src={{thumbnail}}>
+      </ng-template>
+      
+      
+      <div class="scoreTable">
+        <table>
+          <tr>
+            <td></td>
+            <td>Solo</td>
+            <td>1 vs 1</td>
+          </tr>
+          <tr>
+            <td>Premier:</td>
+            <td>{{bestSoloTimes[0].time}} {{bestSoloTimes[0].name}}</td>
+            <td>{{bestMultiTimes[0].time}} {{bestMultiTimes[0].name}}</td>
+          </tr>
+          <tr>
+            <td>Deuxieme:</td>
+            <td>{{bestSoloTimes[1].time}} {{bestSoloTimes[1].name}}</td>
+            <td>{{bestMultiTimes[1].time}} {{bestMultiTimes[1].name}}</td>
+          </tr>
+          <tr>
+            <td>Troisième:</td>
+            <td>{{bestSoloTimes[2].time}} {{bestSoloTimes[2].name}}</td>
+            <td>{{bestMultiTimes[2].time}} {{bestMultiTimes[2].name}}</td>
+          </tr>
+        </table>
+      </div>
     </div>
     <div class="buttonRow">
         <button mat-raised-button color="primary" class="button" (click)="leftButtonClick()">{{leftButton}}</button>    

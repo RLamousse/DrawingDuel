@@ -1,0 +1,7 @@
+app-simple-game-canvas {
+  width: 640px;
+  height: 480px;
+  position: center;
+  padding-left: 10px;
+  padding-right: 10px;
+}

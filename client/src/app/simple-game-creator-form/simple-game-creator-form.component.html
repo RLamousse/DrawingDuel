@@ -45,7 +45,7 @@
     </mat-error>
   </mat-form-field>
   <div>
-    <button id="form-submit" type="submit" mat-button [disabled]="!formDoc.valid">Envoyer</button>
+    <button id="form-submit" type="form-submit" name="submit" mat-button [disabled]="!formDoc.valid || disableButton">Envoyer</button>
     <button id="form-reset" type="reset" mat-button color="warn" (click)="exit()">Annuler</button>
   </div>
 </form>

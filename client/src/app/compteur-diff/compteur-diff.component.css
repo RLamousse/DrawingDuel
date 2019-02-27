@@ -1,0 +1,9 @@
+.compteur{
+    margin: 10px;
+  font-family: Orbitron, serif;
+}
+
+.differences {
+  color: green;
+  font-size: 60px;
+}

@@ -2,7 +2,8 @@
     width:700px;
     background-color: lightblue;
     padding: 20px;
-    min-height: 300px;
+    min-height: 365px;
+    max-height: 365px;
     margin: auto;
     margin-top: 20px;
     border: 2px solid darkblue;
@@ -18,11 +19,10 @@ h1{
     flex-direction: row;
 }
 
-img{
+.image{
     border: 5px solid darkblue;
-    border-radius: 12px;
-    max-width: 250px;
-    max-height: 170px;
+    width: 250px;
+    height: 170px;
 }
 
 .scoreTable{

@@ -1,102 +1,116 @@
-import { NextFunction, Request, Response, Router } from "express";
-import e = require("express");
-import { inject, injectable } from "inversify";
-import {DataBaseService, GAME_FIELD, GAME_NAME_FIELD, USER_NAME_FIELD} from "../services/data-base.service";
+import {NextFunction, Request, Response, Router} from "express";
+import * as Httpstatus from "http-status-codes";
+import {inject, injectable} from "inversify";
+import {NonExistentGameError} from "../../../common/errors/database.errors";
+import {IFreeGame} from "../../../common/model/game/free-game";
+import {ISimpleGame} from "../../../common/model/game/simple-game";
+import {DataBaseService} from "../services/data-base.service";
 import Types from "../types";
-
-export const USERNAME_FORMAT_ERROR_MESSAGE: string = "ERROR: the username has the wrong format!";
-export const GAME_NAME_FORMAT_ERROR_MESSAGE: string = "ERROR: the game name has the wrong format!";
-export const GAME_FORMAT_ERROR_MESSAGE: string = "ERROR: the game has the wrong format!";
+import {executePromiseSafely} from "./controller-utils";
 
 @injectable()
 export class DataBaseController {
 
-    public constructor(@inject(Types.DataBaseService) private dataBaseService: DataBaseService) { }
+    public constructor(@inject(Types.DataBaseService) private dataBaseService: DataBaseService) {
+    }
 
     public get router(): Router {
         const router: Router = Router();
 
-        router.post("/add-user", async (req: Request, res: Response, next: NextFunction) => {
-            try {
-                this.testUserName(req);
-                res.json(await this.dataBaseService.addUser(req.query[USER_NAME_FIELD]));
-            } catch (error) {
-                next(error);
-            }
+        // ┌──┬───────┬──┐
+        // │  │ USERS │  │
+        // └──┴───────┴──┘
 
+        router.post("/users", async (req: Request, res: Response, next: NextFunction) => {
+            executePromiseSafely(res, next, async () => {
+                res.json(await this.dataBaseService.users.create(req.body));
+            });
         });
 
-        router.delete("/delete-user", async (req: Request, res: Response, next: NextFunction) => {
-            try {
-                this.testUserName(req);
-                res.json(await this.dataBaseService.deleteUser(req.query[USER_NAME_FIELD]));
-            } catch (error) {
-                next(error);
-            }
-
+        router.delete("/users/:userId", async (req: Request, res: Response, next: NextFunction) => {
+            executePromiseSafely(res, next, async () => {
+                res.json(await this.dataBaseService.users.delete(req.params["userId"]));
+            });
         });
 
-        router.delete("/delete-game", async (req: Request, res: Response, next: NextFunction) => {
-            try {
-                this.testGameName(req);
-                res.json(await this.dataBaseService.deleteGame(req.query[GAME_NAME_FIELD]));
-            } catch (error) {
-                next(error);
-            }
+        // ┌──┬───────┬──┐
+        // │  │ GAMES │  │
+        // └──┴───────┴──┘
 
+        // Simple Games
+
+        router.post("/games/simple", async (req: Request, res: Response, next: NextFunction) => {
+            executePromiseSafely(res, next, async () => {
+                res.json(await this.dataBaseService.simpleGames.create(req.body));
+            });
         });
 
-        router.post("/add-game", async (req: Request, res: Response, next: NextFunction) => {
-            try {
-                this.testGame(req);
-                res.json(await this.dataBaseService.addGame(req.body[GAME_FIELD]));
-            } catch (error) {
-                next(error);
-            }
-
+        router.delete("/games/simple/:id", async (req: Request, res: Response, next: NextFunction) => {
+            executePromiseSafely(res, next, async () => {
+                res.json(await this.dataBaseService.simpleGames.delete(req.params["id"]));
+            });
         });
 
-        router.get("/get-games", async (req: Request, res: Response, next: NextFunction) => {
-            try {
-                res.json(await this.dataBaseService.getGames());
-            } catch (error) {
-                next(error);
-            }
-
+        router.get("/games/simple", async (req: Request, res: Response, next: NextFunction) => {
+            executePromiseSafely(res, next, async () => {
+                res.json(await this.dataBaseService.simpleGames.getAll());
+            });
         });
 
-        router.get("/get-game", async (req: Request, res: Response, next: NextFunction) => {
-            try {
-                this.testGameName(req);
-                res.json(await this.dataBaseService.getGame(req.query.gameName));
-            } catch (error) {
-                next(error);
-            }
+        router.get("/games/simple/:gameName", async (req: Request, res: Response, next: NextFunction) => {
+            executePromiseSafely(res, next, async () => {
+                this.dataBaseService.simpleGames
+                    .getFromId(req.params["gameName"])
+                    .then((value: ISimpleGame) => {
+                        res.json(value);
+                    }).catch((reason: Error) => {
+                    if (reason.message === NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE) {
+                        res.status(Httpstatus.NOT_FOUND);
+                    } else {
+                        res.status(Httpstatus.INTERNAL_SERVER_ERROR);
+                    }
+                    res.json(reason);
+                });
+            });
+        });
 
+        // Free Games
+
+        router.post("/games/free", async (req: Request, res: Response, next: NextFunction) => {
+            executePromiseSafely(res, next, async () => {
+                res.json(await this.dataBaseService.freeGames.create(req.body));
+            });
+        });
+
+        router.delete("/games/free/:id", async (req: Request, res: Response, next: NextFunction) => {
+            executePromiseSafely(res, next, async () => {
+                res.json(await this.dataBaseService.freeGames.delete(req.params["id"]));
+            });
+        });
+
+        router.get("/games/free", async (req: Request, res: Response, next: NextFunction) => {
+            executePromiseSafely(res, next, async () => {
+                res.json(await this.dataBaseService.freeGames.getAll());
+            });
+        });
+
+        router.get("/games/free/:gameName", async (req: Request, res: Response, next: NextFunction) => {
+            executePromiseSafely(res, next, async () => {
+                this.dataBaseService.freeGames
+                    .getFromId(req.params["gameName"])
+                    .then((value: IFreeGame) => {
+                        res.json(value);
+                    }).catch((reason: Error) => {
+                    if (reason.message === NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE) {
+                        res.status(Httpstatus.NOT_FOUND);
+                    } else {
+                        res.status(Httpstatus.INTERNAL_SERVER_ERROR);
+                    }
+                    res.json(reason);
+                });
+            });
         });
 
         return router;
-    }
-
-    private testUserName(req: e.Request): void {
-        if (!this.isStringFieldCorrect(USER_NAME_FIELD, req.query)) {
-            throw new Error(USERNAME_FORMAT_ERROR_MESSAGE);
-        }
-    }
-
-    private testGame(req: e.Request): void {
-        this.dataBaseService.testGameStructure(req.body[GAME_FIELD]);
-    }
-
-    private testGameName(req: Request): void {
-        if (!this.isStringFieldCorrect(GAME_NAME_FIELD, req.query)) {
-            throw new Error(GAME_NAME_FORMAT_ERROR_MESSAGE);
-        }
-    }
-
-    private isStringFieldCorrect(filedName: string, item: object): boolean {
-        return (!(typeof item[filedName] === "undefined" ||
-                  typeof item[filedName] !== "string" ||
-                  item[filedName] === ""));
     }
 }
