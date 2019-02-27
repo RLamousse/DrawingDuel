@@ -1,18 +1,36 @@
 import {injectable} from "inversify";
 import "reflect-metadata";
+import {EmptyArrayError, IllegalArgumentError} from "../../../common/errors/services.errors";
 import {ISimpleDifferenceData} from "../../../common/model/game/simple-game";
 import {IPoint} from "../../../common/model/point";
 import {create2dArray} from "../../../common/util/util";
 
-export const ARGUMENT_ERROR_MESSAGE: string = "Error: the argument has the wrong format!";
-export const EMPTY_ARRAY_ERROR_MESSAGE: string = "Error: the given array is empty!";
-
 @injectable()
 export class DifferenceEvaluatorService {
 
+    private static validateSimpleData(pixels: number[][]): void {
+        // local variable needed because pixels cannot be directly passed to isArray function
+        const TMP_ARRAY: number[][] = pixels;
+        if (!Array.isArray(TMP_ARRAY)) {
+            throw new IllegalArgumentError();
+        }
+        if (TMP_ARRAY.length === 0) {
+            throw new EmptyArrayError();
+        }
+        if (!Array.isArray(TMP_ARRAY[0])) {
+            throw new IllegalArgumentError();
+        }
+        if (TMP_ARRAY[0].length === 0) {
+            throw new EmptyArrayError();
+        }
+        if (typeof TMP_ARRAY[0][0] !== "number") {
+            throw new IllegalArgumentError();
+        }
+    }
+
     public getSimpleNDifferences(pixels: number[][]): ISimpleDifferenceData {
 
-        this.validateSimpleData(pixels);
+        DifferenceEvaluatorService.validateSimpleData(pixels);
 
         // this algorithm is the two-pass algorithm and a set of connected labelled zones is connected by a disjoint-set data structure
         // the algorithm does not consider edge connections
@@ -34,26 +52,6 @@ export class DifferenceEvaluatorService {
         }
 
         return this.generateDiffZonesMap(PARENT_TABLE, ARRAY_OF_LABELS);
-    }
-
-    private validateSimpleData(pixels: number[][]): void {
-        // local variable needed because pixels cannot be directly passed to isArray function
-        const TMP_ARRAY: number[][] = pixels;
-        if (!Array.isArray(TMP_ARRAY)) {
-            throw new Error(ARGUMENT_ERROR_MESSAGE);
-        }
-        if (TMP_ARRAY.length === 0) {
-            throw new Error(EMPTY_ARRAY_ERROR_MESSAGE);
-        }
-        if (!Array.isArray(TMP_ARRAY[0])) {
-            throw new Error(ARGUMENT_ERROR_MESSAGE);
-        }
-        if (TMP_ARRAY[0].length === 0) {
-            throw new Error(EMPTY_ARRAY_ERROR_MESSAGE);
-        }
-        if (typeof TMP_ARRAY[0][0] !== "number") {
-            throw new Error(ARGUMENT_ERROR_MESSAGE);
-        }
     }
 
     private analysePixel(xPosition: number, yPosition: number, arrayOfLabels: number[][],

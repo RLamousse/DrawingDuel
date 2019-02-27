@@ -2,6 +2,7 @@ import {Client} from "@rmp135/imgur";
 import * as config from "config";
 import {injectable} from "inversify";
 import "reflect-metadata";
+import {ImageUploadServiceError} from "../../../common/errors/services.errors";
 
 @injectable()
 export class ImageUploadService {
@@ -16,8 +17,8 @@ export class ImageUploadService {
                 return res.data.link;
             })
             // tslint:disable-next-line:no-any Imgur response
-            .catch((reason: any) => {
-                throw new Error(reason);
+            .catch(() => {
+                throw new ImageUploadServiceError();
             });
     }
 }

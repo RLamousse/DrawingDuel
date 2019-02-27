@@ -2,6 +2,7 @@ import {NextFunction, Request, Response, Router} from "express";
 import * as HttpStatus from "http-status-codes";
 import {inject, injectable} from "inversify";
 import multer = require("multer");
+import {InvalidSizeBitmapError} from "../../../common/errors/bitmap.errors";
 import {Bitmap} from "../../../common/image/bitmap/bitmap";
 import {BITMAP_MEME_TYPE} from "../../../common/image/bitmap/bitmap-utils";
 import {BitmapFactory} from "../images/bitmap/bitmap-factory";
@@ -80,7 +81,7 @@ export class BitmapDiffController {
 
     private static checkBitMapSizeOk(bitmap: Bitmap): void {
         if (bitmap.width !== REQUIRED_IMAGE_WIDTH || bitmap.height !== REQUIRED_IMAGE_HEIGHT) {
-            throw new Error(`Error: ${bitmap.fileName} bitmap file is not the right size.`);
+            throw new InvalidSizeBitmapError(bitmap.fileName);
         }
     }
 
