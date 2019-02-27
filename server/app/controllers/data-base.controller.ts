@@ -1,12 +1,12 @@
-import { NextFunction, Request, Response, Router } from "express";
+import {NextFunction, Request, Response, Router} from "express";
 import * as Httpstatus from "http-status-codes";
-import { inject, injectable } from "inversify";
-import { IFreeGame } from "../../../common/model/game/free-game";
-import { ISimpleGame } from "../../../common/model/game/simple-game";
-import { DataBaseService } from "../services/data-base.service";
-import { NON_EXISTING_GAME_ERROR_MESSAGE } from "../services/db/simple-games.collection.service";
+import {inject, injectable} from "inversify";
+import {NonExistentGameError} from "../../../common/errors/database.errors";
+import {IFreeGame} from "../../../common/model/game/free-game";
+import {ISimpleGame} from "../../../common/model/game/simple-game";
+import {DataBaseService} from "../services/data-base.service";
 import Types from "../types";
-import { executePromiseSafely } from "./controller-utils";
+import {executePromiseSafely} from "./controller-utils";
 
 @injectable()
 export class DataBaseController {
@@ -64,7 +64,7 @@ export class DataBaseController {
                     .then((value: ISimpleGame) => {
                         res.json(value);
                     }).catch((reason: Error) => {
-                    if (reason.message === NON_EXISTING_GAME_ERROR_MESSAGE) {
+                    if (reason.message === NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE) {
                         res.status(Httpstatus.NOT_FOUND);
                     } else {
                         res.status(Httpstatus.INTERNAL_SERVER_ERROR);
@@ -101,7 +101,7 @@ export class DataBaseController {
                     .then((value: IFreeGame) => {
                         res.json(value);
                     }).catch((reason: Error) => {
-                    if (reason.message === NON_EXISTING_GAME_ERROR_MESSAGE) {
+                    if (reason.message === NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE) {
                         res.status(Httpstatus.NOT_FOUND);
                     } else {
                         res.status(Httpstatus.INTERNAL_SERVER_ERROR);

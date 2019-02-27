@@ -1,5 +1,5 @@
 body {
-  font-family: Orbitron;
+  font-family: Orbitron, serif;
   background-color: rgb(65, 62, 62);
   color:white;
 }
@@ -7,17 +7,17 @@ body {
 .centered {
   text-align: center;
   font-size: 50px;
+  margin-top: 0;
 }
 
 .row {
   display: flex;
-  margin-left: 10%;
   flex-direction: row;
 }
 
 .scene {
-  height: 500px;
-  width: 700px;
+  height: 480px;
+  width: 640px;
   border: 5px rgb(194, 185, 185) solid;
 }
 

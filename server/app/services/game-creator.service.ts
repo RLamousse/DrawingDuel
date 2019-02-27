@@ -4,6 +4,8 @@ import * as Httpstatus from "http-status-codes";
 import {inject, injectable} from "inversify";
 import "reflect-metadata";
 import {Message} from "../../../common/communication/messages/message";
+import {AlreadyExistentGameError, NonExistentGameError, NonExistentThemeError} from "../../../common/errors/database.errors";
+import {DifferenceCountError} from "../../../common/errors/services.errors";
 import {
     ModificationType,
     Themes
@@ -16,17 +18,13 @@ import {TIMES_ARRAY_SIZE} from "../../../common/model/game/game";
 import {IRecordTime} from "../../../common/model/game/record-time";
 import {ISimpleDifferenceData, ISimpleGame} from "../../../common/model/game/simple-game";
 import {
-    DIFFERENCE_ERROR_MESSAGE,
     GAME_CREATION_SUCCESS_MESSAGE,
     MODIFIED_IMAGE_FIELD_NAME,
-    NAME_ERROR_MESSAGE,
-    NON_EXISTING_THEME,
     ORIGINAL_IMAGE_FIELD_NAME,
     OUTPUT_FILE_NAME_FIELD_NAME
 } from "../controllers/controller-utils";
 import {BitmapFactory} from "../images/bitmap/bitmap-factory";
 import Types from "../types";
-import {NON_EXISTING_GAME_ERROR_MESSAGE} from "./db/simple-games.collection.service";
 import {DifferenceEvaluatorService} from "./difference-evaluator.service";
 import {FreeGameCreatorService} from "./free-game-creator.service";
 import {ImageUploadService} from "./image-upload.service";
@@ -71,7 +69,7 @@ export class GameCreatorService {
                 return;
             }
         }
-        throw new Error(NAME_ERROR_MESSAGE);
+        throw new AlreadyExistentGameError();
     }
 
     private static async getDiffImage(originalImageFile: Buffer, modifiedImageFile: Buffer): Promise<Buffer> {
@@ -126,7 +124,7 @@ export class GameCreatorService {
             const imagesUrls: string[] = await this.uploadImages(originalImage, modifiedImage);
             await this.uploadSimpleGame(gameName, imagesUrls, differenceData);
         } catch (error) {
-            if (error.message !== NON_EXISTING_GAME_ERROR_MESSAGE) {
+            if (error.message !== NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE) {
                 throw new Error("dataBase: " + error.message);
             }
         }
@@ -199,7 +197,7 @@ export class GameCreatorService {
             throw new Error("bmp diff counting: " + error.message);
         }
         if (diffData.length !== EXPECTED_DIFF_NUMBER) {
-            throw new Error(DIFFERENCE_ERROR_MESSAGE);
+            throw new DifferenceCountError();
         }
 
         return diffData;
@@ -216,7 +214,7 @@ export class GameCreatorService {
 
             return this.freeGameCreatorService.generateIScenes(numberOfObjects, modTypes);
         }
-        throw new Error(NON_EXISTING_THEME);
+        throw new NonExistentThemeError();
     }
 
     private generateRandomNames(): string[] {

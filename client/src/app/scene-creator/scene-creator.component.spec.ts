@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { ActivatedRoute /*, Router*/ } from "@angular/router";
+import { ActivatedRoute } from "@angular/router";
 import { of, Observable } from "rxjs";
 import * as THREE from "three";
 import { IFreeGame } from "../../../../common/model/game/free-game";
