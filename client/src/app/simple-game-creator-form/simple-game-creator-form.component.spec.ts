@@ -1,4 +1,4 @@
-import { HttpClientModule } from "@angular/common/http";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { AbstractControl, FormsModule, ReactiveFormsModule } from "@angular/forms";
@@ -7,14 +7,42 @@ import { MatDialogModule, MatDialogRef } from "@angular/material/dialog";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { MaterialFileInputModule } from "ngx-material-file-input";
+import { Observable } from "rxjs";
 import { BITMAP_HEADER_24BPP, HEADER_SIZE_BYTES, VALID_640x480_BITMAP_HEADER_24BPP } from "../../../../common/image/bitmap/bitmap-utils";
 import FileValidator from "../file.validator";
 import { FormPostService } from "../form-post.service";
 import { SimpleGameCreatorFormComponent } from "./simple-game-creator-form.component";
 
+// tslint:disable-next-line:typedef
+const fakeFormPost = {
+  submitForm: (whichBranch: string, body: Object): Observable<Object> => {
+    return new Observable((observer) => {
+      observer.next("Test");
+    });
+  },
+};
+
 describe("SimpleGameCreatorFormComponent", () => {
   let component: SimpleGameCreatorFormComponent;
   let fixture: ComponentFixture<SimpleGameCreatorFormComponent>;
+
+  const setupValidForm: Function = () => {
+    // tslint:disable-next-line:no-any
+    const fakeHeader: any[] = new Array(HEADER_SIZE_BYTES);
+    fakeHeader.unshift(...VALID_640x480_BITMAP_HEADER_24BPP);
+    const originalImage: AbstractControl = component.formDoc.controls["originalImage"];
+    originalImage.clearAsyncValidators();
+    originalImage.setValue({
+      files: [new File(fakeHeader, "maxime.bmp", { type: "image/bmp" })],
+    });
+    const modifiedImage: AbstractControl = component.formDoc.controls["modifiedImage"];
+    modifiedImage.clearAsyncValidators();
+    modifiedImage.setValue({
+      files: [new File(fakeHeader, "maxime.bmp", { type: "image/bmp" })],
+    });
+    const name: AbstractControl = component.formDoc.controls["name"];
+    name.setValue("12345");
+  };
 
   beforeEach((done) => {
     TestBed.configureTestingModule({
@@ -23,7 +51,7 @@ describe("SimpleGameCreatorFormComponent", () => {
         BrowserModule,
         ReactiveFormsModule,
         FormsModule,
-        HttpClientModule,
+        HttpClientTestingModule,
         MatFormFieldModule,
         MaterialFileInputModule,
         MatButtonModule,
@@ -33,7 +61,15 @@ describe("SimpleGameCreatorFormComponent", () => {
         MatDialogModule,
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [FormPostService, {provide: MatDialogRef, useValue: {}}],
+      providers: [
+        { provide: FormPostService, useValue: fakeFormPost },
+        {
+          provide: MatDialogRef, useValue: {
+            close: (message: Object = { status: "cancelled" }) => {
+              //
+            },
+          },
+        }],
     });
     done();
   });
@@ -78,7 +114,7 @@ describe("SimpleGameCreatorFormComponent", () => {
   it("should have an error if the file isn't a bmp", async () => {
     const originalImage: AbstractControl = component.formDoc.controls["originalImage"];
     originalImage.setValue({
-      files: [new File([""], "maxime", {type: "text/html"})],
+      files: [new File([""], "maxime", { type: "text/html" })],
     });
     expect(originalImage.valid).toBeFalsy();
   });
@@ -86,7 +122,7 @@ describe("SimpleGameCreatorFormComponent", () => {
   it("should have an error if the file is too big for upload", async () => {
     const originalImage: AbstractControl = component.formDoc.controls["originalImage"];
     originalImage.setValue({
-      files: [new File(new Array(FileValidator.MAX_IMAGE_SIZE + 1).fill(0), "maxime.bmp", {type: "image/bmp"})],
+      files: [new File(new Array(FileValidator.MAX_IMAGE_SIZE + 1).fill(0), "maxime.bmp", { type: "image/bmp" })],
     });
     expect(originalImage.valid).toBeFalsy();
   });
@@ -97,7 +133,7 @@ describe("SimpleGameCreatorFormComponent", () => {
     fakeHeader.unshift(...BITMAP_HEADER_24BPP);
     const originalImage: AbstractControl = component.formDoc.controls["originalImage"];
     originalImage.setValue({
-      files: [new File(fakeHeader, "maxime.bmp", {type: "image/bmp"})],
+      files: [new File(fakeHeader, "maxime.bmp", { type: "image/bmp" })],
     });
     expect(originalImage.valid).toBeFalsy();
   });
@@ -108,21 +144,38 @@ describe("SimpleGameCreatorFormComponent", () => {
      * is ok
   */
   it("should let submit if everything ok", async () => {
-    // tslint:disable-next-line:no-any
-    const fakeHeader: any[] = new Array(HEADER_SIZE_BYTES);
-    fakeHeader.unshift(...VALID_640x480_BITMAP_HEADER_24BPP);
-    const originalImage: AbstractControl = component.formDoc.controls["originalImage"];
-    originalImage.clearAsyncValidators();
-    originalImage.setValue({
-      files: [new File(fakeHeader, "maxime.bmp", {type: "image/bmp"})],
-    });
-    const modifiedImage: AbstractControl = component.formDoc.controls["modifiedImage"];
-    modifiedImage.clearAsyncValidators();
-    modifiedImage.setValue({
-      files: [new File(fakeHeader, "maxime.bmp", {type: "image/bmp"})],
-    });
-    const name: AbstractControl = component.formDoc.controls["name"];
-    name.setValue("12345");
+    setupValidForm();
     expect(component.formDoc.valid).toBeTruthy();
+  });
+
+  it("should exit without trouble", () => {
+    expect(() => component.exit()).not.toThrow();
+  });
+
+  it("should not throw with error from the request", async (done) => {
+    setupValidForm();
+    fakeFormPost.submitForm = (whichBranch: string, body: Object): Observable<Object> => {
+      return new Observable((observer) => {
+        observer.error({
+          message: "ERREUR",
+          name: "Erreur Test",
+        } as Error);
+      });
+    };
+
+    expect(() => component.onSubmit()).not.toThrow();
+    done();
+  });
+
+  it("should not throw with success from the request", async (done) => {
+    setupValidForm();
+    fakeFormPost.submitForm = (whichBranch: string, body: Object): Observable<Object> => {
+      return new Observable((observer) => {
+        observer.next("Coucou, tout marche");
+      });
+    };
+
+    expect(() => component.onSubmit()).not.toThrow();
+    done();
   });
 });
