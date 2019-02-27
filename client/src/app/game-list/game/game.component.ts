@@ -1,5 +1,6 @@
-import { Component, Input } from "@angular/core";
-import { Router } from "@angular/router";
+import {Component, Input} from "@angular/core";
+import {Router} from "@angular/router";
+import {IRecordTime} from "../../../../../common/model/game/record-time";
 
 @Component({
   selector: "app-game",
@@ -12,8 +13,8 @@ export class GameComponent {
   public constructor(private router: Router) {}
 
   @Input() public gameName: string = "test";
-  @Input() public bestSoloTimes: { name: string, time: number }[];
-  @Input() public bestMultiTimes: { name: string, time: number }[];
+  @Input() public bestSoloTimes: IRecordTime[];
+  @Input() public bestMultiTimes: IRecordTime[];
   @Input() public originalImage: string;
   @Input() public modifiedImage: string;
   @Input() public thumbnail: string;
