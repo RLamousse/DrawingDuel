@@ -1,9 +1,12 @@
 import { HttpClientModule } from "@angular/common/http";
 import { async, TestBed } from "@angular/core/testing";
+import { IExtendedFreeGame } from "../../../common/model/game/extended-free-game";
 import { IFreeGame } from "../../../common/model/game/free-game";
 import { IGame } from "../../../common/model/game/game";
 import { ISimpleGame } from "../../../common/model/game/simple-game";
 import { GameService } from "./game.service";
+import { FreeGameCreatorService } from "./scene-creator/FreeGameCreator/free-game-creator.service";
+import { FreeGamePhotoService } from "./scene-creator/free-game-photo-service/free-game-photo.service";
 
 describe("GameService", () => {
   let serviceGame: GameService;
@@ -28,6 +31,42 @@ describe("GameService", () => {
     } as IFreeGame,
   ];
 
+  const mockSimpleGameList: ISimpleGame[] = [
+    {
+      gameName: "mockedSimpleName",
+      originalImage: "oriName",
+      modifiedImage: "modName",
+      bestSoloTimes: [{ name: "mockedUser1", time: 120 }],
+      bestMultiTimes: [{ name: "mockedUser2", time: 23 }],
+      diffData: [],
+    },
+    {
+      gameName: "mockedSimpleName",
+      originalImage: "oriName",
+      modifiedImage: "modName",
+      bestSoloTimes: [{ name: "mockedUser1", time: 120 }],
+      bestMultiTimes: [{ name: "mockedUser2", time: 23 }],
+      diffData: [],
+    },
+  ];
+
+  const mockExtendedFreeGameList: IExtendedFreeGame[] = [
+    {
+      gameName: "mockedSimpleName",
+      thumbnail: "",
+      bestSoloTimes: [{ name: "mockedUser1", time: 120 }],
+      bestMultiTimes: [{ name: "mockedUser2", time: 23 }],
+      scenes: {originalObjects:[], modifiedObjects: []},
+    },
+    {
+      gameName: "mockedSimpleName",
+      thumbnail: "",
+      bestSoloTimes: [{ name: "mockedUser1", time: 120 }],
+      bestMultiTimes: [{ name: "mockedUser2", time: 23 }],
+      scenes: {originalObjects:[], modifiedObjects: []},
+    },
+  ];
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientModule],
@@ -40,7 +79,7 @@ describe("GameService", () => {
     TestBed.configureTestingModule({
       imports: [HttpClientModule],
       providers: [
-        { provide: GameService, useValue: spyService }, GameService],
+        { provide: GameService, useValue: spyService }, GameService, FreeGamePhotoService, FreeGameCreatorService],
     });
   });
 
@@ -83,4 +122,14 @@ describe("GameService", () => {
     expect(incompleteList[0].bestSoloTimes.length).toBe(0);
     expect(incompleteList[0].bestMultiTimes.length).toBe(0);
   });
+
+  it ("pushFreeGames should push in extendedFreeGames", () => {
+    serviceGame.pushFreeGames(mockExtendedFreeGameList);
+    expect(serviceGame.extendedFreeGames).not.toBeNull;
+  })
+
+  it ("pushSimpleGames should push in simpleGames", () => {
+    serviceGame.pushSimpleGames(mockSimpleGameList);
+    expect(serviceGame.simpleGames).not.toBeNull;
+  })
 });
