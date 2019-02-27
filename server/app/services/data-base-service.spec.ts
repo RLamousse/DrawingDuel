@@ -1,16 +1,21 @@
+ // Test file have too much lines
+ /* tslint:disable:max-file-line-count */
+ // we have some numbers in the expects
+ // tslint:disable:no-magic-numbers
 import {expect} from "chai";
+import {IFreeGame} from "../../../common/model/game/free-game";
+import {ISimpleGame} from "../../../common/model/game/simple-game";
+import {IUser} from "../../../common/model/user";
 import {DataBaseService} from "./data-base.service";
 import {EMPTY_ID_ERROR_MESSAGE} from "./db/collection.service";
-import {ALREADY_EXISTING_USER_MESSAGE_ERROR, NON_EXISTING_USER_ERROR_MESSAGE} from "./db/users.collection.service";
-import {IUser} from "../../../common/model/user";
 import {
     ALREADY_EXISTING_GAME_MESSAGE_ERROR,
     GAME_FORMAT_ERROR_MESSAGE,
     NON_EXISTING_GAME_ERROR_MESSAGE
 } from "./db/simple-games.collection.service";
-import {ISimpleGame} from "../../../common/model/game/simple-game";
+import {ALREADY_EXISTING_USER_MESSAGE_ERROR, NON_EXISTING_USER_ERROR_MESSAGE} from "./db/users.collection.service";
+
 import {customIndexOf, deepCompare} from "../../../common/util/util";
-import {IFreeGame} from "../../../common/model/game/free-game";
 
 // Here we do not mock the real data-base, because we want to test the communication between the server and the database
 describe("A service that communicates with the data-base", () => {
@@ -125,7 +130,7 @@ describe("A service that communicates with the data-base", () => {
                 await dataBaseService.users.create(USERS_ARRAY[1]);
                 await dataBaseService.users.create(USERS_ARRAY[2]);
                 // @ts-ignore the data-base modifies the attributes given ti it by a create, and generates an id_ attribute
-                USERS_ARRAY.forEach((item) => { delete item._id });
+                USERS_ARRAY.forEach((item: IUser) => { delete item._id; });
                 expect((await dataBaseService.users.getAll())).to.eql(USERS_ARRAY);
                 await dataBaseService.users.delete("someUserTest");
                 await dataBaseService.users.delete("someUserTest2");
@@ -257,7 +262,7 @@ describe("A service that communicates with the data-base", () => {
                 // @ts-ignore the data-base modifies the attributes given ti it by a create, and generates an id_ attribute
                 delete someGame._id;
                 expect(await dataBaseService.simpleGames.getFromId("someGameTest")).to.eql(someGame);
-                //cleanup
+                // cleanup
                 await dataBaseService.simpleGames.delete("someGameTest");
             });
 
@@ -274,10 +279,10 @@ describe("A service that communicates with the data-base", () => {
                 // @ts-ignore the data-base modifies the attributes given ti it by a create, and generates an id_ attribute
                 delete someGame._id;
                 expect(customIndexOf(await dataBaseService.simpleGames.getAll(), someGame,
-                    (a: ISimpleGame, b: ISimpleGame): boolean => {
+                                     (a: ISimpleGame, b: ISimpleGame): boolean => {
                         return deepCompare(a, b);
                     })).to.be.greaterThan(-1);
-                //cleanup
+                // cleanup
                 await dataBaseService.simpleGames.delete("someGameTest");
             });
         });
@@ -317,7 +322,7 @@ describe("A service that communicates with the data-base", () => {
                 // @ts-ignore the data-base modifies the attributes given ti it by a create, and generates an id_ attribute
                 delete someGame._id;
                 expect(await dataBaseService.simpleGames.getFromId("someGameTest")).to.eql(someGame);
-                //cleanup
+                // cleanup
                 await dataBaseService.simpleGames.delete("someGameTest");
             });
         });
@@ -337,10 +342,10 @@ describe("A service that communicates with the data-base", () => {
                 // @ts-ignore the data-base modifies the attributes given ti it by a create, and generates an id_ attribute
                 delete someGame._id;
                 expect(customIndexOf(await dataBaseService.simpleGames.getAll(), someGame,
-                    (a: ISimpleGame, b: ISimpleGame): boolean => {
+                                     (a: ISimpleGame, b: ISimpleGame): boolean => {
                         return deepCompare(a, b);
                     })).to.be.greaterThan(-1);
-                //cleanup
+                // cleanup
                 await dataBaseService.simpleGames.delete("someGameTest");
             });
 
@@ -459,7 +464,7 @@ describe("A service that communicates with the data-base", () => {
                 // @ts-ignore the data-base modifies the attributes given ti it by a create, and generates an id_ attribute
                 delete someGame._id;
                 expect(await dataBaseService.freeGames.getFromId("someGameTest")).to.eql(someGame);
-                //cleanup
+                // cleanup
                 await dataBaseService.freeGames.delete("someGameTest");
             });
 
@@ -476,10 +481,10 @@ describe("A service that communicates with the data-base", () => {
                 // @ts-ignore the data-base modifies the attributes given ti it by a create, and generates an id_ attribute
                 delete someGame._id;
                 expect(customIndexOf(await dataBaseService.simpleGames.getAll(), someGame,
-                    (a: ISimpleGame, b: ISimpleGame): boolean => {
+                                     (a: ISimpleGame, b: ISimpleGame): boolean => {
                         return deepCompare(a, b);
                     })).to.be.greaterThan(-1);
-                //cleanup
+                // cleanup
                 await dataBaseService.simpleGames.delete("someGameTest");
             });
         });
@@ -517,7 +522,7 @@ describe("A service that communicates with the data-base", () => {
                 // @ts-ignore the data-base modifies the attributes given ti it by a create, and generates an id_ attribute
                 delete someGame._id;
                 expect(await dataBaseService.freeGames.getFromId("someGameTest")).to.eql(someGame);
-                //cleanup
+                // cleanup
                 await dataBaseService.freeGames.delete("someGameTest");
             });
         });
@@ -535,16 +540,15 @@ describe("A service that communicates with the data-base", () => {
                 // @ts-ignore the data-base modifies the attributes given ti it by a create, and generates an id_ attribute
                 delete someGame._id;
                 expect(customIndexOf(await dataBaseService.freeGames.getAll(), someGame,
-                    (a: IFreeGame, b: IFreeGame): boolean => {
+                                     (a: IFreeGame, b: IFreeGame): boolean => {
                         return deepCompare(a, b);
                     })).to.be.greaterThan(-1);
-                //cleanup
+                // cleanup
                 await dataBaseService.freeGames.delete("someGameTest");
             });
 
         });
 
     });
-
 
 });

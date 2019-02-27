@@ -13,6 +13,8 @@ export const ALREADY_EXISTING_GAME_MESSAGE_ERROR: string = "ERROR: a game with t
 export class SimpleGamesCollectionService extends CollectionService<ISimpleGame> {
 
     private static validate(game: ISimpleGame): boolean {
+        // we want to assert for everytype of undefines, not just for null
+        // tslint:disable-next-line:triple-equals
         return game != undefined &&
             game.diffData !== undefined &&
             game.originalImage !== "" &&
