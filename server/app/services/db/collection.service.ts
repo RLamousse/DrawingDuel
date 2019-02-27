@@ -19,8 +19,8 @@ export abstract class CollectionService<T> {
     public async abstract getFromId(id: string): Promise<T>;
     public async abstract create(data: T): Promise<Message>;
     public async abstract delete(id: string): Promise<Message>;
-    public abstract creationSuccessMessage(data: T): Message;
-    public abstract deletionSuccessMessage(id: string): Message;
+    protected abstract creationSuccessMessage(data: T): Message;
+    protected abstract deletionSuccessMessage(id: string): Message;
 
     public async contains(id: string): Promise<boolean> {
         return await this.documentCount(id) !== 0;

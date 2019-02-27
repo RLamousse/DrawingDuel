@@ -127,7 +127,6 @@ describe("Data-base controller", () => {
                 .get("/api/data-base/games/simple/notExistingGame")
                 .expect(HttpStatus.NOT_FOUND)
                 .then((response) => {
-                    console.dir(response.body);
                     expect(true).to.be.equal(true);
                 });
         });
@@ -138,7 +137,6 @@ describe("Data-base controller", () => {
                 .get("/api/data-base/games/simple/notExistingGame")
                 .expect(HttpStatus.INTERNAL_SERVER_ERROR)
                 .then((response) => {
-                    console.dir(response.body);
                     expect(true).to.be.equal(true);
                 });
         });
@@ -194,7 +192,6 @@ describe("Data-base controller", () => {
                 .get("/api/data-base/games/free/notExistingGame")
                 .expect(HttpStatus.NOT_FOUND)
                 .then((response) => {
-                    console.dir(response.body);
                     expect(true).to.be.equal(true);
                 });
         });
@@ -205,7 +202,6 @@ describe("Data-base controller", () => {
                 .get("/api/data-base/games/free/notExistingGame")
                 .expect(HttpStatus.INTERNAL_SERVER_ERROR)
                 .then((response) => {
-                    console.dir(response.body);
                     expect(true).to.be.equal(true);
                 });
         });

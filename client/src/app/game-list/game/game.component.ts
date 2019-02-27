@@ -27,21 +27,18 @@ export class GameComponent {
     }
   }
 
-  protected navigatePlayView(): void {
-    this.router.navigate(["/play-view/"], {
-      queryParams: {
-        isSimpleGame: this.isSimpleGame, gameName: this.gameName,
-        originalImage: this.originalImage, modifiedImage: this.modifiedImage,
-      },
-    }).catch();
+  private navigatePlayView(): void {
+   this.router.navigate(["/play-view/"], {queryParams: {
+      gameName: this.gameName, originalImage: this.originalImage, modifiedImage: this.modifiedImage },
+    }).catch(/* catch just pour le lint, play-view existe dans le routing*/);
   }
 
-  protected navigateFreeView(): void {
+  private navigateFreeView(): void {
     this.router.navigate(["/3d-view/"], {
       queryParams: {
         gameName: this.gameName,
       },
-    }).catch();
+    }).catch(/* catch just pour le lint, 3d-view existe dans le routing*/);
   }
 
 }

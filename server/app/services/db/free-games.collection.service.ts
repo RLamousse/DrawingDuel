@@ -41,14 +41,14 @@ export class FreeGamesCollectionService extends CollectionService<IFreeGame> {
         return this.getDocument(id, NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE);
     }
 
-    public creationSuccessMessage(data: IFreeGame): Message {
+    protected creationSuccessMessage(data: IFreeGame): Message {
         return {
             title: "Free game added",
             body: "Free game " + data.gameName + " successfully added",
         };
     }
 
-    public deletionSuccessMessage(id: string): Message {
+    protected deletionSuccessMessage(id: string): Message {
         return {
             title: "Free game deleted",
             body: "Free game " + id + " successfully deleted!",

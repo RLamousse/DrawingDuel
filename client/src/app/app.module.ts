@@ -26,15 +26,15 @@ import { InitialViewComponent } from "./initial-view/initial-view.component";
 import { PlayViewComponent } from "./play-view/play-view.component";
 import { Form3DService } from "./scene-creator/3DFormService/3-dform.service";
 import { FreeGameCreatorService } from "./scene-creator/FreeGameCreator/free-game-creator.service";
-import {FreeGamePhotoService} from "./scene-creator/free-game-photo-service/free-game-photo.service";
+import { FreeGamePhotoService } from "./scene-creator/free-game-photo-service/free-game-photo.service";
 import { SceneCreatorComponent } from "./scene-creator/scene-creator.component";
 import { SceneRendererService } from "./scene-creator/scene-renderer.service";
 import { SimpleGameCreatorFormComponent } from "./simple-game-creator-form/simple-game-creator-form.component";
-import {SimpleGameCanvasComponent} from "./simple-game/simple-game-canvas/simple-game-canvas.component";
-import {SimpleGameContainerComponent} from "./simple-game/simple-game-container/simple-game-container.component";
-import {SimpleGameService} from "./simple-game/simple-game.service";
+import { SimpleGameCanvasComponent } from "./simple-game/simple-game-canvas/simple-game-canvas.component";
+import { SimpleGameContainerComponent } from "./simple-game/simple-game-container/simple-game-container.component";
+import { SimpleGameService } from "./simple-game/simple-game.service";
 import { SocketService } from "./socket.service";
-import {TimerComponent} from "./timer/timer.component";
+import { TimerComponent } from "./timer/timer.component";
 import { UNListService } from "./username.service";
 import { VueAdminComponent } from "./vue-admin/vue-admin.component";
 import { WindowEventHandlerDirective } from "./window-event-handler.directive";
@@ -62,7 +62,6 @@ import { WindowEventHandlerDirective } from "./window-event-handler.directive";
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
-    MatSelectModule,
     MatButtonModule,
     MatIconModule,
     MatInputModule,
@@ -73,6 +72,7 @@ import { WindowEventHandlerDirective } from "./window-event-handler.directive";
     MatDialogModule,
     MatSliderModule,
     MatCheckboxModule,
+    MatSelectModule,
   ],
   providers: [
     UNListService,

@@ -14,8 +14,10 @@ export class GameService {
   public simpleGames: ISimpleGame[] = [];
   public freeGames: IFreeGame[] = [];
   public extendedFreeGames: IExtendedFreeGame[] = [];
-  public readonly SIMPLE_GAME_BASE_URL: string = "http://localhost:3000/api/data-base/games/simple/";
-  public readonly FREE_GAME_BASE_URL: string = "http://localhost:3000/api/data-base/games/free/";
+
+  private readonly SIMPLE_GAME_BASE_URL: string = "http://localhost:3000/api/data-base/games/simple/";
+  private readonly FREE_GAME_BASE_URL: string = "http://localhost:3000/api/data-base/games/free/";
+
   public constructor(private http: HttpClient) { }
 
   private convertTimeScores(seconds: number): number {

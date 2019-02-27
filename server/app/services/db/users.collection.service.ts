@@ -5,7 +5,7 @@ import {AlreadyExistentUserError, NonExistentUserError} from "../../../../common
 import {IUser} from "../../../../common/model/user";
 import {CollectionService} from "./collection.service";
 
-export const USER_NAME_FIELD: string = "name";
+export const USER_NAME_FIELD: string = "userName";
 
 @injectable()
 export class UsersCollectionService extends CollectionService<IUser> {
@@ -19,7 +19,7 @@ export class UsersCollectionService extends CollectionService<IUser> {
         }
     }
 
-    public creationSuccessMessage(data: IUser): Message {
+    protected creationSuccessMessage(data: IUser): Message {
         return {
             title: "User added",
             body: "User " + data.userName + " successfully added!",
@@ -36,7 +36,7 @@ export class UsersCollectionService extends CollectionService<IUser> {
         }
     }
 
-    public deletionSuccessMessage(id: string): Message {
+    protected deletionSuccessMessage(id: string): Message {
         return {
             title: "User deleted",
             body: "User " + id + " successfully deleted!",
