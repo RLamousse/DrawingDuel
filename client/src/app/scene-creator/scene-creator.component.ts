@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { IFreeGame } from "../../../../common/model/game/free-game";
-import { IScene } from "../../../scene-interface";
+import {IScene} from "../scene-interface";
 import { GameService } from "../game.service";
 import { FreeGameCreatorService } from "../scene-creator/FreeGameCreator/free-game-creator.service";
 import { SceneRendererService } from "./scene-renderer.service";

@@ -3,7 +3,7 @@ import { ActivatedRoute } from "@angular/router";
 import { of, Observable } from "rxjs";
 import * as THREE from "three";
 import { IFreeGame } from "../../../../common/model/game/free-game";
-import { IScene } from "../../../scene-interface";
+import {IScene} from "../scene-interface";
 import { GameService } from "../game.service";
 import { FreeGameCreatorService } from "../scene-creator/FreeGameCreator/free-game-creator.service";
 import { TimerComponent } from "../timer/timer.component";

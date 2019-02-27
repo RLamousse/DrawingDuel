@@ -2,7 +2,7 @@ import { HttpClientModule } from "@angular/common/http";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { MatDialogModule, } from "@angular/material";
 import * as THREE from "three";
-import { IScene } from "../../../scene-interface";
+import { IScene } from "../scene-interface";
 import { GameListComponent } from "../game-list/game-list.component";
 import { GameComponent } from "../game-list/game/game.component";
 import { FreeGameCreatorService } from "../scene-creator/FreeGameCreator/free-game-creator.service";

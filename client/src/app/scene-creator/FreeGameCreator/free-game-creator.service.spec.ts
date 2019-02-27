@@ -3,7 +3,7 @@ import { TestBed } from "@angular/core/testing";
 import * as THREE from "three";
 import { ObjectGeometry } from "../../../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
 import * as IObject from "../../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
-import { IScene } from "../../../../scene-interface";
+import {IScene} from "../../scene-interface";
 import { Form3DService } from "../3DFormService/3-dform.service";
 import { FreeGameCreatorService } from "./free-game-creator.service";
 
