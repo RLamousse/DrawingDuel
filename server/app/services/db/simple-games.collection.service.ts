@@ -12,7 +12,7 @@ export const ALREADY_EXISTING_GAME_MESSAGE_ERROR: string = "ERROR: a game with t
 @injectable()
 export class SimpleGamesCollectionService extends CollectionService<ISimpleGame> {
 
-    public static validate(game: ISimpleGame): boolean {
+    private static validate(game: ISimpleGame): boolean {
         return game.diffData !== undefined &&
             game.originalImage !== "" &&
             game.modifiedImage !== "" &&
@@ -46,14 +46,14 @@ export class SimpleGamesCollectionService extends CollectionService<ISimpleGame>
         return this.getDocument(id, NON_EXISTING_GAME_ERROR_MESSAGE);
     }
 
-    public creationSuccessMessage(data: ISimpleGame): Message {
+    protected creationSuccessMessage(data: ISimpleGame): Message {
         return {
             title: "Simple game added",
             body: "Simple game " + data.gameName + " successfully added",
         };
     }
 
-    public deletionSuccessMessage(id: string): Message {
+    protected deletionSuccessMessage(id: string): Message {
         return {
             title: "Simple game deleted",
             body: "Simple game " + id + " successfully deleted!",

@@ -4,8 +4,8 @@ import {Message} from "../../../../common/communication/messages/message";
 import {IUser} from "../../../../common/model/user";
 import {CollectionService} from "./collection.service";
 
-export const USER_NAME_FIELD: string = "name";
-export const NON_EXISTING_USER_ERROR_MESSAGE: string = "ERROR: the specified usename does no exist!";
+export const USER_NAME_FIELD: string = "userName";
+export const NON_EXISTING_USER_ERROR_MESSAGE: string = "ERROR: the specified usename does not exist!";
 export const ALREADY_EXISTING_USER_MESSAGE_ERROR: string = "ERROR: the specified usename already exists!";
 
 @injectable()
@@ -20,7 +20,7 @@ export class UsersCollectionService extends CollectionService<IUser> {
         }
     }
 
-    public creationSuccessMessage(data: IUser): Message {
+    protected creationSuccessMessage(data: IUser): Message {
         return {
             title: "User added",
             body: "User " + data.userName + " successfully added!",
@@ -37,7 +37,7 @@ export class UsersCollectionService extends CollectionService<IUser> {
         }
     }
 
-    public deletionSuccessMessage(id: string): Message {
+    protected deletionSuccessMessage(id: string): Message {
         return {
             title: "User deleted",
             body: "User " + id + " successfully deleted!",

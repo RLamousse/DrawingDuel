@@ -1,8 +1,12 @@
 
 import { Component, Input, OnInit } from "@angular/core";
+import { IExtendedFreeGame } from "../../../../common/model/game/extended-free-game";
+import { IFreeGame } from "../../../../common/model/game/free-game";
 import { ISimpleGame } from "../../../../common/model/game/simple-game";
+import { IScene } from "../../../scene-interface";
 import { GameService } from "../game.service";
-import { MOCKED_FREE_GAMES, MOCKED_SIMPLE_GAMES } from "../mockGames";
+import { FreeGameCreatorService } from "../scene-creator/FreeGameCreator/free-game-creator.service";
+import { FreeGamePhotoService } from "../scene-creator/free-game-photo-service/free-game-photo.service";
 
 @Component({
   selector: "app-game-list",
@@ -12,18 +16,42 @@ import { MOCKED_FREE_GAMES, MOCKED_SIMPLE_GAMES } from "../mockGames";
 
 export class GameListComponent implements OnInit {
 
-  @Input() public rightButton: string = "joindre";
-  @Input() public leftButton: string = "jouer";
-  public constructor(private gameService: GameService) {/*vide*/}
+  @Input() protected readonly rightButton: string = "joindre";
+  @Input() protected readonly leftButton: string = "jouer";
+  public constructor(
+    private gameService: GameService,
+    private photoService: FreeGamePhotoService,
+    private freeGameCreatorService: FreeGameCreatorService,
+  ) {}
 
   public ngOnInit(): void {
-    this.gameService.getSimpleGames().subscribe((gamesToModify: ISimpleGame[]) => {
-      this.gameService.convertScoresObject(gamesToModify);
-      this.gameService.pushGames(gamesToModify);
-      this.gameService.convertScoresObject(MOCKED_SIMPLE_GAMES);
-      this.gameService.pushGames(MOCKED_SIMPLE_GAMES);
-      this.gameService.convertScoresObject(MOCKED_FREE_GAMES);
-      this.gameService.pushGames(MOCKED_FREE_GAMES);
+    this.gameService.getSimpleGames().subscribe((simpleGamesToModify: ISimpleGame[]) => {
+      this.gameService.simpleGames = [];
+      this.gameService.convertScoresObject(simpleGamesToModify);
+      for (const game of simpleGamesToModify) {
+        this.gameService.simpleGames.push(game);
+      }
+    });
+
+    this.gameService.getFreeGames().subscribe((freeGamesToModify: IFreeGame[]) => {
+      this.gameService.freeGames = [];
+      this.gameService.extendedFreeGames = [];
+      this.gameService.convertScoresObject(freeGamesToModify);
+      for (const game of freeGamesToModify) {
+         this.gameService.freeGames.push(game);
+      }
+      for (const game of this.gameService.freeGames) {
+        const scenes: IScene = this.freeGameCreatorService.createScenes(game.scenes);
+        const extendedFreeGame: IExtendedFreeGame = {
+                                                  thumbnail: this.photoService.takePhoto(scenes.scene),
+                                                  scenes: game.scenes,
+                                                  gameName: game.gameName,
+                                                  bestSoloTimes: game.bestSoloTimes,
+                                                  bestMultiTimes: game.bestMultiTimes,
+                                                 };
+        this.gameService.extendedFreeGames.push(extendedFreeGame);
+      }
     });
   }
+
 }

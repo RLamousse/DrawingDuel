@@ -9,20 +9,36 @@ import { Router } from "@angular/router";
 
 export class GameComponent {
 
-  public constructor(
-    private router: Router,
-  ) {/*vide*/}
+  public constructor(private router: Router) {}
 
   @Input() public gameName: string = "test";
   @Input() public bestSoloTimes: { name: string, time: number }[];
   @Input() public bestMultiTimes: { name: string, time: number }[];
-  @Input() public originalImage: string = "test";
+  @Input() public originalImage: string;
+  @Input() public modifiedImage: string;
+  @Input() public thumbnail: string;
   @Input() public rightButton: string;
   @Input() public leftButton: string;
+  @Input() public isSimpleGame: boolean;
 
   protected leftButtonClick(): void {
     if (this.leftButton === "jouer") {
-      this.router.navigate(["../play-view/"]).catch();
+      this.isSimpleGame ? this.navigatePlayView() : this.navigateFreeView();
     }
   }
+
+  private navigatePlayView(): void {
+   this.router.navigate(["/play-view/"], {queryParams: {
+      gameName: this.gameName, originalImage: this.originalImage, modifiedImage: this.modifiedImage },
+    }).catch(/* catch just pour le lint, play-view existe dans le routing*/);
+  }
+
+  private navigateFreeView(): void {
+    this.router.navigate(["/3d-view/"], {
+      queryParams: {
+        gameName: this.gameName,
+      },
+    }).catch(/* catch just pour le lint, 3d-view existe dans le routing*/);
+  }
+
 }

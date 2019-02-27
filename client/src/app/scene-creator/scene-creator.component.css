@@ -1,0 +1,39 @@
+body {
+  font-family: Orbitron;
+  background-color: rgb(65, 62, 62);
+  color:white;
+}
+
+.centered {
+  text-align: center;
+  font-size: 50px;
+}
+
+.row {
+  display: flex;
+  margin-left: 10%;
+  flex-direction: row;
+}
+
+.scene {
+  height: 500px;
+  width: 700px;
+  border: 5px rgb(194, 185, 185) solid;
+}
+
+.middleText {
+  margin-top: 7%;
+  text-align: center;
+  font-size: 35px;
+}
+
+.timer {
+  color: rgb(243, 44, 44);
+  font-size: 60px;
+  padding-left: 22%;
+}
+
+.differences {
+  color: green;
+  font-size: 60px;
+}

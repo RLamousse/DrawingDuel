@@ -613,3 +613,6 @@ ASALocalRun/
 healthchecksdb
 
 # End of https://www.gitignore.io/api/node,linux,macos,windows,angular,webstorm,visualstudio,visualstudiocode
+
+# Ignore zip files
+client/src/*.zip
