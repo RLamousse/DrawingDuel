@@ -5,11 +5,12 @@ import * as request from "supertest";
 import {anything, anyString, instance, mock, when} from "ts-mockito";
 import {IDiffValidatorControllerRequest} from "../../../common/communication/requests/diff-validator-controller.request";
 import {IDiffValidatorControllerResponse} from "../../../common/communication/responses/diff-validator-controller.response";
+import {RequestFormatError} from "../../../common/errors/controller.errors";
+import {NoDifferenceAtPointError} from "../../../common/errors/services.errors";
 import {Application} from "../app";
 import {container} from "../inversify.config";
-import {DiffValidatorService, NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE} from "../services/diff-validator.service";
+import {DiffValidatorService} from "../services/diff-validator.service";
 import types from "../types";
-import {FORMAT_ERROR_MESSAGE} from "./controller-utils";
 
 const errorResponse = (errorMessage: string) => {
     return {
@@ -38,7 +39,7 @@ describe("Diff validator controller", () => {
             .query({coordX: 0, coordY: 0})
             .expect(HttpStatus.INTERNAL_SERVER_ERROR)
             .then((response) => {
-                expect(response.body).to.eql(errorResponse(FORMAT_ERROR_MESSAGE));
+                expect(response.body).to.eql(errorResponse(RequestFormatError.FORMAT_ERROR_MESSAGE));
             });
     });
 
@@ -48,7 +49,7 @@ describe("Diff validator controller", () => {
             .query({gameName: "ayylmao"})
             .expect(HttpStatus.INTERNAL_SERVER_ERROR)
             .then((response) => {
-                expect(response.body).to.eql(errorResponse(FORMAT_ERROR_MESSAGE));
+                expect(response.body).to.eql(errorResponse(RequestFormatError.FORMAT_ERROR_MESSAGE));
             });
     });
 
@@ -60,7 +61,7 @@ describe("Diff validator controller", () => {
         };
 
         when(mockedDiffValidatorService.getDifferenceCluster(anyString(), anything()))
-            .thenReject(new Error(NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE));
+            .thenReject(new NoDifferenceAtPointError());
 
         container.rebind(types.DiffValidatorService).toConstantValue(instance(mockedDiffValidatorService));
 

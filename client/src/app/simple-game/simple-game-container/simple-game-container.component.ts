@@ -1,8 +1,9 @@
 import {Component, Input, ViewChild} from "@angular/core";
+import {AlreadyFoundDifferenceError, NoDifferenceAtPointError} from "../../../../../common/errors/services.errors";
 import {DifferenceCluster, DIFFERENCE_CLUSTER_POINTS_INDEX} from "../../../../../common/model/game/simple-game";
 import {tansformOrigin, IPoint} from "../../../../../common/model/point";
 import {PixelData, SimpleGameCanvasComponent} from "../simple-game-canvas/simple-game-canvas.component";
-import {ALREADY_FOUND_DIFFERENCE, NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE, SimpleGameService} from "../simple-game.service";
+import {SimpleGameService} from "../simple-game.service";
 
 @Component({
              selector: "app-simple-game-container",
@@ -30,7 +31,7 @@ export class SimpleGameContainerComponent {
         this.modifiedImageComponent.drawPixels(pixels);
       })
       .catch((reason: Error) => {
-        if (reason.message === ALREADY_FOUND_DIFFERENCE || reason.message === NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE) {
+        if (reason instanceof NoDifferenceAtPointError || reason instanceof AlreadyFoundDifferenceError) {
           return;
         }
       });

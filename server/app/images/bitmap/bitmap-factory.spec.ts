@@ -2,6 +2,7 @@
 import {expect} from "chai";
 import * as fs from "fs";
 import {instance, mock, when} from "ts-mockito";
+import {IncompleteBitmapBufferError, NotA24bppBitmapError, NotABitmapError} from "../../../../common/errors/bitmap.errors";
 import {Bitmap} from "../../../../common/image/bitmap/bitmap";
 import {create2dArray} from "../../../../common/util/util";
 import {BitmapFactory} from "./bitmap-factory";
@@ -41,15 +42,17 @@ describe("A util class to create Bitmap objects", () => {
     });
     it("should throw if the specified buffer is not a bitmap", () => {
         const originalBuffer: Buffer = fs.readFileSync("test/test_bitmaps/not-a-bitmap.bmp");
-        expect(() => BitmapFactory.createBitmap("test-factory2.bmp", originalBuffer)).to.throw("Buffer is not a bitmap");
+        expect(() => BitmapFactory.createBitmap("test-factory2.bmp", originalBuffer)).to.throw(NotABitmapError.NOT_A_BITMAP_MESSAGE_ERROR);
     });
     it("should throw if the specified bitmap buffer is not 24bpp", () => {
         const originalBuffer: Buffer = fs.readFileSync("test/test_bitmaps/32bpp640x480.bmp");
-        expect(() => BitmapFactory.createBitmap("test-factory3.bmp", originalBuffer)).to.throw("Buffer is not from a 24bpp bitmap");
+        expect(() => BitmapFactory.createBitmap("test-factory3.bmp", originalBuffer))
+            .to.throw(NotA24bppBitmapError.NOT_A_24_BPP_BITMAP_MESSAGE_ERROR);
     });
     it("should throw if the specified bitmap buffer is not complete", () => {
         const originalBuffer: Buffer = fs.readFileSync("test/test_bitmaps/incomplete.bmp");
-        expect(() => BitmapFactory.createBitmap("test-factory4.bmp", originalBuffer)).to.throw("Buffer is not complete");
+        expect(() => BitmapFactory.createBitmap("test-factory4.bmp", originalBuffer))
+            .to.throw(IncompleteBitmapBufferError.INCOMPLETE_BITMAP_MESSAGE_ERROR);
     });
     it("should create a valid bitmap with extra padding before EOF", () => {
         const originalBuffer: Buffer = fs.readFileSync("test/test_bitmaps/black10x10-extra-padding.bmp");

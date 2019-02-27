@@ -4,13 +4,11 @@ import * as Httpstatus from "http-status-codes";
 import {Observable, Subject} from "rxjs";
 import {IDiffValidatorControllerRequest} from "../../../../common/communication/requests/diff-validator-controller.request";
 import {IDiffValidatorControllerResponse} from "../../../../common/communication/responses/diff-validator-controller.response";
+import {AlreadyFoundDifferenceError, NoDifferenceAtPointError} from "../../../../common/errors/services.errors";
 import {DifferenceCluster, DIFFERENCE_CLUSTER_POINTS_INDEX} from "../../../../common/model/game/simple-game";
 import ISimpleGameState from "../../../../common/model/game/simple-game-state";
 import {IPoint} from "../../../../common/model/point";
 import {playRandomSound, FOUND_DIFFERENCE_SOUNDS, NO_DIFFERENCE_SOUNDS} from "./game-sounds";
-
-export const ALREADY_FOUND_DIFFERENCE: string = "Difference was already found!";
-export const NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE: string = "There is no difference at the specified point";
 
 @Injectable({
               providedIn: "root",
@@ -59,7 +57,7 @@ export class SimpleGameService {
       .catch((reason: any) => {
         if (reason.response && reason.response.status === Httpstatus.NOT_FOUND) {
           playRandomSound(NO_DIFFERENCE_SOUNDS);
-          throw new Error(NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE);
+          throw new NoDifferenceAtPointError();
         }
 
         throw new Error(reason.message);
@@ -68,7 +66,7 @@ export class SimpleGameService {
 
   private assertAlreadyFoundDifference(point: IPoint): void {
     if (this.wasDifferenceFound(point)) {
-      throw new Error(ALREADY_FOUND_DIFFERENCE);
+      throw new AlreadyFoundDifferenceError();
     }
   }
 

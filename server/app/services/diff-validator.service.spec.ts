@@ -4,10 +4,11 @@ import MockAdapter from "axios-mock-adapter";
 import AxiosAdapter from "axios-mock-adapter";
 import {expect} from "chai";
 import * as HttpStatus from "http-status-codes";
+import {NonExistentGameError} from "../../../common/errors/database.errors";
+import {InvalidPointError, NoDifferenceAtPointError} from "../../../common/errors/services.errors";
 import {DifferenceCluster, ISimpleDifferenceData, ISimpleGame} from "../../../common/model/game/simple-game";
 import {IPoint, ORIGIN} from "../../../common/model/point";
-import {NON_EXISTING_GAME_ERROR_MESSAGE} from "./db/simple-games.collection.service";
-import {DiffValidatorService, INVALID_POINT_ERROR_MESSAGE, NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE} from "./diff-validator.service";
+import {DiffValidatorService} from "./diff-validator.service";
 import {EXPECTED_DIFF_NUMBER} from "./game-creator.service";
 
 describe("A service validating if there is a difference at a coord for a game", () => {
@@ -40,22 +41,22 @@ describe("A service validating if there is a difference at a coord for a game", 
     it("should throw if the point is out of bounds (x < 0)", async () => {
         return diffValidatorService.getDifferenceCluster("game", {x: -1, y: 0})
             .catch((reason: Error) => {
-                expect(reason.message).to.equal(INVALID_POINT_ERROR_MESSAGE);
+                expect(reason.message).to.equal(InvalidPointError.INVALID_POINT_ERROR_MESSAGE);
             });
     });
     it("should throw if the point is out of bounds (y < 0)", async () => {
         return diffValidatorService.getDifferenceCluster("game", {x: 0, y: -1})
             .catch((reason: Error) => {
-                expect(reason.message).to.equal(INVALID_POINT_ERROR_MESSAGE);
+                expect(reason.message).to.equal(InvalidPointError.INVALID_POINT_ERROR_MESSAGE);
             });
     });
     it("should throw if the specified gameName is not valid", async () => {
         axiosMock.onGet("http://localhost:3000/api/data-base/games/simple/notAValidGame")
-            .reply(HttpStatus.NOT_FOUND, {message: NON_EXISTING_GAME_ERROR_MESSAGE});
+            .reply(HttpStatus.NOT_FOUND, {message: NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE});
 
         return diffValidatorService.getDifferenceCluster("notAValidGame", ORIGIN)
             .catch((reason: Error) => {
-                expect(reason.message).to.equal(NON_EXISTING_GAME_ERROR_MESSAGE);
+                expect(reason.message).to.equal(NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE);
             });
     });
     it("should return an empty list when the point is not part of a difference group", async () => {
@@ -64,7 +65,7 @@ describe("A service validating if there is a difference at a coord for a game", 
 
         return diffValidatorService.getDifferenceCluster("game", {x: 42, y: 42})
             .catch((error: Error) => {
-                expect(error.message).to.eql(NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE);
+                expect(error.message).to.eql(NoDifferenceAtPointError.NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE);
             });
     });
     it("should return a difference group", async () => {

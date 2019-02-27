@@ -1,13 +1,10 @@
-import { injectable } from "inversify";
+import {injectable} from "inversify";
 import "reflect-metadata";
-import { Message } from "../../../../common/communication/messages/message";
-import { IFreeGame } from "../../../../common/model/game/free-game";
-import { CollectionService } from "./collection.service";
-import {
-    ALREADY_EXISTING_GAME_MESSAGE_ERROR,
-    GAME_FORMAT_ERROR_MESSAGE, GAME_NAME_FIELD,
-    NON_EXISTING_GAME_ERROR_MESSAGE
-} from "./simple-games.collection.service";
+import {Message} from "../../../../common/communication/messages/message";
+import {InvalidGameError, NonExistentGameError} from "../../../../common/errors/database.errors";
+import {IFreeGame} from "../../../../common/model/game/free-game";
+import {CollectionService} from "./collection.service";
+import {GAME_NAME_FIELD} from "./simple-games.collection.service";
 
 @injectable()
 export class FreeGamesCollectionService extends CollectionService<IFreeGame> {
@@ -19,11 +16,11 @@ export class FreeGamesCollectionService extends CollectionService<IFreeGame> {
 
     public async create(data: IFreeGame): Promise<Message> {
         if (!FreeGamesCollectionService.validate(data)) {
-            throw new Error(GAME_FORMAT_ERROR_MESSAGE);
+            throw new InvalidGameError();
         }
 
         if (await this.contains(data.gameName)) {
-            throw new Error(ALREADY_EXISTING_GAME_MESSAGE_ERROR);
+            throw new NonExistentGameError();
         } else {
             return this.createDocument(data);
         }
@@ -32,7 +29,7 @@ export class FreeGamesCollectionService extends CollectionService<IFreeGame> {
     public async delete(id: string): Promise<Message> {
         CollectionService.assertId(id);
         if (!(await this.contains(id))) {
-            throw new Error(NON_EXISTING_GAME_ERROR_MESSAGE);
+            throw new NonExistentGameError();
         } else {
             return this.deleteDocument(id);
         }
@@ -41,7 +38,7 @@ export class FreeGamesCollectionService extends CollectionService<IFreeGame> {
     public async getFromId(id: string): Promise<IFreeGame> {
         CollectionService.assertId(id);
 
-        return this.getDocument(id, NON_EXISTING_GAME_ERROR_MESSAGE);
+        return this.getDocument(id, NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE);
     }
 
     protected creationSuccessMessage(data: IFreeGame): Message {

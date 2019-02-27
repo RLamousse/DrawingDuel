@@ -1,34 +1,22 @@
-/* tslint:disable:max-file-line-count null no-empty */
+/* tslint:disable:max-file-line-count */
 // tslint:disable:typedef
 import {expect} from "chai";
 import * as HttpStatus from "http-status-codes";
 import * as request from "supertest";
 import {anything, instance, mock, when} from "ts-mockito";
 import {Message} from "../../../common/communication/messages/message";
+import {DatabaseError, NonExistentGameError} from "../../../common/errors/database.errors";
 import {IFreeGame} from "../../../common/model/game/free-game";
 import {ISimpleGame} from "../../../common/model/game/simple-game";
 import {IUser} from "../../../common/model/user";
 import {Application} from "../app";
 import {container} from "../inversify.config";
 import {DataBaseService} from "../services/data-base.service";
-import {DATA_BASE_MESSAGE_ERROR} from "../services/db/collection.service";
 import {FreeGamesCollectionService} from "../services/db/free-games.collection.service";
-import {
-    NON_EXISTING_GAME_ERROR_MESSAGE,
-    SimpleGamesCollectionService
-} from "../services/db/simple-games.collection.service";
+import {SimpleGamesCollectionService} from "../services/db/simple-games.collection.service";
 import {UsersCollectionService} from "../services/db/users.collection.service";
 import types from "../types";
 
-// @ts-ignore
-const errorResponse = (errorMessage: string) => {
-    return {
-        message: errorMessage,
-        error: {},
-    };
-};
-
-// @ts-ignore
 const SUCCESS_MESSAGE: Message = {title: "success", body: "success"};
 
 describe("Data-base controller", () => {
@@ -133,7 +121,7 @@ describe("Data-base controller", () => {
                 });
         });
         it("should send an error if the game is not found", async () => {
-            when(mockSimpleGames.getFromId(anything())).thenReject(new Error(NON_EXISTING_GAME_ERROR_MESSAGE));
+            when(mockSimpleGames.getFromId(anything())).thenReject(new NonExistentGameError());
 
             return request(app)
                 .get("/api/data-base/games/simple/notExistingGame")
@@ -143,7 +131,7 @@ describe("Data-base controller", () => {
                 });
         });
         it("should send an error if there was an error in the server", async () => {
-            when(mockSimpleGames.getFromId(anything())).thenReject(new Error(DATA_BASE_MESSAGE_ERROR));
+            when(mockSimpleGames.getFromId(anything())).thenReject(new DatabaseError());
 
             return request(app)
                 .get("/api/data-base/games/simple/notExistingGame")
@@ -198,7 +186,7 @@ describe("Data-base controller", () => {
                 });
         });
         it("should send an error if the game is not found", async () => {
-            when(mockFreeGames.getFromId(anything())).thenReject(new Error(NON_EXISTING_GAME_ERROR_MESSAGE));
+            when(mockFreeGames.getFromId(anything())).thenReject(new NonExistentGameError());
 
             return request(app)
                 .get("/api/data-base/games/free/notExistingGame")
@@ -208,7 +196,7 @@ describe("Data-base controller", () => {
                 });
         });
         it("should send an error if there was an error in the server", async () => {
-            when(mockFreeGames.getFromId(anything())).thenReject(new Error(DATA_BASE_MESSAGE_ERROR));
+            when(mockFreeGames.getFromId(anything())).thenReject(new DatabaseError());
 
             return request(app)
                 .get("/api/data-base/games/free/notExistingGame")
