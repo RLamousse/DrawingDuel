@@ -71,7 +71,7 @@ describe("Data-base controller", () => {
         });
         it("should send a success message on delete", async () => {
             return request(app)
-                .delete(DB_USERS + "/mike")
+                .delete(DB_USERS + "mike")
                 .expect(HttpStatus.OK)
                 .then((response) => {
                     expect(response.body).to.eql(SUCCESS_MESSAGE);
@@ -100,7 +100,7 @@ describe("Data-base controller", () => {
         });
         it("should send a success message on delete", async () => {
             return request(app)
-                .delete(DB_SIMPLE_GAME + "/someGameTest")
+                .delete(DB_SIMPLE_GAME + "someGameTest")
                 .expect(HttpStatus.OK)
                 .then((response) => {
                     expect(response.body).to.eql(SUCCESS_MESSAGE);
@@ -116,7 +116,7 @@ describe("Data-base controller", () => {
         });
         it("should send a success message on get one game", async () => {
             return request(app)
-                .get(DB_SIMPLE_GAME + "/someGameTest")
+                .get(DB_SIMPLE_GAME + "someGameTest")
                 .expect(HttpStatus.OK)
                 .then((response) => {
                     expect(true).to.be.equal(true);
@@ -126,7 +126,7 @@ describe("Data-base controller", () => {
             when(mockSimpleGames.getFromId(anything())).thenReject(new NonExistentGameError());
 
             return request(app)
-                .get(DB_SIMPLE_GAME + "/notExistingGame")
+                .get(DB_SIMPLE_GAME + "notExistingGame")
                 .expect(HttpStatus.NOT_FOUND)
                 .then((response) => {
                     expect(true).to.be.equal(true);
@@ -166,7 +166,7 @@ describe("Data-base controller", () => {
         });
         it("should send a success message on delete", async () => {
             return request(app)
-                .delete(DB_FREE_GAME + "/someGameTest")
+                .delete(DB_FREE_GAME + "someGameTest")
                 .expect(HttpStatus.OK)
                 .then((response) => {
                     expect(response.body).to.eql(SUCCESS_MESSAGE);
@@ -182,7 +182,7 @@ describe("Data-base controller", () => {
         });
         it("should send a success message on get one game", async () => {
             return request(app)
-                .get(DB_FREE_GAME + "/someGameTest")
+                .get(DB_FREE_GAME + "someGameTest")
                 .expect(HttpStatus.OK)
                 .then((response) => {
                     expect(true).to.be.equal(true);
@@ -192,7 +192,7 @@ describe("Data-base controller", () => {
             when(mockFreeGames.getFromId(anything())).thenReject(new NonExistentGameError());
 
             return request(app)
-                .get(DB_FREE_GAME + "/notExistingGame")
+                .get(DB_FREE_GAME + "notExistingGame")
                 .expect(HttpStatus.NOT_FOUND)
                 .then((response) => {
                     expect(true).to.be.equal(true);

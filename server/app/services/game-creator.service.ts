@@ -56,13 +56,13 @@ export class GameCreatorService {
 
     private static async testNameExistence(gameName: string): Promise<void> {
         try {
-            await Axios.get<ISimpleGame>(SERVER_BASE_URL + DB_SIMPLE_GAME + "/" + gameName);
+            await Axios.get<ISimpleGame>(SERVER_BASE_URL + DB_SIMPLE_GAME + gameName);
         } catch (error) {
             if (error.response.status !== Httpstatus.NOT_FOUND) {
                 throw new Error("dataBase: " + error.response.data.message);
             }
             try {
-                await Axios.get<IFreeGame>(SERVER_BASE_URL + DB_FREE_GAME + "/" + gameName);
+                await Axios.get<IFreeGame>(SERVER_BASE_URL + DB_FREE_GAME + gameName);
             } catch (error) {
                 if (error.response.status !== Httpstatus.NOT_FOUND) {
                     throw new Error("dataBase: " + error.response.data.message);

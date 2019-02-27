@@ -45,7 +45,7 @@ export class DiffValidatorService {
     }
 
     private async getGame(gameName: string): Promise<ISimpleGame> {
-        return Axios.get<ISimpleGame>(SERVER_BASE_URL + DB_SIMPLE_GAME + "/" + gameName)
+        return Axios.get<ISimpleGame>(SERVER_BASE_URL + DB_SIMPLE_GAME + gameName)
             .then((value: AxiosResponse<ISimpleGame>) => value.data)
             // tslint:disable-next-line:no-any Since Axios defines reason as `any`
             .catch((reason: any) => {

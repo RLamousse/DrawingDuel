@@ -1,14 +1,13 @@
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { connect } from "socket.io-client";
-import { environment } from "src/environments/environment";
 import { WebsocketMessage } from "../../../common/communication/messages/message";
+import {SERVER_BASE_URL} from "../../../common/communication/routes";
 import { SocketEvent } from "../../../common/communication/socket-events";
 
 @Injectable()
 export class SocketService {
 
-    private readonly BASE_URL: string = environment.production ? document.baseURI : "http://localhost:3000/";
     private socket: SocketIOClient.Socket;
 
     public constructor () {
@@ -20,7 +19,7 @@ export class SocketService {
     }
 
     private openSocket(): SocketIOClient.Socket {
-        return connect(this.BASE_URL);
+      return connect(SERVER_BASE_URL);
     }
 
     public send(event: SocketEvent, message: WebsocketMessage): boolean {

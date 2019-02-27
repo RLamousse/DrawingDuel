@@ -3,20 +3,18 @@ import { Injectable } from "@angular/core";
 
 import { throwError, Observable } from "rxjs";
 import { catchError } from "rxjs/operators";
-import { environment } from "src/environments/environment";
+import {SERVER_BASE_URL} from "../../../common/communication/routes";
 
 @Injectable({
   providedIn: "root",
 })
 export class FormPostService {
 
-  // Since we are in dev we can't use the base URL of the document, hence the hardcode
-  private readonly BASE_URL: string = environment.production ? document.baseURI : "http://localhost:3000/";
   public constructor(private http: HttpClient) { }
 
   public submitForm(route: string, body: FormData | {}): Observable<Object> {
 
-    return this.http.post<Object>(this.BASE_URL + route, body).pipe(
+    return this.http.post<Object>(SERVER_BASE_URL + route, body).pipe(
       catchError(this.handleError),
     );
   }
