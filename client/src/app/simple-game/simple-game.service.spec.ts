@@ -5,9 +5,10 @@ import MockAdapter from "axios-mock-adapter";
 import AxiosAdapter from "axios-mock-adapter";
 import * as HttpStatus from "http-status-codes";
 import {IDiffValidatorControllerResponse} from "../../../../common/communication/responses/diff-validator-controller.response";
+import {AlreadyFoundDifferenceError, NoDifferenceAtPointError} from "../../../../common/errors/services.errors";
 import {DifferenceCluster, DIFFERENCE_CLUSTER_POINTS_INDEX} from "../../../../common/model/game/simple-game";
 import {ORIGIN} from "../../../../common/model/point";
-import {ALREADY_FOUND_DIFFERENCE, NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE, SimpleGameService} from "./simple-game.service";
+import {SimpleGameService} from "./simple-game.service";
 
 describe("SimpleGameService", () => {
 
@@ -35,7 +36,7 @@ describe("SimpleGameService", () => {
 
     return service.validateDifferenceAtPoint(ORIGIN)
       .catch((reason: Error) => {
-        expect(reason.message).toEqual(NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE);
+        expect(reason.message).toEqual(NoDifferenceAtPointError.NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE);
       });
   });
 
@@ -48,7 +49,7 @@ describe("SimpleGameService", () => {
 
     return service.validateDifferenceAtPoint(ORIGIN)
       .catch((reason: Error) => {
-        expect(reason.message).not.toEqual(NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE);
+        expect(reason.message).not.toEqual(NoDifferenceAtPointError.NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE);
       });
   });
 
@@ -86,7 +87,7 @@ describe("SimpleGameService", () => {
 
     return service.validateDifferenceAtPoint(ORIGIN)
       .catch((reason: Error) => {
-        expect(reason.message).toEqual(ALREADY_FOUND_DIFFERENCE);
+        expect(reason.message).toEqual(AlreadyFoundDifferenceError.ALREADY_FOUND_DIFFERENCE_ERROR_MESSAGE);
       });
   });
 

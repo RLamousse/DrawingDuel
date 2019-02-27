@@ -6,6 +6,14 @@ export class NoDifferenceAtPointError extends Error {
     }
 }
 
+export class AlreadyFoundDifferenceError extends Error {
+    public static readonly ALREADY_FOUND_DIFFERENCE_ERROR_MESSAGE: string = "Difference was already found!";
+
+    constructor() {
+        super(AlreadyFoundDifferenceError.ALREADY_FOUND_DIFFERENCE_ERROR_MESSAGE);
+    }
+}
+
 export class IllegalArgumentError extends Error {
     public static readonly ARGUMENT_ERROR_MESSAGE: string = "Error: the argument has the wrong format!";
 
