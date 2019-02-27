@@ -32,6 +32,8 @@ export abstract class CollectionService<T> {
                 if (error) {
                     reject(new DatabaseError());
                 }
+                // @ts-ignore even thought item is red as a T type(IGame or IUser), mongo generates _id, and we want it removed!
+                res.forEach((item: T) => { delete item._id; });
                 resolve(res);
             });
         });
@@ -76,6 +78,8 @@ export abstract class CollectionService<T> {
                 } else if (res.length === 0) {
                     return reject(new Error(errorMessage));
                 }
+                // @ts-ignore even thought item is red as a T type(IGame or IUser), mongo generates _id, and we want it removed!
+                delete res[0]._id;
 
                 return resolve(res[0]);
             });
