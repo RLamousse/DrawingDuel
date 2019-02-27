@@ -1,20 +1,21 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
-import { IFreeGame } from "../../../../common/model/game/free-game";
+import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from "@angular/core";
+import {ActivatedRoute} from "@angular/router";
+import {IFreeGame} from "../../../../common/model/game/free-game";
+import {GameService} from "../game.service";
 import {IScene} from "../scene-interface";
-import { GameService } from "../game.service";
-import { FreeGameCreatorService } from "../scene-creator/FreeGameCreator/free-game-creator.service";
-import { SceneRendererService } from "./scene-renderer.service";
+import {FreeGameCreatorService} from "./FreeGameCreator/free-game-creator.service";
+import {SceneRendererService} from "./scene-renderer.service";
 
 @Component({
-  selector: "app-scene-creator",
-  templateUrl: "./scene-creator.component.html",
-  styleUrls: ["./scene-creator.component.css"],
-})
+             selector: "app-scene-creator",
+             templateUrl: "./scene-creator.component.html",
+             styleUrls: ["./scene-creator.component.css"],
+           })
 export class SceneCreatorComponent implements AfterViewInit, OnInit {
 
   public constructor(private renderService: SceneRendererService, private route: ActivatedRoute,
-                     private freeGameCreator: FreeGameCreatorService, private gameService: GameService, ) { }
+                     private freeGameCreator: FreeGameCreatorService, private gameService: GameService) {
+  }
 
   protected gameName: string;
 
@@ -51,7 +52,7 @@ export class SceneCreatorComponent implements AfterViewInit, OnInit {
     const errMsg: string = "An error occured when trying to render the free view games";
     this.renderService.init(this.originalContainer, this.modifiedContainer);
     this.verifyGame().then((scene: IScene) =>
-      this.renderService.loadScenes(scene.scene, scene.modifiedScene),
+                             this.renderService.loadScenes(scene.scene, scene.modifiedScene),
     ).catch((e: Error) => {
       e.message = errMsg;
       throw e;

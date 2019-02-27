@@ -1,16 +1,16 @@
-import { Component, OnInit } from "@angular/core";
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { MatDialogRef } from "@angular/material/dialog";
-import { SIMPLE_GAME_CREATION_ROUTE } from "../../../../common/communication/routes";
-import { AbstractForm } from "../abstract-form";
+import {Component, OnInit} from "@angular/core";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {MatDialogRef} from "@angular/material/dialog";
+import {SIMPLE_GAME_CREATION_ROUTE} from "../../../../common/communication/routes";
+import {AbstractForm} from "../abstract-form";
 import FileValidator from "../file.validator";
-import { FormPostService } from "../form-post.service";
+import {FormPostService} from "../form-post.service";
 
 @Component({
-  selector: "app-simple-game-creator-form",
-  templateUrl: "./simple-game-creator-form.component.html",
-  styleUrls: ["./simple-game-creator-form.component.css"],
-})
+             selector: "app-simple-game-creator-form",
+             templateUrl: "./simple-game-creator-form.component.html",
+             styleUrls: ["./simple-game-creator-form.component.css"],
+           })
 export class SimpleGameCreatorFormComponent extends AbstractForm implements OnInit {
 
   public formDoc: FormGroup;
@@ -23,22 +23,23 @@ export class SimpleGameCreatorFormComponent extends AbstractForm implements OnIn
   }
 
   public ngOnInit(): void {
-    this.formDoc = this._fb.group({
-      originalImage: [
-        undefined,
-        [Validators.required, FileValidator.sizeValidator, FileValidator.typeValidator],
-        FileValidator.dimensionValidator,
-      ],
-      modifiedImage: [
-        undefined,
-        [Validators.required, FileValidator.sizeValidator, FileValidator.typeValidator],
-        FileValidator.dimensionValidator,
-      ],
-      name: [
-        undefined,
-        [Validators.required, Validators.minLength(this.MIN_NAME_LENGTH)],
-      ],
-    });
+    this.formDoc = this._fb.group(
+      {
+        originalImage: [
+          undefined,
+          [Validators.required, FileValidator.sizeValidator, FileValidator.typeValidator],
+          FileValidator.dimensionValidator,
+        ],
+        modifiedImage: [
+          undefined,
+          [Validators.required, FileValidator.sizeValidator, FileValidator.typeValidator],
+          FileValidator.dimensionValidator,
+        ],
+        name: [
+          undefined,
+          [Validators.required, Validators.minLength(this.MIN_NAME_LENGTH)],
+        ],
+      });
   }
 
   public onSubmit(): void {

@@ -1,11 +1,11 @@
-import { Injectable } from "@angular/core";
-import { TestBed } from "@angular/core/testing";
+import {Injectable} from "@angular/core";
+import {TestBed} from "@angular/core/testing";
 import * as THREE from "three";
-import { ObjectGeometry } from "../../../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
+import {ObjectGeometry} from "../../../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
 import * as IObject from "../../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
 import {IScene} from "../../scene-interface";
-import { Form3DService } from "../3DFormService/3-dform.service";
-import { FreeGameCreatorService } from "./free-game-creator.service";
+import {Form3DService} from "../3DFormService/3-dform.service";
+import {FreeGameCreatorService} from "./free-game-creator.service";
 
 /* tslint:disable:no-magic-numbers */
 @Injectable()
@@ -13,15 +13,19 @@ class MockedForm3DService extends Form3DService {
   public createCube(cube: IObject.ICube): THREE.Mesh {
     return new THREE.Mesh(new THREE.BoxGeometry(10, 10, 10), new THREE.Material());
   }
+
   public createSphere(sphere: IObject.ISphere): THREE.Mesh {
     return new THREE.Mesh(new THREE.BoxGeometry(10, 10, 10), new THREE.Material());
   }
+
   public createPyramid(pyr: IObject.IPyramid): THREE.Mesh {
     return new THREE.Mesh(new THREE.BoxGeometry(10, 10, 10), new THREE.Material());
   }
+
   public createCone(cone: IObject.ICone): THREE.Mesh {
     return new THREE.Mesh(new THREE.BoxGeometry(10, 10, 10), new THREE.Material());
   }
+
   public createCylinder(cyl: IObject.ICylinder): THREE.Mesh {
     return new THREE.Mesh(new THREE.BoxGeometry(10, 10, 10), new THREE.Material());
   }
@@ -74,12 +78,13 @@ const dummyScenes: IObject.IScenesJSON = {
 
 describe("FreeGameCreatorService", () => {
   beforeEach(() => {
-    TestBed.configureTestingModule({
-      providers: [
-        FreeGameCreatorService,
-        MockedForm3DService,
-      ],
-    });
+    TestBed.configureTestingModule(
+      {
+        providers: [
+          FreeGameCreatorService,
+          MockedForm3DService,
+        ],
+      });
   });
 
   it("should create", () => {
@@ -89,9 +94,9 @@ describe("FreeGameCreatorService", () => {
 
   // Test createScenes
   it("should create empty scenes => objects array empty and defined scenes", () => {
-    const emptyScenes: IObject.IScenesJSON = { originalObjects: [], modifiedObjects: [] };
+    const emptyScenes: IObject.IScenesJSON = {originalObjects: [], modifiedObjects: []};
     const service: FreeGameCreatorService = TestBed.get(FreeGameCreatorService);
-    const scenes: IScene =  service.createScenes(emptyScenes) ;
+    const scenes: IScene = service.createScenes(emptyScenes);
     expect(service.objects.length).toEqual(0);
     expect(service.modifiedObjects.length).toEqual(0);
     expect(scenes.scene).toBeDefined();
