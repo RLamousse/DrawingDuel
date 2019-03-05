@@ -19,9 +19,9 @@ export class SceneRendererService {
   private velocity: THREE.Vector3;
 
   private up: boolean;
- // private down: boolean;
- // private left: boolean;
- // private right: boolean;
+  private down: boolean;
+  private left: boolean;
+  private right: boolean;
 
   private readonly fieldOfView: number = 90;
   private readonly nearClippingPane: number = 1;
@@ -56,14 +56,23 @@ export class SceneRendererService {
     const delta: number = (this.time - this.prevTime)/1000;
 
     this.velocity.z -= this.velocity.z * 10.0 * delta;
+    this.velocity.x -= this.velocity.x * 10.0 * delta;
     if ( this.up ){
-      this.velocity.z -= 4000.0 * delta;
+      this.velocity.z -= 600.0 * delta;
+    }
+    if ( this.down ){
+      this.velocity.z += 600.0 * delta;
+    }
+    if ( this.left ){
+      this.velocity.x -= 600.0 * delta;
+    }
+    if ( this.right ){
+      this.velocity.x += 600.0 * delta;
     }
     this.camera.translateZ( this.velocity.z * delta );
+    this.camera.translateX( this.velocity.x * delta );
 
     this.prevTime = this.time;
-    //this.up = this.down = this.left = this.right = false;
-    this.up = false;
   }
   private setCamera(): void {
     const aspectRatio: number = this.getAspectRatio();
@@ -102,7 +111,16 @@ export class SceneRendererService {
     this.renderLoop();
   }
 
-  public moveForward(): void {
-    this.up = true;
+  public moveForward(isMoving: boolean): void {
+    this.up = isMoving;
+  }
+  public moveBackward(isMoving: boolean): void {
+    this.down = isMoving;
+  }
+  public moveLeft(isMoving: boolean): void {
+    this.left = isMoving;
+  }
+  public moveRight(isMoving: boolean): void {
+    this.right = isMoving;
   }
 }
