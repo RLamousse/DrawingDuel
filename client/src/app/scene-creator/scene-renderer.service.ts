@@ -23,6 +23,12 @@ export class SceneRendererService {
   private left: boolean;
   private right: boolean;
 
+  private rightClick: boolean;
+  private oldX: number;
+  private oldY: number;
+  private deltaX: number;
+  private deltaY: number;
+
   private readonly fieldOfView: number = 90;
   private readonly nearClippingPane: number = 1;
   private readonly farClippingPane: number = 1000;
@@ -71,6 +77,11 @@ export class SceneRendererService {
     }
     this.camera.translateZ( this.velocity.z * delta );
     this.camera.translateX( this.velocity.x * delta );
+    if(this.rightClick){
+      this.camera.rotateX(this.deltaX);
+      this.camera.rotateY(this.deltaY);
+      console.log(this.deltaX);
+    }
 
     this.prevTime = this.time;
   }
@@ -122,5 +133,18 @@ export class SceneRendererService {
   }
   public moveRight(isMoving: boolean): void {
     this.right = isMoving;
+  }
+
+  public rightClickHold(isHold: boolean, xPos: number, yPos: number): void {
+    this.rightClick = isHold;
+    this.oldX = xPos;
+    this.oldY = yPos;
+    this.deltaX = 0;
+    this.deltaY = 0;
+  }
+
+  public rotateCamera(xPos: number, yPos: number): void {
+    this.deltaY = (this.oldX - xPos)/4000;
+    this.deltaX = (this.oldY - yPos)/4000;
   }
 }

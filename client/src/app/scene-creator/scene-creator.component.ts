@@ -58,4 +58,7 @@ export class SceneCreatorComponent implements AfterViewInit, OnInit {
       throw e;
     });
   }
+  public onRightClick($event: MouseEvent): void {
+    $event.preventDefault();
+  }
 }
