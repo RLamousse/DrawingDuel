@@ -14,6 +14,15 @@ export class SceneRendererService {
   private rendererOri: THREE.WebGLRenderer;
   private rendererMod: THREE.WebGLRenderer;
 
+  private time: number;
+  private prevTime: number;
+  private velocity: THREE.Vector3;
+
+  private up: boolean;
+ // private down: boolean;
+ // private left: boolean;
+ // private right: boolean;
+
   private readonly fieldOfView: number = 90;
   private readonly nearClippingPane: number = 1;
   private readonly farClippingPane: number = 1000;
@@ -38,9 +47,23 @@ export class SceneRendererService {
   }
 
   private renderLoop(): void {
+
     requestAnimationFrame(() => this.renderLoop());
     this.rendererOri.render(this.scene, this.camera);
     this.rendererMod.render(this.modifiedScene, this.camera);
+
+    this.time = performance.now();
+    const delta: number = (this.time - this.prevTime)/1000;
+
+    this.velocity.z -= this.velocity.z * 10.0 * delta;
+    if ( this.up ){
+      this.velocity.z -= 4000.0 * delta;
+    }
+    this.camera.translateZ( this.velocity.z * delta );
+
+    this.prevTime = this.time;
+    //this.up = this.down = this.left = this.right = false;
+    this.up = false;
   }
   private setCamera(): void {
     const aspectRatio: number = this.getAspectRatio();
@@ -73,6 +96,13 @@ export class SceneRendererService {
     }
     this.scene = original;
     this.modifiedScene = modified;
+    this.time = 0;
+    this.prevTime = performance.now();
+    this.velocity = new THREE.Vector3();
     this.renderLoop();
+  }
+
+  public moveForward(): void {
+    this.up = true;
   }
 }

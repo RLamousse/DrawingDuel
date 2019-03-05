@@ -32,6 +32,7 @@ import {TimerComponent} from "./timer/timer.component";
 import {UNListService} from "./username.service";
 import {VueAdminComponent} from "./vue-admin/vue-admin.component";
 import {WindowEventHandlerDirective} from "./window-event-handler.directive";
+import { FirstPersonControlDirective }from "./scene-creator/FirstPersonControl/first-person-control";
 
 @NgModule({
   declarations: [
@@ -50,6 +51,7 @@ import {WindowEventHandlerDirective} from "./window-event-handler.directive";
     SimpleGameCanvasComponent,
     SimpleGameContainerComponent,
     TimerComponent,
+    FirstPersonControlDirective,
   ],
   imports: [
     BrowserModule,
