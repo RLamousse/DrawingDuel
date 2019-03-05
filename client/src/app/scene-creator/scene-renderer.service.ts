@@ -1,7 +1,6 @@
 import { Injectable } from "@angular/core";
 import * as THREE from "three";
 import { ComponentNotLoadedError } from "../../../../common/errors/component.errors";
-require("three-first-person-controls")(THREE);
 
 @Injectable()
 export class SceneRendererService {
@@ -14,11 +13,6 @@ export class SceneRendererService {
   private camera: THREE.PerspectiveCamera;
   private rendererOri: THREE.WebGLRenderer;
   private rendererMod: THREE.WebGLRenderer;
-
-  private fpControls: THREE.FirstPersonControls;
-  private readonly mvmSpeed: number = 10;
-  private readonly lkSpeed: number = 0.05;
-  private readonly updateTime: number = 0.17;
 
   private readonly fieldOfView: number = 90;
   private readonly nearClippingPane: number = 1;
@@ -41,17 +35,12 @@ export class SceneRendererService {
     this.rendererMod.setPixelRatio(devicePixelRatio);
     this.rendererMod.setSize(this.modifiedContainer.clientWidth, this.modifiedContainer.clientHeight);
     this.modifiedContainer.appendChild(this.rendererMod.domElement);
-
-    this.fpControls = new THREE.FirstPersonControls(this.camera, this.rendererOri.domElement);
-    this.fpControls.movementSpeed = this.mvmSpeed;
-    this.fpControls.lookSpeed = this.lkSpeed;
   }
 
   private renderLoop(): void {
     requestAnimationFrame(() => this.renderLoop());
     this.rendererOri.render(this.scene, this.camera);
     this.rendererMod.render(this.modifiedScene, this.camera);
-    this.fpControls.update(this.updateTime);
   }
   private setCamera(): void {
     const aspectRatio: number = this.getAspectRatio();
