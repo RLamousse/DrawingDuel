@@ -137,10 +137,12 @@ export class SceneRendererService {
 
   public rightClickHold(isHold: boolean, xPos: number, yPos: number): void {
     this.rightClick = isHold;
-    this.oldX = xPos;
-    this.oldY = yPos;
-    this.deltaX = 0;
-    this.deltaY = 0;
+    if (isHold) {
+      this.oldX = xPos;
+      this.oldY = yPos;
+      this.deltaX = 0;
+      this.deltaY = 0;
+    }
   }
 
   public rotateCamera(xPos: number, yPos: number): void {

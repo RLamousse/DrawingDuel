@@ -19,6 +19,7 @@ import {GameService} from "./game.service";
 import {InitialViewComponent} from "./initial-view/initial-view.component";
 import {PlayViewComponent} from "./play-view/play-view.component";
 import {Form3DService} from "./scene-creator/3DFormService/3-dform.service";
+import { FirstPersonControlDirective } from "./scene-creator/FirstPersonControl/first-person-control.directive";
 import {FreeGameCreatorService} from "./scene-creator/FreeGameCreator/free-game-creator.service";
 import {FreeGamePhotoService} from "./scene-creator/free-game-photo-service/free-game-photo.service";
 import {SceneCreatorComponent} from "./scene-creator/scene-creator.component";
@@ -32,7 +33,6 @@ import {TimerComponent} from "./timer/timer.component";
 import {UNListService} from "./username.service";
 import {VueAdminComponent} from "./vue-admin/vue-admin.component";
 import {WindowEventHandlerDirective} from "./window-event-handler.directive";
-import { FirstPersonControlDirective }from "./scene-creator/FirstPersonControl/first-person-control";
 
 @NgModule({
   declarations: [
