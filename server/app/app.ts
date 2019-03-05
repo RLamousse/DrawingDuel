@@ -4,8 +4,10 @@ import * as cors from "cors";
 import * as express from "express";
 import { inject, injectable } from "inversify";
 import * as logger from "morgan";
+import {DB_BASE, DIFF_CREATOR_BASE, DIFF_VALIDATOR_BASE, GAME_CREATOR_BASE, USERNAME_BASE} from "../../common/communication/routes";
 import {BitmapDiffController} from "./controllers/bitmap-diff.controller";
 import {DataBaseController} from "./controllers/data-base.controller";
+import {DiffValidatorController} from "./controllers/diff-validator.controller";
 import {GameCreatorController} from "./controllers/game-creator.controller";
 import { UserController } from "./controllers/username.controller";
 import Types from "./types";
@@ -19,7 +21,8 @@ export class Application {
     public constructor(@inject(Types.GameCreatorController) private gameCreatorController: GameCreatorController,
                        @inject(Types.DataBaseController) private dataBaseController: DataBaseController,
                        @inject(Types.UserNameController) private userController: UserController,
-                       @inject(Types.BitmapDiffController) private bitmapDiffController: BitmapDiffController) {
+                       @inject(Types.BitmapDiffController) private bitmapDiffController: BitmapDiffController,
+                       @inject(Types.DiffValidatorController) private diffValidatorController: DiffValidatorController) {
 
         this.app = express();
 
@@ -32,19 +35,18 @@ export class Application {
         // Middlewares configuration
         this.app.use(logger("dev"));
         this.app.use(express.static("public"));
-        this.app.use(bodyParser.json());
-        this.app.use(bodyParser.urlencoded({ extended: true }));
+        this.app.use(bodyParser.json({limit: "1 mb"}));
+        this.app.use(bodyParser.urlencoded({ extended: true}));
         this.app.use(cookieParser());
         this.app.use(cors());
     }
 
     public bindRoutes(): void {
-        // Notre application utilise le routeur de notre API `Index`
-        this.app.use("/api/usernames", this.userController.router);
-        this.app.use("/api/image-diff", this.bitmapDiffController.router);
-        // Notre application utilise le routeur de notre API `Index`
-        this.app.use("/api/game-creator", this.gameCreatorController.router);
-        this.app.use("/api/data-base", this.dataBaseController.router);
+        this.app.use(USERNAME_BASE, this.userController.router);
+        this.app.use(DIFF_CREATOR_BASE, this.bitmapDiffController.router);
+        this.app.use(GAME_CREATOR_BASE, this.gameCreatorController.router);
+        this.app.use(DB_BASE, this.dataBaseController.router);
+        this.app.use(DIFF_VALIDATOR_BASE, this.diffValidatorController.router);
         this.errorHandeling();
     }
 

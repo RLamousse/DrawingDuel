@@ -1,5 +1,6 @@
 import {injectable} from "inversify";
 import "reflect-metadata";
+import {ImageDimensionsMismatchError} from "../../../common/errors/services.errors";
 import {Bitmap} from "../../../common/image/bitmap/bitmap";
 import {DIFFERENCE_MASK, DIFFERENT_PIXEL_COLOR, Mask, SAME_PIXEL_COLOR} from "../../../common/image/mask";
 import {create2dArray} from "../../../common/util/util";
@@ -10,7 +11,7 @@ export class BitmapDiffService {
 
     public getDiff(diffFileName: string, sourceImage: Bitmap, modifiedImage: Bitmap): Bitmap {
         if (sourceImage.width !== modifiedImage.width || sourceImage.height !== modifiedImage.height) {
-            throw new Error("Cannot generate the difference if the images does not have the same dimensions");
+            throw new ImageDimensionsMismatchError();
         }
 
         const diffMap: number[][] = create2dArray(sourceImage.width, sourceImage.height, SAME_PIXEL_COLOR);

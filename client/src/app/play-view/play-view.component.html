@@ -1,3 +1,12 @@
-<p>
-  play-view works!
-</p>
+<link href="https://fonts.googleapis.com/css?family=Orbitron" rel="stylesheet">
+<body>
+<h1 class="centeredText">{{gameName}}</h1>
+<div class="centered">
+  <app-timer class="timer"></app-timer>
+  <app-compteur-diff></app-compteur-diff>
+</div>
+<app-simple-game-container [originalImage]="originalImage"
+                           [modifiedImage]="modifiedImage"></app-simple-game-container>
+<h1 style="text-align: center">Message:</h1>
+<div class="eventNotif"></div>
+</body>

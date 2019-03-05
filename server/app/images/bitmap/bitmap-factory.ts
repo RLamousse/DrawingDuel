@@ -1,3 +1,4 @@
+import {IncompleteBitmapBufferError, NotA24bppBitmapError, NotABitmapError} from "../../../../common/errors/bitmap.errors";
 import {Bitmap} from "../../../../common/image/bitmap/bitmap";
 import {
     getBytesPerRowForWidth,
@@ -32,7 +33,7 @@ export class BitmapFactory {
 
     private static createFromBuffer(fileName: string, imageData: Buffer): Bitmap {
         if (imageData.readUIntLE(BMP_ID_FIELD_OFFSET, BMP_ID_FIELD_LENGTH) !== BMP_ID_FIELD) {
-            throw new Error("Buffer is not a bitmap");
+            throw new NotABitmapError();
         }
 
         const colorDepth: number = imageData.readUIntLE(
@@ -41,11 +42,11 @@ export class BitmapFactory {
         ) / BITS_PER_BYTE;
 
         if (colorDepth !== COLOR_DEPTH_24BPP_BYTES) {
-            throw new Error("Buffer is not from a 24bpp bitmap");
+            throw new NotA24bppBitmapError();
         }
 
         if (imageData.readUIntLE(FILE_SIZE_FLAG_OFFSET, FILE_SIZE_FLAG_LENGTH) !== imageData.length) {
-            throw new Error("Buffer is not complete");
+            throw new IncompleteBitmapBufferError();
         }
 
         const width: number = imageData.readUIntLE(WIDTH_FLAG_OFFSET, WIDTH_FLAG_LENGTH);

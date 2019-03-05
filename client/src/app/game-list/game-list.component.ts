@@ -1,8 +1,8 @@
 
 import { Component, Input, OnInit } from "@angular/core";
-import { Game } from "../../../../common/model/game";
+import { IFreeGame } from "../../../../common/model/game/free-game";
+import { ISimpleGame } from "../../../../common/model/game/simple-game";
 import { GameService } from "../game.service";
-import { MOCKMIXGAMELIST } from "../mockGames";
 
 @Component({
   selector: "app-game-list",
@@ -12,16 +12,17 @@ import { MOCKMIXGAMELIST } from "../mockGames";
 
 export class GameListComponent implements OnInit {
 
-  @Input() public rightButton: string = "joindre";
-  @Input() public leftButton: string = "jouer";
-  public constructor(private gameService: GameService) {/*vide*/}
+  @Input() protected readonly rightButton: string = "joindre";
+  @Input() protected readonly leftButton: string = "jouer";
+  public constructor(private gameService: GameService) {}
 
   public ngOnInit(): void {
-    this.gameService.getGames().subscribe((gamesToModify: Game[]) => {
-      this.gameService.convertScoresObject(gamesToModify);
-      this.gameService.pushGames(gamesToModify);
-      this.gameService.convertScoresObject(MOCKMIXGAMELIST);
-      this.gameService.pushGames(MOCKMIXGAMELIST);
+    this.gameService.getSimpleGames().subscribe((simpleGamesToPush: ISimpleGame[]) => {
+      this.gameService.pushSimpleGames(simpleGamesToPush);
+    });
+
+    this.gameService.getFreeGames().subscribe((freeGamesToPush: IFreeGame[]) => {
+      this.gameService.pushFreeGames(freeGamesToPush);
     });
   }
 }

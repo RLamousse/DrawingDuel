@@ -20,6 +20,10 @@ build client:
     - npm ci
   script:
     - yarn build
+  only:
+    changes:
+      - .gitlab-ci.yml
+      - client/**/*
 
 build server:
   stage: build
@@ -30,6 +34,10 @@ build server:
     - npm ci
   script:
     - yarn tsc
+  only:
+    changes:
+      - .gitlab-ci.yml
+      - server/**/*
 
 
 # ╔═════════════╗
@@ -52,6 +60,10 @@ test client:
   before_script:
     - cd client
     - npm ci
+  only:
+    changes:
+      - .gitlab-ci.yml
+      - client/**/*
 
 
 test server:
@@ -63,19 +75,21 @@ test server:
   before_script:
     - cd server
     - npm ci
+  only:
+    changes:
+      - .gitlab-ci.yml
+      - server/**/*
 
 # ╔══════════════════╗
 # ║ Stage: Post-Test ║
 # ╚══════════════════╝
 
 .post test:
-  only:
-    - merge_requests
+  stage: post-test
 
 # Coverage job template
 .coverage:
   extends: .post test
-  stage: post-test
   script: yarn coverage
   coverage: /Lines\s+:\s*(\d+(?:\.\d*)?%)\s+\(\s+\d+\/\d+\s+\)/
   artifacts:
@@ -94,6 +108,12 @@ client coverage:
   before_script:
     - cd client
     - npm ci
+  only:
+    refs:
+      - merge_requests
+    changes:
+      - .gitlab-ci.yml
+      - client/**/*
 
 server coverage:
   extends: .coverage
@@ -105,13 +125,17 @@ server coverage:
   before_script:
     - cd server
     - npm ci
+  only:
+    refs:
+      - merge_requests
+    changes:
+      - .gitlab-ci.yml
+      - server/**/*
 
 # Lint report job template
 .lint:
   extends: .post test
-  stage: post-test
   script: yarn lint
-  allow_failure: true
 
 client lint:
   extends: .lint
@@ -122,6 +146,12 @@ client lint:
   before_script:
     - cd client
     - npm ci
+  only:
+    refs:
+      - merge_requests
+    changes:
+      - .gitlab-ci.yml
+      - client/**/*
 
 server lint:
   extends: .lint
@@ -132,3 +162,9 @@ server lint:
   before_script:
     - cd server
     - npm ci
+  only:
+    refs:
+      - merge_requests
+    changes:
+      - .gitlab-ci.yml
+      - server/**/*

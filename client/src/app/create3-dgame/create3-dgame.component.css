@@ -1,0 +1,28 @@
+form {
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    flex-flow: column;
+    min-width: 50vw;
+}
+
+mat-form-field{
+    margin-top: 10px;
+}
+
+mat-checkbox {
+    user-select: none;
+    margin: 5px 0 5px 0;
+}
+
+.example-h2 {
+    margin: 10px;
+}
+
+section {
+    display: flex;
+    flex-direction: column;
+}

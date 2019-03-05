@@ -1,16 +1,36 @@
-import { injectable } from "inversify";
+import {injectable} from "inversify";
 import "reflect-metadata";
+import {EmptyArrayError, IllegalArgumentError} from "../../../common/errors/services.errors";
+import {ISimpleDifferenceData} from "../../../common/model/game/simple-game";
+import {IPoint} from "../../../common/model/point";
 import {create2dArray} from "../../../common/util/util";
-
-export const ARGUMENT_ERROR_MESSAGE: string = "Error: the argument has the wrong format! Must be a number[][].";
-export const EMPTY_ARRAY_ERROR_MESSAGE: string = "Error: the given array is empty!";
 
 @injectable()
 export class DifferenceEvaluatorService {
 
-    public getNDifferences(pixels: number[][]): number {
+    private static validateSimpleData(pixels: number[][]): void {
+        // local variable needed because pixels cannot be directly passed to isArray function
+        const TMP_ARRAY: number[][] = pixels;
+        if (!Array.isArray(TMP_ARRAY)) {
+            throw new IllegalArgumentError();
+        }
+        if (TMP_ARRAY.length === 0) {
+            throw new EmptyArrayError();
+        }
+        if (!Array.isArray(TMP_ARRAY[0])) {
+            throw new IllegalArgumentError();
+        }
+        if (TMP_ARRAY[0].length === 0) {
+            throw new EmptyArrayError();
+        }
+        if (typeof TMP_ARRAY[0][0] !== "number") {
+            throw new IllegalArgumentError();
+        }
+    }
 
-        this.validateData(pixels);
+    public getSimpleNDifferences(pixels: number[][]): ISimpleDifferenceData {
+
+        DifferenceEvaluatorService.validateSimpleData(pixels);
 
         // this algorithm is the two-pass algorithm and a set of connected labelled zones is connected by a disjoint-set data structure
         // the algorithm does not consider edge connections
@@ -31,27 +51,7 @@ export class DifferenceEvaluatorService {
             }
         }
 
-        return this.calculateTotalZones(PARENT_TABLE);
-    }
-
-    private validateData(pixels: number[][]): void {
-        // local variable needed because pixels cannot be directly passed to isArray function
-        const TMP_ARRAY: number[][] = pixels;
-        if (!Array.isArray(TMP_ARRAY)) {
-            throw new Error(ARGUMENT_ERROR_MESSAGE);
-        }
-        if (TMP_ARRAY.length === 0) {
-            throw new Error(EMPTY_ARRAY_ERROR_MESSAGE);
-        }
-        if (!Array.isArray(TMP_ARRAY[0])) {
-            throw new Error(ARGUMENT_ERROR_MESSAGE);
-        }
-        if ( TMP_ARRAY[0].length === 0) {
-            throw new Error(EMPTY_ARRAY_ERROR_MESSAGE);
-        }
-        if (typeof TMP_ARRAY[0][0] !== "number") {
-            throw new Error(ARGUMENT_ERROR_MESSAGE);
-        }
+        return this.generateDiffZonesMap(PARENT_TABLE, ARRAY_OF_LABELS);
     }
 
     private analysePixel(xPosition: number, yPosition: number, arrayOfLabels: number[][],
@@ -99,20 +99,6 @@ export class DifferenceEvaluatorService {
         }
     }
 
-    // Counts the total of zones in the drawing
-    private calculateTotalZones(TRANSLATE_TABLE: Map<number, number>): number {
-
-        let totalZones: number = 0;
-        for (const KEY in TRANSLATE_TABLE) {
-            // adds a zone to the counter if it has not any parent(equals to 0)
-            if (TRANSLATE_TABLE.hasOwnProperty(KEY) && !TRANSLATE_TABLE[KEY]) {
-                totalZones++;
-            }
-        }
-
-        return totalZones;
-    }
-
     private findRoot(value: number, parentTable: Map<number, number>): number {
         if (!parentTable[value]) {
             return value;
@@ -120,5 +106,25 @@ export class DifferenceEvaluatorService {
 
         // this assignation makes the average complexity of the find function lower than O(m∙log(n))
         return parentTable[value] = this.findRoot(parentTable[value], parentTable);
+    }
+
+    private generateDiffZonesMap(parentTable: Map<number, number>, arrayOfLabels: number[][]): ISimpleDifferenceData {
+        const DIFF_ZONES_MAP: Map<number, IPoint[]> = new Map<number, IPoint[]>();
+
+        for (let i: number = 0; i < arrayOfLabels.length; i++) {
+            for (let j: number = 0; j < arrayOfLabels[0].length; j++) {
+                if (arrayOfLabels[i][j]) {
+                    if (DIFF_ZONES_MAP.has(this.findRoot(arrayOfLabels[i][j], parentTable))) {
+                        // the argument of the get is present in the DIFF_ZONES_MAP as tested in the line above
+                        // @ts-ignore
+                        DIFF_ZONES_MAP.get(this.findRoot(arrayOfLabels[i][j], parentTable)).push({x: j, y: i});
+                    } else {
+                        DIFF_ZONES_MAP.set(this.findRoot(arrayOfLabels[i][j], parentTable), [{x: j, y: i}]);
+                    }
+                }
+            }
+        }
+
+        return Array.from(DIFF_ZONES_MAP.entries());
     }
 }
