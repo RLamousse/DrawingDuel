@@ -37,6 +37,10 @@ export class SceneRendererService {
   private readonly cameraX: number = 0;
   private readonly cameraY: number = 0;
   private readonly cameraZ: number = 100;
+  private readonly camRotationSpeedFactor: number = 4000;
+  private readonly timeFactor: number = 1000;
+  private readonly decelerationFactor: number = 10;
+  private readonly accelerationFactor: number = 600;
 
   private setRenderer(): void {
     this.rendererOri = new THREE.WebGLRenderer({ preserveDrawingBuffer: true });
@@ -57,32 +61,28 @@ export class SceneRendererService {
     requestAnimationFrame(() => this.renderLoop());
     this.rendererOri.render(this.scene, this.camera);
     this.rendererMod.render(this.modifiedScene, this.camera);
-
     this.time = performance.now();
-    const delta: number = (this.time - this.prevTime)/1000;
-
-    this.velocity.z -= this.velocity.z * 10.0 * delta;
-    this.velocity.x -= this.velocity.x * 10.0 * delta;
-    if ( this.up ){
-      this.velocity.z -= 600.0 * delta;
+    const delta: number = (this.time - this.prevTime) / this.timeFactor;
+    this.velocity.z -= this.velocity.z * this.decelerationFactor * delta;
+    this.velocity.x -= this.velocity.x * this.decelerationFactor * delta;
+    if ( this.up ) {
+      this.velocity.z -= this.accelerationFactor * delta;
     }
-    if ( this.down ){
-      this.velocity.z += 600.0 * delta;
+    if ( this.down ) {
+      this.velocity.z += this.accelerationFactor * delta;
     }
-    if ( this.left ){
-      this.velocity.x -= 600.0 * delta;
+    if ( this.left ) {
+      this.velocity.x -= this.accelerationFactor * delta;
     }
-    if ( this.right ){
-      this.velocity.x += 600.0 * delta;
+    if ( this.right ) {
+      this.velocity.x += this.accelerationFactor * delta;
     }
     this.camera.translateZ( this.velocity.z * delta );
     this.camera.translateX( this.velocity.x * delta );
-    if(this.rightClick){
+    if ( this.rightClick ) {
       this.camera.rotateX(this.deltaX);
       this.camera.rotateY(this.deltaY);
-      console.log(this.deltaX);
     }
-
     this.prevTime = this.time;
   }
   private setCamera(): void {
@@ -144,7 +144,7 @@ export class SceneRendererService {
   }
 
   public rotateCamera(xPos: number, yPos: number): void {
-    this.deltaY = (this.oldX - xPos)/4000;
-    this.deltaX = (this.oldY - yPos)/4000;
+    this.deltaY = (this.oldX - xPos) / this.camRotationSpeedFactor;
+    this.deltaX = (this.oldY - yPos) / this.camRotationSpeedFactor;
   }
 }
