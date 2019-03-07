@@ -45,9 +45,19 @@ export class FirstPersonControlDirective {
   @HostListener("document:mousedown", ["$event"])
   public mousedown($event: MouseEvent): void {
     const RIGHT_BUTTON: number = 2;
+    const LEFT_BUTTON: number = 0;
+    const CANVAS_TAG: string = "CANVAS";
     if ($event.button === RIGHT_BUTTON) {
       this.rightClickHold = true;
       this.sceneRendererService.rightClickHold(true, $event.clientX, $event.clientY);
+    } else if ($event.button === LEFT_BUTTON && $event.srcElement.tagName === CANVAS_TAG) {
+      $event.preventDefault(); // No more textHighlight when hold click + mouseMove
+      console.log($event.clientX - $event.srcElement.getBoundingClientRect().left);
+
+      this.sceneRendererService.getClickedObject(
+        $event.clientX - $event.srcElement.getBoundingClientRect().left,
+        evt.clientY - $event.srcElement.getBoundingClientRect().top
+      );
     }
   }
 
@@ -58,6 +68,7 @@ export class FirstPersonControlDirective {
       this.sceneRendererService.rightClickHold(false, $event.clientX, $event.clientY);
     }
   }
+
   @HostListener("document:mousemove", ["$event"])
   public mousemove($event: MouseEvent): void {
     if (this.rightClickHold) {

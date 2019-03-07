@@ -50,4 +50,64 @@ describe("SceneRendererService", () => {
     expect(service.scene).toBe(original2);
     expect(service.modifiedScene).toBe(modified2);
   });
+
+  // test moveForward
+  it("should have the right boolean value after the function is called", () => {
+    const service: SceneRendererService = TestBed.get(SceneRendererService);
+    const original: THREE.Scene = new THREE.Scene();
+    const modified: THREE.Scene = new THREE.Scene();
+    const oriCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
+    const modCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
+    service.init(oriCont, modCont);
+    service.loadScenes(original, modified);
+    service.moveForward(true);
+    expect(service.up).toEqual(true);
+    service.moveForward(false);
+    expect(service.up).toEqual(false);
+  });
+
+  // test moveBackward
+  it("should have the right boolean value after the function is called", () => {
+    const service: SceneRendererService = TestBed.get(SceneRendererService);
+    const original: THREE.Scene = new THREE.Scene();
+    const modified: THREE.Scene = new THREE.Scene();
+    const oriCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
+    const modCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
+    service.init(oriCont, modCont);
+    service.loadScenes(original, modified);
+    service.moveBackward(true);
+    expect(service.down).toEqual(true);
+    service.moveBackward(false);
+    expect(service.down).toEqual(false);
+  });
+
+  // test moveLeft
+  it("should have the right boolean value after the function is called", () => {
+    const service: SceneRendererService = TestBed.get(SceneRendererService);
+    const original: THREE.Scene = new THREE.Scene();
+    const modified: THREE.Scene = new THREE.Scene();
+    const oriCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
+    const modCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
+    service.init(oriCont, modCont);
+    service.loadScenes(original, modified);
+    service.moveLeft(true);
+    expect(service.left).toEqual(true);
+    service.moveLeft(false);
+    expect(service.left).toEqual(false);
+  });
+
+  // test moveRight
+  it("should have the right boolean value after the function is called", () => {
+    const service: SceneRendererService = TestBed.get(SceneRendererService);
+    const original: THREE.Scene = new THREE.Scene();
+    const modified: THREE.Scene = new THREE.Scene();
+    const oriCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
+    const modCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
+    service.init(oriCont, modCont);
+    service.loadScenes(original, modified);
+    service.moveRight(true);
+    expect(service.right).toEqual(true);
+    service.moveRight(false);
+    expect(service.right).toEqual(false);
+  });
 });

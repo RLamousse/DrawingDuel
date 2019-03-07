@@ -18,10 +18,10 @@ export class SceneRendererService {
   private prevTime: number;
   private velocity: THREE.Vector3;
 
-  private up: boolean;
-  private down: boolean;
-  private left: boolean;
-  private right: boolean;
+  public up: boolean;
+  public down: boolean;
+  public left: boolean;
+  public right: boolean;
 
   private rightClick: boolean;
   private oldX: number;
@@ -148,5 +148,15 @@ export class SceneRendererService {
   public rotateCamera(xPos: number, yPos: number): void {
     this.deltaY = (this.oldX - xPos) / this.camRotationSpeedFactor;
     this.deltaX = (this.oldY - yPos) / this.camRotationSpeedFactor;
+  }
+
+  public getClickedObject(xPos: number, yPos: number): void {
+    // Todo
+    // To implement within feature/3dDiffFinder-ish
+    // take clicked position
+    // raycast according to camera until first intersect
+    // get object center
+    // call micro-service to check if difference using obj-center
+    // ...
   }
 }
