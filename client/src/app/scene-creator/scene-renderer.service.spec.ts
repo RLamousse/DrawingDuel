@@ -31,6 +31,11 @@ describe("SceneRendererService", () => {
     const oriCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
     const modCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
     service.init(oriCont, modCont);
+    service.up = false;
+    service.down = false;
+    service.left = false;
+    service.right = false;
+    service.rightClick = false;
     service.loadScenes(original, modified);
     expect(service.scene).toBe(original);
     expect(service.modifiedScene).toBe(modified);
@@ -45,6 +50,11 @@ describe("SceneRendererService", () => {
     const oriCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
     const modCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
     service.init(oriCont, modCont);
+    service.up = true;
+    service.down = true;
+    service.left = true;
+    service.right = true;
+    service.rightClick = true;
     service.loadScenes(original1, modified1);
     service.loadScenes(original2, modified2);
     expect(service.scene).toBe(original2);
