@@ -23,11 +23,11 @@ export class SceneRendererService {
   public left: boolean;
   public right: boolean;
 
-  private rightClick: boolean;
-  private oldX: number;
-  private oldY: number;
-  private deltaX: number;
-  private deltaY: number;
+  public rightClick: boolean = false;
+  public oldX: number = 0;
+  public oldY: number = 0;
+  public deltaX: number = 0;
+  public deltaY: number = 0;
 
   private readonly fieldOfView: number = 90;
   private readonly nearClippingPane: number = 1;
@@ -135,9 +135,8 @@ export class SceneRendererService {
     this.right = isMoving;
   }
 
-  public rightClickHold(isHold: boolean, xPos: number, yPos: number): void {
-    this.rightClick = isHold;
-    if (isHold) {
+  public rightClickHold(xPos: number, yPos: number): void {
+    if (this.rightClick) {
       this.oldX = xPos;
       this.oldY = yPos;
       this.deltaX = 0;

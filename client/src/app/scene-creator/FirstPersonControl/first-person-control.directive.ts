@@ -7,10 +7,7 @@ export class FirstPersonControlDirective {
   private readonly keyS: string = "KeyS";
   private readonly keyA: string = "KeyA";
   private readonly keyD: string = "KeyD";
-  private rightClickHold: boolean;
-  public constructor( private sceneRendererService: SceneRendererService ) {
-    this.rightClickHold = false;
-  }
+  public constructor( private sceneRendererService: SceneRendererService ) { }
 
   @HostListener("document:keydown", ["$event"])
   public keyPressed($event: KeyboardEvent): void {
@@ -48,30 +45,30 @@ export class FirstPersonControlDirective {
     const LEFT_BUTTON: number = 0;
     const CANVAS_TAG: string = "CANVAS";
     if ($event.button === RIGHT_BUTTON) {
-      this.rightClickHold = true;
-      this.sceneRendererService.rightClickHold(true, $event.clientX, $event.clientY);
-    } else if ($event.button === LEFT_BUTTON && $event.srcElement.tagName === CANVAS_TAG) {
+      this.sceneRendererService.rightClick = true;
+      this.sceneRendererService.rightClickHold($event.clientX, $event.clientY);
+    } else if (
+      $event.button === LEFT_BUTTON &&
+      $event.srcElement !== null &&
+      $event.srcElement.tagName === CANVAS_TAG
+    ) {
       $event.preventDefault(); // No more textHighlight when hold click + mouseMove
-      console.log($event.clientX - $event.srcElement.getBoundingClientRect().left);
-
       this.sceneRendererService.getClickedObject(
-        $event.clientX - $event.srcElement.getBoundingClientRect().left,
-        evt.clientY - $event.srcElement.getBoundingClientRect().top
-      );
+        $event.clientY - $event.srcElement.getBoundingClientRect().top,
+        $event.clientX - $event.srcElement.getBoundingClientRect().left);
     }
   }
 
   @HostListener("document:mouseup", ["$event"])
   public mouseup($event: MouseEvent): void {
-    if (this.rightClickHold) {
-      this.rightClickHold = false;
-      this.sceneRendererService.rightClickHold(false, $event.clientX, $event.clientY);
+    if (this.sceneRendererService.rightClick) {
+      this.sceneRendererService.rightClick = false;
     }
   }
 
   @HostListener("document:mousemove", ["$event"])
   public mousemove($event: MouseEvent): void {
-    if (this.rightClickHold) {
+    if (this.sceneRendererService.rightClick) {
       this.sceneRendererService.rotateCamera($event.clientX, $event.clientY);
     }
   }
