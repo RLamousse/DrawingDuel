@@ -54,8 +54,8 @@ export class FirstPersonControlDirective {
     ) {
       $event.preventDefault(); // No more textHighlight when hold click + mouseMove
       this.sceneRendererService.getClickedObject(
-        $event.clientY - $event.srcElement.getBoundingClientRect().top,
-        $event.clientX - $event.srcElement.getBoundingClientRect().left);
+        $event.clientX,
+        $event.clientY);
     }
   }
 

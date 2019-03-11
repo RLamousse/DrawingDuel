@@ -151,11 +151,22 @@ export class SceneRendererService {
 
   public getClickedObject(xPos: number, yPos: number): void {
     // Todo
-    // To implement within feature/3dDiffFinder-ish
-    // take clicked position
-    // raycast according to camera until first intersect
-    // get object center
-    // call micro-service to check if difference using obj-center
-    // ...
+      const x: number = ((xPos - this.rendererOri.domElement.offsetLeft) / this.rendererOri.domElement.offsetWidth) * 2 - 1;
+      const y: number = -((yPos - this.rendererOri.domElement.offsetTop) / this.rendererOri.domElement.offsetHeight) * 2 + 1;
+    const x2: number = ((xPos - this.rendererMod.domElement.offsetLeft) / this.rendererMod.domElement.offsetWidth) * 2 - 1;
+    const y2: number = -((yPos - this.rendererMod.domElement.offsetTop) / this.rendererMod.domElement.offsetHeight) * 2 + 1;
+      const direction: THREE.Vector2 = new THREE.Vector2(x, y);
+      const dir2: THREE.Vector2 = new THREE.Vector2(x2,y2);
+      const rayCast = new THREE.Raycaster();
+      rayCast.setFromCamera(direction, this.camera);
+      let intersectOri = rayCast.intersectObjects(this.scene.children);
+      rayCast.setFromCamera(dir2, this.camera);
+      let interMod = rayCast.intersectObjects(this.modifiedScene.children);
+      if (intersectOri.length !== 0 || interMod.length !== 0){
+        console.log("hourrray");
+      }
+      else{
+        console.log("nope");
+      }
   }
 }
