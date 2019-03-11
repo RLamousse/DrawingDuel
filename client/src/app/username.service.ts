@@ -31,15 +31,15 @@ export class UNListService {
     this.message = "";
     this.username = "";
     this.response = {
-    username: "", available: true,
-  };
+      username: "", available: true,
+    };
   }
 
   public async sendReleaseRequest(): Promise<UserValidationMessage> {
     return this.http.post<UserValidationMessage>(UNListService.BASE_URL + "/release", {
-                                                  username: UNListService.username,
-                                                  available: false,
-                                                 }).toPromise<UserValidationMessage>();
+      username: UNListService.username,
+      available: false,
+    }).toPromise<UserValidationMessage>();
   }
 
   public sendUserRequest(name: string): Observable<UserValidationMessage> {
@@ -81,14 +81,35 @@ export class UNListService {
     }
 
     return this.sendUserRequest(name).toPromise().then((response: UserValidationMessage) => {
-        this.response = response;
-        if (typeof this.response !== "undefined" && !this.response.available) {
+      this.response = response;
+      if (typeof this.response !== "undefined" && !this.response.available) {
         this.message = this.USERNAME_TAKEN_MESSAGE;
 
-          return false;
-        }
+        return false;
+      }
 
-        return typeof this.response !== "undefined";
-      });
+      return typeof this.response !== "undefined";
+    });
+  }
+
+  public checkAvailability(username: string, callback: (answer: boolean) => void): void {
+    if (this.isTooShort(username) || !this.isAlphanumeric(username)) {
+      callback(false);
+
+      return;
+    }
+
+    const message: WebsocketMessage<string> = {
+      title: SocketEvent.USERNAME_CHECK,
+      body: username,
+    };
+    this.websocket.send(SocketEvent.USERNAME_CHECK, message);
+    const sub: Subscription = this.websocket.onEvent<boolean>(SocketEvent.USERNAME_CHECK).subscribe((answer: WebsocketMessage<boolean>) => {
+      if (!answer.body) {
+        this.message = this.USERNAME_TAKEN_MESSAGE;
+      }
+      callback(answer.body);
+      sub.unsubscribe();
+    });
   }
 }
