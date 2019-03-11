@@ -36,9 +36,9 @@ export class SocketService {
         });
     }
 
-    public onEvent(event: SocketEvent): Observable<WebsocketMessage> {
-        return new Observable<WebsocketMessage>((observer) => {
-            this.socket.on(event, (message: WebsocketMessage) => observer.next(message));
+    public onEvent<t = Object>(event: SocketEvent): Observable<WebsocketMessage<t>> {
+        return new Observable<WebsocketMessage<t>>((observer) => {
+            this.socket.on(event, (message: WebsocketMessage<t>) => observer.next(message));
         });
     }
 }
