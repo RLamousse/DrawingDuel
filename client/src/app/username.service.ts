@@ -59,7 +59,7 @@ export class UNListService {
 
       return true;
     } else {
-      this.message = "Tu dois utiliser seulement des caractères alphanumériques!";
+      this.message = this.NON_ALPHANUMERIC_MESSAGE;
 
       return false;
     }
@@ -67,7 +67,7 @@ export class UNListService {
 
   public isTooShort(name: string): boolean {
     if (name.length < this.minLength) {
-      this.message = "Ton identifiant est trop court!";
+      this.message = this.USERNAME_TOO_SHORT_MESSAGE;
 
       return true;
     }
@@ -83,7 +83,7 @@ export class UNListService {
     return this.sendUserRequest(name).toPromise().then((response: UserValidationMessage) => {
         this.response = response;
         if (typeof this.response !== "undefined" && !this.response.available) {
-          this.message = "Cet identifiant est deja pris! Essaie un nouvel identifiant";
+        this.message = this.USERNAME_TAKEN_MESSAGE;
 
           return false;
         }
