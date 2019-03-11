@@ -59,7 +59,6 @@ export class SceneCreatorComponent implements AfterViewInit, OnInit {
     });
   }
   public onRightClick($event: MouseEvent): void {
-    // No menu when rightClicking should pop-up so we prevent default.
     $event.preventDefault();
   }
 }
