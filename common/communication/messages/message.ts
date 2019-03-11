@@ -11,14 +11,26 @@ export interface WebsocketMessage<type = Object> {
 }
 
 export enum ChatMessagePosition {
-    FIRST = "première", SECOND = "deuxième" , THIRD = "troisième"
+    FIRST = "première",
+    SECOND = "deuxième",
+    THIRD = "troisième"
 }
 
 export enum ChatMessagePlayerCount {
-    SOLO = "solo", MULTI = "un contre un"
+    SOLO = "solo",
+    MULTI = "un contre un"
+}
+
+export enum ChatMessageType {
+    DIFF_FOUND,
+    DIFF_ERROR,
+    BEST_TIME,
+    CONNECTION,
+    DISCONNECTION
 }
 
 export interface ChatMessage {
+    type: ChatMessageType;
     timestamp: Date;
     playerName: string;
     gameName: string;
