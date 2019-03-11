@@ -1,6 +1,6 @@
 import { injectable } from "inversify";
 import * as io from "socket.io";
-import { ChatMessage, WebsocketMessage, ChatMessageType, ChatMessagePlayerCount } from "../../../../common/communication/messages/message";
+import { ChatMessage, ChatMessagePlayerCount, ChatMessageType, WebsocketMessage } from "../../../../common/communication/messages/message";
 import { SocketEvent } from "../../../../common/communication/socket-events";
 import { WebsocketActionService } from "./websocket-action.service";
 
@@ -21,6 +21,13 @@ export class ChatWebsocketActionService extends WebsocketActionService {
             body: this.generateMessage(data.body),
         }
         socket.emit(this._EVENT_TYPE, message);
+        if (this.shouldBroadcast(data.body)) {
+            socket.broadcast.emit(this._EVENT_TYPE, message);
+        }
+    }
+
+    private shouldBroadcast(data: ChatMessage): boolean {
+        return data.type === ChatMessageType.BEST_TIME;
     }
 
     private generateMessage(data: ChatMessage): WebsocketMessage<string> {
