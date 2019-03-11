@@ -34,7 +34,7 @@ export class WebsocketController {
             this.chatAction.execute(message, socket);
         });
         socket.on("disconnect", () => {
-            socket.broadcast.emit("user disconnected");
+            this.disconnectionRoutine(socket);
         });
         socket.on(SocketEvent.USERNAME_CHECK, (message: WebsocketMessage<string>) => {
             const username: string = this.userNameService.execute(message, socket);
@@ -43,5 +43,13 @@ export class WebsocketController {
             }
         });
         socket.emit(SocketEvent.WELCOME, "Connection has been made via a websocket");
+    }
+
+    private disconnectionRoutine (socket: io.Socket): void {
+        const id: string | undefined = this.sockets.get(socket.id);
+        if (this.sockets.has(socket.id)) {
+            this.userNameService.removeUsername(id as string);
+            // socket.broadcast.emit(SocketEvent.USER_DISCONNECTION, );
+        }
     }
 }

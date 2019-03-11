@@ -7,10 +7,6 @@ import types from "../../types";
 import { UsernameService } from "../username.service";
 import { WebsocketActionService } from "./websocket-action.service";
 
-/**
- * This is supposed to be an example/test socket service
- * (as can be deducted from the very static message it answers with)
- */
 @injectable()
 export class CheckUserWebsocketActionService extends WebsocketActionService {
 
@@ -24,8 +20,8 @@ export class CheckUserWebsocketActionService extends WebsocketActionService {
         const userValid: UserValidationMessage = {
             username: data.body,
             available: false,
-        }
-        const value: UserValidationMessage = this.usernameService.checkAvailability(userValid)
+        };
+        const value: UserValidationMessage = this.usernameService.checkAvailability(userValid);
         const message: WebsocketMessage<boolean> = {
             title: SocketEvent.USERNAME_CHECK,
             body: value.available,
@@ -33,5 +29,9 @@ export class CheckUserWebsocketActionService extends WebsocketActionService {
         socket.emit(this._EVENT_TYPE, message);
 
         return value.available ? value.username : "";
+    }
+
+    public removeUsername (username: string): void {
+        this.usernameService.releaseUsername(username);
     }
 }
