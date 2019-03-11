@@ -5,4 +5,5 @@ export enum SocketEvent {
     CHECK_DIFFERENCE = "check-diff",
     DUMMY = "dummy",
     CHAT = "chat",
+    USERNAME_CHECK = "username-check",
 }

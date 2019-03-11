@@ -3,16 +3,18 @@ import * as io from "socket.io";
 import { ChatMessage, WebsocketMessage } from "../../../common/communication/messages/message";
 import { SocketEvent } from "../../../common/communication/socket-events";
 import { ChatWebsocketActionService } from "../services/websocket/chat-websocket-action.service";
+import { CheckUserWebsocketActionService } from "../services/websocket/check-user-websocket-action.service";
 import { DummyWebsocketActionService } from "../services/websocket/dummy-websocket-action.service";
 import types from "../types";
 
 @injectable()
 export class WebsocketController {
 
-    private sockets: Map<string, io.Socket>;
+    private sockets: Map<string, string>;
 
     public constructor (@inject(types.DummyWebsocketActionService) private dummyAction: DummyWebsocketActionService,
-                        @inject(types.ChatWebsocketActionService) private chatAction: ChatWebsocketActionService) {
+                        @inject(types.ChatWebsocketActionService) private chatAction: ChatWebsocketActionService,
+                        @inject(types.CheckUserWebsocketActionService) private userNameService: CheckUserWebsocketActionService) {
         this.sockets = new Map();
         this.registerSocket = this.registerSocket.bind(this);
         this.routeSocket = this.routeSocket.bind(this);
@@ -20,7 +22,6 @@ export class WebsocketController {
 
     public registerSocket(socket: io.Socket): io.Socket {
         this.routeSocket(socket);
-        this.sockets.set(socket.id, socket);
 
         return socket;
     }
@@ -34,6 +35,12 @@ export class WebsocketController {
         });
         socket.on("disconnect", () => {
             socket.broadcast.emit("user disconnected");
+        });
+        socket.on(SocketEvent.USERNAME_CHECK, (message: WebsocketMessage<string>) => {
+            const username: string = this.userNameService.execute(message, socket);
+            if (username) {
+                this.sockets.set(socket.id, username);
+            }
         });
         socket.emit(SocketEvent.WELCOME, "Connection has been made via a websocket");
     }

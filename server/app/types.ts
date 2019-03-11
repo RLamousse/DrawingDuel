@@ -19,4 +19,5 @@ export default  {
         Object3DCreatorService: Symbol("Object3DCreatorService"),
         DummyWebsocketActionService: Symbol("DummyWebsocketActionService"),
         ChatWebsocketActionService: Symbol("ChatWebsocketActionService"),
+        CheckUserWebsocketActionService: Symbol("CheckUserWebsocketActionService"),
 };

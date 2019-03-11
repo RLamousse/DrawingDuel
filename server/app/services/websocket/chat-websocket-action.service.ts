@@ -19,7 +19,7 @@ export class ChatWebsocketActionService extends WebsocketActionService {
         const message: WebsocketMessage = {
             title: SocketEvent.CHAT,
             body: this.generateMessage(data.body),
-        }
+        };
         socket.emit(this._EVENT_TYPE, message);
         if (this.shouldBroadcast(data.body)) {
             socket.broadcast.emit(this._EVENT_TYPE, message);
@@ -68,7 +68,7 @@ export class ChatWebsocketActionService extends WebsocketActionService {
 
     private getBestTimeMessage(data: ChatMessage): string {
         return (
-            ` – ${data.playerName} obtient la ${data.position}` 
+            ` – ${data.playerName} obtient la ${data.position}`
             + ` place dans les meilleurs temps du jeu ${data.gameName} en ${data.playerCount}.`
         );
     }
