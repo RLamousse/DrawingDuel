@@ -5,9 +5,9 @@ export interface Message {
     body: string;
 }
 
-export interface WebsocketMessage {
+export interface WebsocketMessage<type = Object> {
     title: SocketEvent;
-    body: Object;
+    body: type;
 }
 
 export enum ChatMessagePosition {
@@ -17,6 +17,7 @@ export enum ChatMessagePosition {
 export enum ChatMessagePlayerCount {
     SOLO = "solo", MULTI = "un contre un"
 }
+
 export interface ChatMessage {
     timestamp: Date;
     playerName: string;
