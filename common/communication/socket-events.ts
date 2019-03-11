@@ -3,5 +3,6 @@ export enum SocketEvent {
     DISCONNECTION = "disconnection",
     WELCOME = "welcome",
     CHECK_DIFFERENCE = "check-diff",
-    DUMMY = "dummy"
+    DUMMY = "dummy",
+    CHAT = "chat",
 }
