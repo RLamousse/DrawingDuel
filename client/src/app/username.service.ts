@@ -1,24 +1,39 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { of, Observable } from "rxjs";
+import { of, Observable, Subscription } from "rxjs";
 import { catchError } from "rxjs/operators";
+import { WebsocketMessage } from "../../../common/communication/messages/message";
 import { UserValidationMessage } from "../../../common/communication/messages/user-validation-message";
-import {SERVER_BASE_URL, USERNAME_BASE} from "../../../common/communication/routes";
+import { SERVER_BASE_URL, USERNAME_BASE } from "../../../common/communication/routes";
+import { SocketEvent } from "../../../common/communication/socket-events";
+import { SocketService } from "./socket.service";
 
 @Injectable()
 export class UNListService {
 
-  private static readonly BASE_URL: string = SERVER_BASE_URL + USERNAME_BASE;
-  public constructor(private http: HttpClient) {}
-
   public static username: string = "";
-  private minLength: number = 4;
+  private static readonly BASE_URL: string = SERVER_BASE_URL + USERNAME_BASE;
+  private readonly NON_ALPHANUMERIC_MESSAGE: string = "Tu dois utiliser seulement des caractères alphanumériques!";
+  private readonly USERNAME_TOO_SHORT_MESSAGE: string = "Ton identifiant est trop court!";
+  private readonly USERNAME_TAKEN_MESSAGE: string = "Cet identifiant est deja pris! Essaie un nouvel identifiant";
+  private readonly USERNAME_MIN_LENGTH: number = 4;
+  private readonly regex: RegExp = /^[a-zA-Z0-9]+$/i;
+
+  private minLength: number;
   public message: string;
-  public username: string = "";
-  public response: UserValidationMessage = {
+  public username: string;
+  public response: UserValidationMessage;
+
+  public constructor(private http: HttpClient,
+                     private websocket: SocketService) {
+
+    this.minLength = this.USERNAME_MIN_LENGTH;
+    this.message = "";
+    this.username = "";
+    this.response = {
     username: "", available: true,
   };
-  private readonly regex: RegExp = /^[a-zA-Z0-9]+$/i;
+  }
 
   public async sendReleaseRequest(): Promise<UserValidationMessage> {
     return this.http.post<UserValidationMessage>(UNListService.BASE_URL + "/release", {
