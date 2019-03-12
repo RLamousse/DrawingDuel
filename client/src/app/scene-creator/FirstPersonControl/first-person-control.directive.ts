@@ -52,7 +52,7 @@ export class FirstPersonControlDirective {
       $event.srcElement !== null &&
       $event.srcElement.tagName === CANVAS_TAG
     ) {
-      $event.preventDefault(); // No more textHighlight when hold click + mouseMove
+      $event.preventDefault();
       this.sceneRendererService.getClickedObject(
         $event.clientX,
         $event.clientY);
