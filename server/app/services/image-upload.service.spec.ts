@@ -23,7 +23,7 @@ describe("A service uploading images to imgur", () => {
             .thenReturn(
                 // @ts-ignore We only want to mock! Ignore missing fields
                 {
-                    upload: () => {
+                    upload: async () => {
                         return Promise.resolve(
                             {
                                 data: {
@@ -46,7 +46,7 @@ describe("A service uploading images to imgur", () => {
             .thenReturn(
                 // @ts-ignore We only want to mock! Ignore missing fields
                 {
-                    upload: () => {
+                    upload: async () => {
                         return Promise.reject();
                     },
                 });
