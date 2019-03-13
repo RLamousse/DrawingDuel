@@ -34,22 +34,35 @@ export class WebsocketController {
             this.chatAction.execute(message, socket);
         });
         socket.on("disconnect", () => {
-            this.disconnectionRoutine(socket);
+            this.userDisconnectionRoutine(socket);
         });
         socket.on(SocketEvent.USERNAME_CHECK, (message: WebsocketMessage<string>) => {
             const username: string = this.userNameService.execute(message, socket);
-            if (username) {
-                this.sockets.set(socket.id, username);
-            }
+            this.userConnectionRoutine(username, socket);
         });
         socket.emit(SocketEvent.WELCOME, "Connection has been made via a websocket");
     }
 
-    private disconnectionRoutine (socket: io.Socket): void {
-        const id: string | undefined = this.sockets.get(socket.id);
+    private userDisconnectionRoutine(socket: io.Socket): void {
+        const username: string | undefined = this.sockets.get(socket.id);
         if (this.sockets.has(socket.id)) {
-            this.userNameService.removeUsername(id as string);
-            // socket.broadcast.emit(SocketEvent.USER_DISCONNECTION, );
+            this.userNameService.removeUsername(username as string);
+            const message: WebsocketMessage<string> = {
+                title: SocketEvent.USER_CONNECTION,
+                body: this.chatAction.getDisconnectionMessage(username as string),
+            };
+            socket.broadcast.emit(SocketEvent.USER_DISCONNECTION, message);
+        }
+    }
+
+    private userConnectionRoutine(username: string, socket: io.Socket): void {
+        if (username) {
+            this.sockets.set(socket.id, username);
+            const message: WebsocketMessage<string> = {
+                title: SocketEvent.USER_CONNECTION,
+                body: this.chatAction.getConnectionMessage(username),
+            };
+            socket.broadcast.emit(SocketEvent.USER_CONNECTION, message);
         }
     }
 }

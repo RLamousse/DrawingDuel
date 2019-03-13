@@ -4,10 +4,6 @@ import { ChatMessage, ChatMessagePlayerCount, ChatMessageType, WebsocketMessage 
 import { SocketEvent } from "../../../../common/communication/socket-events";
 import { WebsocketActionService } from "./websocket-action.service";
 
-/**
- * This is supposed to be an example/test socket service
- * (as can be deducted from the very static message it answers with)
- */
 @injectable()
 export class ChatWebsocketActionService extends WebsocketActionService {
 
@@ -44,10 +40,10 @@ export class ChatWebsocketActionService extends WebsocketActionService {
                 message.concat(this.getBestTimeMessage(data));
                 break;
             case ChatMessageType.CONNECTION:
-                message.concat(this.getConnectionMessage(data));
+                message.concat(this.getConnectionMessage(data.playerName));
                 break;
             case ChatMessageType.DISCONNECTION:
-                message.concat(this.getDisconnectionMessage(data));
+                message.concat(this.getDisconnectionMessage(data.playerName));
                 break;
             default:
                 break;
@@ -58,12 +54,13 @@ export class ChatWebsocketActionService extends WebsocketActionService {
             body: message,
         };
     }
-    private getDisconnectionMessage(data: ChatMessage): string {
-        return ` – ${data.playerName} vient de se déconnecter.`;
+
+    public getDisconnectionMessage(user: string): string {
+        return ` – ${user} vient de se déconnecter.`;
     }
 
-    private getConnectionMessage(data: ChatMessage): string {
-        return ` – ${data.playerName} vient de se connecter.`;
+    public getConnectionMessage(user: string): string {
+        return ` – ${user} vient de se connecter.`;
     }
 
     private getBestTimeMessage(data: ChatMessage): string {
