@@ -1,0 +1,58 @@
+import {expect} from "chai";
+import {IRecordTime} from "../../../common/model/game/record-time";
+import {ScoreTableService} from "./score-table.service";
+
+describe("Object3DCreatorService", () => {
+    let service: ScoreTableService;
+
+    // @ts-ignore
+    const emptyTime: IRecordTime = null;
+    const veryHighTimeScoreBoy: IRecordTime = {name: "Rob", time: 55};
+    const highTimeScoreBoy: IRecordTime = {name: "Tommy", time: 7};
+    const middleTimeScoreBoy: IRecordTime = {name: "Phil", time: 3};
+    const lowTimeScoreBoy: IRecordTime = {name: "Bob", time: 1};
+    const initialScoreTable: IRecordTime[] = [{name: "Paul", time: 2},
+                                              {name: "Jack", time: 5},
+                                              {name: "Bill", time: 10}];
+    beforeEach(() => {
+        service = new ScoreTableService();
+    });
+
+    // Test createCube
+    it("should throw if null time inserted", () => {
+        const table: IRecordTime[] = initialScoreTable;
+        expect(() => service.insertTime(table, emptyTime)).to.throw();
+    });
+
+    it("should return the same table if the time inserted is too high", () => {
+        const table: IRecordTime[] = initialScoreTable;
+        service.insertTime(table, veryHighTimeScoreBoy);
+        expect(table).to.eql(initialScoreTable);
+    });
+
+    it("should return a new table with the highTimeScoreBoy at the third place if you insert it", () => {
+        const table: IRecordTime[] = initialScoreTable;
+        console.log(initialScoreTable);
+        service.insertTime(table, highTimeScoreBoy);
+        console.log(table);
+        expect(table[0]).to.eql(initialScoreTable[0]);
+        expect(table[1]).to.eql(initialScoreTable[1]);
+        expect(table[2]).to.eql(highTimeScoreBoy);
+    });
+
+    it("should return a new table with the middleTimeScoreBoy at the second place if you insert it", () => {
+        const table: IRecordTime[] = initialScoreTable;
+        service.insertTime(table, middleTimeScoreBoy);
+        expect(table[0]).to.eql(initialScoreTable[0]);
+        expect(table[1]).to.eql(middleTimeScoreBoy);
+        expect(table[2]).to.eql(initialScoreTable[1]);
+    });
+
+    it("should return a new table with the lowTimeScoreBoy at the first place if you insert it", () => {
+        const table: IRecordTime[] = initialScoreTable;
+        service.insertTime(table, lowTimeScoreBoy);
+        expect(table[0]).to.eql(lowTimeScoreBoy);
+        expect(table[1]).to.eql(initialScoreTable[0]);
+        expect(table[2]).to.eql(initialScoreTable[1]);
+    });
+});
