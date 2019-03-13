@@ -1,5 +1,6 @@
 export enum SocketEvent {
     CONNECTION = "connection",
+    DISCONNECT = "disconnect",
     USER_DISCONNECTION = "user_disconnection",
     USER_CONNECTION = "user_connection",
     WELCOME = "welcome",

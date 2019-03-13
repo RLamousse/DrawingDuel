@@ -33,7 +33,7 @@ export class WebsocketController {
         socket.on(SocketEvent.CHAT, (message: WebsocketMessage<ChatMessage>) => {
             this.chatAction.execute(message, socket);
         });
-        socket.on("disconnect", () => {
+        socket.on(SocketEvent.DISCONNECT, () => {
             this.userDisconnectionRoutine(socket);
         });
         socket.on(SocketEvent.USERNAME_CHECK, (message: WebsocketMessage<string>) => {
