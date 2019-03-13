@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import {Component, OnInit} from "@angular/core";
 
 @Component({
   selector: "app-timer",
@@ -15,7 +15,8 @@ export class TimerComponent implements OnInit {
   private interval: number;
 
   public ngOnInit(): void {
-    this.interval = window.setInterval(() => {
+    this.interval = window.setInterval(
+      () => {
         if (this.seconds === this.maxSeconds) {
           this.seconds = 0;
           this.minutes++;
