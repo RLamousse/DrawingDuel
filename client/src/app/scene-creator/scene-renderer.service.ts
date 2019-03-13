@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import * as THREE from "three";
 import { ComponentNotLoadedError } from "../../../../common/errors/component.errors";
 require("three-first-person-controls")(THREE);
+// import GLTFLoader from "three-gltf-loader";
 
 @Injectable()
 export class SceneRendererService {
@@ -84,6 +85,18 @@ export class SceneRendererService {
     }
     this.scene = original;
     this.modifiedScene = modified;
+    this.memeRender();
     this.renderLoop();
   }
+
+  public memeRender(): void {
+    // const loader: GLTFLoader = new GLTFLoader();
+    const knuckles: string = require("../Models/Ugandian-Knuckles/scene.gltf");
+    new THREE.JSONLoader().load(knuckles, (geometry, materials) =>{
+      const material: THREE.MeshFaceMaterial = new THREE.MeshFaceMaterial(materials);
+      const dino: THREE.Mesh = new THREE.Mesh(geometry, material);
+      this.scene.add(dino);
+    });
+  }
+
 }
