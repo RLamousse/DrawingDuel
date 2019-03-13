@@ -13,7 +13,8 @@ export interface WebsocketMessage<type = Object> {
 export enum ChatMessagePosition {
     FIRST = "première",
     SECOND = "deuxième",
-    THIRD = "troisième"
+    THIRD = "troisième",
+    NA = "NA",
 }
 
 export enum ChatMessagePlayerCount {
