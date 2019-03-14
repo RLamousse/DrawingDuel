@@ -1,6 +1,6 @@
 <app-simple-game-canvas #originalImageComponent [imageSource]="originalImage"
-                        (pointClick)="onCanvasClick($event)"
+                        (pointClick)="onOriginalCanvasClick($event)"
                         [class.disabled]="!clickEnabled"></app-simple-game-canvas>
 <app-simple-game-canvas #modifiedImageComponent [imageSource]="modifiedImage"
-                        (pointClick)="onCanvasClick($event)"
+                        (pointClick)="onModifiedCanvasClick($event)"
                         [class.disabled]="!clickEnabled"></app-simple-game-canvas>

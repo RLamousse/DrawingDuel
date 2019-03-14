@@ -26,7 +26,15 @@ export class SimpleGameContainerComponent {
   public constructor(private simpleGameService: SimpleGameService) {
   }
 
-  public onCanvasClick(clickEvent: IPoint): void {
+  protected onOriginalCanvasClick(clickEvent: IPoint): void {
+    this.onCanvasClick(clickEvent, this.originalImageComponent);
+  }
+
+  protected onModifiedCanvasClick(clickEvent: IPoint): void {
+    this.onCanvasClick(clickEvent, this.modifiedImageComponent);
+  }
+
+  private onCanvasClick(clickEvent: IPoint, clickedComponent: SimpleGameCanvasComponent): void {
     if (!this.clickEnabled) {
       return;
     }
@@ -44,21 +52,21 @@ export class SimpleGameContainerComponent {
       .catch((reason: Error) => {
         if (reason.message === AlreadyFoundDifferenceError.ALREADY_FOUND_DIFFERENCE_ERROR_MESSAGE ||
           reason.message === NoDifferenceAtPointError.NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE) {
-          this.handleIdentificationError(clickEvent);
+          this.handleIdentificationError(clickEvent, clickedComponent);
         }
       });
   }
 
-  private handleIdentificationError(clickEvent: IPoint): void {
-    const pixelsBackup: Uint8ClampedArray = this.originalImageComponent.getRawPixelData();
-    this.originalImageComponent.drawText(
+  private handleIdentificationError(clickEvent: IPoint, clickedComponent: SimpleGameCanvasComponent): void {
+    const pixelsBackup: Uint8ClampedArray = clickedComponent.getRawPixelData();
+    clickedComponent.drawText(
       IDENTIFICATION_ERROR_TEXT,
-      tansformOrigin(clickEvent, this.originalImageComponent.height),
+      tansformOrigin(clickEvent, clickedComponent.height),
       TextType.ERROR);
 
     setTimeout(
       () => {
-        this.originalImageComponent.setRawPixelData(pixelsBackup);
+        clickedComponent.setRawPixelData(pixelsBackup);
         this.clickEnabled = true;
       },
       IDENTIFICATION_ERROR_TIMOUT_MS,
