@@ -3,7 +3,7 @@ import {async, ComponentFixture, TestBed} from "@angular/core/testing";
 import {AlreadyFoundDifferenceError, NoDifferenceAtPointError} from "../../../../../common/errors/services.errors";
 import {DifferenceCluster} from "../../../../../common/model/game/simple-game";
 import {IPoint, ORIGIN} from "../../../../../common/model/point";
-import {PixelData} from "../simple-game-canvas/simple-game-canvas.component";
+import {PixelData, TextType} from "../simple-game-canvas/simple-game-canvas.component";
 import {SimpleGameService} from "../simple-game.service";
 import {SimpleGameContainerComponent} from "./simple-game-container.component";
 
@@ -25,6 +25,18 @@ describe("SimpleGameContainerComponent", () => {
     }
 
     public drawPixels(pixels: PixelData[]): void {
+      return;
+    }
+
+    public getRawPixelData(): Uint8ClampedArray {
+      return new Uint8ClampedArray(0);
+    }
+
+    public setRawPixelData(pixelData: Uint8ClampedArray): void {
+      return;
+    }
+
+    public drawText(text: string, position: IPoint, textType?: TextType): void {
       return;
     }
   }
@@ -59,7 +71,7 @@ describe("SimpleGameContainerComponent", () => {
     mockedSimpleGameService.validateDifferenceAtPoint
       .and.callFake(async () => Promise.reject(new AlreadyFoundDifferenceError()));
 
-    expect(() => component.onCanvasClick(ORIGIN))
+    expect(() => component["onOriginalCanvasClick"](ORIGIN))
       .not.toThrowError(AlreadyFoundDifferenceError.ALREADY_FOUND_DIFFERENCE_ERROR_MESSAGE);
   });
 
@@ -67,7 +79,7 @@ describe("SimpleGameContainerComponent", () => {
     mockedSimpleGameService.validateDifferenceAtPoint
       .and.callFake(async () => Promise.reject(new NoDifferenceAtPointError()));
 
-    expect(() => component.onCanvasClick(ORIGIN))
+    expect(() => component["onOriginalCanvasClick"](ORIGIN))
       .not.toThrowError(NoDifferenceAtPointError.NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE);
   });
 
@@ -75,6 +87,6 @@ describe("SimpleGameContainerComponent", () => {
     mockedSimpleGameService.validateDifferenceAtPoint
       .and.callFake(async () => Promise.resolve([0, [ORIGIN]] as DifferenceCluster));
 
-    expect(() => component.onCanvasClick(ORIGIN)).not.toThrow();
+    expect(() => component["onOriginalCanvasClick"](ORIGIN)).not.toThrow();
   });
 });
