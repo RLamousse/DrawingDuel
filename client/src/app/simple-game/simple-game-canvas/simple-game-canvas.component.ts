@@ -6,6 +6,11 @@ export interface PixelData {
   data: Uint8ClampedArray;
 }
 
+export enum TextType {
+  ERROR,
+  VICTORY,
+}
+
 export const IMAGE_DATA_PIXEL_LENGTH: number = 4;
 export const DEFAULT_CANVAS_HEIGHT: number = 480;
 @Component({
@@ -43,6 +48,8 @@ export class SimpleGameCanvasComponent implements OnInit {
         return;
       }
       this._canvasContext = canvasContext;
+      this._canvasContext.font = "30px Comic Sans MS";
+      this._canvasContext.textAlign = "center";
       this._canvasContext.drawImage(imageElement, 0, 0, this._width, this._height);
     };
 
@@ -63,6 +70,14 @@ export class SimpleGameCanvasComponent implements OnInit {
     });
   }
 
+  public getRawPixelData(): Uint8ClampedArray {
+    return this._canvasContext.getImageData(0, 0, this._width, this._height).data;
+  }
+
+  public setRawPixelData(pixelData: Uint8ClampedArray): void {
+    this._canvasContext.putImageData(new ImageData(pixelData, this._width, this._height), 0, 0);
+  }
+
   public drawPixels(pixels: PixelData[]): void {
     const imageData: ImageData = this._canvasContext.getImageData(0, 0, this._width, this._height);
 
@@ -74,6 +89,21 @@ export class SimpleGameCanvasComponent implements OnInit {
     }
 
     this._canvasContext.putImageData(imageData, 0, 0);
+  }
+
+  public drawText(text: string, position: IPoint, textType?: TextType): void {
+    switch (textType) {
+      case TextType.ERROR:
+        this._canvasContext.fillStyle = "red";
+        break;
+      case TextType.VICTORY:
+        this._canvasContext.fillStyle = "green";
+        break;
+      default:
+        // nop
+        break;
+    }
+    this._canvasContext.fillText(text, position.x, position.y);
   }
 
   protected clickHandler(event: MouseEvent): void {
