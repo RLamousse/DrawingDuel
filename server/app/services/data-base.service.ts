@@ -3,7 +3,6 @@ import { Db, MongoClient, MongoError } from "mongodb";
 import "reflect-metadata";
 import { FreeGamesCollectionService } from "./db/free-games.collection.service";
 import { SimpleGamesCollectionService } from "./db/simple-games.collection.service";
-import { UsersCollectionService } from "./db/users.collection.service";
 
 @injectable()
 export class DataBaseService {
@@ -18,7 +17,6 @@ export class DataBaseService {
         + this.DB_HOST + ":" + this.DB_PORT + "/" + this.DB_DB;
 
     private _dataBase: Db;
-    private _users: UsersCollectionService;
     private _simpleGames: SimpleGamesCollectionService;
     private _freeGames: FreeGamesCollectionService;
 
@@ -26,17 +24,12 @@ export class DataBaseService {
         MongoClient.connect(this.DB_URL, {useNewUrlParser : true}, (err: MongoError, client: MongoClient) => {
             if (!err) {
                 this._dataBase = client.db(this.DB_DB);
-                this._users = new UsersCollectionService(this._dataBase.collection("users"));
                 this._simpleGames = new SimpleGamesCollectionService(this._dataBase.collection("simpleGames"));
                 this._freeGames = new FreeGamesCollectionService(this._dataBase.collection("freeGames"));
             } else {
                 process.exit(this.DB_EXIT_CODE);
             }
         });
-    }
-
-    public get users(): UsersCollectionService {
-        return this._users;
     }
 
     public get simpleGames(): SimpleGamesCollectionService {

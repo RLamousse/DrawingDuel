@@ -18,22 +18,6 @@ export class DataBaseController {
         const router: Router = Router();
 
         // ┌──┬───────┬──┐
-        // │  │ USERS │  │
-        // └──┴───────┴──┘
-
-        router.post("/users", async (req: Request, res: Response, next: NextFunction) => {
-            executePromiseSafely(res, next, async () => {
-                res.json(await this.dataBaseService.users.create(req.body));
-            });
-        });
-
-        router.delete("/users/:userId", async (req: Request, res: Response, next: NextFunction) => {
-            executePromiseSafely(res, next, async () => {
-                res.json(await this.dataBaseService.users.delete(req.params["userId"]));
-            });
-        });
-
-        // ┌──┬───────┬──┐
         // │  │ GAMES │  │
         // └──┴───────┴──┘
 
