@@ -1,6 +1,6 @@
 import {Collection, MongoError} from "mongodb";
 import {Message} from "../../../../common/communication/messages/message";
-import {DatabaseError, EmptyIdError} from "../../../../common/errors/database.errors";
+import {DatabaseError, EmptyIdError, NoElementFoundError} from "../../../../common/errors/database.errors";
 
 export abstract class CollectionService<T> {
 
@@ -48,42 +48,44 @@ export abstract class CollectionService<T> {
     }
 
     protected async createDocument(data: T): Promise<Message> {
-        return new Promise<Message>((resolve: (value?: Message | PromiseLike<Message>) => void, reject: (reason?: Error) => void) => {
-
-            this._collection.insertOne(data, (error: MongoError) => {
-                if (error) {
-                    reject(new DatabaseError());
-                }
-                resolve(this.creationSuccessMessage(data));
+        return this._collection.insertOne(data)
+            .then(() => {
+                return this.creationSuccessMessage(data);
+            })
+            .catch(() => {
+                throw new DatabaseError();
             });
-        });
     }
 
     protected async deleteDocument(id: string): Promise<Message> {
-        return new Promise<Message>((resolve: (value?: Message | PromiseLike<Message>) => void, reject: (reason?: Error) => void) => {
-            this._collection.deleteOne({[this.idFieldName]: {$eq: id}}, (error: MongoError) => {
-                if (error) {
-                    reject(new DatabaseError());
-                }
-                resolve(this.deletionSuccessMessage(id));
+        return this._collection.deleteOne({[this.idFieldName]: {$eq: id}})
+            .then(() => {
+                return this.deletionSuccessMessage(id);
+            })
+            .catch(() => {
+                throw new DatabaseError();
             });
-        });
     }
 
-    protected async getDocument(id: string, errorMessage: string): Promise<T> {
-        return new Promise<T>((resolve: (value?: T | PromiseLike<T>) => void, reject: (reason?: Error) => void) => {
-            this._collection.find({[this.idFieldName] : {$eq : id}}).toArray((error: MongoError, res: T[]) => {
-                if (error) {
-                    return reject(new DatabaseError());
-                } else if (res.length === 0) {
-                    return reject(new Error(errorMessage));
+    protected async getDocument(id: string): Promise<T> {
+        return this._collection.findOne({[this.idFieldName]: {$eq: id}})
+            .then((value: T) => {
+                if (value === null) {
+                    throw new NoElementFoundError();
                 }
-                // @ts-ignore even thought item is red as a T type(IGame or IUser), mongo generates _id, and we want it removed!
-                delete res[0]._id;
 
-                return resolve(res[0]);
+                // @ts-ignore even thought item is red as a T type(IGame or IUser), mongo generates _id, and we want it removed!
+                delete value._id;
+
+                return value;
+            })
+            .catch((error: Error) => {
+                if (error.message === NoElementFoundError.NO_ELEMENT_FOUND_ERROR_MESSAGE) {
+                    throw error;
+                }
+
+                throw new DatabaseError();
             });
-        });
     }
 
 }

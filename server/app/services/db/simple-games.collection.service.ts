@@ -1,7 +1,12 @@
 import {injectable} from "inversify";
 import "reflect-metadata";
 import {Message} from "../../../../common/communication/messages/message";
-import {AlreadyExistentGameError, InvalidGameError, NonExistentGameError} from "../../../../common/errors/database.errors";
+import {
+    AlreadyExistentGameError,
+    InvalidGameError,
+    NonExistentGameError,
+    NoElementFoundError
+} from "../../../../common/errors/database.errors";
 import {ISimpleGame} from "../../../../common/model/game/simple-game";
 import {CollectionService} from "./collection.service";
 
@@ -44,7 +49,17 @@ export class SimpleGamesCollectionService extends CollectionService<ISimpleGame>
     public async getFromId(id: string): Promise<ISimpleGame> {
         CollectionService.assertId(id);
 
-        return this.getDocument(id, NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE);
+        return this.getDocument(id)
+            .then((game: ISimpleGame) => {
+                return game;
+            })
+            .catch((error: Error) => {
+                if (error.message === NoElementFoundError.NO_ELEMENT_FOUND_ERROR_MESSAGE) {
+                    throw new NonExistentGameError();
+                }
+
+                throw error;
+            });
     }
 
     protected creationSuccessMessage(data: ISimpleGame): Message {

@@ -7,7 +7,7 @@ import { SimpleGamesCollectionService } from "./db/simple-games.collection.servi
 @injectable()
 export class DataBaseService {
 
-    private readonly DB_EXIT_CODE: number = -1;
+    private readonly DB_EXIT_CODE: number = -42;
     private readonly DB_USER: string = "server";
     private readonly DB_PASSWORD: string = "RZDpcD8vqu8hmjX";
     private readonly DB_DB: string = "projet";
@@ -27,6 +27,7 @@ export class DataBaseService {
                 this._simpleGames = new SimpleGamesCollectionService(this._dataBase.collection("simpleGames"));
                 this._freeGames = new FreeGamesCollectionService(this._dataBase.collection("freeGames"));
             } else {
+                console.error("Unable to connect to the database! Exiting...");
                 process.exit(this.DB_EXIT_CODE);
             }
         });
