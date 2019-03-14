@@ -119,11 +119,11 @@ const SOUNDS: Howl[] = [
   ...VICTORY_SOUNDS,
 ];
 
+export const stopSounds: () => void = (): void => {
+  SOUNDS.forEach((sound: Howl) => sound.stop());
+};
+
 export const playRandomSound: (sounds: Howl[]) => void = (sounds: Howl[]): void => {
   stopSounds();
   sounds[Math.floor(Math.random() * sounds.length)].play();
-};
-
-export const stopSounds: () => void = (): void => {
-  SOUNDS.forEach((sound: Howl) => sound.stop());
 };
