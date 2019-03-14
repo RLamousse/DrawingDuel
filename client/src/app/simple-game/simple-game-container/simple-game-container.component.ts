@@ -21,7 +21,7 @@ export class SimpleGameContainerComponent {
   @ViewChild("originalImageComponent") private originalImageComponent: SimpleGameCanvasComponent;
   @ViewChild("modifiedImageComponent") private modifiedImageComponent: SimpleGameCanvasComponent;
 
-  private clickEnabled: boolean = true;
+  protected clickEnabled: boolean = true;
 
   public constructor(private simpleGameService: SimpleGameService) {
   }
