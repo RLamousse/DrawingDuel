@@ -50,6 +50,7 @@ export class SimpleGameCanvasComponent implements OnInit {
       this._canvasContext = canvasContext;
       this._canvasContext.font = "30px Comic Sans MS";
       this._canvasContext.textAlign = "center";
+      this._canvasContext.strokeStyle = "black";
       this._canvasContext.drawImage(imageElement, 0, 0, this._width, this._height);
     };
 
@@ -95,6 +96,7 @@ export class SimpleGameCanvasComponent implements OnInit {
     switch (textType) {
       case TextType.ERROR:
         this._canvasContext.fillStyle = "red";
+        this._canvasContext.strokeText(text, position.x, position.y);
         break;
       case TextType.VICTORY:
         this._canvasContext.fillStyle = "green";
