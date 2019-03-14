@@ -1,4 +1,4 @@
-import {Collection, MongoError} from "mongodb";
+import {Collection} from "mongodb";
 import {Message} from "../../../../common/communication/messages/message";
 import {DatabaseError, EmptyIdError, NoElementFoundError} from "../../../../common/errors/database.errors";
 
@@ -27,16 +27,18 @@ export abstract class CollectionService<T> {
     }
 
     public async getAll(): Promise<T[]> {
-        return new Promise<T[]>((resolve: (value?: T[] | PromiseLike<T[]>) => void, reject: (reason?: Error) => void) => {
-            this._collection.find().toArray((error: MongoError, res: T[]) => {
-                if (error) {
-                    reject(new DatabaseError());
-                }
-                // @ts-ignore even thought item is red as a T type(IGame or IUser), mongo generates _id, and we want it removed!
-                res.forEach((item: T) => { delete item._id; });
-                resolve(res);
+        return this._collection.find().toArray()
+            .then((items: T[]) => {
+                items.forEach((item: T) => {
+                    // @ts-ignore even thought item is red as a T type(IGame or IUser), mongo generates _id, and we want it removed!
+                    delete item._id;
+                });
+
+                return items;
+            })
+            .catch(() => {
+                throw new DatabaseError();
             });
-        });
     }
 
     protected async documentCount(id: string): Promise<number> {

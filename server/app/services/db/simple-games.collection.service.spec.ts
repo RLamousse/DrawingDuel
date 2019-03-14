@@ -120,7 +120,7 @@ describe("A db service for simple games", () => {
                 .returns(async () => Promise.resolve(1));
 
             mockedCollection.setup(async (collection: Collection<ISimpleGame>) => collection.deleteOne(query))
-            // @ts-ignore Spoof DeleteWriteOpResultObject for DB insert promise
+            // @ts-ignore Spoof DeleteWriteOpResultObject for DB delete promise
                 .returns(async () => Promise.resolve({}));
 
             simpleGamesCollectionService = new SimpleGamesCollectionService(mockedCollection.object);
