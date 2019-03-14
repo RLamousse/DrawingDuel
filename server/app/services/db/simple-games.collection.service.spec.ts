@@ -37,7 +37,7 @@ describe("A db service for simple games", () => {
 
     describe("Game creation", () => {
 
-        it("should not create an invalid game", () => {
+        it("should not create an invalid game", async () => {
             const invalidGame: ISimpleGame = {
                 diffData: [],
                 bestMultiTimes: [],
@@ -56,10 +56,10 @@ describe("A db service for simple games", () => {
                 });
         });
 
-        it("should not create a game that already exists", () => {
+        it("should not create a game that already exists", async () => {
             const query: FilterQuery<ISimpleGame> = createGameQueryForId("sampleGame");
-            mockedCollection.setup((collection: Collection<ISimpleGame>) => collection.countDocuments(query))
-                .returns(() => Promise.resolve(1));
+            mockedCollection.setup(async (collection: Collection<ISimpleGame>) => collection.countDocuments(query))
+                .returns(async () => Promise.resolve(1));
 
             simpleGamesCollectionService = new SimpleGamesCollectionService(mockedCollection.object);
 
@@ -70,14 +70,14 @@ describe("A db service for simple games", () => {
                 });
         });
 
-        it("should create a game", () => {
+        it("should create a game", async () => {
             const query: FilterQuery<ISimpleGame> = createGameQueryForId("sampleGame");
-            mockedCollection.setup((collection: Collection<ISimpleGame>) => collection.countDocuments(query))
-                .returns(() => Promise.resolve(0));
+            mockedCollection.setup(async (collection: Collection<ISimpleGame>) => collection.countDocuments(query))
+                .returns(async () => Promise.resolve(0));
 
-            mockedCollection.setup((collection: Collection<ISimpleGame>) => collection.insertOne(sampleGame))
+            mockedCollection.setup(async (collection: Collection<ISimpleGame>) => collection.insertOne(sampleGame))
             // @ts-ignore Spoof InsertOneWriteOpResult for DB insert promise
-                .returns(() => Promise.resolve({}));
+                .returns(async () => Promise.resolve({}));
 
             simpleGamesCollectionService = new SimpleGamesCollectionService(mockedCollection.object);
 
@@ -90,7 +90,7 @@ describe("A db service for simple games", () => {
     });
 
     describe("Game deletion", () => {
-        it("should throw if a game ID is empty on deletion", () => {
+        it("should throw if a game ID is empty on deletion", async () => {
             simpleGamesCollectionService = new SimpleGamesCollectionService(mockedCollection.object);
 
             return simpleGamesCollectionService.delete("")
@@ -100,10 +100,10 @@ describe("A db service for simple games", () => {
                 });
         });
 
-        it("should throw if the specified game does not exist on deletion", () => {
+        it("should throw if the specified game does not exist on deletion", async () => {
             const query: FilterQuery<ISimpleGame> = createGameQueryForId("unavailableGame");
-            mockedCollection.setup((collection: Collection<ISimpleGame>) => collection.countDocuments(query))
-                .returns(() => Promise.resolve(0));
+            mockedCollection.setup(async (collection: Collection<ISimpleGame>) => collection.countDocuments(query))
+                .returns(async () => Promise.resolve(0));
 
             simpleGamesCollectionService = new SimpleGamesCollectionService(mockedCollection.object);
 
@@ -114,14 +114,14 @@ describe("A db service for simple games", () => {
                 });
         });
 
-        it("should delete a game", () => {
+        it("should delete a game", async () => {
             const query: FilterQuery<ISimpleGame> = createGameQueryForId("gameToDelete");
-            mockedCollection.setup((collection: Collection<ISimpleGame>) => collection.countDocuments(query))
-                .returns(() => Promise.resolve(1));
+            mockedCollection.setup(async (collection: Collection<ISimpleGame>) => collection.countDocuments(query))
+                .returns(async () => Promise.resolve(1));
 
-            mockedCollection.setup((collection: Collection<ISimpleGame>) => collection.deleteOne(query))
+            mockedCollection.setup(async (collection: Collection<ISimpleGame>) => collection.deleteOne(query))
             // @ts-ignore Spoof DeleteWriteOpResultObject for DB insert promise
-                .returns(() => Promise.resolve({}));
+                .returns(async () => Promise.resolve({}));
 
             simpleGamesCollectionService = new SimpleGamesCollectionService(mockedCollection.object);
 
@@ -134,7 +134,7 @@ describe("A db service for simple games", () => {
     });
 
     describe("Game retrieval (get)", () => {
-        it("should throw if a game ID is empty on get", () => {
+        it("should throw if a game ID is empty on get", async () => {
             simpleGamesCollectionService = new SimpleGamesCollectionService(mockedCollection.object);
 
             return simpleGamesCollectionService.getFromId("")
@@ -144,10 +144,10 @@ describe("A db service for simple games", () => {
                 });
         });
 
-        it("should throw an NonExistentGameError when no results where found", () => {
+        it("should throw an NonExistentGameError when no results where found", async () => {
             const query: FilterQuery<ISimpleGame> = createGameQueryForId("unavailableGame");
-            mockedCollection.setup((collection: Collection<ISimpleGame>) => collection.findOne(query))
-                .returns(() => Promise.resolve(null));
+            mockedCollection.setup(async (collection: Collection<ISimpleGame>) => collection.findOne(query))
+                .returns(async () => Promise.resolve(null));
 
             simpleGamesCollectionService = new SimpleGamesCollectionService(mockedCollection.object);
 
@@ -158,10 +158,10 @@ describe("A db service for simple games", () => {
                 });
         });
 
-        it("should throw a database error on unexpected behaviour", () => {
+        it("should throw a database error on unexpected behaviour", async () => {
             const query: FilterQuery<ISimpleGame> = createGameQueryForId("errorGame");
-            mockedCollection.setup((collection: Collection<ISimpleGame>) => collection.findOne(query))
-                .returns(() => Promise.reject(new Error("Unexpected error")));
+            mockedCollection.setup(async (collection: Collection<ISimpleGame>) => collection.findOne(query))
+                .returns(async () => Promise.reject(new Error("Unexpected error")));
 
             simpleGamesCollectionService = new SimpleGamesCollectionService(mockedCollection.object);
 
@@ -172,10 +172,10 @@ describe("A db service for simple games", () => {
                 });
         });
 
-        it("should get a game from an ID", () => {
+        it("should get a game from an ID", async () => {
             const query: FilterQuery<ISimpleGame> = createGameQueryForId("sampleGame");
-            mockedCollection.setup((collection: Collection<ISimpleGame>) => collection.findOne(query))
-                .returns(() => Promise.resolve(sampleGame));
+            mockedCollection.setup(async (collection: Collection<ISimpleGame>) => collection.findOne(query))
+                .returns(async () => Promise.resolve(sampleGame));
 
             simpleGamesCollectionService = new SimpleGamesCollectionService(mockedCollection.object);
 

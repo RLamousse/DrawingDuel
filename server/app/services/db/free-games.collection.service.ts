@@ -1,7 +1,12 @@
 import {injectable} from "inversify";
 import "reflect-metadata";
 import {Message} from "../../../../common/communication/messages/message";
-import {InvalidGameError, NoElementFoundError, NonExistentGameError} from "../../../../common/errors/database.errors";
+import {
+    AlreadyExistentGameError,
+    InvalidGameError,
+    NonExistentGameError,
+    NoElementFoundError
+} from "../../../../common/errors/database.errors";
 import {IFreeGame} from "../../../../common/model/game/free-game";
 import {CollectionService} from "./collection.service";
 import {GAME_NAME_FIELD} from "./simple-games.collection.service";
@@ -23,7 +28,7 @@ export class FreeGamesCollectionService extends CollectionService<IFreeGame> {
         }
 
         if (await this.contains(data.gameName)) {
-            throw new NonExistentGameError();
+            throw new AlreadyExistentGameError();
         } else {
             return this.createDocument(data);
         }
