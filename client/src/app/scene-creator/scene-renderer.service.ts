@@ -183,6 +183,5 @@ export class SceneRendererService {
               ((intersectOri[0].object as THREE.Mesh).material as THREE.MeshPhongMaterial).color;
           }
       }
-
   }
 }

@@ -1,7 +1,12 @@
 ﻿import { ObjectGeometry } from "../FreeGameCreatorInterface/free-game-enum";
+
 export interface IScenesJSON{
     originalObjects: IJson3DObject[],
     modifiedObjects: IJson3DObject[],
+}
+
+export interface IScenesDB extends IScenesJSON{
+    differentObjects: IJson3DObject[],
 }
 
 export interface IJson3DObject {
