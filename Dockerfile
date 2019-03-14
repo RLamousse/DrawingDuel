@@ -15,5 +15,6 @@ WORKDIR /app
 COPY client/ client/
 COPY server/ server/
 COPY common/ common/
+COPY test.sh test.sh
 
-CMD bash
+CMD bash -e test.sh
