@@ -30,7 +30,8 @@ export abstract class CollectionService<T> {
         return this._collection.find().toArray()
             .then((items: T[]) => {
                 items.forEach((item: T) => {
-                    // @ts-ignore even thought item is red as a T type(IGame or IUser), mongo generates _id, and we want it removed!
+                    // @ts-ignore even thought item is read as a T type(IFreeGame or ISimpleGame),
+                    // mongo generates an _id attribute, and we want it removed!
                     delete item._id;
                 });
 
@@ -76,7 +77,8 @@ export abstract class CollectionService<T> {
                     throw new NoElementFoundError();
                 }
 
-                // @ts-ignore even thought item is red as a T type(IGame or IUser), mongo generates _id, and we want it removed!
+                // @ts-ignore even thought item is read as a T type(IFreeGame or ISimpleGame),
+                // mongo generates an _id attribute, and we want it removed!
                 delete value._id;
 
                 return value;
