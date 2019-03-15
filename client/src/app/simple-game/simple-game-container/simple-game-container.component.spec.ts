@@ -71,8 +71,22 @@ describe("SimpleGameContainerComponent", () => {
     mockedSimpleGameService.validateDifferenceAtPoint
       .and.callFake(async () => Promise.reject(new AlreadyFoundDifferenceError()));
 
+    spyOn(component["originalImageComponent"], "getRawPixelData")
+      .and.returnValue([]);
+
+    spyOn(component["originalImageComponent"], "drawText");
+
     expect(() => component["onOriginalCanvasClick"](ORIGIN))
       .not.toThrowError(AlreadyFoundDifferenceError.ALREADY_FOUND_DIFFERENCE_ERROR_MESSAGE);
+
+    expect(() => component["onModifiedCanvasClick"](ORIGIN))
+      .not.toThrowError(AlreadyFoundDifferenceError.ALREADY_FOUND_DIFFERENCE_ERROR_MESSAGE);
+
+    // TODO: expect handleIdentificationError
+
+    // expect(component["modifiedImageComponent"].getRawPixelData)
+    // .toHaveBeenCalledWith(ORIGIN, any(SimpleGameCanvasStubComponent));
+    //   .toHaveBeenCalled();
   });
 
   it("should handle no difference found error", () => {
@@ -81,6 +95,11 @@ describe("SimpleGameContainerComponent", () => {
 
     expect(() => component["onOriginalCanvasClick"](ORIGIN))
       .not.toThrowError(NoDifferenceAtPointError.NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE);
+
+    expect(() => component["onModifiedCanvasClick"](ORIGIN))
+      .not.toThrowError(NoDifferenceAtPointError.NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE);
+
+    // TODO: expect handleIdentificationError
   });
 
   it("should copy pixel from the original canvas to the modified", () => {
@@ -88,5 +107,7 @@ describe("SimpleGameContainerComponent", () => {
       .and.callFake(async () => Promise.resolve([0, [ORIGIN]] as DifferenceCluster));
 
     expect(() => component["onOriginalCanvasClick"](ORIGIN)).not.toThrow();
+
+    expect(() => component["onModifiedCanvasClick"](ORIGIN)).not.toThrow();
   });
 });
