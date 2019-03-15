@@ -10,6 +10,7 @@ import {ISimpleGame} from "../../../common/model/game/simple-game";
 import {FreeGameCreatorService} from "./scene-creator/FreeGameCreator/free-game-creator.service";
 import {FreeGamePhotoService} from "./scene-creator/free-game-photo-service/free-game-photo.service";
 import {IScene} from "./scene-interface";
+import {SceneRendererService} from "./scene-creator/scene-renderer.service";
 
 @Injectable({
               providedIn: "root",
@@ -24,6 +25,11 @@ export class GameService {
   private readonly GET_SIMPLEGAME_ERROR: string = "get simple game from server error";
   private readonly GET_FREEGAME_ERROR: string = "get free game from server error";
   private readonly GET_FREEGAME_BY_NAME_ERROR: string = "get free game by name from server error";
+
+  private isCheatModeActive: boolean = false;
+  private readonly BLINK_INTERVAL_MS: number = 250;
+  private cheatDiffData: any | undefined;//TODO use cheatData type from Anthony's code
+  private blinkThread: NodeJS.Timeout;
 
   public constructor(
     private http: HttpClient,
@@ -108,6 +114,22 @@ export class GameService {
       return of(result as T);
     };
   }
+
+  //TODO VERY IMPORTANT check if this is the right service for a free game instance
+  public async modifyCheatState(gameName: string, renderer: SceneRendererService): Promise<void> {//TODO change objects type with the real type
+    this.isCheatModeActive = !this.isCheatModeActive;
+    if (this.isCheatModeActive) {
+      await this.loadCheatData(gameName);
+      this.updateCheateDiffData();
+      this.blinkThread = setInterval(() => {
+        renderer.blink(this.cheatDiffData);
+      }, this.BLINK_INTERVAL_MS);
+    } else {
+      clearInterval(this.blinkThread);
+      this.cheatDiffData = undefined;
+    }
+  }
+
   private async loadCheatData(gameName: string): Promise<void>{
     return new Promise<void>((resolve) => {
 
