@@ -40,5 +40,6 @@ export function deepCompare(x: any, y: any): boolean {
 }
 
 export async function sleep(timeMs: number): Promise<{}> {
-    return new Promise(resolve => setTimeout(resolve, timeMs));
+    // @ts-ignore TODO see what this error means
+    return new Promise<{}>(resolve => setTimeout(resolve, timeMs));
 }
