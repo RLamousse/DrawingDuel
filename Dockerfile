@@ -12,9 +12,13 @@ WORKDIR /app/server
 RUN npm i
 
 WORKDIR /app
+
+# Less prone to changes
+COPY test.sh test.sh
+COPY common/ common/
+
+# More prone to changes
 COPY client/ client/
 COPY server/ server/
-COPY common/ common/
-COPY test.sh test.sh
 
 CMD bash -e test.sh
