@@ -19,7 +19,7 @@ export class DiffValidatorController {
                     assertParamsOfRequest(req, "gameName", "coordX", "coordY");
 
                     this.diffValidatorService.getDifferenceCluster(req.query.gameName, {
-                       
+
                     }).then((differenceCluster: DifferenceCluster) => {
                         const response: IDiffValidatorControllerResponse = {
 
