@@ -38,3 +38,7 @@ export function deepCompare(x: any, y: any): boolean {
     return Object.keys(y).every(function (i) { return p.indexOf(i) !== -1; }) &&
         p.every(function (i) { return deepCompare(x[i], y[i]); });
 }
+
+export async function sleep(timeMs: number): Promise<{}> {
+    return new Promise(resolve => setTimeout(resolve, timeMs));
+}
