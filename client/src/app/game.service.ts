@@ -125,8 +125,7 @@ export class GameService {
         renderer.blink(this.cheatDiffData);
       }, this.BLINK_INTERVAL_MS);
     } else {
-      clearInterval(this.blinkThread);
-      this.cheatDiffData = undefined;
+      this.deactivateCheatMode();
     }
   }
 
@@ -154,4 +153,11 @@ export class GameService {
       // })
     }
   }
+
+  public deactivateCheatMode(): void {
+    clearInterval(this.blinkThread);
+    this.cheatDiffData = undefined;
+    this.isCheatModeActive = false;
+  }
+
 }

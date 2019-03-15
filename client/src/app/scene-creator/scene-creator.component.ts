@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild} from "@angular/core";
+import {AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild} from "@angular/core";
 import {ActivatedRoute} from "@angular/router";
 import {IFreeGame} from "../../../../common/model/game/free-game";
 import {GameService} from "../game.service";
@@ -11,7 +11,7 @@ import {SceneRendererService} from "./scene-renderer.service";
              templateUrl: "./scene-creator.component.html",
              styleUrls: ["./scene-creator.component.css"],
            })
-export class SceneCreatorComponent implements AfterViewInit, OnInit {
+export class SceneCreatorComponent implements AfterViewInit, OnInit, OnDestroy {
 
   private readonly CHEAT_KEY_CODE: string = "KeyT";
 
@@ -20,6 +20,10 @@ export class SceneCreatorComponent implements AfterViewInit, OnInit {
   }
 
   protected gameName: string;
+
+  ngOnDestroy(): void {
+    this.gameService.deactivateCheatMode();
+  }
 
   private get originalContainer(): HTMLDivElement {
     return this.originalRef.nativeElement;
