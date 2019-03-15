@@ -140,4 +140,18 @@ export class GameService {
       });
     });
   }
+
+  //TODO call this function when a diff is found
+  private updateCheateDiffData(): void {
+    if (this.isCheatModeActive) {
+      //TODO foreach already found diff, remove from blinking diffs
+
+      // this._gameState.foundDifferenceClusters.forEach((value: DifferenceCluster, index: number, array: ISimpleDifferenceData) => {
+      //   const indexPosition = customIndexOf<DifferenceCluster>(<ISimpleDifferenceData>this._cheatDiffData, value, deepCompare);
+      //   if (indexPosition >= 0) {
+      //     (<ISimpleDifferenceData>this._cheatDiffData).splice(indexPosition, 1);
+      //   }
+      // })
+    }
+  }
 }
