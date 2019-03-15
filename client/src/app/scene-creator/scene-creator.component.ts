@@ -52,7 +52,7 @@ export class SceneCreatorComponent implements AfterViewInit, OnInit {
     const errMsg: string = "An error occured when trying to render the free view games";
     this.renderService.init(this.originalContainer, this.modifiedContainer);
     this.verifyGame().then((scene: IScene) =>
-                             this.renderService.loadScenes(scene.scene, scene.modifiedScene),
+                             this.renderService.loadScenes(scene.scene, scene.modifiedScene, this.gameName),
     ).catch((e: Error) => {
       e.message = errMsg;
       throw e;

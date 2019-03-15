@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import * as THREE from "three";
 import { ComponentNotLoadedError } from "../../../../common/errors/component.errors";
+import { NoDifferenceAtPointError } from "../../../../common/errors/services.errors";
 
 @Injectable()
 export class SceneRendererService {
@@ -9,6 +10,8 @@ export class SceneRendererService {
   public modifiedContainer: HTMLDivElement;
   public scene: THREE.Scene;
   public modifiedScene: THREE.Scene;
+  // Test load with gameName now todo
+  public gameName: string;
 
   private camera: THREE.PerspectiveCamera;
   private rendererOri: THREE.WebGLRenderer;
@@ -110,7 +113,7 @@ export class SceneRendererService {
     this.setRenderer();
   }
 
-  public loadScenes(original: THREE.Scene, modified: THREE.Scene): void {
+  public loadScenes(original: THREE.Scene, modified: THREE.Scene, gameName: string): void {
     if (this.originalContainer === undefined || this.modifiedContainer === undefined) {
       throw (new ComponentNotLoadedError());
     }
@@ -119,6 +122,7 @@ export class SceneRendererService {
     this.time = 0;
     this.prevTime = performance.now();
     this.velocity = new THREE.Vector3();
+    this.gameName = gameName;
     this.renderLoop();
   }
 
@@ -149,7 +153,7 @@ export class SceneRendererService {
     this.deltaX = (this.oldY - yPos) / this.camRotationSpeedFactor;
   }
 
-  public getClickedObject(xPos: number, yPos: number): void {
+  public objDiffValidation(xPos: number, yPos: number): void {
       let x: number = 0;
       let y: number = 0;
       const POS_FACT: number = 2;
@@ -164,24 +168,12 @@ export class SceneRendererService {
       const rayCast: THREE.Raycaster = new THREE.Raycaster();
       rayCast.setFromCamera(direction, this.camera);
       const intersectOri: THREE.Intersection[] = rayCast.intersectObjects(this.scene.children);
-      const interMod: THREE.Intersection[] = rayCast.intersectObjects(this.modifiedScene.children);
-
-      if (intersectOri.length > interMod.length) { // Deletion
-        this.modifiedScene.add(intersectOri[0].object.clone());
-      } else if (intersectOri.length < interMod.length) { // Deletion
-        let index: number = 0;
-        for ( const i of this.modifiedScene.children) {
-          if ( i.position === interMod[0].object.position) {
-            this.modifiedScene.children.splice(index, 1);
-          }
-          index++;
-        }
-      } else if (intersectOri.length === interMod.length ) {
-          if (!((intersectOri[0].object as THREE.Mesh).material as THREE.MeshPhongMaterial)
-              .color.equals(((interMod[0].object as THREE.Mesh).material as THREE.MeshPhongMaterial).color)) {
-            ((interMod[0].object as THREE.Mesh).material as THREE.MeshPhongMaterial).color =
-              ((intersectOri[0].object as THREE.Mesh).material as THREE.MeshPhongMaterial).color;
-          }
+      if (intersectOri.length === 0) {
+        throw new NoDifferenceAtPointError();
       }
+      // Only take the first intersected object by the ray, hence the 0
+      this.differenceValidation(intersectOri[0]);
+  }
+  private differenceValidation(object: THREE.Intersection): void {
   }
 }

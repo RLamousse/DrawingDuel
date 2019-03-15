@@ -53,7 +53,7 @@ export class FirstPersonControlDirective {
       $event.srcElement.tagName === CANVAS_TAG
     ) {
       $event.preventDefault();
-      this.sceneRendererService.getClickedObject(
+      this.sceneRendererService.objDiffValidation(
         $event.clientX,
         $event.clientY);
     }
