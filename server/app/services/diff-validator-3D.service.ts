@@ -3,20 +3,27 @@ import {injectable} from "inversify";
 import "reflect-metadata";
 import {DB_FREE_GAME, SERVER_BASE_URL} from "../../../common/communication/routes";
 import {Object3DIsNotADifference} from "../../../common/errors/services.errors";
+import {Coordinate} from "../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
 import {IJson3DObject, IScenesDB} from "../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
 
 @injectable()
 export class DiffValidator3DService {
     public async getDifferentObjects(gameName: string, center: number[]): Promise<IJson3DObject> {
 
-        const game: IScenesDB = await this.getGame(gameName);
-        const diffObjs: IJson3DObject[] = game.differentObjects;
-        for (const obj of diffObjs) {
-           if (obj.position === center) {
-               return obj;
-           }
-        }
-        throw new Object3DIsNotADifference();
+       return this.getGame(gameName).then((value: IScenesDB) => {
+            const diffObjs: IJson3DObject[] = value.differentObjects;
+            console.log(value);
+            console.log(value.differentObjects[0]);
+            for (const obj of diffObjs) {
+                if (obj.position[Coordinate.X] === center[Coordinate.X] &&
+                    obj.position[Coordinate.Y] === center[Coordinate.Y] &&
+                    obj.position[Coordinate.Z] === center[Coordinate.Z]
+                ) {
+                    return obj;
+                }
+            }
+            throw new Object3DIsNotADifference();
+        });
     }
 
     private async getGame(gameName: string): Promise<IScenesDB> {

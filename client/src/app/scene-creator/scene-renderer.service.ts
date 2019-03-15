@@ -1,7 +1,13 @@
 import { Injectable } from "@angular/core";
+import Axios, { AxiosResponse } from "axios";
+import * as Httpstatus from "http-status-codes";
 import * as THREE from "three";
+import { DIFF_VALIDATOR_3D_BASE, SERVER_BASE_URL } from "../../../../common/communication/routes";
 import { ComponentNotLoadedError } from "../../../../common/errors/component.errors";
-import { NoDifferenceAtPointError } from "../../../../common/errors/services.errors";
+import { AlreadyFoundDifferenceError, NoDifferenceAtPointError } from "../../../../common/errors/services.errors";
+import { Coordinate } from "../../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
+import { IJson3DObject } from "../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
+import { playRandomSound, FOUND_DIFFERENCE_SOUNDS, NO_DIFFERENCE_SOUNDS } from "../simple-game/game-sounds";
 
 @Injectable()
 export class SceneRendererService {
@@ -12,14 +18,15 @@ export class SceneRendererService {
   public modifiedScene: THREE.Scene;
   // Test load with gameName now todo
   public gameName: string;
+  protected foundDifference: IJson3DObject[];
 
   private camera: THREE.PerspectiveCamera;
   private rendererOri: THREE.WebGLRenderer;
   private rendererMod: THREE.WebGLRenderer;
 
-  private time: number;
-  private prevTime: number;
-  private velocity: THREE.Vector3;
+  protected time: number;
+  protected prevTime: number;
+  protected velocity: THREE.Vector3;
 
   public up: boolean;
   public down: boolean;
@@ -123,6 +130,7 @@ export class SceneRendererService {
     this.prevTime = performance.now();
     this.velocity = new THREE.Vector3();
     this.gameName = gameName;
+    this.foundDifference = [];
     this.renderLoop();
   }
 
@@ -172,8 +180,51 @@ export class SceneRendererService {
         throw new NoDifferenceAtPointError();
       }
       // Only take the first intersected object by the ray, hence the 0
-      this.differenceValidation(intersectOri[0]);
+      this.differenceValidationAtPoint(intersectOri[0]);
   }
-  private differenceValidation(object: THREE.Intersection): void {
+  private differenceValidationAtPoint(object: THREE.Intersection): void {
+    const centerObj: number[] = [object.object.position.x, object.object.position.y, object.object.position.z];
+    Axios.get<IJson3DObject>(
+      SERVER_BASE_URL + DIFF_VALIDATOR_3D_BASE,
+      {
+        params: {
+          center: JSON.stringify(centerObj),
+          gameName: this.gameName,
+        },
+      })
+      .then((value: AxiosResponse<IJson3DObject>) => {
+        if (this.foundDifference.length !== 0 || this.foundDifference !== undefined) {
+          this.checkIfAlreadyFound(value.data);
+        }
+        this.foundDifference.push(value.data);
+        this.updateDifference();
+        playRandomSound(FOUND_DIFFERENCE_SOUNDS);
+
+        return value.data as IJson3DObject;
+      })
+      // tslint:disable-next-line:no-any Generic error response
+      .catch((reason: any) => {
+        if (reason.response && reason.response.status === Httpstatus.NOT_FOUND) {
+          playRandomSound(NO_DIFFERENCE_SOUNDS);
+          throw new NoDifferenceAtPointError();
+        }
+
+        throw new Error(reason.message);
+      });
+  }
+  private checkIfAlreadyFound(object: IJson3DObject): void {
+    for (const obj of this.foundDifference) {
+      if (this.isSameObject(obj.position, object.position)) {
+        throw new AlreadyFoundDifferenceError();
+      }
+    }
+  }
+  private isSameObject(obj1: number[], obj2: number[]): boolean {
+    return (obj1[Coordinate.X] === obj2[Coordinate.X] &&
+      obj1[Coordinate.Y] === obj2[Coordinate.Y] &&
+      obj1[Coordinate.Z] === obj2[Coordinate.Z]);
+}
+  private updateDifference(): void {
+    return;
   }
 }
