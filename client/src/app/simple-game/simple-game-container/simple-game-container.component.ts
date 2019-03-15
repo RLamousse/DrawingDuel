@@ -26,21 +26,21 @@ export class SimpleGameContainerComponent {
   public constructor(private simpleGameService: SimpleGameService) {
   }
 
-  protected onOriginalCanvasClick(clickEvent: IPoint): void {
-    this.onCanvasClick(clickEvent, this.originalImageComponent);
+  protected async onOriginalCanvasClick(clickEvent: IPoint): Promise<void> {
+    return this.onCanvasClick(clickEvent, this.originalImageComponent);
   }
 
-  protected onModifiedCanvasClick(clickEvent: IPoint): void {
-    this.onCanvasClick(clickEvent, this.modifiedImageComponent);
+  protected async onModifiedCanvasClick(clickEvent: IPoint): Promise<void> {
+    return this.onCanvasClick(clickEvent, this.modifiedImageComponent);
   }
 
-  private onCanvasClick(clickEvent: IPoint, clickedComponent: SimpleGameCanvasComponent): void {
+  private async onCanvasClick(clickEvent: IPoint, clickedComponent: SimpleGameCanvasComponent): Promise<void> {
     if (!this.clickEnabled) {
       return;
     }
     this.clickEnabled = false;
 
-    this.simpleGameService.validateDifferenceAtPoint(clickEvent)
+    return this.simpleGameService.validateDifferenceAtPoint(clickEvent)
       .then((differenceCluster: DifferenceCluster) => {
 
         const differencePoints: IPoint[] = differenceCluster[DIFFERENCE_CLUSTER_POINTS_INDEX]
