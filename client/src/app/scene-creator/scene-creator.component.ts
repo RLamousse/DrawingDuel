@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from "@angular/core";
+import {AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild} from "@angular/core";
 import {ActivatedRoute} from "@angular/router";
 import {IFreeGame} from "../../../../common/model/game/free-game";
 import {GameService} from "../game.service";
@@ -12,6 +12,8 @@ import {SceneRendererService} from "./scene-renderer.service";
              styleUrls: ["./scene-creator.component.css"],
            })
 export class SceneCreatorComponent implements AfterViewInit, OnInit {
+
+  private readonly CHEAT_KEY_CODE: string = "KeyT";
 
   public constructor(private renderService: SceneRendererService, private route: ActivatedRoute,
                      private freeGameCreator: FreeGameCreatorService, private gameService: GameService) {
@@ -57,5 +59,13 @@ export class SceneCreatorComponent implements AfterViewInit, OnInit {
       e.message = errMsg;
       throw e;
     });
+  }
+
+  @HostListener("document:keyup", ["$event"])
+  // @ts-ignore even if the onKeyPress function is never explicitly read, the HostListener will call it when a key is pressed
+  private async onKeyPress(event: KeyboardEvent): void {
+    if(event.code === this.CHEAT_KEY_CODE){
+      this.gameService.modifyCheatState(this.gameName, this.renderService);
+    }
   }
 }
