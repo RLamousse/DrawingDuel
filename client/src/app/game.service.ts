@@ -108,4 +108,14 @@ export class GameService {
       return of(result as T);
     };
   }
+  private async loadCheatData(gameName: string): Promise<void>{
+    return new Promise<void>((resolve) => {
+
+      this.http.get<ISimpleGame>(
+        SERVER_BASE_URL + DB_FREE_GAME + gameName).subscribe((value: ISimpleGame) => {
+        this.cheatDiffData = value.gameName;//TODO use value.diffData istead, when Anthony finish
+        resolve();
+      });
+    });
+  }
 }
