@@ -18,4 +18,6 @@ export default  {
         FreeGameCreatorService: Symbol("FreeGameCreatorService"),
         Object3DCreatorService: Symbol("Object3DCreatorService"),
         DummyWebsocketActionService: Symbol("DummyWebsocketActionService"),
+        DiffValidator3DController: Symbol("DiffValidator3DController"),
+        DiffValidator3DService: Symbol("DiffValidator3DService"),
 };

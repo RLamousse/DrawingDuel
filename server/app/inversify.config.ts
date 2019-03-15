@@ -18,6 +18,8 @@ import { ImageUploadService } from "./services/image-upload.service";
 import { Object3DCreatorService } from "./services/object3D-creator.service";
 import { UsernameService } from "./services/username.service";
 import { DummyWebsocketActionService } from "./services/websocket/dummy-websocket-action.service";
+import { DiffValidator3DService } from "./services/diff-validator-3D.service";
+import { DiffValidator3DController } from "./controllers/diff-validator-3D.controller";
 import Types from "./types";
 
 const container: Container = new Container();
@@ -48,5 +50,8 @@ container.bind(Types.Object3DCreatorService).to(Object3DCreatorService);
 
 container.bind(Types.WebsocketController).to(WebsocketController);
 container.bind(Types.DummyWebsocketActionService).to(DummyWebsocketActionService);
+
+container.bind(Types.DiffValidator3DController).to(DiffValidator3DController);
+container.bind(Types.DiffValidator3DService).to(DiffValidator3DService);
 
 export { container };
