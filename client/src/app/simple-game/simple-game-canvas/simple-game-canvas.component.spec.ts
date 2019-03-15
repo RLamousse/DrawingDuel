@@ -4,11 +4,11 @@ import {tansformOrigin, IPoint, ORIGIN} from "../../../../../common/model/point"
 import {createArray} from "../../../../../common/util/util";
 
 import {
-  DEFAULT_CANVAS_HEIGHT,
+  DEFAULT_CANVAS_HEIGHT, DEFAULT_TEXT_COLOR, ERROR_TEXT_COLOR,
   IMAGE_DATA_PIXEL_LENGTH,
   PixelData,
   SimpleGameCanvasComponent,
-  TextType
+  TextType, VICTORY_TEXT_COLOR
 } from "./simple-game-canvas.component";
 
 describe("SimpleGameCanvasComponent", () => {
@@ -175,7 +175,7 @@ describe("SimpleGameCanvasComponent", () => {
 
     component.drawText(expectedText, ORIGIN, TextType.ERROR);
 
-    expect(component["_canvasContext"].fillStyle).toEqual("#ff0000");
+    expect(component["_canvasContext"].fillStyle).toEqual(ERROR_TEXT_COLOR);
     expect(component["_canvasContext"].strokeText).toHaveBeenCalledWith(expectedText, ORIGIN.x, ORIGIN.y);
     expect(component["_canvasContext"].fillText).toHaveBeenCalledWith(expectedText, ORIGIN.x, ORIGIN.y);
   });
@@ -194,7 +194,7 @@ describe("SimpleGameCanvasComponent", () => {
 
     component.drawText(expectedText, ORIGIN, TextType.VICTORY);
 
-    expect(context.fillStyle).toEqual("#008000");
+    expect(context.fillStyle).toEqual(VICTORY_TEXT_COLOR);
     expect(context.fillText).toHaveBeenCalledWith(expectedText, ORIGIN.x, ORIGIN.y);
   });
 
@@ -212,7 +212,7 @@ describe("SimpleGameCanvasComponent", () => {
 
     component.drawText(expectedText, ORIGIN);
 
-    expect(context.fillStyle).toEqual("#000000");
+    expect(context.fillStyle).toEqual(DEFAULT_TEXT_COLOR);
     expect(context.fillText).toHaveBeenCalledWith(expectedText, ORIGIN.x, ORIGIN.y);
   });
 });
