@@ -102,7 +102,7 @@ export class SimpleGameCanvasComponent implements OnInit {
         this._canvasContext.fillStyle = "green";
         break;
       default:
-        // nop
+        this._canvasContext.fillStyle = "black";
         break;
     }
     this._canvasContext.fillText(text, position.x, position.y);

@@ -1,6 +1,6 @@
 import {async, ComponentFixture, TestBed} from "@angular/core/testing";
 import {By} from "@angular/platform-browser";
-import {IPoint, ORIGIN, tansformOrigin} from "../../../../../common/model/point";
+import {tansformOrigin, IPoint, ORIGIN} from "../../../../../common/model/point";
 import {createArray} from "../../../../../common/util/util";
 
 import {
@@ -170,17 +170,17 @@ describe("SimpleGameCanvasComponent", () => {
     component["_height"] = sideLength;
     component["_canvasContext"] = context;
 
-    component.drawText(expectedText, ORIGIN, TextType.ERROR);
-
     spyOn(component["_canvasContext"], "strokeText");
     spyOn(component["_canvasContext"], "fillText");
+
+    component.drawText(expectedText, ORIGIN, TextType.ERROR);
 
     expect(component["_canvasContext"].fillStyle).toEqual("#ff0000");
     expect(component["_canvasContext"].strokeText).toHaveBeenCalledWith(expectedText, ORIGIN.x, ORIGIN.y);
     expect(component["_canvasContext"].fillText).toHaveBeenCalledWith(expectedText, ORIGIN.x, ORIGIN.y);
   });
 
-  it("should draw victory text on canvas", (done) => {
+  it("should draw victory text on canvas", () => {
     const sideLength: number = 10;
     const expectedText: string = "epic victory royale";
     const context: CanvasRenderingContext2D = getCanvasContext();
@@ -190,15 +190,29 @@ describe("SimpleGameCanvasComponent", () => {
     component["_width"] = sideLength;
     component["_height"] = sideLength;
     component["_canvasContext"] = context;
+    spyOn(context, "fillText");
 
     component.drawText(expectedText, ORIGIN, TextType.VICTORY);
 
-    spyOn(context, "fillText")
-      .and.callFake(() => {
-      console.log("lmao");
-    });
-
     expect(context.fillStyle).toEqual("#008000");
+    expect(context.fillText).toHaveBeenCalledWith(expectedText, ORIGIN.x, ORIGIN.y);
+  });
+
+  it("should draw black text when textType is not defined", () => {
+    const sideLength: number = 10;
+    const expectedText: string = "epic victory royale";
+    const context: CanvasRenderingContext2D = getCanvasContext();
+    // tslint:disable-next-line:no-magic-numbers 10x10 pixel grid for tests
+    context.putImageData(createImageData(WHITE_PIXEL, sideLength, sideLength), 0, 0);
+
+    component["_width"] = sideLength;
+    component["_height"] = sideLength;
+    component["_canvasContext"] = context;
+    spyOn(context, "fillText");
+
+    component.drawText(expectedText, ORIGIN);
+
+    expect(context.fillStyle).toEqual("#000000");
     expect(context.fillText).toHaveBeenCalledWith(expectedText, ORIGIN.x, ORIGIN.y);
   });
 });
