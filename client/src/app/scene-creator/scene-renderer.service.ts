@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import * as THREE from "three";
 import { ComponentNotLoadedError } from "../../../../common/errors/component.errors";
+import {sleep} from "../../../../common/util/util";
 require("three-first-person-controls")(THREE);
 
 @Injectable()
@@ -28,6 +29,8 @@ export class SceneRendererService {
   private readonly cameraX: number = 0;
   private readonly cameraY: number = 0;
   private readonly cameraZ: number = 100;
+
+  private readonly INVISBLE_INTERVAL_MS = 125;
 
   private setRenderer(): void {
     this.rendererOri = new THREE.WebGLRenderer({ preserveDrawingBuffer: true });
@@ -85,5 +88,12 @@ export class SceneRendererService {
     this.scene = original;
     this.modifiedScene = modified;
     this.renderLoop();
+  }
+
+  // TODO replace any with coords of objects or custom 3D objects
+  public async blink(objects: any): Promise<void>{
+    console.log(this);//make invisible
+    await sleep(this.INVISBLE_INTERVAL_MS);
+    console.log("woow :o");//make visible
   }
 }
