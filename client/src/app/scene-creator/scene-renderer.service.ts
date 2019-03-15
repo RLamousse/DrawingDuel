@@ -176,11 +176,17 @@ export class SceneRendererService {
       const rayCast: THREE.Raycaster = new THREE.Raycaster();
       rayCast.setFromCamera(direction, this.camera);
       const intersectOri: THREE.Intersection[] = rayCast.intersectObjects(this.scene.children);
-      if (intersectOri.length === 0) {
+      const intersectMod: THREE.Intersection[] = rayCast.intersectObjects(this.modifiedScene.children);
+      if (intersectOri.length === 0 && intersectMod.length === 0) {
+        playRandomSound(NO_DIFFERENCE_SOUNDS);
         throw new NoDifferenceAtPointError();
       }
-      // Only take the first intersected object by the ray, hence the 0
-      this.differenceValidationAtPoint(intersectOri[0]);
+      // Only take the first intersected object by the ray, hence the 0's
+      if (intersectOri.length === 0 && intersectMod.length !== 0) {
+        this.differenceValidationAtPoint(intersectMod[0]);
+      } else {
+        this.differenceValidationAtPoint(intersectOri[0]);
+      }
   }
   private differenceValidationAtPoint(object: THREE.Intersection): void {
     const centerObj: number[] = [object.object.position.x, object.object.position.y, object.object.position.z];
@@ -197,7 +203,7 @@ export class SceneRendererService {
           this.checkIfAlreadyFound(value.data);
         }
         this.foundDifference.push(value.data);
-        this.updateDifference();
+        this.updateDifference(object);
         playRandomSound(FOUND_DIFFERENCE_SOUNDS);
 
         return value.data as IJson3DObject;
@@ -224,7 +230,14 @@ export class SceneRendererService {
       obj1[Coordinate.Y] === obj2[Coordinate.Y] &&
       obj1[Coordinate.Z] === obj2[Coordinate.Z]);
 }
-  private updateDifference(): void {
-    return;
+  private updateDifference(object: THREE.Intersection): void {
+    for (const obj of this.modifiedScene.children) {
+      if (object.object.position === obj.position) {
+        const index: number = this.modifiedScene.children.indexOf(obj);
+        this.modifiedScene.children[index] = object.object;
+
+        return;
+      }
+    }
   }
 }

@@ -125,19 +125,21 @@ export class FreeGameCreatorService {
         let randomModifications: number;
         for (const index of ARRAY_INDEXES) {
             randomModifications = this.getRandomValue(0, MAX_MOD_TYPE);
-            modObjects.push(JSON.parse(JSON.stringify(modifiedObjects[index])));
             switch (modificationTypes[randomModifications]) {
                 case ModificationType.remove: {
+                    modObjects.push(JSON.parse(JSON.stringify(modifiedObjects[index])));
                     modifiedObjects.splice(index, 1);
                     break; }
                 case ModificationType.add: {
                     let object: IObject.IJson3DObject = this.generate3DObject();
                     object = this.handleCollision(object, modifiedObjects);
                     modifiedObjects.push(object);
+                    modObjects.push(JSON.parse(JSON.stringify(object)));
                     break; }
                 case ModificationType.changeColor: {
                     const MASK: number = 0xFFFFFF;
                     modifiedObjects[index].color = (Math.random() * MASK);
+                    modObjects.push(JSON.parse(JSON.stringify(modifiedObjects[index])));
                     break; }
                 default: {
                     break; }
