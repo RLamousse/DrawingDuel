@@ -20,9 +20,8 @@ export class DiffValidator3DController {
                 executePromiseSafely(res, next, async () => {
                     assertParamsOfRequest(req, "gameName", "center");
 
-                    this.diffValidator3DService.getDifferentObjects(req.query.gameName, {
-
-                    }).then((diffObj: IJson3DObject) => {
+                    this.diffValidator3DService.getDifferentObjects(req.query.gameName, JSON.parse(req.query.center),
+                    ).then((diffObj: IJson3DObject) => {
                         const response: IJson3DObject = {
                             position: diffObj.position,
                             color: diffObj.color,
