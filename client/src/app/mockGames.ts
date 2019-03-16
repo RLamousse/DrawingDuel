@@ -1,6 +1,5 @@
 import { IExtendedFreeGame } from "../../../common/model/game/extended-free-game";
 import { ISimpleGame } from "../../../common/model/game/simple-game";
-import {IFreeGame} from "../../../common/model/game/free-game";
 
 export const MOCKED_SIMPLE_GAMES: ISimpleGame[] = [
     {
