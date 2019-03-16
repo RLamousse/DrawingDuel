@@ -16,7 +16,6 @@ export class DiffValidator3DService {
 
        return this.getGame(gameName).then((value: IFreeGame) => {
             const diffObjs: IScenesDB = (value.scenes as IScenesDB);
-            console.log(diffObjs.differentObjects);
             for (const obj of diffObjs.differentObjects) {
                 if (obj.position[Coordinate.X] === center[Coordinate.X] &&
                     obj.position[Coordinate.Y] === center[Coordinate.Y] &&

@@ -184,8 +184,10 @@ export class SceneRendererService {
       // Only take the first intersected object by the ray, hence the 0's
       if (intersectOri.length === 0 && intersectMod.length !== 0) {
         this.differenceValidationAtPoint(intersectMod[0]);
-      } else {
+      } else if (intersectOri.length !== 0 && intersectMod.length === 0) {
         this.differenceValidationAtPoint(intersectOri[0]);
+      } else {
+        this.differenceValidationAtPoint(intersectMod[0]);
       }
   }
   private differenceValidationAtPoint(object: THREE.Intersection): void {
@@ -203,7 +205,7 @@ export class SceneRendererService {
           this.checkIfAlreadyFound(value.data);
         }
         this.foundDifference.push(value.data);
-        this.updateDifference(object);
+        this.updateDifference(object, value.data);
         playRandomSound(FOUND_DIFFERENCE_SOUNDS);
 
         return value.data as IJson3DObject;
@@ -221,6 +223,7 @@ export class SceneRendererService {
   private checkIfAlreadyFound(object: IJson3DObject): void {
     for (const obj of this.foundDifference) {
       if (this.isSameObject(obj.position, object.position)) {
+        playRandomSound(NO_DIFFERENCE_SOUNDS);
         throw new AlreadyFoundDifferenceError();
       }
     }
@@ -230,14 +233,27 @@ export class SceneRendererService {
       obj1[Coordinate.Y] === obj2[Coordinate.Y] &&
       obj1[Coordinate.Z] === obj2[Coordinate.Z]);
 }
-  private updateDifference(object: THREE.Intersection): void {
+  private updateDifference(object: THREE.Intersection, objDB: IJson3DObject): void {
+    let originalObj: THREE.Object3D = new THREE.Object3D();
+    let modifObj: THREE.Object3D = new THREE.Object3D();
+    const sameColor: boolean = ((object.object as THREE.Mesh).material as THREE.MeshPhongMaterial).color.getHex() ===
+      objDB.color;
     for (const obj of this.modifiedScene.children) {
       if (object.object.position === obj.position) {
-        const index: number = this.modifiedScene.children.indexOf(obj);
-        this.modifiedScene.children[index] = object.object;
-
-        return;
+        modifObj = obj;
+        modifObj.name = "modified";
       }
     }
+    for (const obj of this.scene.children) {
+      if (object.object.position === obj.position) {
+        originalObj = obj.clone();
+        originalObj.name = "original";
+      }
+    }
+      this.modifiedScene.remove(modifObj);
+      this.modifiedScene.add(originalObj);
+      if (sameColor) {
+        return;
+      }
   }
 }
