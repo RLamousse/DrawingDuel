@@ -151,6 +151,7 @@ describe("Data-base controller", () => {
                 scenes: {
                     originalObjects: [],
                     modifiedObjects: [],
+                    differentObjects: [],
                 },
             };
 

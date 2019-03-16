@@ -1,5 +1,6 @@
 import { IExtendedFreeGame } from "../../../common/model/game/extended-free-game";
 import { ISimpleGame } from "../../../common/model/game/simple-game";
+import {IFreeGame} from "../../../common/model/game/free-game";
 
 export const MOCKED_SIMPLE_GAMES: ISimpleGame[] = [
     {
@@ -51,7 +52,7 @@ export const MOCKED_FREE_GAMES: IExtendedFreeGame[] = [
       bestMultiTimes: [{ name: "mockedUser1", time: 1200 },
                        { name: "mockedUser2", time: 1450 },
                        { name: "mockedUser3", time: 1600 }],
-      scenes: {originalObjects: [], modifiedObjects: [] },
+      scenes: {originalObjects: [], modifiedObjects: [], differentObjects: []},
     },
     {
         gameName: "mockedFreeGameName2",
@@ -62,7 +63,7 @@ export const MOCKED_FREE_GAMES: IExtendedFreeGame[] = [
         bestMultiTimes: [{ name: "mockedUser1", time: 1200 },
                          { name: "mockedUser2", time: 1450 },
                          { name: "mockedUser3", time: 1600 }],
-        scenes: {originalObjects: [], modifiedObjects: [] },
+        scenes: {originalObjects: [], modifiedObjects: [],  differentObjects: []},
     },
     {
         gameName: "mockedFreeName3",
@@ -73,6 +74,6 @@ export const MOCKED_FREE_GAMES: IExtendedFreeGame[] = [
         bestMultiTimes: [{ name: "mockedUser1", time: 1200 },
                          { name: "mockedUser2", time: 1450 },
                          { name: "mockedUser3", time: 1600 }],
-        scenes: {originalObjects: [], modifiedObjects: [] },
+        scenes: {originalObjects: [], modifiedObjects: [], differentObjects: []},
     },
   ];
