@@ -7,7 +7,7 @@ import { GameCreatorController } from "./controllers/game-creator.controller";
 import { UserController } from "./controllers/username.controller";
 import { WebsocketController } from "./controllers/websocket.controller";
 import { BitmapWriter } from "./images/bitmap/bitmap-writer";
-import { Server } from "./server";
+import {Server} from "./server";
 import { BitmapDiffService } from "./services/bitmap-diff.service";
 import { DataBaseService } from "./services/data-base.service";
 import { DiffValidatorService } from "./services/diff-validator.service";
@@ -16,6 +16,7 @@ import { FreeGameCreatorService } from "./services/free-game-creator.service";
 import { GameCreatorService } from "./services/game-creator.service";
 import { ImageUploadService } from "./services/image-upload.service";
 import { Object3DCreatorService } from "./services/object3D-creator.service";
+import { ScoreTableService} from "./services/score-table.service";
 import { UsernameService } from "./services/username.service";
 import { DummyWebsocketActionService } from "./services/websocket/dummy-websocket-action.service";
 import Types from "./types";
@@ -45,6 +46,8 @@ container.bind(Types.UserNameController).to(UserController);
 
 container.bind(Types.FreeGameCreatorService).to(FreeGameCreatorService);
 container.bind(Types.Object3DCreatorService).to(Object3DCreatorService);
+
+container.bind(Types.ScoreTableService).to(ScoreTableService);
 
 container.bind(Types.WebsocketController).to(WebsocketController);
 container.bind(Types.DummyWebsocketActionService).to(DummyWebsocketActionService);

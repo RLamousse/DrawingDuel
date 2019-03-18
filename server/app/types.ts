@@ -8,6 +8,7 @@ export default  {
         DifferenceEvaluatorService: Symbol("DifferenceEvaluatorService"),
         UserNameService: Symbol("UserNameService"),
         UserNameController : Symbol("UserNameController"),
+        ScoreTableService: Symbol("ScoreTableService"),
         BitmapDiffController: Symbol("BitmapDiffController"),
         BitmapDiffService: Symbol("BitmapDiffService"),
         BitmapWriter: Symbol("BitmapWriter"),
