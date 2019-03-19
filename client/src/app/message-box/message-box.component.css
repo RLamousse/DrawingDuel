@@ -1,0 +1,12 @@
+.eventNotif {
+    margin: auto;
+    width: 1320px;
+    border: 5px rgb(194, 185, 185) solid;
+    padding: 10px;
+    min-height: 100px;
+}
+
+.chatContainer {
+    display: flex;
+    flex-direction: column-reverse;
+}

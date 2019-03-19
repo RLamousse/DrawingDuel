@@ -17,6 +17,7 @@ import {GameListComponent} from "./game-list/game-list.component";
 import {GameComponent} from "./game-list/game/game.component";
 import {GameService} from "./game.service";
 import {InitialViewComponent} from "./initial-view/initial-view.component";
+import { MessageBoxComponent } from './message-box/message-box.component';
 import {PlayViewComponent} from "./play-view/play-view.component";
 import {Form3DService} from "./scene-creator/3DFormService/3-dform.service";
 import {FreeGameCreatorService} from "./scene-creator/FreeGameCreator/free-game-creator.service";
@@ -50,6 +51,7 @@ import {WindowEventHandlerDirective} from "./window-event-handler.directive";
     SimpleGameCanvasComponent,
     SimpleGameContainerComponent,
     TimerComponent,
+    MessageBoxComponent,
   ],
   imports: [
     BrowserModule,
