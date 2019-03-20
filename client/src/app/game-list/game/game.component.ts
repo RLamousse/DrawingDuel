@@ -1,7 +1,8 @@
 import {Component, Input} from "@angular/core";
 import {Router} from "@angular/router";
 import {IRecordTime} from "../../../../../common/model/game/record-time";
-
+import {ReinitialiserFormComponent} from "./reinitialiser-form/reinitialiser-form.component";
+import {SupprimerFormComponent} from "./supprimer-form/supprimer-form.component";
 @Component({
   selector: "app-game",
   templateUrl: "./game.component.html",
