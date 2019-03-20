@@ -36,6 +36,10 @@ export class GameComponent {
   }
 
   protected rightButtonClick(): void {
+    if (this.rightButton === "joindre") {
+      this.navigateAwait();
+    } else if (this.rightButton === "reinitialiser") {
+    }
   }
 
   private navigatePlayView(): void {
