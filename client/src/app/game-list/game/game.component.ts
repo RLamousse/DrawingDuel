@@ -27,6 +27,11 @@ export class GameComponent {
   protected leftButtonClick(): void {
     if (this.leftButton === "jouer") {
       this.isSimpleGame ? this.navigatePlayView() : this.navigateFreeView();
+    } else if (this.leftButton === "supprimer") {
+      const dialogConfig: MatDialogConfig = new MatDialogConfig();
+      dialogConfig.autoFocus = true;
+      dialogConfig.data = {gameName: this.gameName, isSimpleGame: this.isSimpleGame};
+      this.dialog.open(SupprimerFormComponent, dialogConfig);
     }
   }
 
@@ -61,3 +66,5 @@ export class GameComponent {
        throw new Error(reason);
      });
   }
+
+}
