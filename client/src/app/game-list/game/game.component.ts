@@ -1,4 +1,5 @@
 import {Component, Input} from "@angular/core";
+import {MatDialog, MatDialogConfig} from "@angular/material";
 import {Router} from "@angular/router";
 import {IRecordTime} from "../../../../../common/model/game/record-time";
 import {ReinitialiserFormComponent} from "./reinitialiser-form/reinitialiser-form.component";
@@ -11,7 +12,7 @@ import {SupprimerFormComponent} from "./supprimer-form/supprimer-form.component"
 
 export class GameComponent {
 
-  public constructor(private router: Router) {}
+  public constructor(private router: Router, private dialog: MatDialog) {}
 
   @Input() public gameName: string = "test";
   @Input() public bestSoloTimes: IRecordTime[];
