@@ -1,7 +1,7 @@
-import Axios, {AxiosResponse} from "axios";
+import Axios from "axios";
 import {injectable} from "inversify";
 import {Message} from "../../../common/communication/messages/message";
-import {DB_FREE_GAME, DB_SIMPLE_GAME, DIFF_CREATOR_BASE, SERVER_BASE_URL} from "../../../common/communication/routes";
+import {DB_FREE_GAME, DB_SIMPLE_GAME, SERVER_BASE_URL} from "../../../common/communication/routes";
 import {IFreeGame} from "../../../common/model/game/free-game";
 import {IGame} from "../../../common/model/game/game";
 import {IRecordTime} from "../../../common/model/game/record-time";

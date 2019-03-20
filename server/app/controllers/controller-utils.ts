@@ -44,10 +44,12 @@ export const assertRequestImageFilesFields: (req: Express.Request) => void = (re
 };
 
 export const assertUpdateScoreTable: (req: Express.Request) => void = (req: Request): void => {
-    if (typeof req.body.gameName !== "string" || req.body.gameName === "") {
-        throw new RequestFormatError();
-    }
-    if (typeof req.body.newTime !== "IRecord")
+    if (typeof req.body.gameName !== "string" ||
+        req.body.gameName === "" ||
+        typeof req.body.newTime.name === "string" ||
+        typeof req.body.newTime.score === "number" ||
+        req.body.newTime.name === "") {
+            throw new RequestFormatError();
     }
 };
 
