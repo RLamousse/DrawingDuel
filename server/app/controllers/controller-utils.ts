@@ -18,6 +18,7 @@ export const ORIGINAL_IMAGE_FIELD_NAME: string = "originalImage";
 export const MODIFIED_IMAGE_FIELD_NAME: string = "modifiedImage";
 export const EXPECTED_FILES_FORMAT: string = "image/bmp";
 export const GAME_CREATION_SUCCESS_MESSAGE: Message = {title: "Game created", body: "The game was successfully created!"};
+export const MODIFY_TABLE_SUCCESS_MESSAGE: Message = {title: "Modified Table", body: "The score table was successfully modified!"};
 
 const NUMBER_OF_MODIFICATION_TYPES: number = 3;
 export const MAX_3D_OBJECTS: number = 1000;
