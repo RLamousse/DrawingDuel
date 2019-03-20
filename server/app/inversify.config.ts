@@ -20,6 +20,7 @@ import { ScoreTableService} from "./services/score-table.service";
 import { UsernameService } from "./services/username.service";
 import { DummyWebsocketActionService } from "./services/websocket/dummy-websocket-action.service";
 import Types from "./types";
+import {ScoreTableController} from "./controllers/score-table.controller";
 
 const container: Container = new Container();
 
@@ -48,6 +49,7 @@ container.bind(Types.FreeGameCreatorService).to(FreeGameCreatorService);
 container.bind(Types.Object3DCreatorService).to(Object3DCreatorService);
 
 container.bind(Types.ScoreTableService).to(ScoreTableService);
+container.bind(Types.ScoreTableController).to(ScoreTableController);
 
 container.bind(Types.WebsocketController).to(WebsocketController);
 container.bind(Types.DummyWebsocketActionService).to(DummyWebsocketActionService);

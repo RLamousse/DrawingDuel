@@ -7,7 +7,8 @@ export class ScoreTableService {
         tableToSort.sort((a: IRecordTime, b: IRecordTime) => a.time - b.time);
     }
 
-    public static insertTime(tableToInsert: IRecordTime[], newTime: IRecordTime): void {
+    public insertTime(gameName: string, newTime: IRecordTime): void {
+
         if (newTime.time < tableToInsert[2].time) {
             tableToInsert[2] = newTime;
             ScoreTableService.sortTable(tableToInsert);

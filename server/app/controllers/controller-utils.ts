@@ -42,6 +42,14 @@ export const assertRequestImageFilesFields: (req: Express.Request) => void = (re
     }
 };
 
+export const assertUpdateScoreTable: (req: Express.Request) => void = (req: Request): void => {
+    if (typeof req.body.gameName !== "string" || req.body.gameName === "") {
+        throw new RequestFormatError();
+    }
+    if (typeof)
+    }
+};
+
 export const assertBodyFieldsOfRequest: (req: Request, ...fields: string[]) => void = (req: Request, ...fields: string[]): void => {
     let field: string;
     for (field of fields) {
