@@ -86,7 +86,7 @@ import {WindowEventHandlerDirective} from "./window-event-handler.directive";
     SimpleGameService,
   ],
   bootstrap: [AppComponent],
-  entryComponents: [SimpleGameCreatorFormComponent, Create3DGameComponent],
+  entryComponents: [SimpleGameCreatorFormComponent, Create3DGameComponent, SupprimerFormComponent, ReinitialiserFormComponent],
   schemas: [NO_ERRORS_SCHEMA],
 })
 export class AppModule { }
