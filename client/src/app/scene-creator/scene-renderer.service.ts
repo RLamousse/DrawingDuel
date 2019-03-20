@@ -182,12 +182,12 @@ export class SceneRendererService {
         throw new NoDifferenceAtPointError();
       }
       // Only take the first intersected object by the ray, hence the 0's
-      if (intersectOri.length === 0 && intersectMod.length !== 0) {
+      if (intersectOri.length === 0 && intersectMod.length !== 0) {// add
         this.differenceValidationAtPoint(intersectMod[0]);
-      } else if (intersectOri.length !== 0 && intersectMod.length === 0) {
+      } else if (intersectOri.length !== 0 && intersectMod.length === 0) {// remove
         this.differenceValidationAtPoint(intersectOri[0]);
       } else {
-        this.differenceValidationAtPoint(intersectMod[0]);
+        this.differenceValidationAtPoint(intersectOri[0]);
       }
   }
   private differenceValidationAtPoint(object: THREE.Intersection): void {
@@ -205,7 +205,7 @@ export class SceneRendererService {
           this.checkIfAlreadyFound(value.data);
         }
         this.foundDifference.push(value.data);
-        this.updateDifference(object, value.data);
+        this.updateDifference(object);
         playRandomSound(FOUND_DIFFERENCE_SOUNDS);
 
         return value.data as IJson3DObject;
@@ -233,27 +233,35 @@ export class SceneRendererService {
       obj1[Coordinate.Y] === obj2[Coordinate.Y] &&
       obj1[Coordinate.Z] === obj2[Coordinate.Z]);
 }
-  private updateDifference(object: THREE.Intersection, objDB: IJson3DObject): void {
+  private isSameCenter (center1: THREE.Vector3, center2: THREE.Vector3): boolean {
+    return (center1.x === center2.x &&
+      center1.y === center2.y &&
+      center1.z === center2.z);
+  }
+  private updateDifference(object: THREE.Intersection): void {
     let originalObj: THREE.Object3D = new THREE.Object3D();
     let modifObj: THREE.Object3D = new THREE.Object3D();
-    const sameColor: boolean = ((object.object as THREE.Mesh).material as THREE.MeshPhongMaterial).color.getHex() ===
-      objDB.color;
     for (const obj of this.modifiedScene.children) {
-      if (object.object.position === obj.position) {
+      if (this.isSameCenter(obj.position, object.object.position)) {
         modifObj = obj;
         modifObj.name = "modified";
+        break;
       }
     }
     for (const obj of this.scene.children) {
-      if (object.object.position === obj.position) {
+      if (this.isSameCenter(obj.position, object.object.position)) {
         originalObj = obj.clone();
         originalObj.name = "original";
+        break;
       }
     }
+    if (originalObj.name !== "" && modifObj.name !== "") {
+      ((modifObj as THREE.Mesh).material as THREE.MeshPhongMaterial).color =
+        ((originalObj as THREE.Mesh).material as THREE.MeshPhongMaterial).color;
+    } else if (originalObj.name === "") {
       this.modifiedScene.remove(modifObj);
+    } else {
       this.modifiedScene.add(originalObj);
-      if (sameColor) {
-        return;
-      }
+    }
   }
 }
