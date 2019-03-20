@@ -1,4 +1,5 @@
 import {Component, OnInit} from "@angular/core";
+import {SceneRendererService} from "../scene-creator/scene-renderer.service";
 import {SimpleGameService} from "../simple-game/simple-game.service";
 
 @Component({
@@ -9,12 +10,15 @@ import {SimpleGameService} from "../simple-game/simple-game.service";
 export class CompteurDiffComponent implements OnInit {
   protected diffNumber: number;
 
-  public constructor(private simpleGameService: SimpleGameService) {
+  public constructor(private simpleGameService: SimpleGameService, private sceneRendererService: SceneRendererService) {
     this.diffNumber = 0;
   }
 
   public ngOnInit(): void {
     this.simpleGameService.foundDifferencesCount.subscribe((differenceCount: number) => {
+      this.diffNumber = differenceCount;
+    });
+    this.sceneRendererService.foundDifferenceCount().subscribe((differenceCount: number) => {
       this.diffNumber = differenceCount;
     });
   }

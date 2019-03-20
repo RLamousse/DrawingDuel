@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import Axios, { AxiosResponse } from "axios";
 import * as Httpstatus from "http-status-codes";
+import {Observable, Subject} from "rxjs";
 import * as THREE from "three";
 import { DIFF_VALIDATOR_3D_BASE, SERVER_BASE_URL } from "../../../../common/communication/routes";
 import { ComponentNotLoadedError } from "../../../../common/errors/component.errors";
@@ -51,6 +52,8 @@ export class SceneRendererService {
   private readonly timeFactor: number = 1000;
   private readonly decelerationFactor: number = 10;
   private readonly accelerationFactor: number = 600;
+
+  private _differenceCountSubject: Subject<number> = new Subject();
 
   private setRenderer(): void {
     this.rendererOri = new THREE.WebGLRenderer({ preserveDrawingBuffer: true });
@@ -206,6 +209,7 @@ export class SceneRendererService {
         }
         this.foundDifference.push(value.data);
         this.updateDifference(object);
+        this._differenceCountSubject.next(this.foundDifference.length);
         playRandomSound(FOUND_DIFFERENCE_SOUNDS);
 
         return value.data as IJson3DObject;
@@ -263,5 +267,8 @@ export class SceneRendererService {
     } else {
       this.modifiedScene.add(originalObj);
     }
+  }
+  public foundDifferenceCount(): Observable<number> {
+    return this._differenceCountSubject;
   }
 }
