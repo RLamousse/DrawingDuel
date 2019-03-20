@@ -1,7 +1,12 @@
 import {injectable} from "inversify";
 import "reflect-metadata";
 import {Message} from "../../../../common/communication/messages/message";
-import {InvalidGameError, NonExistentGameError} from "../../../../common/errors/database.errors";
+import {
+    AlreadyExistentGameError,
+    InvalidGameError,
+    NonExistentGameError,
+    NoElementFoundError
+} from "../../../../common/errors/database.errors";
 import {IFreeGame} from "../../../../common/model/game/free-game";
 import {CollectionService} from "./collection.service";
 import {GAME_NAME_FIELD} from "./simple-games.collection.service";
@@ -23,7 +28,7 @@ export class FreeGamesCollectionService extends CollectionService<IFreeGame> {
         }
 
         if (await this.contains(data.gameName)) {
-            throw new NonExistentGameError();
+            throw new AlreadyExistentGameError();
         } else {
             return this.createDocument(data);
         }
@@ -41,7 +46,17 @@ export class FreeGamesCollectionService extends CollectionService<IFreeGame> {
     public async getFromId(id: string): Promise<IFreeGame> {
         CollectionService.assertId(id);
 
-        return this.getDocument(id, NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE);
+        return this.getDocument(id)
+            .then((game: IFreeGame) => {
+                return game;
+            })
+            .catch((error: Error) => {
+                if (error.message === NoElementFoundError.NO_ELEMENT_FOUND_ERROR_MESSAGE) {
+                    throw new NonExistentGameError();
+                }
+
+                throw error;
+            });
     }
 
     protected creationSuccessMessage(data: IFreeGame): Message {

@@ -28,6 +28,10 @@ export class SimpleGameService {
 
   public set gameName(value: string) {
     this._gameName = value;
+
+    this._gameState = {
+      foundDifferenceClusters: [],
+    };
   }
 
   public get foundDifferencesCount(): Observable<number> {
