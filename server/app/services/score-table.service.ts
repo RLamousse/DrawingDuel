@@ -10,8 +10,24 @@ import {MODIFY_TABLE_SUCCESS_MESSAGE} from "../controllers/controller-utils";
 
 @injectable()
 export class ScoreTableService {
-    private sortTable(tableToSort: IRecordTime[]): void {
+
+    private static insertTime(newTime: IRecordTime, table: IRecordTime[]): void {
+        if (newTime.time < tableToInsert[2].time) {
+            tableToInsert[2] = newTime;
+            this.sortTable(tableToInsert);
+        }
+    }
+
+    private static sortTable(tableToSort: IRecordTime[]): void {
         tableToSort.sort((a: IRecordTime, b: IRecordTime) => a.time - b.time);
+    }
+
+    public async updateTableScore(gameName: string, newScore: IRecordTime): Promise<Message> {
+        const tableToInsert: IRecordTime[] = await this.getTableFromDB(gameName);
+        this.insertTime(newScore, tableToInsert);
+        await this.putTableInDB(tableToInsert);
+
+        return MODIFY_TABLE_SUCCESS_MESSAGE;
     }
 
     private async getTableFromDB (gameName: string): Promise<IRecordTime[]> {
@@ -28,7 +44,7 @@ export class ScoreTableService {
 
         return gameToModify.bestSoloTimes;
     }
-    private async putGame(tableToPost: IRecordTime[]): Promise<void> {
+    private async putTableInDB(tableToPost: IRecordTime[]): Promise<void> {
         // quand milen aura fini mettre bonne adresse
         /*await Axios.put<void>(
             SERVER_BASE_URL + DB_FREE_GAME,
@@ -38,16 +54,5 @@ export class ScoreTableService {
                 responseType: "arraybuffer",
             },
         );*/
-    }
-
-    public async insertTime(gameName: string, newTime: IRecordTime): Promise<Message> {
-        const tableToInsert: IRecordTime[] = await this.getTableFromDB(gameName);
-        if (newTime.time < tableToInsert[2].time) {
-            tableToInsert[2] = newTime;
-            this.sortTable(tableToInsert);
-        }
-        await this.putGame(tableToInsert);
-
-        return MODIFY_TABLE_SUCCESS_MESSAGE;
     }
 }

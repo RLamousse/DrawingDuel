@@ -54,7 +54,7 @@ export abstract class CollectionService<T> {
                 if (error) {
                     reject(new DatabaseError());
                 }
-                resolve(this.(data));
+                resolve(this.creationSuccessMessage(data));
             });
         });
     }

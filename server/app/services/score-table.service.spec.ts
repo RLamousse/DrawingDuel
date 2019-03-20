@@ -4,8 +4,6 @@ import {ScoreTableService} from "./score-table.service";
 
 describe("ScoreTableService", () => {
     // @ts-ignore
-    const emptyTime: IRecordTime = null;
-    const veryHighTimeScoreBoy: IRecordTime = {name: "Rob", time: 55};
     const highTimeScoreBoy: IRecordTime = {name: "Tommy", time: 7};
     const middleTimeScoreBoy: IRecordTime = {name: "Phil", time: 3};
     const lowTimeScoreBoy: IRecordTime = {name: "Bob", time: 1};
