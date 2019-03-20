@@ -16,6 +16,7 @@ import {Create3DGameComponent} from "./create3-dgame/create3-dgame.component";
 import {FormPostService} from "./form-post.service";
 import {GameListComponent} from "./game-list/game-list.component";
 import {GameComponent} from "./game-list/game/game.component";
+import { ReinitialiserFormComponent } from "./game-list/game/reinitialiser-form/reinitialiser-form.component";
 import {GameService} from "./game.service";
 import {InitialViewComponent} from "./initial-view/initial-view.component";
 import {PlayViewComponent} from "./play-view/play-view.component";
@@ -52,6 +53,7 @@ import {WindowEventHandlerDirective} from "./window-event-handler.directive";
     SimpleGameContainerComponent,
     TimerComponent,
     AwaitViewComponent,
+    ReinitialiserFormComponent,
   ],
   imports: [
     BrowserModule,
