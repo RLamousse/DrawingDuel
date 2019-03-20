@@ -52,4 +52,12 @@ export class GameComponent {
       });
   }
 
-}
+  private navigateAwait(): void {
+    this.router.navigate(["/await-view/"], {queryParams: {
+      gameName: this.gameName, gameType: this.isSimpleGame},
+    })
+      // tslint:disable-next-line:no-any Generic error response
+     .catch((reason: any) => {
+       throw new Error(reason);
+     });
+  }
