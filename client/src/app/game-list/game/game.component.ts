@@ -39,6 +39,10 @@ export class GameComponent {
     if (this.rightButton === "joindre") {
       this.navigateAwait();
     } else if (this.rightButton === "reinitialiser") {
+      const dialogConfig: MatDialogConfig = new MatDialogConfig();
+      dialogConfig.autoFocus = true;
+      dialogConfig.data = {gameName: this.gameName, isSimpleGame: this.isSimpleGame};
+      this.dialog.open(ReinitialiserFormComponent, dialogConfig);
     }
   }
 
