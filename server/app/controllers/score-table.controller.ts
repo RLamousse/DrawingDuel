@@ -2,7 +2,7 @@ import {NextFunction, Request, Response, Router} from "express";
 import {inject, injectable} from "inversify";
 import {ScoreTableService} from "../services/score-table.service";
 import Types from "../types";
-import {executePromiseSafely} from "./controller-utils";
+import {assertUpdateScoreTable, executePromiseSafely} from "./controller-utils";
 
 @injectable()
 export class ScoreTableController {

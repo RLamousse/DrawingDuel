@@ -46,7 +46,7 @@ export const assertUpdateScoreTable: (req: Express.Request) => void = (req: Requ
     if (typeof req.body.gameName !== "string" || req.body.gameName === "") {
         throw new RequestFormatError();
     }
-    if (typeof)
+    if (typeof req.body.newTime !== "IRecord")
     }
 };
 
