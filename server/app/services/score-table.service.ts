@@ -11,7 +11,7 @@ import {MODIFY_TABLE_SUCCESS_MESSAGE} from "../controllers/controller-utils";
 @injectable()
 export class ScoreTableService {
 
-    private static insertTime(newTime: IRecordTime, table: IRecordTime[]): void {
+    public static insertTime(tableToInsert: IRecordTime[], newTime: IRecordTime): void {
         if (newTime.time < tableToInsert[2].time) {
             tableToInsert[2] = newTime;
             this.sortTable(tableToInsert);
@@ -24,7 +24,7 @@ export class ScoreTableService {
 
     public async updateTableScore(gameName: string, newScore: IRecordTime): Promise<Message> {
         const tableToInsert: IRecordTime[] = await this.getTableFromDB(gameName);
-        this.insertTime(newScore, tableToInsert);
+        ScoreTableService.insertTime(tableToInsert, newScore);
         await this.putTableInDB(tableToInsert);
 
         return MODIFY_TABLE_SUCCESS_MESSAGE;

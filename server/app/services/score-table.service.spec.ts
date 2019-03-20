@@ -2,8 +2,11 @@ import {expect} from "chai";
 import {IRecordTime} from "../../../common/model/game/record-time";
 import {ScoreTableService} from "./score-table.service";
 
+const scoreTableService: ScoreTableService = new ScoreTableService();
 describe("ScoreTableService", () => {
     // @ts-ignore
+    const emptyTime: IRecordTime = null;
+    const veryHighTimeScoreBoy: IRecordTime = {name: "Tommy", time: 15};
     const highTimeScoreBoy: IRecordTime = {name: "Tommy", time: 7};
     const middleTimeScoreBoy: IRecordTime = {name: "Phil", time: 3};
     const lowTimeScoreBoy: IRecordTime = {name: "Bob", time: 1};
@@ -16,6 +19,7 @@ describe("ScoreTableService", () => {
 
     // Test createCube
     it("should throw if null time inserted", () => {
+        scoreTableService.updateTableScore("tom", lowTimeScoreBoy);
         const table: IRecordTime[] = initialScoreTable;
         expect(() => ScoreTableService.insertTime(table, emptyTime)).to.throw();
     });
