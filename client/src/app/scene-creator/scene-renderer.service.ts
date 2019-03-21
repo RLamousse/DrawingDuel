@@ -188,6 +188,7 @@ export class SceneRendererService {
       const intersectMod: THREE.Intersection[] = rayCast.intersectObjects(this.modifiedScene.children);
       if (intersectOri.length === 0 && intersectMod.length === 0) {
         playRandomSound(NO_DIFFERENCE_SOUNDS);
+
         return this.differenceValidationAtPoint(undefined);
       }
       // Only take the first intersected object by the ray, hence the 0's
@@ -208,10 +209,7 @@ export class SceneRendererService {
     return Axios.get<IJson3DObject>(
       SERVER_BASE_URL + DIFF_VALIDATOR_3D_BASE,
       {
-        params: {
-          center: JSON.stringify(centerObj),
-          gameName: this.gameName,
-        },
+        params: {center: JSON.stringify(centerObj), gameName: this.gameName},
       })
       .then((value: AxiosResponse<IJson3DObject>) => {
         if (this.foundDifference.length !== 0 || this.foundDifference !== undefined) {
