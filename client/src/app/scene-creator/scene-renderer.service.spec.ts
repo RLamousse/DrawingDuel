@@ -1,11 +1,23 @@
 import { TestBed } from "@angular/core/testing";
+import Axios from "axios";
+import MockAdapter from "axios-mock-adapter";
+// tslint:disable-next-line:no-duplicate-imports Weird interaction between singletons and interface (olivier st-o approved)
+import AxiosAdapter from "axios-mock-adapter";
+import * as HttpStatus from "http-status-codes";
 import * as THREE from "three";
+import {DIFF_VALIDATOR_3D_BASE, SERVER_BASE_URL} from "../../../../common/communication/routes";
 import { ComponentNotLoadedError } from "../../../../common/errors/component.errors";
+import {NoDifferenceAtPointError} from "../../../../common/errors/services.errors";
 import { SceneRendererService } from "./scene-renderer.service";
 /* tslint:disable:no-magic-numbers*/
 describe("SceneRendererService", () => {
+  let axiosMock: MockAdapter;
+  const CONTROLLER_BASE_URL: string = SERVER_BASE_URL + DIFF_VALIDATOR_3D_BASE;
+  const ALL_GET_CALLS_REGEX: RegExp = new RegExp(`${CONTROLLER_BASE_URL}/*`);
   beforeEach(() => {
-    TestBed.configureTestingModule({
+    axiosMock = new AxiosAdapter(Axios);
+
+    return TestBed.configureTestingModule({
       providers: [SceneRendererService],
     });
   });
@@ -21,7 +33,8 @@ describe("SceneRendererService", () => {
     const original: THREE.Scene = new THREE.Scene();
     const modified: THREE.Scene = new THREE.Scene();
 
-    expect(() => service.loadScenes(original, modified)).toThrowError(ComponentNotLoadedError.COMPONENT_NOT_LOADED_MESSAGE_ERROR);
+    expect(() => service.loadScenes(original, modified, "gameName"))
+      .toThrowError(ComponentNotLoadedError.COMPONENT_NOT_LOADED_MESSAGE_ERROR);
   });
 
   it("should asign scenes at first call", () => {
@@ -36,7 +49,7 @@ describe("SceneRendererService", () => {
     service.left = false;
     service.right = false;
     service.rightClick = false;
-    service.loadScenes(original, modified);
+    service.loadScenes(original, modified, "gameName");
     expect(service.scene).toBe(original);
     expect(service.modifiedScene).toBe(modified);
   });
@@ -55,8 +68,8 @@ describe("SceneRendererService", () => {
     service.left = true;
     service.right = true;
     service.rightClick = true;
-    service.loadScenes(original1, modified1);
-    service.loadScenes(original2, modified2);
+    service.loadScenes(original1, modified1, "gameName");
+    service.loadScenes(original2, modified2, "gameName");
     expect(service.scene).toBe(original2);
     expect(service.modifiedScene).toBe(modified2);
   });
@@ -140,5 +153,71 @@ describe("SceneRendererService", () => {
     // Delta-i formula: old-i - i-Pos / 4000
     expect(service.deltaY).toEqual((120 - 12) / 4000);
     expect(service.deltaX).toEqual((150 - 611) / 4000);
+  });
+
+  // Test objDiffValidation
+  it("should throw if no object at clicked point", async() => {
+    const service: SceneRendererService = TestBed.get(SceneRendererService);
+
+    axiosMock.onGet(ALL_GET_CALLS_REGEX)
+      .reply(HttpStatus.NOT_FOUND);
+
+    const original: THREE.Scene = new THREE.Scene();
+    const modified: THREE.Scene = new THREE.Scene();
+    const oriCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
+    const modCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
+    service.init(oriCont, modCont);
+    service.loadScenes(original, modified, "gameName");
+
+    return service.objDiffValidation(0, 0)
+      .catch((reason: Error) => {
+        expect(reason.message).toEqual(NoDifferenceAtPointError.NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE);
+      });
+  });
+
+  it("should throw if no difference at point", async() => {
+    const service: SceneRendererService = TestBed.get(SceneRendererService);
+
+    axiosMock.onGet(ALL_GET_CALLS_REGEX)
+      .reply(HttpStatus.NOT_FOUND);
+
+    const original: THREE.Scene = new THREE.Scene();
+    const modified: THREE.Scene = new THREE.Scene();
+    const oriCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
+    const modCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
+    const material: THREE.MeshPhongMaterial = new THREE.MeshPhongMaterial();
+    const geo: THREE.BoxGeometry = new THREE.BoxGeometry();
+    const mesh: THREE.Mesh = new THREE.Mesh(geo, material);
+    mesh.position.set(0, 0, 110);
+    original.add(mesh);
+    service.init(oriCont, modCont);
+    service.loadScenes(original, modified, "gameName");
+
+    return service.objDiffValidation(100, 100)
+      .catch((reason: Error) => {
+        expect(reason.message).toEqual(NoDifferenceAtPointError.NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE);
+      });
+  });
+
+  it("should throw an unexpected server response", async() => {
+    const service: SceneRendererService = TestBed.get(SceneRendererService);
+
+    axiosMock.onGet(ALL_GET_CALLS_REGEX)
+      .reply(HttpStatus.NOT_FOUND);
+
+    const original: THREE.Scene = new THREE.Scene();
+    const modified: THREE.Scene = new THREE.Scene();
+    const oriCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
+    const modCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
+    const obj3D: THREE.Object3D = new THREE.Object3D();
+    obj3D.position.set(0, 0, 101);
+    original.add(obj3D);
+    service.init(oriCont, modCont);
+    service.loadScenes(original, modified, "gameName");
+
+    return service.objDiffValidation(0, 0)
+      .catch((reason: Error) => {
+        expect(reason.message).toEqual(NoDifferenceAtPointError.NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE);
+      });
   });
 });

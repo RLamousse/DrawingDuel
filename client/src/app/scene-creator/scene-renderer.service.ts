@@ -10,7 +10,9 @@ import { Coordinate } from "../../../../common/free-game-json-interface/FreeGame
 import { IJson3DObject } from "../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
 import { playRandomSound, FOUND_DIFFERENCE_SOUNDS, NO_DIFFERENCE_SOUNDS } from "../simple-game/game-sounds";
 
-@Injectable()
+@Injectable({
+    providedIn: "root",
+  })
 export class SceneRendererService {
 
   public originalContainer: HTMLDivElement;
@@ -164,7 +166,9 @@ export class SceneRendererService {
     this.deltaX = (this.oldY - yPos) / this.camRotationSpeedFactor;
   }
 
-  public objDiffValidation(xPos: number, yPos: number): void {
+  public objDiffValidation(xPos: number, yPos: number): Promise<IJson3DObject> {
+    console.log(xPos);
+    console.log(yPos);
       let x: number = 0;
       let y: number = 0;
       const POS_FACT: number = 2;
@@ -186,16 +190,17 @@ export class SceneRendererService {
       }
       // Only take the first intersected object by the ray, hence the 0's
       if (intersectOri.length === 0 && intersectMod.length !== 0) {// add
-        this.differenceValidationAtPoint(intersectMod[0]);
+        return this.differenceValidationAtPoint(intersectMod[0]);
       } else if (intersectOri.length !== 0 && intersectMod.length === 0) {// remove
-        this.differenceValidationAtPoint(intersectOri[0]);
+        return this.differenceValidationAtPoint(intersectOri[0]);
       } else {
-        this.differenceValidationAtPoint(intersectOri[0]);
+        return this.differenceValidationAtPoint(intersectOri[0]);
       }
   }
-  private differenceValidationAtPoint(object: THREE.Intersection): void {
+  private differenceValidationAtPoint(object: THREE.Intersection): Promise<IJson3DObject> {
     const centerObj: number[] = [object.object.position.x, object.object.position.y, object.object.position.z];
-    Axios.get<IJson3DObject>(
+
+    return Axios.get<IJson3DObject>(
       SERVER_BASE_URL + DIFF_VALIDATOR_3D_BASE,
       {
         params: {
@@ -220,7 +225,6 @@ export class SceneRendererService {
           playRandomSound(NO_DIFFERENCE_SOUNDS);
           throw new NoDifferenceAtPointError();
         }
-
         throw new Error(reason.message);
       });
   }
@@ -268,7 +272,7 @@ export class SceneRendererService {
       this.modifiedScene.add(originalObj);
     }
   }
-  public foundDifferenceCount(): Observable<number> {
+  public get foundDifferenceCount(): Observable<number> {
     return this._differenceCountSubject;
   }
 }

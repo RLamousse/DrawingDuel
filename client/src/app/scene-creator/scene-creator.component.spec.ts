@@ -3,6 +3,7 @@ import {ActivatedRoute} from "@angular/router";
 import {of, Observable} from "rxjs";
 import * as THREE from "three";
 import {IFreeGame} from "../../../../common/model/game/free-game";
+import {CompteurDiffComponent} from "../compteur-diff/compteur-diff.component";
 import {GameService} from "../game.service";
 import {IScene} from "../scene-interface";
 import {TimerComponent} from "../timer/timer.component";
@@ -53,7 +54,7 @@ describe("SceneCreatorComponent", () => {
       bestMultiTimes: [],
       bestSoloTimes: [],
       gameName: "TEST",
-      scenes: {modifiedObjects: [], originalObjects: []},
+      scenes: {modifiedObjects: [], originalObjects: [], differentObjects: []},
     };
 
     public getFreeGameByName(): Observable<IFreeGame> {
@@ -87,7 +88,7 @@ describe("SceneCreatorComponent", () => {
           {provide: FreeGameCreatorService, useValue: mockFreeGameCreatorService},
 
         ],
-        declarations: [SceneCreatorComponent, TimerComponent],
+        declarations: [SceneCreatorComponent, TimerComponent, CompteurDiffComponent],
 
       });
 
