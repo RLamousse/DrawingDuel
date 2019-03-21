@@ -1,9 +1,11 @@
-import { Injectable } from "@angular/core";
+import {Injectable} from "@angular/core";
 import * as THREE from "three";
-import { ComponentNotLoadedError } from "../../../../common/errors/component.errors";
+import {ComponentNotLoadedError} from "../../../../common/errors/component.errors";
+
 require("three-first-person-controls")(THREE);
 import GLTFLoader from "three-gltf-loader";
-//import * as cucco from '../Models/cucco/scene.gltf';
+
+// import * as cucco from '../Models/cucco/scene.gltf';
 
 @Injectable()
 export class SceneRendererService {
@@ -32,7 +34,7 @@ export class SceneRendererService {
   private readonly cameraZ: number = 100;
 
   private setRenderer(): void {
-    this.rendererOri = new THREE.WebGLRenderer({ preserveDrawingBuffer: true });
+    this.rendererOri = new THREE.WebGLRenderer({preserveDrawingBuffer: true});
     this.rendererOri.setClearColor(this.backGroundColor);
     this.rendererOri.setPixelRatio(devicePixelRatio);
     this.rendererOri.setSize(this.originalContainer.clientWidth, this.originalContainer.clientHeight);
@@ -55,6 +57,7 @@ export class SceneRendererService {
     this.rendererMod.render(this.modifiedScene, this.camera);
     this.fpControls.update(this.updateTime);
   }
+
   private setCamera(): void {
     const aspectRatio: number = this.getAspectRatio();
 
@@ -86,15 +89,16 @@ export class SceneRendererService {
     }
     this.scene = original;
     this.modifiedScene = modified;
-    this.displayObject("assets/Models/space/UFO/scene.gltf");
+    this.displayObject("assets/Models/space/sun/scene.gltf");
     this.renderLoop();
   }
 
   public displayObject(path: string): void {
     const loader: GLTFLoader = new GLTFLoader();
     loader.load(path, (gltf: THREE.GLTF) => {
+      gltf.scene.scale.set(8, 8, 8);
+      //gltf.scene.rotateY(10);
       this.scene.add(gltf.scene);
     });
   }
-
 }
