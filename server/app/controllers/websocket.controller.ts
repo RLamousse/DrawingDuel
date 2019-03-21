@@ -1,3 +1,4 @@
+import { format } from "date-and-time";
 import { inject, injectable } from "inversify";
 import * as io from "socket.io";
 import { ChatMessage, WebsocketMessage } from "../../../common/communication/messages/message";
@@ -49,7 +50,7 @@ export class WebsocketController {
             this.userNameService.removeUsername(username as string);
             const message: WebsocketMessage<string> = {
                 title: SocketEvent.USER_CONNECTION,
-                body: this.chatAction.getDisconnectionMessage(username as string),
+                body: format(new Date(), "HH:mm:ss") + this.chatAction.getDisconnectionMessage(username as string),
             };
             socket.broadcast.emit(SocketEvent.USER_DISCONNECTION, message);
         }
@@ -60,7 +61,7 @@ export class WebsocketController {
             this.sockets.set(socket.id, username);
             const message: WebsocketMessage<string> = {
                 title: SocketEvent.USER_CONNECTION,
-                body: this.chatAction.getConnectionMessage(username),
+                body: format(new Date(), "HH:mm:ss") + this.chatAction.getConnectionMessage(username),
             };
             socket.broadcast.emit(SocketEvent.USER_CONNECTION, message);
         }
