@@ -86,13 +86,13 @@ export class SceneRendererService {
     }
     this.scene = original;
     this.modifiedScene = modified;
-    this.memeRender();
+    this.displayObject("assets/Models/space/astronaut/scene.gltf");
     this.renderLoop();
   }
 
-  public memeRender(): void {
+  public displayObject(path: string): void {
     const loader: GLTFLoader = new GLTFLoader();
-    loader.load("assets/Models/Stich/scene.gltf", (gltf: THREE.GLTF) => {
+    loader.load(path, (gltf: THREE.GLTF) => {
       this.scene.add(gltf.scene);
     });
   }
