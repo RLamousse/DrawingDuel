@@ -1,3 +1,4 @@
+import { format } from "date-and-time";
 import { injectable } from "inversify";
 import * as io from "socket.io";
 import { ChatMessage, ChatMessagePlayerCount, ChatMessageType, WebsocketMessage } from "../../../../common/communication/messages/message";
@@ -24,23 +25,23 @@ export class ChatWebsocketActionService extends WebsocketActionService {
     }
 
     private generateMessage(data: ChatMessage): WebsocketMessage<string> {
-        const message: string = this.formatTime(data.timestamp);
+        let message: string = this.formatTime(data.timestamp);
         // TODO: Change to a map
         switch (data.type) {
             case ChatMessageType.DIFF_FOUND:
-                message.concat(this.getDiffFoundMessage(data));
+                message += (this.getDiffFoundMessage(data));
                 break;
             case ChatMessageType.DIFF_ERROR:
-                message.concat(this.getDiffErrorMessage(data));
+                message += (this.getDiffErrorMessage(data));
                 break;
             case ChatMessageType.BEST_TIME:
-                message.concat(this.getBestTimeMessage(data));
+                message += (this.getBestTimeMessage(data));
                 break;
             case ChatMessageType.CONNECTION:
-                message.concat(this.getConnectionMessage(data.playerName));
+                message += (this.getConnectionMessage(data.playerName));
                 break;
             case ChatMessageType.DISCONNECTION:
-                message.concat(this.getDisconnectionMessage(data.playerName));
+                message += (this.getDisconnectionMessage(data.playerName));
                 break;
             default:
                 break;
@@ -68,24 +69,26 @@ export class ChatWebsocketActionService extends WebsocketActionService {
     }
 
     private getDiffErrorMessage(data: ChatMessage): string {
-        const message: string = this._DIFF_ERROR_BASE_MESSAGE;
+        let message: string = this._DIFF_ERROR_BASE_MESSAGE;
         if (data.playerCount === ChatMessagePlayerCount.MULTI) {
-            message.concat(` par ${data.playerName}`);
+            message += (` par ${data.playerName}`);
         }
 
-        return message.concat(".");
+        return message += (".");
     }
 
     private getDiffFoundMessage(data: ChatMessage): string {
-        const message: string = this._DIFF_FOUND_BASE_MESSAGE;
+        let message: string = this._DIFF_FOUND_BASE_MESSAGE;
         if (data.playerCount === ChatMessagePlayerCount.MULTI) {
-            message.concat(` par ${data.playerName}`);
+            message += (` par ${data.playerName}`);
         }
 
-        return message.concat(".");
+        return message += (".");
     }
 
     private formatTime(timestamp: Date): string {
-        return `${timestamp.getHours()}:${timestamp.getMinutes()}:${timestamp.getSeconds()}`;
+        const date: Date = new Date(timestamp);
+
+        return format(date, "HH:mm:ss");
     }
 }
