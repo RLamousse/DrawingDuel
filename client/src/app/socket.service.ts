@@ -30,12 +30,6 @@ export class SocketService {
         return false;
     }
 
-    public onMessage(): Observable<WebsocketMessage> {
-        return new Observable<WebsocketMessage>((observer) => {
-            this.socket.on("message", (data: WebsocketMessage) => observer.next(data));
-        });
-    }
-
     public onEvent<t = Object>(event: SocketEvent): Observable<WebsocketMessage<t>> {
         return new Observable<WebsocketMessage<t>>((observer) => {
             this.socket.on(event, (message: WebsocketMessage<t>) => observer.next(message));
