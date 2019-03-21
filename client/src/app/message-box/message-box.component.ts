@@ -31,5 +31,4 @@ export class MessageBoxComponent implements OnInit {
   private handleConnectionEvents (message: WebsocketMessage<string>): void {
     this.messages.push(message);
   }
-
 }
