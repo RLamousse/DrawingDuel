@@ -92,7 +92,7 @@ export class SceneRendererService {
 
   public memeRender(): void {
     const loader: GLTFLoader = new GLTFLoader();
-    loader.load("assets/Models/cucco/scene.gltf", (gltf: THREE.GLTF) => {
+    loader.load("assets/Models/Stich/scene.gltf", (gltf: THREE.GLTF) => {
       this.scene.add(gltf.scene);
     });
   }
