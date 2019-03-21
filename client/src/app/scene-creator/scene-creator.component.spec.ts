@@ -1,6 +1,6 @@
 import {ComponentFixture, TestBed} from "@angular/core/testing";
 import {ActivatedRoute} from "@angular/router";
-import {of, Observable} from "rxjs";
+import {of, Observable, Subject} from "rxjs";
 import * as THREE from "three";
 import {IFreeGame} from "../../../../common/model/game/free-game";
 import {CompteurDiffComponent} from "../compteur-diff/compteur-diff.component";
@@ -16,17 +16,13 @@ describe("SceneCreatorComponent", () => {
   let fixture: ComponentFixture<SceneCreatorComponent>;
 
   class MockSceneCreatorService {
-    public resizedCalled: string = "";
     public initCalled: string = "";
-
-    public onResize(): void {
-      this.resizedCalled = "onResize";
-    }
-
     public init(): void {
       this.initCalled = "init";
     }
-
+    public get foundDifferenceCount(): Observable<number> {
+      return new Subject<number>();
+    }
     public loadScenes(): void {
       return;
     }
@@ -98,7 +94,7 @@ describe("SceneCreatorComponent", () => {
   });
 
   it("should create", () => {
-    expect(component).toBeDefined();
+    expect(component).toBeTruthy();
   });
 
   it("should have the right value inside each mockService after created", () => {
