@@ -86,7 +86,7 @@ export class SceneRendererService {
     }
     this.scene = original;
     this.modifiedScene = modified;
-    this.displayObject("assets/Models/space/comet/scene.gltf");
+    this.displayObject("assets/Models/space/UFO/scene.gltf");
     this.renderLoop();
   }
 
