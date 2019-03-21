@@ -21,8 +21,8 @@ export class SceneCreatorComponent implements AfterViewInit, OnInit, OnDestroy {
 
   protected gameName: string;
 
-  ngOnDestroy(): void {
-    this.renderService.deactivateCheatMode();
+  async ngOnDestroy(): Promise<void> {
+   await this.renderService.deactivateCheatMode();
   }
 
   private get originalContainer(): HTMLDivElement {

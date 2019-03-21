@@ -1,14 +1,15 @@
 import { Injectable } from "@angular/core";
 import * as THREE from "three";
 import { ComponentNotLoadedError } from "../../../../common/errors/component.errors";
-import {customIndexOf, deepCompare, sleep} from "../../../../common/util/util";
+import {deepCompare, sleep} from "../../../../common/util/util";
 import {IJson3DObject} from "../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
 require("three-first-person-controls")(THREE);
 
 interface IFreeGameState {
   isCheatModeActive: boolean;
+  isWaitingInThread: boolean;
   foundDiffs: IJson3DObject[];// TODO replace foundDiffs after anthony merge
-  cheatDiffData?: IJson3DObject[];
+  cheatDiffData?: THREE.Object3D[];
   blinkThread?: NodeJS.Timeout;
 }
 
@@ -40,7 +41,8 @@ export class SceneRendererService {
 
   private readonly BLINK_INTERVAL_MS: number = 250;
   private readonly INVISBLE_INTERVAL_MS = this.BLINK_INTERVAL_MS/2;
-  private gameState: IFreeGameState = {isCheatModeActive: false, foundDiffs: []};
+  private readonly WATCH_THREAD_FINISH_INTERVAL = 5;
+  private gameState: IFreeGameState = {isCheatModeActive: false, isWaitingInThread: false, foundDiffs: []};
 
   private setRenderer(): void {
     this.rendererOri = new THREE.WebGLRenderer({ preserveDrawingBuffer: true });
@@ -100,44 +102,69 @@ export class SceneRendererService {
     this.renderLoop();
   }
 
-  public async blink(objects: IJson3DObject[]): Promise<void>{
-    console.log(this);//make invisible
+  public async blink(): Promise<void>{
+    (<THREE.Object3D[]>this.gameState.cheatDiffData).forEach(value => {value.visible = false});
+    this.gameState.isWaitingInThread = true;
     await sleep(this.INVISBLE_INTERVAL_MS);
-    console.log("woow :o");//make visible
+    this.gameState.isWaitingInThread = false;
+    (<THREE.Object3D[]>this.gameState.cheatDiffData).forEach(value => {value.visible = true});
   }
 
   public async modifyCheatState(loadCheatData: () => Promise<IJson3DObject[]>): Promise<void> {
     this.gameState.isCheatModeActive = !this.gameState.isCheatModeActive;
     if (this.gameState.isCheatModeActive) {
-      this.gameState.cheatDiffData = await loadCheatData();
-      this.updateCheateDiffData();
+      await this.loadCheatData(loadCheatData);
+      await this.updateCheateDiffData(this.gameState.foundDiffs);
       this.gameState.blinkThread = setInterval(() => {
-        this.blink(<IJson3DObject[]>this.gameState.cheatDiffData);
+        return this.blink();
       }, this.BLINK_INTERVAL_MS);
     } else {
-      this.deactivateCheatMode();
+      await this.deactivateCheatMode();
     }
   }
 
   //TODO call this function after a diff is found
-  private updateCheateDiffData(): void {
+  private async updateCheateDiffData(newData: IJson3DObject[]): Promise<void> {
+    await this.threadFinish();
     if (this.gameState.isCheatModeActive) {
 
-      this.gameState.foundDiffs.forEach((value: IJson3DObject, index: number, array: IJson3DObject[]) => {
-        const indexPosition = customIndexOf<IJson3DObject>(<IJson3DObject[]>this.gameState.cheatDiffData, value, deepCompare);
-        if (indexPosition >= 0) {
-          (<IJson3DObject[]>this.gameState.cheatDiffData).splice(indexPosition, 1);
-        }
+      newData.forEach((jsonValue: IJson3DObject) => {
+        (<THREE.Object3D[]>this.gameState.cheatDiffData).forEach((objectValue: THREE.Object3D, index: number) => {
+          if (this.isObjectAtSamePlace(jsonValue.position, objectValue.position)) {
+            (<THREE.Object3D[]>this.gameState.cheatDiffData).splice(index, 1);
+          }
+        });
       })
     }
   }
 
-  public deactivateCheatMode(): void {
+  private async loadCheatData(callBackFunction: () => Promise<IJson3DObject[]>): Promise<void> {
+    this.gameState.cheatDiffData = [];
+    (await callBackFunction()).forEach((jsonValue: IJson3DObject) => {
+      this.scene.children.concat(this.modifiedScene.children).forEach((objectValue: THREE.Object3D) => {
+        if (this.isObjectAtSamePlace(jsonValue.position, objectValue.position) && objectValue instanceof THREE.Mesh) {
+          (<THREE.Object3D[]>this.gameState.cheatDiffData).push(objectValue);
+        }
+      });
+    });
+  }
+
+  public async deactivateCheatMode(): Promise<void> {
     if(this.gameState.blinkThread) {
       clearInterval(this.gameState.blinkThread);
     }
-    this.gameState.cheatDiffData = undefined;
+    await this.threadFinish();
     this.gameState.isCheatModeActive = false;
+    this.gameState.cheatDiffData = undefined;
   }
 
+  private isObjectAtSamePlace(jsonPosition: number[], objectPosition: THREE.Vector3): boolean {
+    return deepCompare(jsonPosition, [objectPosition.x, objectPosition.y, objectPosition.z]);
+  }
+
+  private async threadFinish(): Promise<void> {
+    while(this.gameState.isWaitingInThread){
+      await sleep(this.WATCH_THREAD_FINISH_INTERVAL);
+    }
+  }
 }
