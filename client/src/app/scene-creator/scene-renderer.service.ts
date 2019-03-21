@@ -57,6 +57,10 @@ export class SceneRendererService {
 
   private _differenceCountSubject: Subject<number> = new Subject();
 
+  public constructor() {
+   /*empty*/
+  }
+
   private setRenderer(): void {
     this.rendererOri = new THREE.WebGLRenderer({ preserveDrawingBuffer: true });
     this.rendererOri.setClearColor(this.backGroundColor);
@@ -184,7 +188,7 @@ export class SceneRendererService {
       const intersectMod: THREE.Intersection[] = rayCast.intersectObjects(this.modifiedScene.children);
       if (intersectOri.length === 0 && intersectMod.length === 0) {
         playRandomSound(NO_DIFFERENCE_SOUNDS);
-        throw new NoDifferenceAtPointError();
+        throw  new NoDifferenceAtPointError();
       }
       // Only take the first intersected object by the ray, hence the 0's
       if (intersectOri.length === 0 && intersectMod.length !== 0) {// add

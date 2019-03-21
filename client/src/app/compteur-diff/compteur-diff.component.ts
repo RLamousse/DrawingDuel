@@ -15,15 +15,15 @@ export class CompteurDiffComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    if (this.simpleGameService !== undefined) {
-      this.simpleGameService.foundDifferencesCount.subscribe((differenceCount: number) => {
-        this.diffNumber = differenceCount;
-      });
-    } else if (this.sceneRendererService !== undefined) {
-      this.sceneRendererService.foundDifferenceCount.subscribe((differenceCount: number) => {
-        this.diffNumber = differenceCount;
-      });
-    }
+      if(this.simpleGameService !== undefined) {
+        this.simpleGameService.foundDifferencesCount.subscribe((differenceCount: number) => {
+          this.diffNumber = differenceCount;
+        });
+      }
+      if(this.sceneRendererService !== undefined) {
+        this.sceneRendererService.foundDifferenceCount.subscribe((differenceCount: number) => {
+          this.diffNumber = differenceCount;
+        });
+      }
   }
-
 }

@@ -159,7 +159,6 @@ describe("SceneRendererService", () => {
   // Test objDiffValidation
   it("should throw if no object at clicked point on original scene", async() => {
     const service: SceneRendererService = TestBed.get(SceneRendererService);
-
     axiosMock.onGet(ALL_GET_CALLS_REGEX)
       .reply(HttpStatus.NOT_FOUND);
 
@@ -178,10 +177,8 @@ describe("SceneRendererService", () => {
 
   it("should throw if no object at clicked point on modified scene", async() => {
     const service: SceneRendererService = TestBed.get(SceneRendererService);
-
     axiosMock.onGet(ALL_GET_CALLS_REGEX)
       .reply(HttpStatus.NOT_FOUND);
-
     const original: THREE.Scene = new THREE.Scene();
     const modified: THREE.Scene = new THREE.Scene();
     const oriCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
@@ -208,7 +205,7 @@ describe("SceneRendererService", () => {
     const material: THREE.MeshPhongMaterial = new THREE.MeshPhongMaterial();
     const geo: THREE.BoxGeometry = new THREE.BoxGeometry();
     const mesh: THREE.Mesh = new THREE.Mesh(geo, material);
-    mesh.position.set(0, 0, 90);
+    mesh.position.set(0, 0, 50);
     original.add(mesh);
     service.init(oriCont, modCont);
     service.loadScenes(original, modified, "gameName");
@@ -229,21 +226,18 @@ describe("SceneRendererService", () => {
     const modified: THREE.Scene = new THREE.Scene();
     const oriCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
     const modCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
-    const obj3D: THREE.Object3D = new THREE.Object3D();
-    obj3D.position.set(0, 0, 101);
-    original.add(obj3D);
     service.init(oriCont, modCont);
     service.loadScenes(original, modified, "gameName");
 
     return service.objDiffValidation(325, 150)
       .catch((reason: Error) => {
-        expect(reason.message).toEqual(NoDifferenceAtPointError.NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE);
+        expect(reason.message).toEqual(HttpStatus.INTERNAL_SERVER_ERROR.toString());
       });
   });
 
-  it("should the IJSONObject after call", async() => {
+  it("should return the IJSONObject after call", async() => {
     const service: SceneRendererService = TestBed.get(SceneRendererService);
-    const jsonObject: IJson3DObject = {
+    const responseObject: IJson3DObject = {
       position: [],
       type: 0,
       rotation: [],
@@ -272,7 +266,7 @@ describe("SceneRendererService", () => {
     service.loadScenes(original, modified, "gameName");
 
     return service.objDiffValidation(325, 150).then((obj) => {
-      expect(obj).toEqual(jsonObject);
+      expect(obj).toEqual(responseObject);
     });
   });
 });
