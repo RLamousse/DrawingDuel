@@ -167,8 +167,6 @@ export class SceneRendererService {
   }
 
   public objDiffValidation(xPos: number, yPos: number): Promise<IJson3DObject> {
-    console.log(xPos);
-    console.log(yPos);
       let x: number = 0;
       let y: number = 0;
       const POS_FACT: number = 2;
