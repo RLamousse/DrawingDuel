@@ -14,8 +14,8 @@ describe("Socket service", () => {
     });
   });
 
-  it("should be created", () => {
-    expect(socketSpy).toBeTruthy();
+  it("should be created", async () => {
+    return expect(socketSpy).toBeTruthy();
   });
 
   it("should get a message from an event", async (done) => {
@@ -33,27 +33,12 @@ describe("Socket service", () => {
     });
   });
 
-  it("should get a message from a message", async (done) => {
-    socketSpy.onMessage.and.callFake((): Observable<WebsocketMessage> => {
-      return new Observable<WebsocketMessage>((observer) => {
-        observer.next({
-          title: SocketEvent.DUMMY,
-          body: "Thank you Kanye, very cool 👍",
-        });
-      });
-    });
-    socketSpy.onMessage().subscribe((message: WebsocketMessage) => {
-      expect(message).toBeDefined();
-      done();
-    });
+  it("should not be connected without a server", async () => {
+    return expect(socketSpy.isSocketConnected()).toBeFalsy();
   });
 
-  it("should not be connected without a server", () => {
-    expect(socketSpy.isSocketConnected()).toBeFalsy();
-  });
-
-  it("should fail to send without a server connection", () => {
-    expect(socketSpy.send(
+  it("should fail to send without a server connection", async () => {
+    return expect(socketSpy.send(
       SocketEvent.DUMMY,
       {
         title: SocketEvent.DUMMY,
