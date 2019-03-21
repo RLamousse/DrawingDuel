@@ -1,14 +1,22 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+// tslint:disable: no-floating-promises
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { MatListModule } from "@angular/material";
+import { SocketService } from "../socket.service";
+import { MessageBoxComponent } from "./message-box.component";
 
-import { MessageBoxComponent } from './message-box.component';
-
-describe('MessageBoxComponent', () => {
+describe("MessageBoxComponent", () => {
   let component: MessageBoxComponent;
   let fixture: ComponentFixture<MessageBoxComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ MessageBoxComponent ]
+      declarations: [ MessageBoxComponent ],
+      providers: [
+        SocketService,
+      ],
+      imports: [
+        MatListModule,
+      ]
     })
     .compileComponents();
   }));
@@ -19,7 +27,7 @@ describe('MessageBoxComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });
