@@ -1,5 +1,5 @@
-import { HttpClientModule } from "@angular/common/http";
 import { async, TestBed } from "@angular/core/testing";
+import { SocketService } from "./socket.service";
 import { UNListService } from "./username.service";
 
 describe("UNListService", () => {
@@ -7,16 +7,14 @@ describe("UNListService", () => {
   let service: UNListService;
   let spyService: jasmine.SpyObj<UNListService>;
   beforeEach(() => {
-    spyService = jasmine.createSpyObj("UNListService", ["validateName", "sendUserRequest", "isTooShort", "isAlphanumeric"]);
+    spyService = jasmine.createSpyObj("UNListService", ["checkAvailability", "sendUserRequest", "isTooShort", "isAlphanumeric"]);
     TestBed.configureTestingModule({
-      providers: [{ provide: UNListService, useValue: spyService }],
-      imports: [HttpClientModule],
+      providers: [{ provide: UNListService, useValue: spyService }, SocketService],
     });
   });
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientModule],
-      providers: [UNListService],
+      providers: [UNListService, SocketService],
     });
   }));
 
@@ -65,27 +63,18 @@ describe("UNListService", () => {
     expect(service.message).toBe("Ton identifiant est trop court!");
   });
 
-  it("should return false if a invalid username is used (too short)", (done) => {
+  it("should return false if a invalid username is used (too short)", async () => {
     service = TestBed.get(UNListService);
-    service.validateName("Sar").then((response: boolean) => {
-      expect(response).toBeFalsy();
-      done();
-    }).catch();
+
+    return expect(service.checkAvailability("Sar", () => {/**/})).toBeFalsy();
   });
 
-  it("should return false if a invalid username is used (not alphanumeric)", (done) => {
+  it("should return false if a invalid username is used (not alphanumeric)", async () => {
     service = TestBed.get(UNListService);
-    spyService.sendUserRequest.and.callFake(() => {
-      service.response = { available: false, username: "SaraBellum!" };
-
-      return { available: false, username: "SarraBellum!" };
-    }).and.throwError("have been called");
     spyService.isAlphanumeric.and.returnValue(false);
     spyService.isTooShort.and.returnValue(false);
-    spyService.validateName.and.callThrough();
-    service.validateName("SaraBellum!").then((response: boolean) => {
-      expect(response).toBe(false);
-      done();
-    }).catch();
+    spyService.checkAvailability.and.callThrough();
+
+    return expect(service.checkAvailability("SaraBellum!", () => {/**/})).toBe(false);
   });
 });
