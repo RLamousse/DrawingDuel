@@ -1,8 +1,16 @@
 import { Injectable } from "@angular/core";
 import * as THREE from "three";
 import { ComponentNotLoadedError } from "../../../../common/errors/component.errors";
-import {sleep} from "../../../../common/util/util";
+import {customIndexOf, deepCompare, sleep} from "../../../../common/util/util";
+import {IJson3DObject} from "../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
 require("three-first-person-controls")(THREE);
+
+interface IFreeGameState {
+  isCheatModeActive: boolean;
+  foundDiffs: IJson3DObject[];// TODO replace foundDiffs after anthony merge
+  cheatDiffData?: IJson3DObject[];
+  blinkThread?: NodeJS.Timeout;
+}
 
 @Injectable()
 export class SceneRendererService {
@@ -30,7 +38,9 @@ export class SceneRendererService {
   private readonly cameraY: number = 0;
   private readonly cameraZ: number = 100;
 
-  private readonly INVISBLE_INTERVAL_MS = 125;
+  private readonly BLINK_INTERVAL_MS: number = 250;
+  private readonly INVISBLE_INTERVAL_MS = this.BLINK_INTERVAL_MS/2;
+  private gameState: IFreeGameState = {isCheatModeActive: false, foundDiffs: []};
 
   private setRenderer(): void {
     this.rendererOri = new THREE.WebGLRenderer({ preserveDrawingBuffer: true });
@@ -90,10 +100,44 @@ export class SceneRendererService {
     this.renderLoop();
   }
 
-  // TODO replace any with coords of objects or custom 3D objects
-  public async blink(objects: any): Promise<void>{
+  public async blink(objects: IJson3DObject[]): Promise<void>{
     console.log(this);//make invisible
     await sleep(this.INVISBLE_INTERVAL_MS);
     console.log("woow :o");//make visible
   }
+
+  public async modifyCheatState(loadCheatData: () => Promise<IJson3DObject[]>): Promise<void> {
+    this.gameState.isCheatModeActive = !this.gameState.isCheatModeActive;
+    if (this.gameState.isCheatModeActive) {
+      this.gameState.cheatDiffData = await loadCheatData();
+      this.updateCheateDiffData();
+      this.gameState.blinkThread = setInterval(() => {
+        this.blink(<IJson3DObject[]>this.gameState.cheatDiffData);
+      }, this.BLINK_INTERVAL_MS);
+    } else {
+      this.deactivateCheatMode();
+    }
+  }
+
+  //TODO call this function after a diff is found
+  private updateCheateDiffData(): void {
+    if (this.gameState.isCheatModeActive) {
+
+      this.gameState.foundDiffs.forEach((value: IJson3DObject, index: number, array: IJson3DObject[]) => {
+        const indexPosition = customIndexOf<IJson3DObject>(<IJson3DObject[]>this.gameState.cheatDiffData, value, deepCompare);
+        if (indexPosition >= 0) {
+          (<IJson3DObject[]>this.gameState.cheatDiffData).splice(indexPosition, 1);
+        }
+      })
+    }
+  }
+
+  public deactivateCheatMode(): void {
+    if(this.gameState.blinkThread) {
+      clearInterval(this.gameState.blinkThread);
+    }
+    this.gameState.cheatDiffData = undefined;
+    this.gameState.isCheatModeActive = false;
+  }
+
 }

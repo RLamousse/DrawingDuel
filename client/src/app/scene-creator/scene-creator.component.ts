@@ -22,7 +22,7 @@ export class SceneCreatorComponent implements AfterViewInit, OnInit, OnDestroy {
   protected gameName: string;
 
   ngOnDestroy(): void {
-    this.gameService.deactivateCheatMode();
+    this.renderService.deactivateCheatMode();
   }
 
   private get originalContainer(): HTMLDivElement {
@@ -69,7 +69,7 @@ export class SceneCreatorComponent implements AfterViewInit, OnInit, OnDestroy {
   // @ts-ignore even if the onKeyPress function is never explicitly read, the HostListener will call it when a key is pressed
   private async onKeyPress(event: KeyboardEvent): void {
     if(event.code === this.CHEAT_KEY_CODE){
-      this.gameService.modifyCheatState(this.gameName, this.renderService);
+      this.renderService.modifyCheatState(() => {return this.gameService.loadCheatData(this.gameName)});
     }
   }
 }

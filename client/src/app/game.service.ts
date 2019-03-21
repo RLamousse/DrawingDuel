@@ -10,7 +10,7 @@ import {ISimpleGame} from "../../../common/model/game/simple-game";
 import {FreeGameCreatorService} from "./scene-creator/FreeGameCreator/free-game-creator.service";
 import {FreeGamePhotoService} from "./scene-creator/free-game-photo-service/free-game-photo.service";
 import {IScene} from "./scene-interface";
-import {SceneRendererService} from "./scene-creator/scene-renderer.service";
+import {IJson3DObject} from "../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
 
 @Injectable({
               providedIn: "root",
@@ -25,11 +25,6 @@ export class GameService {
   private readonly GET_SIMPLEGAME_ERROR: string = "get simple game from server error";
   private readonly GET_FREEGAME_ERROR: string = "get free game from server error";
   private readonly GET_FREEGAME_BY_NAME_ERROR: string = "get free game by name from server error";
-
-  private isCheatModeActive: boolean = false;
-  private readonly BLINK_INTERVAL_MS: number = 250;
-  private cheatDiffData: any | undefined;//TODO use cheatData type from Anthony's code
-  private blinkThread: NodeJS.Timeout;
 
   public constructor(
     private http: HttpClient,
@@ -108,56 +103,21 @@ export class GameService {
     );
   }
 
+  public async loadCheatData(gameName: string): Promise<IJson3DObject[]>{
+    return new Promise<IJson3DObject[]>((resolve) => {
+
+      this.http.get<IFreeGame>(
+        SERVER_BASE_URL + DB_FREE_GAME + gameName).subscribe((value: IFreeGame) => {
+        // @ts-ignore //TODO remove the ignore after anthony merge
+        resolve(value.scenes.differentObjects);
+      });
+    });
+  }
+
   private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {
 
     return (error: Error): Observable<T> => {
       return of(result as T);
     };
   }
-
-  //TODO VERY IMPORTANT check if this is the right service for a free game instance
-  public async modifyCheatState(gameName: string, renderer: SceneRendererService): Promise<void> {//TODO change objects type with the real type
-    this.isCheatModeActive = !this.isCheatModeActive;
-    if (this.isCheatModeActive) {
-      await this.loadCheatData(gameName);
-      this.updateCheateDiffData();
-      this.blinkThread = setInterval(() => {
-        renderer.blink(this.cheatDiffData);
-      }, this.BLINK_INTERVAL_MS);
-    } else {
-      this.deactivateCheatMode();
-    }
-  }
-
-  private async loadCheatData(gameName: string): Promise<void>{
-    return new Promise<void>((resolve) => {
-
-      this.http.get<ISimpleGame>(
-        SERVER_BASE_URL + DB_FREE_GAME + gameName).subscribe((value: ISimpleGame) => {
-        this.cheatDiffData = value.gameName;//TODO use value.diffData istead, when Anthony finish
-        resolve();
-      });
-    });
-  }
-
-  //TODO call this function when a diff is found
-  private updateCheateDiffData(): void {
-    if (this.isCheatModeActive) {
-      //TODO foreach already found diff, remove from blinking diffs
-
-      // this._gameState.foundDifferenceClusters.forEach((value: DifferenceCluster, index: number, array: ISimpleDifferenceData) => {
-      //   const indexPosition = customIndexOf<DifferenceCluster>(<ISimpleDifferenceData>this._cheatDiffData, value, deepCompare);
-      //   if (indexPosition >= 0) {
-      //     (<ISimpleDifferenceData>this._cheatDiffData).splice(indexPosition, 1);
-      //   }
-      // })
-    }
-  }
-
-  public deactivateCheatMode(): void {
-    clearInterval(this.blinkThread);
-    this.cheatDiffData = undefined;
-    this.isCheatModeActive = false;
-  }
-
 }
