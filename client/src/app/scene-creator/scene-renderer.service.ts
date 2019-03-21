@@ -188,7 +188,7 @@ export class SceneRendererService {
       const intersectMod: THREE.Intersection[] = rayCast.intersectObjects(this.modifiedScene.children);
       if (intersectOri.length === 0 && intersectMod.length === 0) {
         playRandomSound(NO_DIFFERENCE_SOUNDS);
-        throw  new NoDifferenceAtPointError();
+        return this.differenceValidationAtPoint(undefined);
       }
       // Only take the first intersected object by the ray, hence the 0's
       if (intersectOri.length === 0 && intersectMod.length !== 0) {// add
@@ -199,8 +199,11 @@ export class SceneRendererService {
         return this.differenceValidationAtPoint(intersectOri[0]);
       }
   }
-  private differenceValidationAtPoint(object: THREE.Intersection): Promise<IJson3DObject> {
-    const centerObj: number[] = [object.object.position.x, object.object.position.y, object.object.position.z];
+  private differenceValidationAtPoint(object: THREE.Intersection|undefined): Promise<IJson3DObject> {
+    let centerObj: number[] = [];
+    if (object !== undefined) {
+      centerObj = [object.object.position.x, object.object.position.y, object.object.position.z];
+    }
 
     return Axios.get<IJson3DObject>(
       SERVER_BASE_URL + DIFF_VALIDATOR_3D_BASE,
@@ -215,7 +218,7 @@ export class SceneRendererService {
           this.checkIfAlreadyFound(value.data);
         }
         this.foundDifference.push(value.data);
-        this.updateDifference(object);
+        this.updateDifference(object as THREE.Intersection);
         this._differenceCountSubject.next(this.foundDifference.length);
         playRandomSound(FOUND_DIFFERENCE_SOUNDS);
 
