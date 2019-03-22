@@ -1,11 +1,13 @@
 import { Injectable } from "@angular/core";
 import * as THREE from "three";
+
 @Injectable({
   providedIn: "root",
 })
 export class RenderUpdateService {
   private readonly decelerationFactor: number = 10;
   private readonly accelerationFactor: number = 600;
+  private readonly camRotationSpeedFactor: number = 4000;
 
   public up: boolean;
   public down: boolean;
@@ -16,8 +18,6 @@ export class RenderUpdateService {
   public oldY: number = 0;
   public deltaX: number = 0;
   public deltaY: number = 0;
-
-  private readonly camRotationSpeedFactor: number = 4000;
 
   public constructor() {/*vide*/}
 
