@@ -5,7 +5,7 @@ import {
     AlreadyExistentGameError,
     InvalidGameError,
     NonExistentGameError,
-    NoElementFoundError
+    NoElementFoundError, InvalidGameInfoError
 } from "../../../../common/errors/database.errors";
 import {ISimpleGame} from "../../../../common/model/game/simple-game";
 import {CollectionService} from "./collection.service";
@@ -34,6 +34,18 @@ export class SimpleGamesCollectionService extends CollectionService<ISimpleGame>
             throw new AlreadyExistentGameError();
         } else {
             return this.createDocument(data);
+        }
+    }
+
+    public async update(id: string, data: Partial<ISimpleGame>): Promise<Message> {
+        if (!SimpleGamesCollectionService.validateUpdate(data)) {
+            throw new InvalidGameInfoError();
+        }
+
+        if (!(await this.contains(id))) {
+            throw new NonExistentGameError();
+        } else {
+            return this.updateDocument(id, data);
         }
     }
 
@@ -66,6 +78,13 @@ export class SimpleGamesCollectionService extends CollectionService<ISimpleGame>
         return {
             title: "Simple game added",
             body: "Simple game " + data.gameName + " successfully added",
+        };
+    }
+
+    protected updateSuccessMessage(id: string): Message {
+        return {
+            title: "Simple game updated",
+            body: "Simple game " + id + " successfully updated",
         };
     }
 
