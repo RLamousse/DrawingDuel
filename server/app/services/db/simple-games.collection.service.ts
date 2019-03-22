@@ -25,6 +25,15 @@ export class SimpleGamesCollectionService extends CollectionService<ISimpleGame>
             game.gameName !== "";
     }
 
+    private static validateUpdate(game: Partial<ISimpleGame>): boolean {
+        return !!(game || ({} as Partial<ISimpleGame>)).gameName ||
+            !!(game || ({} as Partial<ISimpleGame>)).bestSoloTimes ||
+            !!(game || ({} as Partial<ISimpleGame>)).bestMultiTimes ||
+            !!(game || ({} as Partial<ISimpleGame>)).originalImage ||
+            !!(game || ({} as Partial<ISimpleGame>)).modifiedImage ||
+            !!(game || ({} as Partial<ISimpleGame>)).diffData;
+    }
+
     public async create(data: ISimpleGame): Promise<Message> {
         if (!SimpleGamesCollectionService.validate(data)) {
             throw new InvalidGameError();
