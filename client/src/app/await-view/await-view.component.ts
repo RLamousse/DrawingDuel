@@ -24,6 +24,8 @@ export class AwaitViewComponent implements OnInit {
       this.gameName = params["gameName"];
       this.isSimpleGame = params["gameType"];
     });
+    this.socket.onEvent(SocketEvent.DELETE).subscribe(this.gameDeleted);
+  }
 
   private gameDeleted(message: WebsocketMessage<string>): void {
     this.route.navigate(["/game-list/"]);
