@@ -25,6 +25,9 @@ export class WebsocketController {
         socket.on(SocketEvent.DUMMY, (message: WebsocketMessage) => {
             this.dummyAction.execute(message, socket);
         });
+        socket.on(SocketEvent.DELETE, (message:WebsocketMessage) => {
+           this.deleteAction.execute(message, socket);
+        });
         socket.emit(SocketEvent.WELCOME, "Connection has been made via a websocket");
     }
 }
