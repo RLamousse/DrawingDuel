@@ -18,8 +18,10 @@ export abstract class CollectionService<T> {
 
     public async abstract getFromId(id: string): Promise<T>;
     public async abstract create(data: T): Promise<Message>;
+    public async abstract update(id: string, data: Partial<T>): Promise<Message>;
     public async abstract delete(id: string): Promise<Message>;
     protected abstract creationSuccessMessage(data: T): Message;
+    protected abstract updateSuccessMessage(id: string): Message;
     protected abstract deletionSuccessMessage(id: string): Message;
 
     public async contains(id: string): Promise<boolean> {
@@ -54,6 +56,16 @@ export abstract class CollectionService<T> {
         return this._collection.insertOne(data)
             .then(() => {
                 return this.creationSuccessMessage(data);
+            })
+            .catch(() => {
+                throw new DatabaseError();
+            });
+    }
+
+    protected async updateDocument(id: string, data: Partial<T>): Promise<Message> {
+        return this._collection.updateOne({[this.idFieldName]: {$eq: id}},{$set: data})
+            .then(() => {
+                return this.updateSuccessMessage(id);
             })
             .catch(() => {
                 throw new DatabaseError();
