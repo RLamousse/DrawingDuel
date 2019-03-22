@@ -4,8 +4,8 @@ import {Message} from "../../../../common/communication/messages/message";
 import {
     AlreadyExistentGameError,
     InvalidGameError,
-    NonExistentGameError,
-    NoElementFoundError, InvalidGameInfoError
+    InvalidGameInfoError,
+    NonExistentGameError, NoElementFoundError
 } from "../../../../common/errors/database.errors";
 import {ISimpleGame} from "../../../../common/model/game/simple-game";
 import {CollectionService} from "./collection.service";
