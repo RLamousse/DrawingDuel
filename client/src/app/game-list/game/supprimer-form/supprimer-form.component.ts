@@ -1,6 +1,9 @@
 import { Component, Inject } from "@angular/core";
 import {MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
 import {Router} from "@angular/router";
+import {WebsocketMessage} from "../../../../../../common/communication/messages/message";
+import {SocketEvent} from "../../../../../../common/communication/socket-events";
+import {SocketService} from "../../../socket.service";
 import {IDialogData} from "../dialog-data-interface/IDialogData";
 
 @Component({
@@ -13,8 +16,10 @@ export class SupprimerFormComponent  {
   private socketMessage: WebsocketMessage<string>;
 
   public constructor( protected dialogRef: MatDialogRef<SupprimerFormComponent>,
+                      protected router: Router,
+                      protected socket: SocketService,
                       @Inject(MAT_DIALOG_DATA) public data: IDialogData,
-                      private router: Router ) {/*vide*/}
+                     ) {/*vide*/}
 
   public exit(message: Object = { status: "cancelled" }): void {
     this.dialogRef.close(message);
