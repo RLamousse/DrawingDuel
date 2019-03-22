@@ -8,7 +8,6 @@ import * as THREE from "three";
 import {DIFF_VALIDATOR_3D_BASE, SERVER_BASE_URL} from "../../../../common/communication/routes";
 import { ComponentNotLoadedError } from "../../../../common/errors/component.errors";
 import {NoDifferenceAtPointError} from "../../../../common/errors/services.errors";
-import {IJson3DObject} from "../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
 import { SceneRendererService } from "./scene-renderer.service";
 /* tslint:disable:no-magic-numbers*/
 describe("SceneRendererService", () => {
@@ -169,7 +168,7 @@ describe("SceneRendererService", () => {
     service.init(oriCont, modCont);
     service.loadScenes(original, modified, "gameName");
 
-    return service.objDiffValidation(325, 150)
+    return service.objDiffValidation(325, 430)
       .catch((reason: Error) => {
         expect(reason.message).toEqual(NoDifferenceAtPointError.NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE);
       });
@@ -186,7 +185,7 @@ describe("SceneRendererService", () => {
     service.init(oriCont, modCont);
     service.loadScenes(original, modified, "gameName");
 
-    return service.objDiffValidation(1000, 150)
+    return service.objDiffValidation(1120, 430)
       .catch((reason: Error) => {
         expect(reason.message).toEqual(NoDifferenceAtPointError.NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE);
       });
@@ -205,12 +204,13 @@ describe("SceneRendererService", () => {
     const material: THREE.MeshPhongMaterial = new THREE.MeshPhongMaterial();
     const geo: THREE.BoxGeometry = new THREE.BoxGeometry();
     const mesh: THREE.Mesh = new THREE.Mesh(geo, material);
-    mesh.position.set(0, 0, 50);
+    mesh.position.set(0, 0, 97);
     original.add(mesh);
+    modified.add(mesh.clone());
     service.init(oriCont, modCont);
     service.loadScenes(original, modified, "gameName");
 
-    return service.objDiffValidation(325, 150)
+    return service.objDiffValidation(325, 430)
       .catch((reason: Error) => {
         expect(reason.message).toEqual(NoDifferenceAtPointError.NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE);
       });
@@ -229,44 +229,9 @@ describe("SceneRendererService", () => {
     service.init(oriCont, modCont);
     service.loadScenes(original, modified, "gameName");
 
-    return service.objDiffValidation(325, 150)
+    return service.objDiffValidation(325, 430)
       .catch((reason: Error) => {
-        expect(reason.message).toEqual(HttpStatus.INTERNAL_SERVER_ERROR.toString());
+        expect(reason.message).toEqual("Request failed with status code 500");
       });
-  });
-
-  it("should return the IJSONObject after call", async() => {
-    const service: SceneRendererService = TestBed.get(SceneRendererService);
-    const responseObject: IJson3DObject = {
-      position: [],
-      type: 0,
-      rotation: [],
-      color: 0,
-    };
-    axiosMock.onGet(ALL_GET_CALLS_REGEX)
-      .reply(HttpStatus.OK,
-             {
-              position: [],
-              type: 0,
-              rotation: [],
-              color: 0,
-             } as IJson3DObject,
-      );
-
-    const original: THREE.Scene = new THREE.Scene();
-    const modified: THREE.Scene = new THREE.Scene();
-    const oriCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
-    const modCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
-    const material: THREE.MeshPhongMaterial = new THREE.MeshPhongMaterial();
-    const geo: THREE.BoxGeometry = new THREE.BoxGeometry();
-    const mesh: THREE.Mesh = new THREE.Mesh(geo, material);
-    mesh.position.set(0, 0, 90);
-    original.add(mesh);
-    service.init(oriCont, modCont);
-    service.loadScenes(original, modified, "gameName");
-
-    return service.objDiffValidation(325, 150).then((obj) => {
-      expect(obj).toEqual(responseObject);
-    });
   });
 });
