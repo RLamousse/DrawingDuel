@@ -8,9 +8,9 @@ import { SocketEvent } from "../../../common/communication/socket-events";
 @Injectable()
 export class SocketService {
 
-    private socket: SocketIOClient.Socket;
+  private socket: SocketIOClient.Socket;
 
-    public constructor () {
+  public constructor () {
         this.socket = this.openSocket();
     }
 
@@ -24,7 +24,9 @@ export class SocketService {
 
     public send(event: SocketEvent, message: WebsocketMessage): boolean {
         if (this.isSocketConnected()) {
-            return this.socket.emit(event, message).connected;
+          this.socket.emit(event, message);
+
+          return true;
         }
 
         return false;
