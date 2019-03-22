@@ -10,6 +10,7 @@ import {IDialogData} from "../dialog-data-interface/IDialogData";
 })
 
 export class SupprimerFormComponent  {
+  private socketMessage: WebsocketMessage<string>;
 
   public constructor( protected dialogRef: MatDialogRef<SupprimerFormComponent>,
                       @Inject(MAT_DIALOG_DATA) public data: IDialogData,
@@ -20,6 +21,11 @@ export class SupprimerFormComponent  {
   }
   public deleteGame(): void {
     /*call deleteGame from server*/
+    this.socketMessage = {
+      title: SocketEvent.DELETE,
+      body: this.data.gameName,
+    };
+    this.socket.send(SocketEvent.DELETE, this.socketMessage);
     this.dialogRef.close();
     this.router.navigate(["/admin/"]);
   }
