@@ -32,7 +32,7 @@ describe("MessageBoxComponent", () => {
     expect(component).toBeTruthy();
   });
 
-  it("should create", () => {
+  it("should receive the messages and add them", () => {
     (component as any).handleChatEvent({
       title: SocketEvent.USER_CONNECTION,
       body: "BoiChadddd",
