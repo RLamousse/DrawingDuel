@@ -3,12 +3,14 @@ import * as io from "socket.io";
 import { WebsocketMessage } from "../../../common/communication/messages/message";
 import { SocketEvent } from "../../../common/communication/socket-events";
 import { DummyWebsocketActionService } from "../services/websocket/dummy-websocket-action.service";
+import { DeleteWebsocketActionService } from "../services/websocket/delete-websocket-action.service";
 import types from "../types";
 
 @injectable()
 export class WebsocketController {
 
-    public constructor (@inject(types.DummyWebsocketActionService) private dummyAction: DummyWebsocketActionService) {
+    public constructor (@inject(types.DummyWebsocketActionService) private dummyAction: DummyWebsocketActionService,
+                        @inject(types.DeleteWebsocketActionService) private deleteAction: DeleteWebsocketActionService) {
         this.registerSocket = this.registerSocket.bind(this);
         this.routeSocket = this.routeSocket.bind(this);
     }
