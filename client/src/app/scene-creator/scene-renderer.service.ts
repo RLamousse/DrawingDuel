@@ -1,9 +1,10 @@
 import {Injectable} from "@angular/core";
 import * as THREE from "three";
 import {ComponentNotLoadedError} from "../../../../common/errors/component.errors";
+import GLTFLoader from "three-gltf-loader";
+import {spaceObjects} from "../../../../common/model/modelThematicTheme";
 
 require("three-first-person-controls")(THREE);
-import GLTFLoader from "three-gltf-loader";
 
 // import * as cucco from '../Models/cucco/scene.gltf';
 
@@ -89,14 +90,15 @@ export class SceneRendererService {
     }
     this.scene = original;
     this.modifiedScene = modified;
-    this.displayObject("assets/Models/space/sun/scene.gltf");
+    this.displayObject("assets/Models/space/rocket/scene.gltf");
     this.renderLoop();
   }
 
   public displayObject(path: string): void {
     const loader: GLTFLoader = new GLTFLoader();
     loader.load(path, (gltf: THREE.GLTF) => {
-      gltf.scene.scale.set(8, 8, 8);
+      const test: number = spaceObjects.rocket;
+      gltf.scene.scale.set(test, test, test);
       //gltf.scene.rotateY(10);
       this.scene.add(gltf.scene);
     });

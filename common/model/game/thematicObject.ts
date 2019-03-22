@@ -1,4 +1,4 @@
 export interface thematicObject {
     name: string;
-    size: number;
+    scale: number;
 }

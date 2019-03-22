@@ -1,6 +1,8 @@
 import { injectable } from "inversify";
 import { ObjectGeometry } from "../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
 import * as JsonScene from "../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
+import {IImportedObject} from "../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
+import {spaceObjects} from "../../../common/model/modelThematicTheme";
 
 @injectable()
 export class Object3DCreatorService {
@@ -11,12 +13,12 @@ export class Object3DCreatorService {
     private readonly RADIUS_FACTOR: number = 2;
     private readonly COLOR_MASK: number = 0xFFFFFF;
 
-    private sizeGenerator(): number {
+    private sizeGenerator(baseSize: number): number {
         const percentFactor: number = 100;
 
         return (
             Math.floor(Math.random() * (this.MAX_SIZE_FACTOR - this.MIN_SIZE_FACTOR + 1) + this.MIN_SIZE_FACTOR) /
-            percentFactor * this.BASE_SIZE
+            percentFactor * baseSize
         );
     }
 
@@ -27,12 +29,12 @@ export class Object3DCreatorService {
             position: [0, 0, 0],
             rotation: [0, 0, 0],
             color: Math.random() * this.COLOR_MASK,
-            sideLenght: this.sizeGenerator(),
+            sideLenght: this.sizeGenerator(this.BASE_SIZE),
         };
     }
 
     public createSphere(): JsonScene.ISphere {
-        const sphereSize: number = this.sizeGenerator() / this.RADIUS_FACTOR;
+        const sphereSize: number = this.sizeGenerator(this.BASE_SIZE) / this.RADIUS_FACTOR;
 
         return {
             type: ObjectGeometry.sphere,
@@ -46,7 +48,7 @@ export class Object3DCreatorService {
     }
 
     public createCone(): JsonScene.ICone {
-        const coneSize: number = this.sizeGenerator();
+        const coneSize: number = this.sizeGenerator(this.BASE_SIZE);
 
         return {
             type: ObjectGeometry.cone,
@@ -60,7 +62,7 @@ export class Object3DCreatorService {
     }
 
     public createCylinder(): JsonScene.ICylinder {
-        const cylinderSize: number = this.sizeGenerator();
+        const cylinderSize: number = this.sizeGenerator(this.BASE_SIZE);
 
         return {
             type: ObjectGeometry.cylinder,
@@ -78,7 +80,7 @@ export class Object3DCreatorService {
         const PYRAMID_TOP_RAD: number = 0;
         const HEIGHT_SEG: number = 1;
         const BASE_SIDES: number = 3;
-        const pyramidSize: number = this.sizeGenerator();
+        const pyramidSize: number = this.sizeGenerator(this.BASE_SIZE);
 
         return {
             type: ObjectGeometry.pyramid,
@@ -91,5 +93,16 @@ export class Object3DCreatorService {
             radiusSegment: BASE_SIDES,
             heightSegment: HEIGHT_SEG,
         };
+    }
+
+    public createThematicObject(size: number): IImportedObject {
+        const index =  Math.random() * spaceObjects.length;
+
+        return {
+            name: spaceObjects[index].name,
+            scale: this.sizeGenerator(spaceObjects[index].scale),
+            position: [0, 0, 0],
+            rotation: [0, 0, 0],
+        }
     }
 }
