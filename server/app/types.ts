@@ -18,4 +18,5 @@ export default  {
         FreeGameCreatorService: Symbol("FreeGameCreatorService"),
         Object3DCreatorService: Symbol("Object3DCreatorService"),
         DummyWebsocketActionService: Symbol("DummyWebsocketActionService"),
+        DeleteWebsocketActionService: Symbol("DeleteWebsocketActionService"),
 };
