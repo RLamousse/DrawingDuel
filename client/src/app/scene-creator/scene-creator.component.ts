@@ -13,16 +13,8 @@ import {SceneRendererService} from "./scene-renderer.service";
            })
 export class SceneCreatorComponent implements AfterViewInit, OnInit, OnDestroy {
 
-  private readonly CHEAT_KEY_CODE: string = "KeyT";
-
   public constructor(private renderService: SceneRendererService, private route: ActivatedRoute,
                      private freeGameCreator: FreeGameCreatorService, private gameService: GameService) {
-  }
-
-  protected gameName: string;
-
-  async ngOnDestroy(): Promise<void> {
-   await this.renderService.deactivateCheatMode();
   }
 
   private get originalContainer(): HTMLDivElement {
@@ -33,11 +25,19 @@ export class SceneCreatorComponent implements AfterViewInit, OnInit, OnDestroy {
     return this.modifiedRef.nativeElement;
   }
 
+  private readonly CHEAT_KEY_CODE: string = "KeyT";
+
+  protected gameName: string;
+
   @ViewChild("originalView")
   private originalRef: ElementRef;
 
   @ViewChild("modifiedView")
   private modifiedRef: ElementRef;
+
+  public async ngOnDestroy(): Promise<void> {
+   await this.renderService.deactivateCheatMode();
+  }
 
   public ngOnInit(): void {
     this.route.queryParams.subscribe((params) => {
@@ -67,9 +67,9 @@ export class SceneCreatorComponent implements AfterViewInit, OnInit, OnDestroy {
 
   @HostListener("document:keyup", ["$event"])
   // @ts-ignore even if the onKeyPress function is never explicitly read, the HostListener will call it when a key is pressed
-  private async onKeyPress(event: KeyboardEvent): void {
-    if(event.code === this.CHEAT_KEY_CODE){
-      this.renderService.modifyCheatState(() => {return this.gameService.loadCheatData(this.gameName)});
+  private async onKeyPress(event: KeyboardEvent): Promise<void> {
+    if (event.code === this.CHEAT_KEY_CODE) {
+      await this.renderService.modifyCheatState(async () => this.gameService.loadCheatData(this.gameName));
     }
   }
 }

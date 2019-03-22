@@ -3,6 +3,7 @@ import {Injectable} from "@angular/core";
 import {of, Observable} from "rxjs";
 import {catchError} from "rxjs/operators";
 import {DB_FREE_GAME, DB_SIMPLE_GAME, SERVER_BASE_URL} from "../../../common/communication/routes";
+import {IJson3DObject} from "../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
 import {IExtendedFreeGame} from "../../../common/model/game/extended-free-game";
 import {IFreeGame} from "../../../common/model/game/free-game";
 import {IGame} from "../../../common/model/game/game";
@@ -10,7 +11,6 @@ import {ISimpleGame} from "../../../common/model/game/simple-game";
 import {FreeGameCreatorService} from "./scene-creator/FreeGameCreator/free-game-creator.service";
 import {FreeGamePhotoService} from "./scene-creator/free-game-photo-service/free-game-photo.service";
 import {IScene} from "./scene-interface";
-import {IJson3DObject} from "../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
 
 @Injectable({
               providedIn: "root",
@@ -103,7 +103,7 @@ export class GameService {
     );
   }
 
-  public async loadCheatData(gameName: string): Promise<IJson3DObject[]>{
+  public async loadCheatData(gameName: string): Promise<IJson3DObject[]> {
     return new Promise<IJson3DObject[]>((resolve) => {
 
       this.http.get<IFreeGame>(
