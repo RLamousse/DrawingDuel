@@ -56,7 +56,7 @@ export class SceneRendererService {
   private readonly accelerationFactor: number = 600;
 
   private differenceCountSubject: Subject<number> = new Subject();
-  private cursorEnabled: Subject<boolean> = new Subject();
+  public cursorEnabled: Subject<boolean> = new Subject();
 
   public constructor() {
    /*empty*/
@@ -189,6 +189,7 @@ export class SceneRendererService {
       const intersectMod: THREE.Intersection[] = rayCast.intersectObjects(this.modifiedScene.children);
       if (intersectOri.length === 0 && intersectMod.length === 0) {
         playRandomSound(NO_DIFFERENCE_SOUNDS);
+        this.cursorEnabled.next(false);
 
         return this.differenceValidationAtPoint(undefined);
       }
@@ -289,11 +290,6 @@ export class SceneRendererService {
 
   private cursorStatusChange(): void {
     const TIMEOUT: number = 1000;
-    setTimeout(
-      () => {
-        this.cursorEnabled.next(true);
-      },
-      TIMEOUT,
-    );
+    setTimeout(() => { this.cursorEnabled.next(true); }, TIMEOUT);
   }
 }

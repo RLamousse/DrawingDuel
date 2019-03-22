@@ -1,13 +1,18 @@
-import { Directive, HostListener } from "@angular/core";
+import {Directive, HostListener, OnInit} from "@angular/core";
 import { SceneRendererService } from "../scene-renderer.service";
 
 @Directive({ selector: "[appFPControlEvent]" })
-export class Game3DControlsDirective {
+export class Game3DControlsDirective implements OnInit {
   private readonly keyW: string = "KeyW";
   private readonly keyS: string = "KeyS";
   private readonly keyA: string = "KeyA";
   private readonly keyD: string = "KeyD";
-  public constructor( private sceneRendererService: SceneRendererService ) { }
+  private cursorEnabled: boolean;
+  public constructor( private sceneRendererService: SceneRendererService ) {}
+
+  public ngOnInit(): void {
+    this.sceneRendererService.cursorStatus.subscribe((status: boolean) => this.cursorEnabled = status);
+  }
 
   @HostListener("document:keydown", ["$event"])
   public keyPressed($event: KeyboardEvent): void {
@@ -41,6 +46,7 @@ export class Game3DControlsDirective {
   }
   @HostListener("document:mousedown", ["$event"])
   public mousedown($event: MouseEvent): void {
+    console.log(this.cursorEnabled);
     const RIGHT_BUTTON: number = 2;
     const LEFT_BUTTON: number = 0;
     const CANVAS_TAG: string = "CANVAS";
@@ -51,14 +57,13 @@ export class Game3DControlsDirective {
       $event.button === LEFT_BUTTON &&
       $event.srcElement !== null &&
       $event.srcElement.tagName === CANVAS_TAG &&
-      this.sceneRendererService.
+      this.cursorEnabled
     ) {
-      $event.preventDefault();
-      this.sceneRendererService.objDiffValidation(
-        $event.clientX,
-        $event.clientY).catch((error: Error) => {
-          throw new Error(error.message);
-      });
+        $event.preventDefault();
+        this.sceneRendererService.objDiffValidation(
+          $event.clientX,
+          $event.clientY,
+        );
     }
   }
 

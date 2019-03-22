@@ -42,6 +42,7 @@ export class SceneCreatorComponent implements AfterViewInit, OnInit {
     this.route.queryParams.subscribe((params) => {
       this.gameName = params["gameName"];
     });
+
   }
 
   private async verifyGame(): Promise<IScene> {
