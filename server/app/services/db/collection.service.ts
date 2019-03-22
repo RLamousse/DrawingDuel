@@ -63,7 +63,7 @@ export abstract class CollectionService<T> {
     }
 
     protected async updateDocument(id: string, data: Partial<T>): Promise<Message> {
-        return this._collection.updateOne({[this.idFieldName]: {$eq: id}},{$set: data})
+        return this._collection.updateOne({[this.idFieldName]: {$eq: id}}, {$set: data})
             .then(() => {
                 return this.updateSuccessMessage(id);
             })

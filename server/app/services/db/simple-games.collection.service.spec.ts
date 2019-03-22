@@ -11,9 +11,9 @@ import {
     InvalidGameError, InvalidGameInfoError,
     NonExistentGameError
 } from "../../../../common/errors/database.errors";
+import {IFreeGame} from "../../../../common/model/game/free-game";
 import {ISimpleGame} from "../../../../common/model/game/simple-game";
 import {GAME_NAME_FIELD, SimpleGamesCollectionService} from "./simple-games.collection.service";
-import {IFreeGame} from "../../../../common/model/game/free-game";
 
 describe("A db service for simple games", () => {
 
