@@ -15,20 +15,15 @@ export class MessageBoxComponent implements OnInit {
   public constructor(private socket: SocketService) {
     this.messages = [];
     this.handleChatEvent = this.handleChatEvent.bind(this);
-    this.handleConnectionEvents = this.handleConnectionEvents.bind(this);
   }
 
   public ngOnInit(): void {
     this.socket.onEvent(SocketEvent.CHAT).subscribe(this.handleChatEvent);
-    this.socket.onEvent(SocketEvent.USER_CONNECTION).subscribe(this.handleConnectionEvents);
-    this.socket.onEvent(SocketEvent.USER_DISCONNECTION).subscribe(this.handleConnectionEvents);
+    this.socket.onEvent(SocketEvent.USER_CONNECTION).subscribe(this.handleChatEvent);
+    this.socket.onEvent(SocketEvent.USER_DISCONNECTION).subscribe(this.handleChatEvent);
   }
 
   private handleChatEvent (message: WebsocketMessage<string>): void {
-    this.messages.push(message);
-  }
-
-  private handleConnectionEvents (message: WebsocketMessage<string>): void {
     this.messages.push(message);
   }
 }
