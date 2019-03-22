@@ -16,6 +16,8 @@ export class AwaitViewComponent implements OnInit {
 
   public constructor(private activatedRoute: ActivatedRoute, private route: Router,
                      private socket: SocketService) {
+    this.gameDeleted = this.gameDeleted.bind(this);
+  }
 
   public ngOnInit(): void {
     this.route.queryParams.subscribe((params) => {
@@ -23,5 +25,6 @@ export class AwaitViewComponent implements OnInit {
       this.isSimpleGame = params["gameType"];
     });
 
+  private gameDeleted(message: WebsocketMessage<string>): void {
   }
 }
