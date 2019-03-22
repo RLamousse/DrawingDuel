@@ -42,7 +42,7 @@ export class SceneRendererService {
   private readonly BLINK_INTERVAL_MS: number = 250;
   private readonly INVISIBLE_INTERVAL_MS: number = this.BLINK_INTERVAL_MS / 2; // TODO utiliser la constante factor two
   // et la mettre dans utile si necessaire
-  private readonly WATCH_THREAD_FINISH_INTERVAL: number = 5;
+  private readonly WATCH_THREAD_FINISH_INTERVAL: number = 30;
   private gameState: IFreeGameState = {isCheatModeActive: false, isWaitingInThread: false, foundDiffs: []};
 
   private setRenderer(): void {
