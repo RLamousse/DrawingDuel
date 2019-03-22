@@ -18,6 +18,7 @@ import { ImageUploadService } from "./services/image-upload.service";
 import { Object3DCreatorService } from "./services/object3D-creator.service";
 import { UsernameService } from "./services/username.service";
 import { DummyWebsocketActionService } from "./services/websocket/dummy-websocket-action.service";
+import {GameRoomService} from "./services/game-room.service";
 import Types from "./types";
 
 const container: Container = new Container();
@@ -48,5 +49,7 @@ container.bind(Types.Object3DCreatorService).to(Object3DCreatorService);
 
 container.bind(Types.WebsocketController).to(WebsocketController);
 container.bind(Types.DummyWebsocketActionService).to(DummyWebsocketActionService);
+
+container.bind(Types.GameRoomService).to(GameRoomService);
 
 export { container };

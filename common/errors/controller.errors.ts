@@ -6,6 +6,14 @@ export class RequestFormatError extends Error {
     }
 }
 
+export class EmptyResponseError extends Error {
+    public static readonly EMPTY_RESPONSE_ERROR_MESSAGE: string = "Error: the response is empty!";
+
+    constructor() {
+        super(EmptyResponseError.EMPTY_RESPONSE_ERROR_MESSAGE);
+    }
+}
+
 export class NoUsernameInRequestError extends Error {
     public static readonly NO_USERNAME_IN_REQUEST_ERROR_MESSAGE: string = "Error: no username was included in the request";
 
