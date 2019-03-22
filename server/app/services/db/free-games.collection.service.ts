@@ -5,7 +5,7 @@ import {
     AlreadyExistentGameError,
     InvalidGameError,
     NonExistentGameError,
-    NoElementFoundError
+    NoElementFoundError, InvalidGameInfoError
 } from "../../../../common/errors/database.errors";
 import {IFreeGame} from "../../../../common/model/game/free-game";
 import {CollectionService} from "./collection.service";
@@ -31,6 +31,18 @@ export class FreeGamesCollectionService extends CollectionService<IFreeGame> {
             throw new AlreadyExistentGameError();
         } else {
             return this.createDocument(data);
+        }
+    }
+
+    public async update(id: string, data: Partial<IFreeGame>): Promise<Message> {
+        if (!FreeGamesCollectionService.validateUpdate(data)) {
+            throw new InvalidGameInfoError();
+        }
+
+        if (!(await this.contains(id))) {
+            throw new NonExistentGameError();
+        } else {
+            return this.updateDocument(id, data);
         }
     }
 
@@ -63,6 +75,13 @@ export class FreeGamesCollectionService extends CollectionService<IFreeGame> {
         return {
             title: "Free game added",
             body: "Free game " + data.gameName + " successfully added",
+        };
+    }
+
+    protected updateSuccessMessage(id: string): Message {
+        return {
+            title: "Free game updated",
+            body: "Free game " + id + " successfully updated",
         };
     }
 
