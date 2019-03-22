@@ -20,11 +20,12 @@ export class AwaitViewComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.route.queryParams.subscribe((params) => {
+    this.activatedRoute.queryParams.subscribe((params) => {
       this.gameName = params["gameName"];
       this.isSimpleGame = params["gameType"];
     });
 
   private gameDeleted(message: WebsocketMessage<string>): void {
+    this.route.navigate(["/game-list/"]);
   }
 }
