@@ -102,7 +102,7 @@ export class SceneRendererService {
     this.renderLoop();
   }
 
-  public async blink(): Promise<void>{
+  private async blink(): Promise<void>{
     (<THREE.Object3D[]>this.gameState.cheatDiffData).forEach(value => {value.visible = false});
     this.gameState.isWaitingInThread = true;
     await sleep(this.INVISBLE_INTERVAL_MS);
