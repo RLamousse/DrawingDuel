@@ -8,22 +8,40 @@ import * as THREE from "three";
 import {DIFF_VALIDATOR_3D_BASE, SERVER_BASE_URL} from "../../../../common/communication/routes";
 import { ComponentNotLoadedError } from "../../../../common/errors/component.errors";
 import {NoDifferenceAtPointError} from "../../../../common/errors/services.errors";
+import {RenderUpdateService} from "./render-update.service";
 import { SceneRendererService } from "./scene-renderer.service";
 /* tslint:disable:no-magic-numbers*/
 describe("SceneRendererService", () => {
   let axiosMock: MockAdapter;
   const CONTROLLER_BASE_URL: string = SERVER_BASE_URL + DIFF_VALIDATOR_3D_BASE;
   const ALL_GET_CALLS_REGEX: RegExp = new RegExp(`${CONTROLLER_BASE_URL}/*`);
+
+  // tslint:disable-next-line:typedef
+  class MockRenderUpdate extends RenderUpdateService {
+    public messageCam: string = "";
+    public messageVel: string = "";
+    public updateCamera(): void {
+      this.messageCam = "updateCamera was called";
+    }
+    public updateVelocity(): void {
+      this.messageVel = "updateVelocity was called";
+    }
+  }
+  let mockUpdateRender: MockRenderUpdate;
   beforeEach(() => {
     axiosMock = new AxiosAdapter(Axios);
+    mockUpdateRender = new MockRenderUpdate();
 
     return TestBed.configureTestingModule({
-      providers: [SceneRendererService],
+      providers: [
+        SceneRendererService,
+        {provide: RenderUpdateService, useValue: mockUpdateRender},
+      ],
     });
   });
 
   it("should create", () => {
-    const service: SceneRendererService = new SceneRendererService();
+    const service: SceneRendererService = TestBed.get(SceneRendererService);
     expect(service).toBeDefined();
   });
 
@@ -44,11 +62,6 @@ describe("SceneRendererService", () => {
     const oriCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
     const modCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
     service.init(oriCont, modCont);
-    service.up = false;
-    service.down = false;
-    service.left = false;
-    service.right = false;
-    service.rightClick = false;
     service.loadScenes(original, modified, "gameName");
     expect(service.scene).toBe(original);
     expect(service.modifiedScene).toBe(modified);
@@ -63,96 +76,33 @@ describe("SceneRendererService", () => {
     const oriCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
     const modCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
     service.init(oriCont, modCont);
-    service.up = true;
-    service.down = true;
-    service.left = true;
-    service.right = true;
-    service.rightClick = true;
     service.loadScenes(original1, modified1, "gameName");
     service.loadScenes(original2, modified2, "gameName");
     expect(service.scene).toBe(original2);
     expect(service.modifiedScene).toBe(modified2);
   });
 
-  // test moveForward
-  it("should have the right boolean value after the function is called", () => {
+  it("should have called updateCamera and velocity after loadScenes is called", () => {
     const service: SceneRendererService = TestBed.get(SceneRendererService);
-    service.moveForward(true);
-    expect(service.up).toEqual(true);
-    service.moveForward(false);
-    expect(service.up).toEqual(false);
+    const original: THREE.Scene = new THREE.Scene();
+    const modified: THREE.Scene = new THREE.Scene();
+    const oriCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
+    const modCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
+    service.init(oriCont, modCont);
+    service.loadScenes(original, modified, "gameName");
+    expect(mockUpdateRender.messageVel).toEqual("updateVelocity was called");
+    expect(mockUpdateRender.messageCam).toEqual("updateCamera was called");
   });
 
-  // test moveBackward
-  it("should have the right boolean value after the function is called", () => {
+  it("should update the gameName after loadScenes is called", () => {
     const service: SceneRendererService = TestBed.get(SceneRendererService);
-    service.moveBackward(true);
-    expect(service.down).toEqual(true);
-    service.moveBackward(false);
-    expect(service.down).toEqual(false);
-  });
-
-  // test moveLeft
-  it("should have the right boolean value after the function is called", () => {
-    const service: SceneRendererService = TestBed.get(SceneRendererService);
-    service.moveLeft(true);
-    expect(service.left).toEqual(true);
-    service.moveLeft(false);
-    expect(service.left).toEqual(false);
-  });
-
-  // test moveRight
-  it("should have the right boolean value after the function is called", () => {
-    const service: SceneRendererService = TestBed.get(SceneRendererService);
-    service.moveRight(true);
-    expect(service.right).toEqual(true);
-    service.moveRight(false);
-    expect(service.right).toEqual(false);
-  });
-
-  // Test rightClickHold
-  it("should assign the rightClick attribute the right value (true)", () => {
-    const service: SceneRendererService = TestBed.get(SceneRendererService);
-    service.rightClick = true;
-    service.rightClickHold(123, 235);
-    expect(service.rightClick).toEqual(true);
-    expect(service.oldX).toEqual(123);
-    expect(service.oldY).toEqual(235);
-    expect(service.deltaX).toEqual(0);
-    expect(service.deltaY).toEqual(0);
-
-  });
-
-  it("should have the  old x and y position if bool is false)", () => {
-    const service: SceneRendererService = TestBed.get(SceneRendererService);
-    service.rightClick = true;
-    service.rightClickHold(10, 10);
-    service.rightClick = false;
-    service.rightClickHold(100, 100);
-    expect(service.rightClick).toEqual(false);
-    expect(service.oldX).toEqual(10);
-    expect(service.oldY).toEqual(10);
-    expect(service.deltaX).toEqual(0);
-    expect(service.deltaY).toEqual(0);
-  });
-
-  // Test rotateCamera
-  it("should have the right value of deltaX and deltaY (0 if not moving mouse)", () => {
-    const service: SceneRendererService = TestBed.get(SceneRendererService);
-    service.oldX = 0;
-    service.oldY = 0;
-    service.rotateCamera(0, 0);
-    expect(service.deltaY).toEqual(0);
-    expect(service.deltaX).toEqual(0);
-  });
-  it("should have the right value of deltaX and deltaY (arbitrary moving)", () => {
-    const service: SceneRendererService = TestBed.get(SceneRendererService);
-    service.oldX = 120;
-    service.oldY = 150;
-    service.rotateCamera(12, 611);
-    // Delta-i formula: old-i - i-Pos / 4000
-    expect(service.deltaY).toEqual((120 - 12) / 4000);
-    expect(service.deltaX).toEqual((150 - 611) / 4000);
+    const original: THREE.Scene = new THREE.Scene();
+    const modified: THREE.Scene = new THREE.Scene();
+    const oriCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
+    const modCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
+    service.init(oriCont, modCont);
+    service.loadScenes(original, modified, "gameNameExpected");
+    expect(service.gameName).toEqual("gameNameExpected");
   });
 
   // Test objDiffValidation
