@@ -32,14 +32,12 @@ import {SocketService} from "./socket.service";
 import {TimerComponent} from "./timer/timer.component";
 import {UNListService} from "./username.service";
 import {VueAdminComponent} from "./vue-admin/vue-admin.component";
-import {WindowEventHandlerDirective} from "./window-event-handler.directive";
 
 @NgModule({
   declarations: [
     AppComponent,
     InitialViewComponent,
     GameListComponent,
-    WindowEventHandlerDirective,
     GameComponent,
     AppComponent,
     VueAdminComponent,
