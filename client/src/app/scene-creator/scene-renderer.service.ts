@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import Axios, { AxiosResponse } from "axios";
 import * as Httpstatus from "http-status-codes";
-import {Observable, Subject} from "rxjs";
+import { Observable, Subject } from "rxjs";
 import * as THREE from "three";
 import { DIFF_VALIDATOR_3D_BASE, SERVER_BASE_URL } from "../../../../common/communication/routes";
 import { ComponentNotLoadedError } from "../../../../common/errors/component.errors";
@@ -9,6 +9,7 @@ import { AlreadyFoundDifferenceError, NoDifferenceAtPointError } from "../../../
 import { Coordinate } from "../../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
 import { IJson3DObject } from "../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
 import { playRandomSound, FOUND_DIFFERENCE_SOUNDS, NO_DIFFERENCE_SOUNDS } from "../simple-game/game-sounds";
+import { RenderUpdateService } from "./render-update.service";
 
 @Injectable({
     providedIn: "root",
@@ -31,17 +32,6 @@ export class SceneRendererService {
   protected prevTime: number;
   protected velocity: THREE.Vector3;
 
-  public up: boolean;
-  public down: boolean;
-  public left: boolean;
-  public right: boolean;
-
-  public rightClick: boolean = false;
-  public oldX: number = 0;
-  public oldY: number = 0;
-  public deltaX: number = 0;
-  public deltaY: number = 0;
-
   private readonly fieldOfView: number = 90;
   private readonly nearClippingPane: number = 1;
   private readonly farClippingPane: number = 1000;
@@ -50,17 +40,12 @@ export class SceneRendererService {
   private readonly cameraX: number = 0;
   private readonly cameraY: number = 0;
   private readonly cameraZ: number = 100;
-  private readonly camRotationSpeedFactor: number = 4000;
   private readonly timeFactor: number = 1000;
-  private readonly decelerationFactor: number = 10;
-  private readonly accelerationFactor: number = 600;
 
   private differenceCountSubject: Subject<number> = new Subject();
   public cursorEnabled: Subject<boolean> = new Subject();
 
-  public constructor() {
-   /*empty*/
-  }
+  public constructor(private renderUpdateService: RenderUpdateService) {}
 
   private setRenderer(): void {
     this.rendererOri = new THREE.WebGLRenderer({ preserveDrawingBuffer: true });
@@ -77,32 +62,13 @@ export class SceneRendererService {
   }
 
   private renderLoop(): void {
-
     requestAnimationFrame(() => this.renderLoop());
     this.rendererOri.render(this.scene, this.camera);
     this.rendererMod.render(this.modifiedScene, this.camera);
     this.time = performance.now();
     const delta: number = (this.time - this.prevTime) / this.timeFactor;
-    this.velocity.z -= this.velocity.z * this.decelerationFactor * delta;
-    this.velocity.x -= this.velocity.x * this.decelerationFactor * delta;
-    if ( this.up ) {
-      this.velocity.z -= this.accelerationFactor * delta;
-    }
-    if ( this.down ) {
-      this.velocity.z += this.accelerationFactor * delta;
-    }
-    if ( this.left ) {
-      this.velocity.x -= this.accelerationFactor * delta;
-    }
-    if ( this.right ) {
-      this.velocity.x += this.accelerationFactor * delta;
-    }
-    this.camera.translateZ( this.velocity.z * delta );
-    this.camera.translateX( this.velocity.x * delta );
-    if ( this.rightClick ) {
-      this.camera.rotateX(this.deltaX);
-      this.camera.rotateY(this.deltaY);
-    }
+    this.renderUpdateService.updateVelocity(this.velocity, delta);
+    this.renderUpdateService.updateCamera(this.camera, delta, this.velocity);
     this.prevTime = this.time;
   }
   private setCamera(): void {
@@ -142,33 +108,6 @@ export class SceneRendererService {
     this.gameName = gameName;
     this.foundDifference = [];
     this.renderLoop();
-  }
-
-  public moveForward(isMoving: boolean): void {
-    this.up = isMoving;
-  }
-  public moveBackward(isMoving: boolean): void {
-    this.down = isMoving;
-  }
-  public moveLeft(isMoving: boolean): void {
-    this.left = isMoving;
-  }
-  public moveRight(isMoving: boolean): void {
-    this.right = isMoving;
-  }
-
-  public rightClickHold(xPos: number, yPos: number): void {
-    if (this.rightClick) {
-      this.oldX = xPos;
-      this.oldY = yPos;
-      this.deltaX = 0;
-      this.deltaY = 0;
-    }
-  }
-
-  public rotateCamera(xPos: number, yPos: number): void {
-    this.deltaY = (this.oldX - xPos) / this.camRotationSpeedFactor;
-    this.deltaX = (this.oldY - yPos) / this.camRotationSpeedFactor;
   }
 
   public objDiffValidation(xPos: number, yPos: number): Promise<IJson3DObject> {
