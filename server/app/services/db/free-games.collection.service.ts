@@ -22,6 +22,13 @@ export class FreeGamesCollectionService extends CollectionService<IFreeGame> {
             game.gameName !== "";
     }
 
+    private static validateUpdate(game: Partial<IFreeGame>): boolean {
+        return !!(game || ({} as Partial<IFreeGame>)).gameName ||
+        !!(game || ({} as Partial<IFreeGame>)).bestSoloTimes ||
+        !!(game || ({} as Partial<IFreeGame>)).bestMultiTimes ||
+        !!(game || ({} as Partial<IFreeGame>)).scenes;
+    }
+
     public async create(data: IFreeGame): Promise<Message> {
         if (!FreeGamesCollectionService.validate(data)) {
             throw new InvalidGameError();
