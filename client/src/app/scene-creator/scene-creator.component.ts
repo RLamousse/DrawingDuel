@@ -33,7 +33,12 @@ export class SceneCreatorComponent implements AfterViewInit, OnInit {
   @ViewChild("modifiedView")
   private modifiedRef: ElementRef;
 
+  protected clickEnabled: boolean = true;
+
   public ngOnInit(): void {
+    this.renderService.cursorStatus.subscribe((status: boolean) => {
+      this.clickEnabled = status;
+    });
     this.route.queryParams.subscribe((params) => {
       this.gameName = params["gameName"];
     });

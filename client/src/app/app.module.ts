@@ -19,9 +19,9 @@ import {GameService} from "./game.service";
 import {InitialViewComponent} from "./initial-view/initial-view.component";
 import {PlayViewComponent} from "./play-view/play-view.component";
 import {Form3DService} from "./scene-creator/3DFormService/3-dform.service";
-import {FirstPersonControlDirective} from "./scene-creator/FirstPersonControl/first-person-control.directive";
 import {FreeGameCreatorService} from "./scene-creator/FreeGameCreator/free-game-creator.service";
 import {FreeGamePhotoService} from "./scene-creator/free-game-photo-service/free-game-photo.service";
+import {Game3DControlsDirective} from "./scene-creator/game-3D-controls/game-3D-controls.directive";
 import {SceneCreatorComponent} from "./scene-creator/scene-creator.component";
 import {SceneRendererService} from "./scene-creator/scene-renderer.service";
 import {SimpleGameCreatorFormComponent} from "./simple-game-creator-form/simple-game-creator-form.component";
@@ -51,7 +51,7 @@ import {WindowEventHandlerDirective} from "./window-event-handler.directive";
     SimpleGameCanvasComponent,
     SimpleGameContainerComponent,
     TimerComponent,
-    FirstPersonControlDirective,
+    Game3DControlsDirective,
   ],
   imports: [
     BrowserModule,

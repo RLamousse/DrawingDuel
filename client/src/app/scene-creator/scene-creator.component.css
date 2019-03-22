@@ -32,3 +32,6 @@ body {
   font-size: 60px;
   padding-left: 22%;
 }
+.disabled {
+  cursor: not-allowed;
+}

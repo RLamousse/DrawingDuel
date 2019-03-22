@@ -2,7 +2,7 @@ import { Directive, HostListener } from "@angular/core";
 import { SceneRendererService } from "../scene-renderer.service";
 
 @Directive({ selector: "[appFPControlEvent]" })
-export class FirstPersonControlDirective {
+export class Game3DControlsDirective {
   private readonly keyW: string = "KeyW";
   private readonly keyS: string = "KeyS";
   private readonly keyA: string = "KeyA";
@@ -50,12 +50,15 @@ export class FirstPersonControlDirective {
     } else if (
       $event.button === LEFT_BUTTON &&
       $event.srcElement !== null &&
-      $event.srcElement.tagName === CANVAS_TAG
+      $event.srcElement.tagName === CANVAS_TAG &&
+      this.sceneRendererService.
     ) {
       $event.preventDefault();
       this.sceneRendererService.objDiffValidation(
         $event.clientX,
-        $event.clientY);
+        $event.clientY).catch((error: Error) => {
+          throw new Error(error.message);
+      });
     }
   }
 

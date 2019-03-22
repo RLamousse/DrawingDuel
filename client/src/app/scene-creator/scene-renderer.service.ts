@@ -55,7 +55,8 @@ export class SceneRendererService {
   private readonly decelerationFactor: number = 10;
   private readonly accelerationFactor: number = 600;
 
-  private _differenceCountSubject: Subject<number> = new Subject();
+  private differenceCountSubject: Subject<number> = new Subject();
+  private cursorEnabled: Subject<boolean> = new Subject();
 
   public constructor() {
    /*empty*/
@@ -215,15 +216,14 @@ export class SceneRendererService {
         if (this.foundDifference.length !== 0 || this.foundDifference !== undefined) {
           this.checkIfAlreadyFound(value.data);
         }
-        this.foundDifference.push(value.data);
-        this.updateDifference(object as THREE.Intersection);
-        this._differenceCountSubject.next(this.foundDifference.length);
-        playRandomSound(FOUND_DIFFERENCE_SOUNDS);
+        this.updateRoutine(value.data, object as THREE.Intersection);
 
         return value.data as IJson3DObject;
       })
       // tslint:disable-next-line:no-any Generic error response
       .catch((reason: any) => {
+        this.cursorEnabled.next(false);
+        this.cursorStatusChange();
         if (reason.response && reason.response.status === Httpstatus.NOT_FOUND) {
           playRandomSound(NO_DIFFERENCE_SOUNDS);
           throw new NoDifferenceAtPointError();
@@ -256,14 +256,12 @@ export class SceneRendererService {
       if (this.isSameCenter(obj.position, object.object.position)) {
         modifObj = obj;
         modifObj.name = "modified";
-        break;
       }
     }
     for (const obj of this.scene.children) {
       if (this.isSameCenter(obj.position, object.object.position)) {
         originalObj = obj.clone();
         originalObj.name = "original";
-        break;
       }
     }
     if (originalObj.name !== "" && modifObj.name !== "") {
@@ -276,6 +274,26 @@ export class SceneRendererService {
     }
   }
   public get foundDifferenceCount(): Observable<number> {
-    return this._differenceCountSubject;
+    return this.differenceCountSubject;
+  }
+
+  public get cursorStatus(): Observable<boolean> {
+    return this.cursorEnabled;
+  }
+  private updateRoutine(jsonObj: IJson3DObject, obj: THREE.Intersection): void {
+    this.foundDifference.push(jsonObj);
+    this.updateDifference(obj);
+    this.differenceCountSubject.next(this.foundDifference.length);
+    playRandomSound(FOUND_DIFFERENCE_SOUNDS);
+  }
+
+  private cursorStatusChange(): void {
+    const TIMEOUT: number = 1000;
+    setTimeout(
+      () => {
+        this.cursorEnabled.next(true);
+      },
+      TIMEOUT,
+    );
   }
 }
