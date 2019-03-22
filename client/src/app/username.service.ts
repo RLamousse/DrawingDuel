@@ -63,13 +63,19 @@ export class UNListService {
     };
     this.websocket.send(SocketEvent.USERNAME_CHECK, message);
     const sub: Subscription = this.websocket.onEvent<boolean>(SocketEvent.USERNAME_CHECK).subscribe((answer: WebsocketMessage<boolean>) => {
-      if (!answer.body) {
-        this.message = this.USERNAME_TAKEN_MESSAGE;
-      }
-      callback(answer.body);
+      this.handleUserNameCheck(answer, callback);
       sub.unsubscribe();
     });
 
     return true;
+  }
+
+  private handleUserNameCheck(answer: WebsocketMessage<boolean>, callback: (answer: boolean) => void): boolean {
+    if (!answer.body) {
+      this.message = this.USERNAME_TAKEN_MESSAGE;
+    }
+    callback(answer.body);
+
+    return answer.body;
   }
 }
