@@ -37,13 +37,11 @@ body {
 }
 #originalCanvasMessage {
   position: absolute;
-  left: 0px;
-  top: 0px;
-  z-index: 10;
+  width: 640px;
+  height: 480px;
 }
 #modifiedCanvasMessage {
   position: absolute;
-  left: 0px;
-  top: 0px;
-  z-index: 10;
+  width: 640px;
+  height: 480px;
 }
