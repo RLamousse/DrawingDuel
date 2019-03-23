@@ -33,8 +33,12 @@ export class SupprimerFormComponent  {
       body: this.data.gameName,
     };
     this.socket.send(SocketEvent.DELETE, this.socketMessage);
-    this.gameService.deleteGameByName(this.data.gameName);
+    this.deleteGameByType(this.data.gameName, this.data.isSimpleGame);
     this.dialogRef.close();
     this.router.navigate(["/admin/"]);
+  }
+
+  public deleteGameByType(gameName: string, isSimpleGame: boolean ): void {
+    isSimpleGame ? this.gameService.deleteSimpleGameByName(gameName) : this.gameService.deleteFreeGameByName(gameName);
   }
 }
