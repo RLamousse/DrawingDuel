@@ -11,17 +11,11 @@ export class ChatWebsocketActionService extends WebsocketActionService {
     private readonly _EVENT_TYPE: SocketEvent = SocketEvent.CHAT;
     private readonly _DIFF_FOUND_BASE_MESSAGE: string = " – Différence trouvée";
     private readonly _DIFF_ERROR_BASE_MESSAGE: string = " – Erreur";
+    private readonly _WRONG_INPUT_FORMAT: string = " – Voici pourquoi les default existent dans les switchs.";
 
     public execute(data: WebsocketMessage<ChatMessage>, socket: io.Socket): void {
         const message: WebsocketMessage<string> = this.generateMessage(data.body);
         socket.emit(this._EVENT_TYPE, message);
-        if (this.shouldBroadcast(data.body)) {
-            socket.broadcast.emit(this._EVENT_TYPE, message);
-        }
-    }
-
-    private shouldBroadcast(data: ChatMessage): boolean {
-        return data.type === ChatMessageType.BEST_TIME;
     }
 
     private generateMessage(data: ChatMessage): WebsocketMessage<string> {
@@ -43,6 +37,7 @@ export class ChatWebsocketActionService extends WebsocketActionService {
                 message += (this.getDisconnectionMessage(data.playerName));
                 break;
             default:
+                message += this._WRONG_INPUT_FORMAT;
                 break;
         }
 
