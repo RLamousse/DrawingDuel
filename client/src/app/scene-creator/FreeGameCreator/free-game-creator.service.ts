@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core";
 import * as THREE from "three";
-import GLTFLoader from "three-gltf-loader";
+//import GLTFLoader from "three-gltf-loader";
 import { ObjectGeometry } from "../../../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
 import * as IObject from "../../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
-import {thematicObject} from "../../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
+//import {thematicObject} from "../../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
 import { IScene } from "../../scene-interface";
 import { Form3DService } from "../3DFormService/3-dform.service";
 
