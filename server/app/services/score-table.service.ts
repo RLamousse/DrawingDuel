@@ -8,6 +8,11 @@ import {IRecordTime} from "../../../common/model/game/record-time";
 import {ISimpleGame} from "../../../common/model/game/simple-game";
 import {MODIFY_TABLE_SUCCESS_MESSAGE} from "../controllers/controller-utils";
 
+interface IScoreResponse {
+    table: IRecordTime[];
+    isSimple: boolean;
+}
+
 @injectable()
 export class ScoreTableService {
 
