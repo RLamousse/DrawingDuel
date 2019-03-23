@@ -29,6 +29,10 @@ export class AwaitViewComponent implements OnInit {
   }
 
   private gameDeleted(message: WebsocketMessage<string>): void {
+    if (message.body === this.gameName) {
+      const dialogConfig: MatDialogConfig = new MatDialogConfig();
+      dialogConfig.autoFocus = true;
+      dialogConfig.data = {gameName: this.gameName, isSimpleGame: this.isSimpleGame};
       this.route.navigate(["/game-list/"]);
     }
   }
