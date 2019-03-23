@@ -61,3 +61,11 @@ export class AlreadyExistentUserError extends Error {
         super(AlreadyExistentUserError.ALREADY_EXISTENT_USER_ERROR_MESSAGE);
     }
 }
+
+export class NoElementFoundError extends Error {
+    public static readonly NO_ELEMENT_FOUND_ERROR_MESSAGE: string = "ERROR: no elements were found with the given query!";
+
+    constructor() {
+        super(NoElementFoundError.NO_ELEMENT_FOUND_ERROR_MESSAGE);
+    }
+}
