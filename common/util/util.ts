@@ -4,6 +4,11 @@ export function create2dArray<T>(width: number, height: number, filledWith: T): 
         .map(() => new Array(width).fill(filledWith));
 }
 
+export function createArray<T>(size: number, filledWith: T): T[] {
+    return new Array(size)
+        .fill(filledWith);
+}
+
 export function customIndexOf<T>(array: T[], elementToFind: T, compareFunction: (elementToFind: T, elementInArray: T) => boolean): number  {
     for (let i: number = 0; i < array.length; i++) {
         if (compareFunction(elementToFind, array[i])) {

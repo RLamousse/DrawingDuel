@@ -100,7 +100,7 @@ export const OOF2_SOUND: Howl = new Howl(
 export const FOUND_DIFFERENCE_SOUNDS: Howl[] = [
   AIRHORN_SOUND, DAMN_SON_SOUND, HOT_SOUND,
   NOICE_SOUND, SANIC_SOUND, WOW_SOUND,
-  ZELDA_SOUND,
+  ZELDA_SOUND, OH_BABY_SOUND,
 ];
 
 export const NO_DIFFERENCE_SOUNDS: Howl[] = [
@@ -109,6 +109,21 @@ export const NO_DIFFERENCE_SOUNDS: Howl[] = [
   TROMBONE2_SOUND, VIOLIN_SOUND, OOF1_SOUND, OOF2_SOUND,
 ];
 
+export const VICTORY_SOUNDS: Howl[] = [
+  CARELESS_SOUND,
+];
+
+const SOUNDS: Howl[] = [
+  ...FOUND_DIFFERENCE_SOUNDS,
+  ...NO_DIFFERENCE_SOUNDS,
+  ...VICTORY_SOUNDS,
+];
+
+export const stopSounds: () => void = (): void => {
+  SOUNDS.forEach((sound: Howl) => sound.stop());
+};
+
 export const playRandomSound: (sounds: Howl[]) => void = (sounds: Howl[]): void => {
+  stopSounds();
   sounds[Math.floor(Math.random() * sounds.length)].play();
 };
