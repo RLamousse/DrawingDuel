@@ -17,7 +17,7 @@ interface IScoreResponse {
 @injectable()
 export class ScoreTableService {
 
-    public static insertTime(tableToInsert: IRecordTime[], newTime: IRecordTime): number {
+    private static insertTime(tableToInsert: IRecordTime[], newTime: IRecordTime): number {
         if (newTime.time < tableToInsert[2].time) {
             tableToInsert[2] = newTime;
             this.sortTable(tableToInsert);
