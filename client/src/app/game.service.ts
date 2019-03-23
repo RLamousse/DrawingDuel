@@ -109,7 +109,13 @@ export class GameService {
     ).subscribe();
 
   }
-  }
+
+  public deleteFreeGameByName(gameName: string): void {
+    this.http.delete(this.FREE_GAME_BASE_URL + gameName).pipe(
+       catchError(this.handleError<IFreeGame>(this.DELETE_GAME_BY_NAME)),
+     ).subscribe();
+
+   }
 
   private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {
 
