@@ -1,17 +1,17 @@
 // We want to use some magic numbers in the tests
 /* tslint:disable:no-magic-numbers */
 import Axios from "axios";
-import MockAdapter from "axios-mock-adapter";
-// tslint:disable-next-line:no-duplicate-imports Weird interaction between singletons and interface (olivier st-o approved)
 import AxiosAdapter from "axios-mock-adapter";
+// tslint:disable-next-line:no-duplicate-imports Weird interaction between singletons and interface (olivier st-o approved)
+import MockAdapter from "axios-mock-adapter";
 import {expect} from "chai";
 import * as HttpStatus from "http-status-codes";
 import {Message} from "../../../common/communication/messages/message";
 import {DB_FREE_GAME, DB_SIMPLE_GAME, SERVER_BASE_URL} from "../../../common/communication/routes";
+import {NonExistentGameError} from "../../../common/errors/database.errors";
 import {ScoreNotGoodEnough} from "../../../common/errors/services.errors";
 import {IRecordTime} from "../../../common/model/game/record-time";
 import {ScoreTableService} from "./score-table.service";
-import {NonExistentGameError} from "../../../common/errors/database.errors";
 
 const scoreTableService: ScoreTableService = new ScoreTableService();
 describe("ScoreTableService", () => {

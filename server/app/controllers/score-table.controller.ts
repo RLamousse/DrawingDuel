@@ -1,5 +1,6 @@
 import {NextFunction, Request, Response, Router} from "express";
 import {inject, injectable} from "inversify";
+import {GAME_NAME_FIELD} from "../../../common/communication/requests/game-creator.controller.request";
 import {ScoreTableService} from "../services/score-table.service";
 import Types from "../types";
 import {
@@ -7,7 +8,6 @@ import {
     assertUpdateScoreTable,
     executePromiseSafely
 } from "./controller-utils";
-import {GAME_NAME_FIELD} from "../../../common/communication/requests/game-creator.controller.request";
 
 @injectable()
 export class ScoreTableController {

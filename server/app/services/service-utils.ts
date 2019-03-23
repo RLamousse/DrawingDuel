@@ -14,6 +14,20 @@ const GENERATED_NAMES: string[] = ["normie",
                                    "ur mom",
                                    "Som Ting Wong"];
 
+const generateRandomNames: () => string[] = (): string[]  =>  {
+    const randomNamesIndex: number[] = [];
+    while (randomNamesIndex.length < TIMES_ARRAY_SIZE) {
+        const randomNumber: number = Math.floor(Math.random() * (GENERATED_NAMES.length));
+        if (randomNamesIndex.indexOf(randomNumber) < 0) {
+            randomNamesIndex.push(randomNumber);
+        }
+    }
+
+    return [GENERATED_NAMES[randomNamesIndex[0]],
+            GENERATED_NAMES[randomNamesIndex[1]],
+            GENERATED_NAMES[randomNamesIndex[2]]];
+};
+
 export const createRandomScores: () => IRecordTime[] = (): IRecordTime[]  => {
 
     const scoreArray: number[] = new Array(TIMES_ARRAY_SIZE);
@@ -28,18 +42,4 @@ export const createRandomScores: () => IRecordTime[] = (): IRecordTime[]  => {
     return [{name: randomNames[2], time: scoreArray[2]},
             {name: randomNames[1], time: scoreArray[1]},
             {name: randomNames[0], time: scoreArray[0]}];
-};
-
-const generateRandomNames: () => string[] = (): string[]  =>  {
-    const randomNamesIndex: number[] = [];
-    while (randomNamesIndex.length < TIMES_ARRAY_SIZE) {
-        const randomNumber: number = Math.floor(Math.random() * (GENERATED_NAMES.length));
-        if (randomNamesIndex.indexOf(randomNumber) < 0) {
-            randomNamesIndex.push(randomNumber);
-        }
-    }
-
-    return [GENERATED_NAMES[randomNamesIndex[0]],
-            GENERATED_NAMES[randomNamesIndex[1]],
-            GENERATED_NAMES[randomNamesIndex[2]]];
 };
