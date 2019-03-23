@@ -4,6 +4,7 @@ import { BitmapDiffController } from "./controllers/bitmap-diff.controller";
 import { DataBaseController } from "./controllers/data-base.controller";
 import { DiffValidatorController } from "./controllers/diff-validator.controller";
 import { GameCreatorController } from "./controllers/game-creator.controller";
+import {ScoreTableController} from "./controllers/score-table.controller";
 import { UserController } from "./controllers/username.controller";
 import { WebsocketController } from "./controllers/websocket.controller";
 import { BitmapWriter } from "./images/bitmap/bitmap-writer";
@@ -20,7 +21,6 @@ import { ScoreTableService} from "./services/score-table.service";
 import { UsernameService } from "./services/username.service";
 import { DummyWebsocketActionService } from "./services/websocket/dummy-websocket-action.service";
 import Types from "./types";
-import {ScoreTableController} from "./controllers/score-table.controller";
 
 const container: Container = new Container();
 

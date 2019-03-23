@@ -68,7 +68,7 @@ export class ScoreTableService {
             // any is the default type of the required callback function
             // tslint:disable-next-line:no-any Generic error response
             .catch((reason: any) => {
-            throw new Error("dataBase: Unable to create game: " + reason.response.data.message);
+            throw new Error("dataBase: Unable to modify game: " + reason.response.data.message);
         });
     }
 }

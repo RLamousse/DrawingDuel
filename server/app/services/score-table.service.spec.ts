@@ -7,7 +7,7 @@ import AxiosAdapter from "axios-mock-adapter";
 import {expect} from "chai";
 import * as HttpStatus from "http-status-codes";
 import {Message} from "../../../common/communication/messages/message";
-import {DB_SIMPLE_GAME, SERVER_BASE_URL} from "../../../common/communication/routes";
+import {DB_FREE_GAME, DB_SIMPLE_GAME, SERVER_BASE_URL} from "../../../common/communication/routes";
 import {ScoreNotGoodEnough} from "../../../common/errors/services.errors";
 import {IRecordTime} from "../../../common/model/game/record-time";
 import {ScoreTableService} from "./score-table.service";
@@ -33,79 +33,81 @@ describe("ScoreTableService", () => {
         axiosMock = new AxiosAdapter(Axios);
         axiosMock.onGet(SERVER_BASE_URL + DB_SIMPLE_GAME + "tom")
             .reply(HttpStatus.OK, {bestSoloTimes: INITIAL_SCORE_TABLE});
+        axiosMock.onGet(SERVER_BASE_URL + DB_FREE_GAME + "tom")
+            .reply(HttpStatus.NOT_FOUND);
     });
 
         // Test createCube
     it("should throw score error if null time inserted", async () => {
 
-        scoreTableService.updateTableScore("tom", EMPTY_TIME, true).catch((reason: ScoreNotGoodEnough) => {
-            expect(reason.message).to.eql(ScoreNotGoodEnough.SCORE_NOT_GOOD_ENOUGH);
+        return scoreTableService.updateTableScore("tom", EMPTY_TIME, true).catch((reason: ScoreNotGoodEnough) => {
+            expect(reason.message).to.contain("null");
             });
     });
 
-    it("should throw ScoreNotGoodEnough error if the score has a too high value", () => {
+    it("should throw ScoreNotGoodEnough error if the score has a too high value", async () => {
 
-        scoreTableService.updateTableScore("tom", VERY_HIGHT_TIME_SCORE_BOY, true).catch((reason: ScoreNotGoodEnough) => {
+        return scoreTableService.updateTableScore("tom", VERY_HIGHT_TIME_SCORE_BOY, true).catch((reason: ScoreNotGoodEnough) => {
             expect(reason.message).to.eql(ScoreNotGoodEnough.SCORE_NOT_GOOD_ENOUGH);
         });
     });
 
-    it("should return 3 if the score deserves the third place", () => {
+    it("should return 3 if the score deserves the third place", async () => {
 
-        axiosMock.onPut(SERVER_BASE_URL + DB_SIMPLE_GAME)
+        axiosMock.onPut(SERVER_BASE_URL + DB_SIMPLE_GAME + "tom")
             .reply(HttpStatus.OK, SUCCESS_MESSAGE);
 
-        scoreTableService.updateTableScore("tom", HIGHT_TIME_SCORE_BOY, true).then((value: number) => {
+        return scoreTableService.updateTableScore("tom", HIGHT_TIME_SCORE_BOY, true).then((value: number) => {
             expect(value).to.eql(3);
         });
     });
 
-    it("should return 2 if the score deserves the second place", () => {
+    it("should return 2 if the score deserves the second place", async () => {
 
-        axiosMock.onPut(SERVER_BASE_URL + DB_SIMPLE_GAME)
+        axiosMock.onPut(SERVER_BASE_URL + DB_SIMPLE_GAME + "tom")
             .reply(HttpStatus.OK, SUCCESS_MESSAGE);
 
-        scoreTableService.updateTableScore("tom", MIDDLE_TIME_SCORE_BOY, true).then((value: number) => {
+        return scoreTableService.updateTableScore("tom", MIDDLE_TIME_SCORE_BOY, true).then((value: number) => {
             expect(value).to.eql(2);
         });
     });
 
-    it("should return 1 if the score deserves the first place", () => {
+    it("should return 1 if the score deserves the first place", async () => {
 
-        axiosMock.onPut(SERVER_BASE_URL + DB_SIMPLE_GAME)
+        axiosMock.onPut(SERVER_BASE_URL + DB_SIMPLE_GAME + "tom")
             .reply(HttpStatus.OK, SUCCESS_MESSAGE);
 
-        scoreTableService.updateTableScore("tom", LOW_TIME_SCORE_BOY, true).then((value: number) => {
+        return scoreTableService.updateTableScore("tom", LOW_TIME_SCORE_BOY, true).then((value: number) => {
             expect(value).to.eql(1);
         });
     });
 
-    it("should throw ScoreNotGoodEnough error if the score is the same as third place", () => {
+    it("should throw ScoreNotGoodEnough error if the score is the same as third place", async () => {
 
-        axiosMock.onPut(SERVER_BASE_URL + DB_SIMPLE_GAME)
+        axiosMock.onPut(SERVER_BASE_URL + DB_SIMPLE_GAME + "tom")
             .reply(HttpStatus.OK, SUCCESS_MESSAGE);
 
-        scoreTableService.updateTableScore("tom", SAME_THAN_THIRD_SCORE, true).then((value: number) => {
-            expect(value).to.eql(1);
+        return scoreTableService.updateTableScore("tom", SAME_THAN_THIRD_SCORE, true).catch((reason: ScoreNotGoodEnough) => {
+            expect(reason.message).to.eql(ScoreNotGoodEnough.SCORE_NOT_GOOD_ENOUGH);
         });
     });
 
-    it("should return 3 if the score is the same as the one in second place", () => {
+    it("should return 3 if the score is the same as the one in second place", async () => {
 
-        axiosMock.onPut(SERVER_BASE_URL + DB_SIMPLE_GAME)
+        axiosMock.onPut(SERVER_BASE_URL + DB_SIMPLE_GAME + "tom")
             .reply(HttpStatus.OK, SUCCESS_MESSAGE);
 
-        scoreTableService.updateTableScore("tom", SAME_THAN_SECOND_SCORE, true).then((value: number) => {
+        return scoreTableService.updateTableScore("tom", SAME_THAN_SECOND_SCORE, true).then((value: number) => {
             expect(value).to.eql(3);
         });
     });
 
-    it("should return 2 if the score is the same as the one in first place", () => {
+    it("should return 2 if the score is the same as the one in first place", async () => {
 
-        axiosMock.onPut(SERVER_BASE_URL + DB_SIMPLE_GAME)
+        axiosMock.onPut(SERVER_BASE_URL + DB_SIMPLE_GAME + "tom")
             .reply(HttpStatus.OK, SUCCESS_MESSAGE);
 
-        scoreTableService.updateTableScore("tom", SAME_THAN_FIRST_SCORE, true).then((value: number) => {
+        return scoreTableService.updateTableScore("tom", SAME_THAN_FIRST_SCORE, true).then((value: number) => {
             expect(value).to.eql(2);
         });
     });
