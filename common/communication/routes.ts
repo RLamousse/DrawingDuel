@@ -13,7 +13,6 @@ export const FREE_GAME_CREATION_ROUTE: string = GAME_CREATOR_BASE + "create-free
 
 export const DB_SIMPLE_GAME: string = DB_BASE + "games/simple/";
 export const DB_FREE_GAME: string = DB_BASE + "games/free/";
-export const DB_USERS: string = DB_BASE + "users/";
 
 export const USERNAME_ADD: string = USERNAME_BASE + "add/";
 export const USERNAME_RELEASE: string = USERNAME_BASE + "release/";

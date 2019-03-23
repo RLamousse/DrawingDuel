@@ -1,7 +1,12 @@
 import {injectable} from "inversify";
 import "reflect-metadata";
 import {Message} from "../../../../common/communication/messages/message";
-import {AlreadyExistentGameError, InvalidGameError, NonExistentGameError} from "../../../../common/errors/database.errors";
+import {
+    AlreadyExistentGameError,
+    InvalidGameError,
+    NonExistentGameError,
+    NoElementFoundError
+} from "../../../../common/errors/database.errors";
 import {ISimpleGame} from "../../../../common/model/game/simple-game";
 import {CollectionService} from "./collection.service";
 
@@ -11,7 +16,7 @@ export const GAME_NAME_FIELD: string = "gameName";
 export class SimpleGamesCollectionService extends CollectionService<ISimpleGame> {
 
     private static validate(game: ISimpleGame): boolean {
-        // we want to assert for everytype of undefines, not just for null
+        // we want to assert for every type of undefined, not just for null
         // tslint:disable-next-line:triple-equals
         return game != undefined &&
             game.diffData !== undefined &&
@@ -44,7 +49,17 @@ export class SimpleGamesCollectionService extends CollectionService<ISimpleGame>
     public async getFromId(id: string): Promise<ISimpleGame> {
         CollectionService.assertId(id);
 
-        return this.getDocument(id, NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE);
+        return this.getDocument(id)
+            .then((game: ISimpleGame) => {
+                return game;
+            })
+            .catch((error: Error) => {
+                if (error.message === NoElementFoundError.NO_ELEMENT_FOUND_ERROR_MESSAGE) {
+                    throw new NonExistentGameError();
+                }
+
+                throw error;
+            });
     }
 
     protected creationSuccessMessage(data: ISimpleGame): Message {
