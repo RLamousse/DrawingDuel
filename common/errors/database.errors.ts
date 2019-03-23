@@ -46,6 +46,14 @@ export class InvalidGameError extends Error {
     }
 }
 
+export class InvalidGameInfoError extends Error {
+    public static readonly GAME_INFO_FORMAT_ERROR_MESSAGE: string = "ERROR: the new attributes of the game have the wrong format!";
+
+    constructor() {
+        super(InvalidGameInfoError.GAME_INFO_FORMAT_ERROR_MESSAGE);
+    }
+}
+
 export class NonExistentUserError extends Error {
     public static readonly NON_EXISTENT_USER_ERROR_MESSAGE: string = "ERROR: the specified username does no exist!";
 

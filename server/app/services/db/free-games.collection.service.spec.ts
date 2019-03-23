@@ -1,5 +1,5 @@
 import {expect} from "chai";
-import {Collection, FilterQuery} from "mongodb";
+import {Collection, FilterQuery, UpdateQuery} from "mongodb";
 import * as TypeMoq from "typemoq";
 // tslint:disable-next-line:no-duplicate-imports Weird interaction between singletons and interface (olivier st-o approved)
 import {IMock} from "typemoq";
@@ -8,7 +8,7 @@ import {
     AlreadyExistentGameError,
     DatabaseError,
     EmptyIdError,
-    InvalidGameError,
+    InvalidGameError, InvalidGameInfoError,
     NonExistentGameError
 } from "../../../../common/errors/database.errors";
 import {IFreeGame} from "../../../../common/model/game/free-game";
@@ -33,6 +33,9 @@ describe("A db service for free games", () => {
 
     const createGameQueryForId: (id: string) => FilterQuery<IFreeGame> =
         (id: string): FilterQuery<IFreeGame> => ({[GAME_NAME_FIELD]: {$eq: id}});
+
+    const createGameQueryForUpdate: (data: Partial<IFreeGame>) => UpdateQuery<IFreeGame> =
+        (data: Partial<IFreeGame>): UpdateQuery<IFreeGame> => ({$set: data});
 
     beforeEach(() => {
         mockedCollection = TypeMoq.Mock.ofType<Collection<IFreeGame>>();
@@ -90,6 +93,75 @@ describe("A db service for free games", () => {
                 .then((message: Message) => {
                     expect(message)
                         .to.eql(freeGamesCollectionService["creationSuccessMessage"](sampleGame));
+                });
+        });
+    });
+
+    describe("Game update", () => {
+
+        it("should not update an invalid game", async () => {
+            const invalidGame: Partial<IFreeGame> = {
+            };
+
+            freeGamesCollectionService = new FreeGamesCollectionService(mockedCollection.object);
+
+            return freeGamesCollectionService.update("invalidGame", invalidGame)
+                .catch((invalidGameInfoError: InvalidGameInfoError) => {
+                    expect(invalidGameInfoError.message)
+                        .to.eql(InvalidGameInfoError.GAME_INFO_FORMAT_ERROR_MESSAGE);
+                });
+        });
+
+        it("should not update a game that does not exist", async () => {
+
+            const partialGame: Partial<IFreeGame> = {
+                scenes: {
+                    originalObjects: [],
+                    modifiedObjects: [],
+                },
+                bestMultiTimes: [],
+                bestSoloTimes: [],
+            };
+
+            const query: FilterQuery<IFreeGame> = createGameQueryForId("sampleGame");
+            mockedCollection.setup(async (collection: Collection<IFreeGame>) => collection.countDocuments(query))
+                .returns(async () => Promise.resolve(0));
+
+            freeGamesCollectionService = new FreeGamesCollectionService(mockedCollection.object);
+
+            return freeGamesCollectionService.update("sampleGame", partialGame)
+                .catch((nonExistentGameError: NonExistentGameError) => {
+                    expect(nonExistentGameError.message)
+                        .to.eql(NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE);
+                });
+        });
+
+        it("should update a game", async () => {
+
+            const partialGame: Partial<IFreeGame> = {
+                scenes: {
+                    originalObjects: [],
+                    modifiedObjects: [],
+                },
+                bestMultiTimes: [],
+                bestSoloTimes: [],
+            };
+
+            const query: FilterQuery<IFreeGame> = createGameQueryForId("sampleGame");
+            const updateQuery: UpdateQuery<IFreeGame> = createGameQueryForUpdate(partialGame);
+            mockedCollection.setup(async (collection: Collection<IFreeGame>) => collection.countDocuments(query))
+                .returns(async () => Promise.resolve(1));
+
+            mockedCollection.setup(async (collection: Collection<IFreeGame>) => collection.updateOne(query, updateQuery))
+            // @ts-ignore Spoof InsertOneWriteOpResult for DB insert promise
+                .returns(async () => Promise.resolve({}));
+
+            freeGamesCollectionService = new FreeGamesCollectionService(mockedCollection.object);
+
+            return freeGamesCollectionService.update("sampleGame", partialGame)
+                .then((message: Message) => {
+                    expect(message)
+                        .to.eql(freeGamesCollectionService["updateSuccessMessage"]("sampleGame"));
                 });
         });
     });
