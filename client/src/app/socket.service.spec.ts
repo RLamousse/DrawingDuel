@@ -28,7 +28,7 @@ describe("Socket service", () => {
       });
     });
     socketSpy.onEvent(SocketEvent.DUMMY).subscribe((message: WebsocketMessage) => {
-      expect(message).toBeDefined();
+      expect(message).toBeDefined().catch();
       done();
     });
   });
@@ -42,6 +42,7 @@ describe("Socket service", () => {
   it("should fail to send without a server connection", async () => {
     const service: SocketService = TestBed.get(SocketService);
     service.isSocketConnected = () => false;
+
     return expect(service.send(
       SocketEvent.DUMMY,
       {
@@ -54,6 +55,7 @@ describe("Socket service", () => {
   it("should succeed to send with a server connection", async () => {
     const service: SocketService = TestBed.get(SocketService);
     service.isSocketConnected = () => true;
+
     return expect(service.send(
       SocketEvent.DUMMY,
       {
@@ -72,16 +74,18 @@ describe("Socket service", () => {
       body: "",
       title: SocketEvent.WELCOME,
     };
+    // We are accessing a private member
+    // tslint:disable-next-line: no-any
     (service as any).socket = {
       emit: (event: SocketEvent, message: WebsocketMessage) => {
         called = true;
         e = event;
         m = message;
-      }
+      },
     };
     service.send(SocketEvent.DUMMY, {title: SocketEvent.DUMMY, body: "test"});
-    expect(called).toBeTruthy();
-    expect(e).toEqual(SocketEvent.DUMMY);
-    expect(m.body).toEqual("test");
+    expect(called).toBeTruthy().catch();
+    expect(e).toEqual(SocketEvent.DUMMY).catch();
+    expect(m.body).toEqual("test").catch();
   });
 });
