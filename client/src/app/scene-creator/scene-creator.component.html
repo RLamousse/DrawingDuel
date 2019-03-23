@@ -4,7 +4,7 @@
   <div class = "row" [class.disabled]="!clickEnabled">
     <div>
       <h1>Scene Originale</h1>
-      <div class= "scene" #originalView ></div>
+      <div class= "scene" (click)="onDivContClick($event)" #originalView></div>
     </div>
     <div class = "middleText">
       <div>Vous</div>
@@ -15,7 +15,7 @@
     </div>
     <div>
       <h1>Scene Modifiée</h1>
-      <div class= "scene" #modifiedView></div>
+      <div class= "scene" (click)="onDivContClick($event)" #modifiedView></div>
     </div>
   </div>
   <h1 style="text-align: center">Message:</h1>

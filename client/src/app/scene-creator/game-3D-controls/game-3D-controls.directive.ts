@@ -7,7 +7,6 @@ export class Game3DControlsDirective {
   private readonly keyS: string = "KeyS";
   private readonly keyA: string = "KeyA";
   private readonly keyD: string = "KeyD";
-  private cursorEnabled: boolean;
   public constructor( private renderUpdateService: RenderUpdateService ) {}
 
   @HostListener("document:keydown", ["$event"])
@@ -43,22 +42,9 @@ export class Game3DControlsDirective {
   @HostListener("document:mousedown", ["$event"])
   public mousedown($event: MouseEvent): void {
     const RIGHT_BUTTON: number = 2;
-    const LEFT_BUTTON: number = 0;
-    const CANVAS_TAG: string = "CANVAS";
     if ($event.button === RIGHT_BUTTON) {
       this.renderUpdateService.rightClick = true;
       this.renderUpdateService.rightClickHold($event.clientX, $event.clientY);
-    } else if (
-      $event.button === LEFT_BUTTON &&
-      $event.srcElement !== null &&
-      $event.srcElement.tagName === CANVAS_TAG &&
-      this.cursorEnabled
-    ) {
-        $event.preventDefault();
-        /*this.renderUpdateService.objDiffValidation(
-          $event.clientX,
-          $event.clientY,
-        );*/
     }
   }
 

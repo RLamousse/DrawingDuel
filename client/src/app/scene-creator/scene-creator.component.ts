@@ -15,9 +15,11 @@ export class SceneCreatorComponent implements AfterViewInit, OnInit {
 
   public constructor(private renderService: SceneRendererService, private route: ActivatedRoute,
                      private freeGameCreator: FreeGameCreatorService, private gameService: GameService) {
+    document.addEventListener("onClick", this.onDivContClick);
   }
 
   protected gameName: string;
+  protected clickEnabled: boolean = true;
 
   private get originalContainer(): HTMLDivElement {
     return this.originalRef.nativeElement;
@@ -32,8 +34,6 @@ export class SceneCreatorComponent implements AfterViewInit, OnInit {
 
   @ViewChild("modifiedView")
   private modifiedRef: ElementRef;
-
-  protected clickEnabled: boolean = true;
 
   public ngOnInit(): void {
     this.route.queryParams.subscribe((params) => {
@@ -63,5 +63,15 @@ export class SceneCreatorComponent implements AfterViewInit, OnInit {
   }
   public onRightClick($event: MouseEvent): void {
     $event.preventDefault();
+  }
+
+  public onDivContClick($event: MouseEvent): void {
+    const CANVAS_TAG: string = "CANVAS";
+    if (
+      $event.srcElement !== null &&
+      $event.srcElement.tagName === CANVAS_TAG
+    ) {
+      this.renderService.objDiffValidation($event.clientX, $event.clientY);
+    }
   }
 }
