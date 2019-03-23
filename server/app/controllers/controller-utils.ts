@@ -64,6 +64,15 @@ export const assertBodyFieldsOfRequest: (req: Request, ...fields: string[]) => v
     }
 };
 
+export const assertBodyFieldsOfQuery: (req: Request, ...fields: string[]) => void = (req: Request, ...fields: string[]): void => {
+    let field: string;
+    for (field of fields) {
+        if (typeof req.params[field] === "undefined" || req.params[field] === "") {
+            throw new RequestFormatError();
+        }
+    }
+};
+
 const assertBasicSceneFields: (req: Request) => boolean = (req: Request): boolean => {
     return (req.body.theme !== Themes.Geometry &&
         req.body.theme !== Themes.Sanic &&
