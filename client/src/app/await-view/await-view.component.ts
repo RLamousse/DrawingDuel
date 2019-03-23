@@ -4,6 +4,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {WebsocketMessage} from "../../../../common/communication/messages/message";
 import {SocketEvent} from "../../../../common/communication/socket-events";
 import {SocketService} from "../socket.service";
+import {GameDeletionNotifComponent} from "./game-deletion-notif/game-deletion-notif.component";
 
 @Component({
   selector: "app-await-view",
@@ -33,6 +34,7 @@ export class AwaitViewComponent implements OnInit {
       const dialogConfig: MatDialogConfig = new MatDialogConfig();
       dialogConfig.autoFocus = true;
       dialogConfig.data = {gameName: this.gameName, isSimpleGame: this.isSimpleGame};
+      this.dialog.open(GameDeletionNotifComponent, dialogConfig);
       this.route.navigate(["/game-list/"]);
     }
   }
