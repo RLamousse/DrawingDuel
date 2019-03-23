@@ -4,7 +4,7 @@ import {expect} from "chai";
 import * as HttpStatus from "http-status-codes";
 import * as request from "supertest";
 import {anything, anyString, instance, mock, when} from "ts-mockito";
-import {MODIFY_SCORES} from "../../../common/communication/routes";
+import {MODIFY_SCORES, RESET_SCORES} from "../../../common/communication/routes";
 import {RequestFormatError} from "../../../common/errors/controller.errors";
 import {Application} from "../app";
 import {container} from "../inversify.config";
@@ -25,6 +25,7 @@ describe("Score Table controller", () => {
     beforeEach(() => {
         scoreTableService = mock(ScoreTableService);
         when(scoreTableService.updateTableScore(anyString(), anything(), anything())).thenResolve(0);
+        when(scoreTableService.resetScores(anyString())).thenResolve();
         container.rebind(types.ScoreTableService).toConstantValue(instance(scoreTableService));
         app = container.get<Application>(types.Application).app;
     });
@@ -88,6 +89,23 @@ describe("Score Table controller", () => {
                 .then((response) => {
                     expect(response.body).to.eql(0);
                 });
+        });
+    });
+    describe("Reset scores", () => {
+
+        it("should send an error when no name specified", async () => {
+            return request(app)
+                .put(RESET_SCORES)
+                .expect(HttpStatus.INTERNAL_SERVER_ERROR)
+                .then((response) => {
+                    expect(response.body.message).to.contain("Not Found");
+                });
+        });
+
+        it("should send an success response for valid data", async () => {
+            return request(app)
+                .put(RESET_SCORES + "someGame")
+                .expect(HttpStatus.OK);
         });
     });
 });
