@@ -7,8 +7,6 @@
 }
 
 .chatContainer {
-  /* display: flex; */
-  /* flex-direction: column; */
   height: 100px;
   overflow: auto;
 }
