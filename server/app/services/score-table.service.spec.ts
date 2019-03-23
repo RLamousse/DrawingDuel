@@ -11,6 +11,7 @@ import {DB_FREE_GAME, DB_SIMPLE_GAME, SERVER_BASE_URL} from "../../../common/com
 import {ScoreNotGoodEnough} from "../../../common/errors/services.errors";
 import {IRecordTime} from "../../../common/model/game/record-time";
 import {ScoreTableService} from "./score-table.service";
+import {NonExistentGameError} from "../../../common/errors/database.errors";
 
 const scoreTableService: ScoreTableService = new ScoreTableService();
 describe("ScoreTableService", () => {
@@ -113,5 +114,24 @@ describe("ScoreTableService", () => {
         });
     });
     describe("Reset scores", () => {
+        it("should throw if the name is not an existing name", async () => {
+
+            axiosMock.onGet(SERVER_BASE_URL + DB_FREE_GAME + "tom")
+                .reply(HttpStatus.NOT_FOUND);
+            axiosMock.onGet(SERVER_BASE_URL + DB_SIMPLE_GAME + "tom")
+                .reply(HttpStatus.NOT_FOUND);
+
+            return scoreTableService.resetScores("tom").catch((reason: NonExistentGameError) => {
+                expect(reason.message).to.eql(NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE);
+            });
+        });
+
+        it("should not throw if the name is an existing name", async () => {
+
+            axiosMock.onPut(SERVER_BASE_URL + DB_SIMPLE_GAME + "tom")
+                .reply(HttpStatus.OK, SUCCESS_MESSAGE);
+
+            return scoreTableService.resetScores("tom");
+        });
     });
 });
