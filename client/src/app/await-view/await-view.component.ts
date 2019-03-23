@@ -1,4 +1,5 @@
 import {Component, OnInit} from "@angular/core";
+import {MatDialog, MatDialogConfig} from "@angular/material";
 import {ActivatedRoute, Router} from "@angular/router";
 import {WebsocketMessage} from "../../../../common/communication/messages/message";
 import {SocketEvent} from "../../../../common/communication/socket-events";
@@ -15,7 +16,7 @@ export class AwaitViewComponent implements OnInit {
   protected isSimpleGame: boolean;
 
   public constructor(private activatedRoute: ActivatedRoute, private route: Router,
-                     private socket: SocketService) {
+                     private socket: SocketService, private dialog: MatDialog) {
     this.gameDeleted = this.gameDeleted.bind(this);
   }
 
@@ -28,6 +29,7 @@ export class AwaitViewComponent implements OnInit {
   }
 
   private gameDeleted(message: WebsocketMessage<string>): void {
-    this.route.navigate(["/game-list/"]);
+      this.route.navigate(["/game-list/"]);
+    }
   }
 }
