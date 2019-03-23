@@ -1,78 +1,112 @@
+// We want to use some magic numbers in the tests
+/* tslint:disable:no-magic-numbers */
+import Axios from "axios";
+import MockAdapter from "axios-mock-adapter";
+// tslint:disable-next-line:no-duplicate-imports Weird interaction between singletons and interface (olivier st-o approved)
+import AxiosAdapter from "axios-mock-adapter";
 import {expect} from "chai";
+import * as HttpStatus from "http-status-codes";
+import {Message} from "../../../common/communication/messages/message";
+import {DB_SIMPLE_GAME, SERVER_BASE_URL} from "../../../common/communication/routes";
+import {ScoreNotGoodEnough} from "../../../common/errors/services.errors";
 import {IRecordTime} from "../../../common/model/game/record-time";
 import {ScoreTableService} from "./score-table.service";
 
 const scoreTableService: ScoreTableService = new ScoreTableService();
 describe("ScoreTableService", () => {
+    let axiosMock: MockAdapter;
+    const SUCCESS_MESSAGE: Message = {title: "success", body: "success"};
     // @ts-ignore
-    const emptyTime: IRecordTime = null;
-    const veryHighTimeScoreBoy: IRecordTime = {name: "Tommy", time: 15};
-    const highTimeScoreBoy: IRecordTime = {name: "Tommy", time: 7};
-    const middleTimeScoreBoy: IRecordTime = {name: "Phil", time: 3};
-    const lowTimeScoreBoy: IRecordTime = {name: "Bob", time: 1};
-    const sameThanFirstScore: IRecordTime = {name: "Peter", time: 2};
-    const sameThanSecondScore: IRecordTime = {name: "Jane", time: 5};
-    const sameThanThirdScore: IRecordTime = {name: "Anthony", time: 10};
-    const initialScoreTable: IRecordTime[] = [{name: "Paul", time: 2},
-                                              {name: "Jack", time: 5},
-                                              {name: "Bill", time: 10}];
+    const EMPTY_TIME: IRecordTime = null;
+    const VERY_HIGHT_TIME_SCORE_BOY: IRecordTime = {name: "Tommy", time: 15};
+    const HIGHT_TIME_SCORE_BOY: IRecordTime = {name: "Tommy", time: 7};
+    const MIDDLE_TIME_SCORE_BOY: IRecordTime = {name: "Phil", time: 3};
+    const LOW_TIME_SCORE_BOY: IRecordTime = {name: "Bob", time: 1};
+    const SAME_THAN_FIRST_SCORE: IRecordTime = {name: "Peter", time: 2};
+    const SAME_THAN_SECOND_SCORE: IRecordTime = {name: "Jane", time: 5};
+    const SAME_THAN_THIRD_SCORE: IRecordTime = {name: "Anthony", time: 10};
+    const INITIAL_SCORE_TABLE: IRecordTime[] = [{name: "Paul", time: 2},
+                                                {name: "Jack", time: 5},
+                                                {name: "Bill", time: 10}];
 
-    // Test createCube
-    it("should throw if null time inserted", () => {
-        scoreTableService.updateTableScore("tom", lowTimeScoreBoy);
-        const table: IRecordTime[] = initialScoreTable;
-        expect(() => ScoreTableService.insertTime(table, emptyTime)).to.throw();
+    beforeEach(() => {
+        axiosMock = new AxiosAdapter(Axios);
+        axiosMock.onGet(SERVER_BASE_URL + DB_SIMPLE_GAME + "tom")
+            .reply(HttpStatus.OK, {bestSoloTimes: INITIAL_SCORE_TABLE});
     });
 
-    it("should return the same table if the time inserted is too high", () => {
-        const table: IRecordTime[] = JSON.parse(JSON.stringify(initialScoreTable));
-        ScoreTableService.insertTime(table, veryHighTimeScoreBoy);
-        expect(table).to.eql(initialScoreTable);
+        // Test createCube
+    it("should throw score error if null time inserted", async () => {
+
+        scoreTableService.updateTableScore("tom", EMPTY_TIME, true).catch((reason: ScoreNotGoodEnough) => {
+            expect(reason.message).to.eql(ScoreNotGoodEnough.SCORE_NOT_GOOD_ENOUGH);
+            });
     });
 
-    it("should return a new table with the highTimeScoreBoy at the third place if you insert it", () => {
-        const table: IRecordTime[] = JSON.parse(JSON.stringify(initialScoreTable));
-        ScoreTableService.insertTime(table, highTimeScoreBoy);
-        expect(table[0]).to.eql(initialScoreTable[0]);
-        expect(table[1]).to.eql(initialScoreTable[1]);
-        expect(table[2]).to.eql(highTimeScoreBoy);
+    it("should throw ScoreNotGoodEnough error if the score has a too high value", () => {
+
+        scoreTableService.updateTableScore("tom", VERY_HIGHT_TIME_SCORE_BOY, true).catch((reason: ScoreNotGoodEnough) => {
+            expect(reason.message).to.eql(ScoreNotGoodEnough.SCORE_NOT_GOOD_ENOUGH);
+        });
     });
 
-    it("should return a new table with the middleTimeScoreBoy at the second place if you insert it", () => {
-        const table: IRecordTime[] = JSON.parse(JSON.stringify(initialScoreTable));
-        ScoreTableService.insertTime(table, middleTimeScoreBoy);
-        expect(table[0]).to.eql(initialScoreTable[0]);
-        expect(table[1]).to.eql(middleTimeScoreBoy);
-        expect(table[2]).to.eql(initialScoreTable[1]);
+    it("should return 3 if the score deserves the third place", () => {
+
+        axiosMock.onPut(SERVER_BASE_URL + DB_SIMPLE_GAME)
+            .reply(HttpStatus.OK, SUCCESS_MESSAGE);
+
+        scoreTableService.updateTableScore("tom", HIGHT_TIME_SCORE_BOY, true).then((value: number) => {
+            expect(value).to.eql(3);
+        });
     });
 
-    it("should return a new table with the lowTimeScoreBoy at the first place if you insert it", () => {
-        const table: IRecordTime[] = JSON.parse(JSON.stringify(initialScoreTable));
-        ScoreTableService.insertTime(table, lowTimeScoreBoy);
-        expect(table[0]).to.eql(lowTimeScoreBoy);
-        expect(table[1]).to.eql(initialScoreTable[0]);
-        expect(table[2]).to.eql(initialScoreTable[1]);
+    it("should return 2 if the score deserves the second place", () => {
+
+        axiosMock.onPut(SERVER_BASE_URL + DB_SIMPLE_GAME)
+            .reply(HttpStatus.OK, SUCCESS_MESSAGE);
+
+        scoreTableService.updateTableScore("tom", MIDDLE_TIME_SCORE_BOY, true).then((value: number) => {
+            expect(value).to.eql(2);
+        });
     });
 
-    it("should not replace if you insert same than first", () => {
-        const table: IRecordTime[] = JSON.parse(JSON.stringify(initialScoreTable));
-        ScoreTableService.insertTime(table, sameThanFirstScore);
-        expect(table[0]).to.eql(initialScoreTable[0]);
-        expect(table[1]).to.eql(sameThanFirstScore);
-        expect(table[2]).to.eql(initialScoreTable[1]);
+    it("should return 1 if the score deserves the first place", () => {
+
+        axiosMock.onPut(SERVER_BASE_URL + DB_SIMPLE_GAME)
+            .reply(HttpStatus.OK, SUCCESS_MESSAGE);
+
+        scoreTableService.updateTableScore("tom", LOW_TIME_SCORE_BOY, true).then((value: number) => {
+            expect(value).to.eql(1);
+        });
     });
 
-    it("should not replace if you insert same than second", () => {
-        const table: IRecordTime[] = JSON.parse(JSON.stringify(initialScoreTable));
-        ScoreTableService.insertTime(table, sameThanSecondScore);
-        expect(table[0]).to.eql(initialScoreTable[0]);
-        expect(table[1]).to.eql(initialScoreTable[1]);
-        expect(table[2]).to.eql(sameThanSecondScore);
+    it("should throw ScoreNotGoodEnough error if the score is the same as third place", () => {
+
+        axiosMock.onPut(SERVER_BASE_URL + DB_SIMPLE_GAME)
+            .reply(HttpStatus.OK, SUCCESS_MESSAGE);
+
+        scoreTableService.updateTableScore("tom", SAME_THAN_THIRD_SCORE, true).then((value: number) => {
+            expect(value).to.eql(1);
+        });
     });
 
-    it("should not replace if you insert same than third", () => {
-        const table: IRecordTime[] = JSON.parse(JSON.stringify(initialScoreTable));
-        ScoreTableService.insertTime(table, sameThanThirdScore);
-        expect(table).to.eql(initialScoreTable);
+    it("should return 3 if the score is the same as the one in second place", () => {
+
+        axiosMock.onPut(SERVER_BASE_URL + DB_SIMPLE_GAME)
+            .reply(HttpStatus.OK, SUCCESS_MESSAGE);
+
+        scoreTableService.updateTableScore("tom", SAME_THAN_SECOND_SCORE, true).then((value: number) => {
+            expect(value).to.eql(3);
+        });
+    });
+
+    it("should return 2 if the score is the same as the one in first place", () => {
+
+        axiosMock.onPut(SERVER_BASE_URL + DB_SIMPLE_GAME)
+            .reply(HttpStatus.OK, SUCCESS_MESSAGE);
+
+        scoreTableService.updateTableScore("tom", SAME_THAN_FIRST_SCORE, true).then((value: number) => {
+            expect(value).to.eql(2);
+        });
     });
 });
