@@ -35,7 +35,7 @@ describe("UNListService", () => {
     expect(service.message).toBe("Tu dois utiliser seulement des caractères alphanumériques!");
   });
 
-  it("should return true if a valid username is enter", () => {
+  it("should return true if a valid username is enter", async () => {
     service = TestBed.get(UNListService);
     spyService.isAlphanumeric.and.callThrough();
 

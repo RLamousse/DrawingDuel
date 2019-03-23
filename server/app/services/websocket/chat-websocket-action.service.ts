@@ -26,7 +26,6 @@ export class ChatWebsocketActionService extends WebsocketActionService {
 
     private generateMessage(data: ChatMessage): WebsocketMessage<string> {
         let message: string = this.formatTime(data.timestamp);
-        // TODO: Change to a map
         switch (data.type) {
             case ChatMessageType.DIFF_FOUND:
                 message += (this.getDiffFoundMessage(data));
