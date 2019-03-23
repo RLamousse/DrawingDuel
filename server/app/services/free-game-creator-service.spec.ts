@@ -1,11 +1,15 @@
 // tslint:disable:typedef
-import { expect } from "chai";
-import { ModificationType, ObjectGeometry } from "../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
+import {expect} from "chai";
+import {
+    ModificationType,
+    ObjectGeometry,
+    Themes
+} from "../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
 import * as IObject from "../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
-import { container } from "../inversify.config";
+import {container} from "../inversify.config";
 import types from "../types";
-import { FreeGameCreatorService } from "./free-game-creator.service";
-import { Object3DCreatorService } from "./object3D-creator.service";
+import {FreeGameCreatorService} from "./free-game-creator.service";
+import {Object3DCreatorService} from "./object3D-creator.service";
 
 const MASK: number = 0xFFFFFF;
 const mockedBaseObject: IObject.IJson3DObject = {
@@ -13,6 +17,8 @@ const mockedBaseObject: IObject.IJson3DObject = {
     position: [0, 0, 0],
     rotation: [0, 0, 0],
     color: Math.random() * MASK,
+    scale: 1,
+    gameType: Themes.Geometry,
 };
 
 const mockedObject3DCreator = {

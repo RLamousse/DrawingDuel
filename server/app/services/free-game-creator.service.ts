@@ -1,8 +1,12 @@
-import { inject, injectable } from "inversify";
-import { ModificationType, ObjectGeometry } from "../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
+import {inject, injectable} from "inversify";
+import {
+    ModificationType,
+    ObjectGeometry,
+    Themes
+} from "../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
 import * as IObject from "../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
 import Types from "../types";
-import { Object3DCreatorService } from "./object3D-creator.service";
+import {Object3DCreatorService} from "./object3D-creator.service";
 
 @injectable()
 export class FreeGameCreatorService {
@@ -70,7 +74,7 @@ export class FreeGameCreatorService {
                 createdObject = this.object3DCreatorService.createPyramid();
                 break; }
             default: {
-                createdObject = { position: [], rotation: [], color: 0, type: ObjectGeometry.cube };
+                createdObject = { position: [], rotation: [], color: 0, type: ObjectGeometry.cube, gameType: Themes.Geometry, scale: 1 };
             }
         }
 

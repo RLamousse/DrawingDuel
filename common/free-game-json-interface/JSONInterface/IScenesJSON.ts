@@ -1,4 +1,4 @@
-﻿import { ObjectGeometry } from "../FreeGameCreatorInterface/free-game-enum";
+﻿import {ObjectGeometry, Themes} from "../FreeGameCreatorInterface/free-game-enum";
 
 export interface IScenesJSON{
     originalObjects: IJson3DObject[],
@@ -10,6 +10,8 @@ export interface IJson3DObject {
     rotation: number[],
     color: number,
     type: ObjectGeometry,
+    scale: number
+    gameType: Themes,
 }
 
 export interface ISphere extends IJson3DObject {
@@ -43,13 +45,4 @@ export interface ICylinder extends IJson3DObject {
     radiusSegment: number,
 }
 
-export interface IImportedObject extends thematicObject{
-    position: number[],
-    rotation: number[]
-}
-
-export interface thematicObject {
-    name: string;
-    scale: number;
-}
 

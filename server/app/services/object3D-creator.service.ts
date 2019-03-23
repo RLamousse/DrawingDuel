@@ -1,8 +1,6 @@
-import { injectable } from "inversify";
-import { ObjectGeometry } from "../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
+import {injectable} from "inversify";
+import {ObjectGeometry, Themes} from "../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
 import * as JsonScene from "../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
-import {IImportedObject} from "../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
-import {spaceObjects} from "../../../common/free-game-json-interface/modelThematicTheme";
 
 @injectable()
 export class Object3DCreatorService {
@@ -30,6 +28,8 @@ export class Object3DCreatorService {
             rotation: [0, 0, 0],
             color: Math.random() * this.COLOR_MASK,
             sideLenght: this.sizeGenerator(this.BASE_SIZE),
+            scale: 1,
+            gameType: Themes.Geometry,
         };
     }
 
@@ -44,6 +44,8 @@ export class Object3DCreatorService {
             radius: sphereSize,
             widthSegments: this.SEGMENTS,
             heightSegments: this.SEGMENTS,
+            scale: 1,
+            gameType: Themes.Geometry,
         };
     }
 
@@ -58,6 +60,8 @@ export class Object3DCreatorService {
             radius: coneSize / this.RADIUS_FACTOR,
             height: coneSize,
             radialSegment: this.SEGMENTS,
+            gameType: Themes.Geometry,
+            scale: 1,
         };
     }
 
@@ -73,6 +77,8 @@ export class Object3DCreatorService {
             botRadius: cylinderSize / this.RADIUS_FACTOR,
             height: cylinderSize,
             radiusSegment: this.SEGMENTS,
+            gameType: Themes.Geometry,
+            scale: 1,
         };
     }
 
@@ -92,17 +98,21 @@ export class Object3DCreatorService {
             height: pyramidSize,
             radiusSegment: BASE_SIDES,
             heightSegment: HEIGHT_SEG,
+            gameType: Themes.Geometry,
+            scale: 1,
         };
     }
 
-    public createThematicObject(size: number): IImportedObject {
-        const index =  Math.random() * spaceObjects.length;
+    public createThematicObject(size: number): JsonScene.IJson3DObject {
+        //const index: number =  Math.random() * (14 - 5) + 5;
 
         return {
-            name: spaceObjects[index].name,
-            scale: this.sizeGenerator(spaceObjects[index].scale),
+            type: ObjectGeometry.apollo,
+            scale: 1,
             position: [0, 0, 0],
             rotation: [0, 0, 0],
-        }
+            gameType: Themes.Space,
+            color: Math.random() * this.COLOR_MASK,
+        };
     }
 }
