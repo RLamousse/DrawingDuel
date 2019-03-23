@@ -1,12 +1,13 @@
 import Axios from "axios";
+import * as Httpstatus from "http-status-codes";
 import {injectable} from "inversify";
-import {Message} from "../../../common/communication/messages/message";
 import {DB_FREE_GAME, DB_SIMPLE_GAME, SERVER_BASE_URL} from "../../../common/communication/routes";
+import {NonExistentGameError} from "../../../common/errors/database.errors";
+import {ScoreNotGoodEnough} from "../../../common/errors/services.errors";
 import {IFreeGame} from "../../../common/model/game/free-game";
 import {IGame} from "../../../common/model/game/game";
 import {IRecordTime} from "../../../common/model/game/record-time";
 import {ISimpleGame} from "../../../common/model/game/simple-game";
-import {MODIFY_TABLE_SUCCESS_MESSAGE} from "../controllers/controller-utils";
 
 interface IScoreResponse {
     table: IRecordTime[];
@@ -30,12 +31,13 @@ export class ScoreTableService {
         tableToSort.sort((a: IRecordTime, b: IRecordTime) => a.time - b.time);
     }
 
-    public async updateTableScore(gameName: string, newScore: IRecordTime): Promise<Message> {
-        const tableToInsert: IRecordTime[] = await this.getTableFromDB(gameName);
-        ScoreTableService.insertTime(tableToInsert, newScore);
-        await this.putTableInDB(tableToInsert);
+    public async updateTableScore(gameName: string, newScore: IRecordTime, isSolo: boolean): Promise<number> {
 
-        return MODIFY_TABLE_SUCCESS_MESSAGE;
+        const responseFromDB: IScoreResponse = await this.getTableFromDB(gameName, isSolo);
+        const position: number = ScoreTableService.insertTime(responseFromDB.table, newScore);
+        await this.putTableInDB(gameName, responseFromDB, isSolo);
+
+        return position;
     }
 
     private async getTableFromDB (gameName: string, isSolo: boolean): Promise<IScoreResponse> {
