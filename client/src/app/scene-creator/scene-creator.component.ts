@@ -98,10 +98,9 @@ export class SceneCreatorComponent implements AfterViewInit, OnInit {
           canvasContext.textAlign = "center";
           canvasContext.strokeStyle = "black";
           const point: IPoint = {
-            x: $event.offsetX - canvasContext.canvas.getBoundingClientRect().left,
-            y: $event.offsetY - canvasContext.canvas.getBoundingClientRect().top,
+            x: Math.floor($event.clientX / 2 - canvasContext.canvas.getBoundingClientRect().left),
+            y: Math.floor($event.clientY - 2*canvasContext.canvas.getBoundingClientRect().top),
           };
-          console.log($event.clientY);
           this.drawText(IDENTIFICATION_ERROR_TEXT, point, canvasContext, TextType.ERROR);
           this.resetRoutine(canvasContext);
         });
