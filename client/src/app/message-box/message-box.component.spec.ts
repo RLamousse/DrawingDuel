@@ -1,3 +1,4 @@
+// Just so ts lint will leave my code without waves under every expect it meets
 // tslint:disable: no-floating-promises
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { MatListModule } from "@angular/material";
@@ -33,6 +34,7 @@ describe("MessageBoxComponent", () => {
   });
 
   it("should receive the messages and add them", async () => {
+    // Accessing private members
     // tslint:disable-next-line: no-any
     (component as any).handleChatEvent({
       title: SocketEvent.USER_CONNECTION,

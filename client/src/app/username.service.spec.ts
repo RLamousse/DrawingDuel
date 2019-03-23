@@ -102,7 +102,7 @@ describe("UNListService", () => {
       body: false,
     };
     let called: boolean = false;
-
+    // Accessing private members
     // tslint:disable-next-line: no-any
     const returnVal: boolean = (service as any).handleUserNameCheck(message, () => {
       called = true;
@@ -118,6 +118,7 @@ describe("UNListService", () => {
       body: true,
     };
     let called: boolean = false;
+    // Accessing private members
     // tslint:disable-next-line: no-any
     const returnVal: boolean = (service as any).handleUserNameCheck(message, () => {
       called = true;
