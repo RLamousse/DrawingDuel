@@ -29,7 +29,7 @@ describe("Socket service", () => {
       });
     });
     socketSpy.onEvent(SocketEvent.DUMMY).subscribe((message: WebsocketMessage) => {
-      expect(message).toBeDefined().catch();
+      expect(message).toBeDefined();
       done();
     });
   });
