@@ -4,7 +4,9 @@
   <div class = "row" [class.disabled]="!cursorEnabled">
     <div>
       <h1>Scene Originale</h1>
-      <div class= "scene" (click)="onDivContClick($event)" #originalView></div>
+      <div class= "scene" (click)="onDivContClick($event)" #originalView>
+        <canvas id="originalCanvasMessage"></canvas>
+      </div>
     </div>
     <div class = "middleText">
       <div>Vous</div>
@@ -15,7 +17,9 @@
     </div>
     <div>
       <h1>Scene Modifiée</h1>
-      <div class= "scene" (click)="onDivContClick($event)" #modifiedView></div>
+      <div class= "scene" (click)="onDivContClick($event)" #modifiedView>
+        <canvas id="modifiedCanvasMessage"></canvas>
+      </div>
     </div>
   </div>
   <h1 style="text-align: center">Message:</h1>

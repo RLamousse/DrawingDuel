@@ -6,6 +6,19 @@ import {IScene} from "../scene-interface";
 import {FreeGameCreatorService} from "./FreeGameCreator/free-game-creator.service";
 import {SceneRendererService} from "./scene-renderer.service";
 
+export enum TextType {
+  ERROR,
+  VICTORY,
+}
+
+export const IMAGE_DATA_PIXEL_LENGTH: number = 4;
+export const DEFAULT_CANVAS_HEIGHT: number = 480;
+export const TEXT_FONT: string = "30px Comic Sans MS";
+export const ERROR_TEXT_COLOR: string = "#ff0000";
+export const VICTORY_TEXT_COLOR: string = "#008000";
+export const DEFAULT_TEXT_COLOR: string = "#000000";
+export const IDENTIFICATION_ERROR_TEXT: string = "Erreur";
+
 @Component({
              selector: "app-scene-creator",
              templateUrl: "./scene-creator.component.html",
@@ -78,7 +91,13 @@ export class SceneCreatorComponent implements AfterViewInit, OnInit {
         .catch(() => {
           this.cursorEnabled = false;
           this.cursorStatusChange();
-      });
+          const canvasElm: HTMLElement| null = document.getElementById("originalCanvasMessage");
+          if (canvasElm === null) {
+            return;
+          }
+          const canvasContext: CanvasRenderingContext2D | null = (canvasElm as HTMLCanvasElement).getContext("2d");
+
+        });
     }
   }
 
@@ -88,6 +107,6 @@ export class SceneCreatorComponent implements AfterViewInit, OnInit {
       this.cursorEnabled = true;
       this.clickEnabled = true;
       },
-      TIMEOUT);
+               TIMEOUT);
   }
 }

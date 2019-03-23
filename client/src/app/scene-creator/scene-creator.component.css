@@ -35,3 +35,15 @@ body {
 .disabled {
   cursor: not-allowed;
 }
+#originalCanvasMessage {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  z-index: 10;
+}
+#modifiedCanvasMessage {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  z-index: 10;
+}
