@@ -2,7 +2,12 @@ import {NextFunction, Request, Response, Router} from "express";
 import {inject, injectable} from "inversify";
 import {ScoreTableService} from "../services/score-table.service";
 import Types from "../types";
-import {assertUpdateScoreTable, executePromiseSafely} from "./controller-utils";
+import {
+    assertBodyFieldsOfQuery,
+    assertUpdateScoreTable,
+    executePromiseSafely
+} from "./controller-utils";
+import {GAME_NAME_FIELD} from "../../../common/communication/requests/game-creator.controller.request";
 
 @injectable()
 export class ScoreTableController {
@@ -16,6 +21,13 @@ export class ScoreTableController {
             executePromiseSafely(res, next, async () => {
                 assertUpdateScoreTable(req);
                 res.json(await this.scoreTableService.updateTableScore(req.body.gameName, req.body.newTime, req.body.isSolo));
+            });
+        });
+
+        router.put("/reset-scores/:gameName", async (req: Request, res: Response, next: NextFunction) => {
+            executePromiseSafely(res, next, async () => {
+                assertBodyFieldsOfQuery(req, GAME_NAME_FIELD);
+                res.json(await this.scoreTableService.resetScores(req.params.gameName));
             });
         });
 
