@@ -158,7 +158,8 @@ export class GameCreatorService {
             scenes: scenes,
         };
         await Axios.post<Message>(SERVER_BASE_URL + DB_FREE_GAME, game)
-        // tslint:disable-next-line:no-any Generic error response
+            // any is the default type of the required callback function
+            // tslint:disable-next-line:no-any Generic error response
             .catch((reason: any) => {
                 throw new Error("dataBase: Unable to create game: " + reason.response.data.message);
             });
