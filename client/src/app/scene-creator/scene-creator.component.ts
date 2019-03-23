@@ -12,14 +12,14 @@ import {SceneRendererService} from "./scene-renderer.service";
              styleUrls: ["./scene-creator.component.css"],
            })
 export class SceneCreatorComponent implements AfterViewInit, OnInit {
-
+  private clickEnabled: boolean;
   public constructor(private renderService: SceneRendererService, private route: ActivatedRoute,
                      private freeGameCreator: FreeGameCreatorService, private gameService: GameService) {
-    document.addEventListener("onClick", this.onDivContClick);
+    this.clickEnabled = true;
   }
 
   protected gameName: string;
-  protected clickEnabled: boolean = true;
+  protected cursorEnabled: boolean = true;
 
   private get originalContainer(): HTMLDivElement {
     return this.originalRef.nativeElement;
@@ -69,9 +69,25 @@ export class SceneCreatorComponent implements AfterViewInit, OnInit {
     const CANVAS_TAG: string = "CANVAS";
     if (
       $event.srcElement !== null &&
-      $event.srcElement.tagName === CANVAS_TAG
+      $event.srcElement.tagName === CANVAS_TAG &&
+      this.clickEnabled
     ) {
-      this.renderService.objDiffValidation($event.clientX, $event.clientY);
+      this.clickEnabled = false;
+      this.renderService.objDiffValidation($event.clientX, $event.clientY).then(() => {
+        this.clickEnabled = true; })
+        .catch(() => {
+          this.cursorEnabled = false;
+          this.cursorStatusChange();
+      });
     }
+  }
+
+  private cursorStatusChange(): void {
+    const TIMEOUT: number = 1000;
+    setTimeout(() => {
+      this.cursorEnabled = true;
+      this.clickEnabled = true;
+      },
+      TIMEOUT);
   }
 }

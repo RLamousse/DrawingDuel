@@ -20,7 +20,6 @@ export class SceneRendererService {
   public modifiedContainer: HTMLDivElement;
   public scene: THREE.Scene;
   public modifiedScene: THREE.Scene;
-  // Test load with gameName now todo
   public gameName: string;
   protected foundDifference: IJson3DObject[];
 
@@ -43,7 +42,6 @@ export class SceneRendererService {
   private readonly timeFactor: number = 1000;
 
   private differenceCountSubject: Subject<number> = new Subject();
-  public cursorEnabled: Subject<boolean> = new Subject();
 
   public constructor(private renderUpdateService: RenderUpdateService) {}
 
@@ -128,7 +126,6 @@ export class SceneRendererService {
       const intersectMod: THREE.Intersection[] = rayCast.intersectObjects(this.modifiedScene.children);
       if (intersectOri.length === 0 && intersectMod.length === 0) {
         playRandomSound(NO_DIFFERENCE_SOUNDS);
-        this.cursorEnabled.next(false);
 
         return this.differenceValidationAtPoint(undefined);
       }
@@ -162,8 +159,6 @@ export class SceneRendererService {
       })
       // tslint:disable-next-line:no-any Generic error response
       .catch((reason: any) => {
-        this.cursorEnabled.next(false);
-        this.cursorStatusChange();
         if (reason.response && reason.response.status === Httpstatus.NOT_FOUND) {
           playRandomSound(NO_DIFFERENCE_SOUNDS);
           throw new NoDifferenceAtPointError();
@@ -217,18 +212,10 @@ export class SceneRendererService {
     return this.differenceCountSubject;
   }
 
-  public get cursorStatus(): Observable<boolean> {
-    return this.cursorEnabled;
-  }
   private updateRoutine(jsonObj: IJson3DObject, obj: THREE.Intersection): void {
     this.foundDifference.push(jsonObj);
     this.updateDifference(obj);
     this.differenceCountSubject.next(this.foundDifference.length);
     playRandomSound(FOUND_DIFFERENCE_SOUNDS);
-  }
-
-  private cursorStatusChange(): void {
-    const TIMEOUT: number = 1000;
-    setTimeout(() => { this.cursorEnabled.next(true); }, TIMEOUT);
   }
 }
