@@ -22,16 +22,6 @@ export class InitialViewComponent {
     this.handleUsernameAvailability = this.handleUsernameAvailability.bind(this);
   }
 
-  // public async updateUsername(): Promise<void> {
-  //   if (await this.userService.validateName(this.newUsername)) {
-  //     this.username = this.newUsername;
-  //     UNListService.username = this.username;
-  //     await this.router.navigate(["/game-list"]);
-  //   } else {
-  //     this.errorMessage = this.userService.message;
-  //   }
-  // }
-
   public updateUsername(): void {
     this.userService.checkAvailability(this.newUsername, this.handleUsernameAvailability);
   }
