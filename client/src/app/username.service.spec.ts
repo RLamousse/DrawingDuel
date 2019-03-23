@@ -1,3 +1,4 @@
+// tslint:disable: no-floating-promises
 import {async, TestBed} from "@angular/core/testing";
 import {WebsocketMessage} from "../../../common/communication/messages/message";
 import {SocketEvent} from "../../../common/communication/socket-events";
@@ -30,8 +31,8 @@ describe("UNListService", () => {
   it("should return false if name contain non-valid char with associate errMessage", () => {
     service = TestBed.get(UNListService);
     spyService.isAlphanumeric.and.callThrough();
-    expect(service.isAlphanumeric("-Bubbles-")).toBe(false).catch();
-    expect(service.message).toBe("Tu dois utiliser seulement des caractères alphanumériques!").catch();
+    expect(service.isAlphanumeric("-Bubbles-")).toBe(false);
+    expect(service.message).toBe("Tu dois utiliser seulement des caractères alphanumériques!");
   });
 
   it("should return true if a valid username is enter", () => {
@@ -106,8 +107,8 @@ describe("UNListService", () => {
     const returnVal: boolean = (service as any).handleUserNameCheck(message, () => {
       called = true;
     });
-    expect(called).toBeTruthy().catch();
-    expect(returnVal).toBeFalsy().catch();
+    expect(called).toBeTruthy();
+    expect(returnVal).toBeFalsy();
   });
 
   it("should return true and callback if username used", async () => {
@@ -121,7 +122,7 @@ describe("UNListService", () => {
     const returnVal: boolean = (service as any).handleUserNameCheck(message, () => {
       called = true;
     });
-    expect(called).toBeTruthy().catch();
-    expect(returnVal).toBeTruthy().catch();
+    expect(called).toBeTruthy();
+    expect(returnVal).toBeTruthy();
   });
 });

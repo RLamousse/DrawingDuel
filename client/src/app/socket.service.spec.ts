@@ -1,3 +1,4 @@
+// tslint:disable: no-floating-promises
 import {TestBed} from "@angular/core/testing";
 import {Observable} from "rxjs";
 import {WebsocketMessage} from "../../../common/communication/messages/message";
@@ -84,8 +85,8 @@ describe("Socket service", () => {
       },
     };
     service.send(SocketEvent.DUMMY, {title: SocketEvent.DUMMY, body: "test"});
-    expect(called).toBeTruthy().catch();
-    expect(e).toEqual(SocketEvent.DUMMY).catch();
-    expect(m.body).toEqual("test").catch();
+    expect(called).toBeTruthy();
+    expect(e).toEqual(SocketEvent.DUMMY);
+    expect(m.body).toEqual("test");
   });
 });
