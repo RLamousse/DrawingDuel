@@ -12,7 +12,7 @@ export class ScoreTableController {
     public get router(): Router {
         const router: Router = Router();
 
-        router.put("/modifyScores", async (req: Request, res: Response, next: NextFunction) => {
+        router.put("/modify-scores", async (req: Request, res: Response, next: NextFunction) => {
             executePromiseSafely(res, next, async () => {
                 assertUpdateScoreTable(req);
                 res.json(await this.scoreTableService.updateTableScore(req.body.gameName, req.body.newTime, req.body.isSolo));
