@@ -58,17 +58,15 @@ export class ScoreTableService {
             }
         }
 
-        return gameToModify.bestSoloTimes;
+        return {table: isSolo ? gameToModify.bestSoloTimes : gameToModify.bestMultiTimes, isSimple: isSimple};
     }
-    private async putTableInDB(tableToPost: IRecordTime[]): Promise<void> {
-        // quand milen aura fini mettre bonne adresse
-        /*await Axios.put<void>(
-            SERVER_BASE_URL + DB_FREE_GAME,
-            requestFormData,
-            {
-                headers: requestFormData.getHeaders(),
-                responseType: "arraybuffer",
-            },
-        );*/
+    private async putTableInDB(gameName: string, tableToPost: IScoreResponse, isSolo: boolean): Promise<void> {
+        const dataToSend: Partial<IGame> = isSolo ? {bestSoloTimes: tableToPost.table} : {bestMultiTimes: tableToPost.table};
+        await Axios.put<void>(SERVER_BASE_URL + (tableToPost ? DB_SIMPLE_GAME : DB_FREE_GAME) + gameName, dataToSend)
+            // any is the default type of the required callback function
+            // tslint:disable-next-line:no-any Generic error response
+            .catch((reason: any) => {
+            throw new Error("dataBase: Unable to create game: " + reason.response.data.message);
+        });
     }
 }
