@@ -4,8 +4,8 @@ import {Router} from "@angular/router";
 import {WebsocketMessage} from "../../../../../../common/communication/messages/message";
 import {SocketEvent} from "../../../../../../common/communication/socket-events";
 import {IDialogData} from "../../../../../../common/dialog-data-interface/IDialogData";
+import {GameService} from "../../../game.service";
 import {SocketService} from "../../../socket.service";
-import {IDialogData} from "../dialog-data-interface/IDialogData";
 
 @Component({
   selector: "app-supprimer-form",
@@ -20,6 +20,7 @@ export class SupprimerFormComponent  {
                       protected router: Router,
                       protected socket: SocketService,
                       @Inject(MAT_DIALOG_DATA) public data: IDialogData,
+                      private gameService: GameService,
                      ) {/*vide*/}
 
   public exit(message: Object = { status: "cancelled" }): void {
@@ -32,6 +33,7 @@ export class SupprimerFormComponent  {
       body: this.data.gameName,
     };
     this.socket.send(SocketEvent.DELETE, this.socketMessage);
+    this.gameService.deleteGameByName(this.data.gameName);
     this.dialogRef.close();
     this.router.navigate(["/admin/"]);
   }
