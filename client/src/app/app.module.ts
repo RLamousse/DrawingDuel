@@ -35,6 +35,7 @@ import {TimerComponent} from "./timer/timer.component";
 import {UNListService} from "./username.service";
 import {VueAdminComponent} from "./vue-admin/vue-admin.component";
 import {WindowEventHandlerDirective} from "./window-event-handler.directive";
+import { GameDeletionNotifComponent } from './await-view/game-deletion-notif/game-deletion-notif.component';
 
 @NgModule({
   declarations: [
@@ -56,6 +57,7 @@ import {WindowEventHandlerDirective} from "./window-event-handler.directive";
     AwaitViewComponent,
     SupprimerFormComponent,
     ReinitialiserFormComponent,
+    GameDeletionNotifComponent,
   ],
   imports: [
     BrowserModule,
@@ -86,7 +88,8 @@ import {WindowEventHandlerDirective} from "./window-event-handler.directive";
     SimpleGameService,
   ],
   bootstrap: [AppComponent],
-  entryComponents: [SimpleGameCreatorFormComponent, Create3DGameComponent, SupprimerFormComponent, ReinitialiserFormComponent],
+  entryComponents: [SimpleGameCreatorFormComponent, Create3DGameComponent, SupprimerFormComponent,
+                    ReinitialiserFormComponent, GameDeletionNotifComponent],
   schemas: [NO_ERRORS_SCHEMA],
 })
 export class AppModule { }
