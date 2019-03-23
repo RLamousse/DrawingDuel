@@ -38,15 +38,23 @@ export class ScoreTableService {
         return MODIFY_TABLE_SUCCESS_MESSAGE;
     }
 
-    private async getTableFromDB (gameName: string): Promise<IRecordTime[]> {
+    private async getTableFromDB (gameName: string, isSolo: boolean): Promise<IScoreResponse> {
         let gameToModify: IGame;
+        let isSimple: boolean = false;
         try {
             gameToModify = (await Axios.get<IFreeGame>(SERVER_BASE_URL + DB_FREE_GAME + gameName)).data;
         } catch (error) {
             try {
+                if (error.response.status !== Httpstatus.NOT_FOUND) {
+                    throw new Error("dataBase: " + error.response.data.message);
+                }
                 gameToModify = (await Axios.get<ISimpleGame>(SERVER_BASE_URL + DB_SIMPLE_GAME + gameName)).data;
-            } catch (error) {
-                throw(error.response.data);
+                isSimple = true;
+            } catch (error2) {
+                if (error.response.status !== Httpstatus.NOT_FOUND) {
+                    throw new Error("dataBase: " + error.response.data.message);
+                }
+                throw new NonExistentGameError();
             }
         }
 
