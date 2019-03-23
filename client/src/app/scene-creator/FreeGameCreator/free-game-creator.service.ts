@@ -1,11 +1,15 @@
-import { Injectable } from "@angular/core";
+import {Injectable} from "@angular/core";
 import * as THREE from "three";
-//import GLTFLoader from "three-gltf-loader";
-import { ObjectGeometry } from "../../../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
+import GLTFLoader from "three-gltf-loader";
+import {
+  Coordinate,
+  ObjectGeometry,
+  Themes
+} from "../../../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
 import * as IObject from "../../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
 //import {thematicObject} from "../../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
-import { IScene } from "../../scene-interface";
-import { Form3DService } from "../3DFormService/3-dform.service";
+import {IScene} from "../../scene-interface";
+import {Form3DService} from "../3DFormService/3-dform.service";
 
 @Injectable()
 export class FreeGameCreatorService {
@@ -27,8 +31,12 @@ export class FreeGameCreatorService {
     this.scene = new THREE.Scene();
     this.modifiedScene = new THREE.Scene();
     this.setLighting();
-    this.generateOriginalScene(primitiveScenes);
-    this.generateModifiedScene(primitiveScenes);
+    if (primitiveScenes.originalObjects[0].gameType === Themes.Geometry) {
+      this.generateOriginalScene(primitiveScenes);
+      this.generateModifiedScene(primitiveScenes);
+    } else if (primitiveScenes.originalObjects[0].gameType === Themes.Space) {
+      this.generateThematicScene(primitiveScenes);
+    }
 
     return {scene: this.scene, modifiedScene: this.modifiedScene};
   }
@@ -47,6 +55,26 @@ export class FreeGameCreatorService {
     const modifiedAmbiantLight: THREE.AmbientLight = new THREE.AmbientLight(HOTLIGHT);
     this.scene.add(originalAmbiantLight);
     this.modifiedScene.add(modifiedAmbiantLight);
+  }
+
+  private generateThematicScene(primitiveScenes: IObject.IScenesJSON): void {
+    for (const i of primitiveScenes.originalObjects) {
+      this.generateThematicObject(i);
+      //this.objects.push(object);
+    }
+  }
+
+  private generateThematicObject(object: IObject.IJson3DObject): void {
+    const loader: GLTFLoader = new GLTFLoader();
+    loader.load(object.type.toString(), (gltf: THREE.GLTF) => {
+      const scaleFactor: number = object.scale;
+      gltf.scene.scale.set(scaleFactor, scaleFactor, scaleFactor);
+      gltf.scene.rotateX(object.rotation[Coordinate.X]);
+      gltf.scene.rotateY(object.rotation[Coordinate.Y]);
+      gltf.scene.rotateZ(object.rotation[Coordinate.Z]);
+      this.scene.add(gltf.scene);
+      this.modifiedScene.add(gltf.scene);
+    });
   }
 
   private generateOriginalScene(primitiveScenes: IObject.IScenesJSON): void {

@@ -74,8 +74,8 @@ export class Create3DGameComponent extends AbstractForm implements OnInit {
     return (
       !this.formDoc.valid ||
       this.disableButton ||
-      !this.checboxesValid() ||
-      this.formDoc.value.theme !== "geometry"
+      !this.checboxesValid() /*||
+      this.formDoc.value.theme !== "geometry"*/
     );
   }
 
