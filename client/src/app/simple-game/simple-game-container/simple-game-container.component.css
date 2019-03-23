@@ -5,3 +5,7 @@ app-simple-game-canvas {
   padding-left: 10px;
   padding-right: 10px;
 }
+
+.disabled {
+  cursor: not-allowed;
+}
