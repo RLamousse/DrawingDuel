@@ -34,11 +34,13 @@ describe("Data-base controller", () => {
         when(mockDataBaseService.freeGames).thenReturn(instance(mockFreeGames));
 
         when(mockSimpleGames.create(anything())).thenResolve(SUCCESS_MESSAGE);
+        when(mockSimpleGames.update(anything(), anything())).thenResolve(SUCCESS_MESSAGE);
         when(mockSimpleGames.delete(anything())).thenResolve(SUCCESS_MESSAGE);
         when(mockSimpleGames.getAll()).thenResolve([]);
         when(mockSimpleGames.getFromId(anything())).thenResolve();
 
         when(mockFreeGames.create(anything())).thenResolve(SUCCESS_MESSAGE);
+        when(mockFreeGames.update(anything(), anything())).thenResolve(SUCCESS_MESSAGE);
         when(mockFreeGames.delete(anything())).thenResolve(SUCCESS_MESSAGE);
         when(mockFreeGames.getAll()).thenResolve([]);
         when(mockFreeGames.getFromId(anything())).thenResolve();
@@ -60,6 +62,22 @@ describe("Data-base controller", () => {
 
             return request(app)
                 .post(DB_SIMPLE_GAME)
+                .send(requestToSend)
+                .expect(HttpStatus.OK)
+                .then((response) => {
+                    expect(response.body).to.eql(SUCCESS_MESSAGE);
+                });
+        });
+        it("should send a success message on update", async () => {
+            const requestToSend: Partial<ISimpleGame> = {
+                bestSoloTimes: [],
+                bestMultiTimes: [],
+                originalImage: "",
+                diffData: [],
+            };
+
+            return request(app)
+                .put(DB_SIMPLE_GAME + "someGameTest")
                 .send(requestToSend)
                 .expect(HttpStatus.OK)
                 .then((response) => {
@@ -126,6 +144,20 @@ describe("Data-base controller", () => {
 
             return request(app)
                 .post(DB_FREE_GAME)
+                .send(requestToSend)
+                .expect(HttpStatus.OK)
+                .then((response) => {
+                    expect(response.body).to.eql(SUCCESS_MESSAGE);
+                });
+        });
+        it("should send a success message on update", async () => {
+            const requestToSend: Partial<IFreeGame> = {
+                bestSoloTimes: [],
+                bestMultiTimes: [],
+            };
+
+            return request(app)
+                .put(DB_FREE_GAME + "someGameTest")
                 .send(requestToSend)
                 .expect(HttpStatus.OK)
                 .then((response) => {
