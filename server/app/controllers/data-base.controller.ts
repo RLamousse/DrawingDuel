@@ -29,6 +29,12 @@ export class DataBaseController {
             });
         });
 
+        router.put("/games/simple/:id", async (req: Request, res: Response, next: NextFunction) => {
+            executePromiseSafely(res, next, async () => {
+                res.json(await this.dataBaseService.simpleGames.update(req.params["id"], req.body));
+            });
+        });
+
         router.delete("/games/simple/:id", async (req: Request, res: Response, next: NextFunction) => {
             executePromiseSafely(res, next, async () => {
                 res.json(await this.dataBaseService.simpleGames.delete(req.params["id"]));
@@ -63,6 +69,12 @@ export class DataBaseController {
         router.post("/games/free", async (req: Request, res: Response, next: NextFunction) => {
             executePromiseSafely(res, next, async () => {
                 res.json(await this.dataBaseService.freeGames.create(req.body));
+            });
+        });
+
+        router.put("/games/free/:id", async (req: Request, res: Response, next: NextFunction) => {
+            executePromiseSafely(res, next, async () => {
+                res.json(await this.dataBaseService.freeGames.update(req.params["id"], req.body));
             });
         });
 

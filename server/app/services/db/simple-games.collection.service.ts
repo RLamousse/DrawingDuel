@@ -4,8 +4,8 @@ import {Message} from "../../../../common/communication/messages/message";
 import {
     AlreadyExistentGameError,
     InvalidGameError,
-    NonExistentGameError,
-    NoElementFoundError
+    InvalidGameInfoError,
+    NonExistentGameError, NoElementFoundError
 } from "../../../../common/errors/database.errors";
 import {ISimpleGame} from "../../../../common/model/game/simple-game";
 import {CollectionService} from "./collection.service";
@@ -25,6 +25,15 @@ export class SimpleGamesCollectionService extends CollectionService<ISimpleGame>
             game.gameName !== "";
     }
 
+    private static validateUpdate(game: Partial<ISimpleGame>): boolean {
+        return !!(game || ({} as Partial<ISimpleGame>)).gameName ||
+            !!(game || ({} as Partial<ISimpleGame>)).bestSoloTimes ||
+            !!(game || ({} as Partial<ISimpleGame>)).bestMultiTimes ||
+            !!(game || ({} as Partial<ISimpleGame>)).originalImage ||
+            !!(game || ({} as Partial<ISimpleGame>)).modifiedImage ||
+            !!(game || ({} as Partial<ISimpleGame>)).diffData;
+    }
+
     public async create(data: ISimpleGame): Promise<Message> {
         if (!SimpleGamesCollectionService.validate(data)) {
             throw new InvalidGameError();
@@ -34,6 +43,18 @@ export class SimpleGamesCollectionService extends CollectionService<ISimpleGame>
             throw new AlreadyExistentGameError();
         } else {
             return this.createDocument(data);
+        }
+    }
+
+    public async update(id: string, data: Partial<ISimpleGame>): Promise<Message> {
+        if (!SimpleGamesCollectionService.validateUpdate(data)) {
+            throw new InvalidGameInfoError();
+        }
+
+        if (!(await this.contains(id))) {
+            throw new NonExistentGameError();
+        } else {
+            return this.updateDocument(id, data);
         }
     }
 
@@ -66,6 +87,13 @@ export class SimpleGamesCollectionService extends CollectionService<ISimpleGame>
         return {
             title: "Simple game added",
             body: "Simple game " + data.gameName + " successfully added",
+        };
+    }
+
+    protected updateSuccessMessage(id: string): Message {
+        return {
+            title: "Simple game updated",
+            body: "Simple game " + id + " successfully updated",
         };
     }
 
