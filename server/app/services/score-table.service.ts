@@ -23,6 +23,7 @@ export class ScoreTableService {
 
             return tableToInsert.indexOf(newTime) + 1;
         }
+        throw new ScoreNotGoodEnough();
     }
 
     private static sortTable(tableToSort: IRecordTime[]): void {
