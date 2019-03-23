@@ -103,10 +103,12 @@ export class GameService {
     );
   }
 
-  public deleteGameByName(gameName: string): void {
-    this.http.delete<void>(this.SIMPLE_GAME_BASE_URL + gameName + "/").pipe(
+  public deleteSimpleGameByName(gameName: string): void {
+   this.http.delete(this.SIMPLE_GAME_BASE_URL + gameName).pipe(
       catchError(this.handleError<IFreeGame>(this.DELETE_GAME_BY_NAME)),
-    );
+    ).subscribe();
+
+  }
   }
 
   private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {
