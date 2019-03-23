@@ -1,8 +1,8 @@
 import {async, TestBed} from "@angular/core/testing";
+import {WebsocketMessage} from "../../../common/communication/messages/message";
+import {SocketEvent} from "../../../common/communication/socket-events";
 import {SocketService} from "./socket.service";
 import {UNListService} from "./username.service";
-import {SocketEvent} from "../../../common/communication/socket-events";
-import {WebsocketMessage} from "../../../common/communication/messages/message";
 
 describe("UNListService", () => {
 
@@ -20,49 +20,55 @@ describe("UNListService", () => {
     });
   }));
 
-  it("should be created", () => {
+  it("should be created", async () => {
     service = TestBed.get(UNListService);
-    expect(service).toBeTruthy();
+
+    return expect(service).toBeTruthy();
   });
 
   // Test isAlphanumeric
   it("should return false if name contain non-valid char with associate errMessage", () => {
     service = TestBed.get(UNListService);
     spyService.isAlphanumeric.and.callThrough();
-    expect(service.isAlphanumeric("-Bubbles-")).toBe(false);
-    expect(service.message).toBe("Tu dois utiliser seulement des caractères alphanumériques!");
+    expect(service.isAlphanumeric("-Bubbles-")).toBe(false).catch();
+    expect(service.message).toBe("Tu dois utiliser seulement des caractères alphanumériques!").catch();
   });
 
   it("should return true if a valid username is enter", () => {
     service = TestBed.get(UNListService);
     spyService.isAlphanumeric.and.callThrough();
-    expect(service.isAlphanumeric("ButterCup2")).toBe(true);
+
+    return expect(service.isAlphanumeric("ButterCup2")).toBe(true);
   });
 
   // Test isTooShort
-  it("should return true is username.lenght is = 3", () => {
+  it("should return true is username.lenght is = 3", async () => {
     service = TestBed.get(UNListService);
     spyService.isTooShort.and.callThrough();
-    expect(service.isTooShort("Uto")).toBe(true);
+
+    return expect(service.isTooShort("Uto")).toBe(true);
   });
 
-  it("should return true is username.lenght is < 3", () => {
+  it("should return true is username.lenght is < 3", async () => {
     service = TestBed.get(UNListService);
     spyService.isTooShort.and.callThrough();
-    expect(service.isTooShort("U2")).toBe(true);
+
+    return expect(service.isTooShort("U2")).toBe(true);
   });
 
-  it("should return false is username.lenght is > 3", () => {
+  it("should return false is username.lenght is > 3", async () => {
     service = TestBed.get(UNListService);
     spyService.isTooShort.and.callThrough();
-    expect(service.isTooShort("Utonium")).toBe(false);
+
+    return expect(service.isTooShort("Utonium")).toBe(false);
   });
 
-  it("should return false if tooShort and avec a specific errMessage", () => {
+  it("should return false if tooShort and avec a specific errMessage", async () => {
     service = TestBed.get(UNListService);
     spyService.isTooShort.and.callThrough();
     service.isTooShort("Ace");
-    expect(service.message).toBe("Ton identifiant est trop court!");
+
+    return expect(service.message).toBe("Ton identifiant est trop court!");
   });
 
   it("should return false if a invalid username is used (too short)", async () => {
@@ -96,11 +102,12 @@ describe("UNListService", () => {
     };
     let called: boolean = false;
 
+    // tslint:disable-next-line: no-any
     const returnVal: boolean = (service as any).handleUserNameCheck(message, () => {
-      called = true
+      called = true;
     });
-    expect(called).toBeTruthy();
-    expect(returnVal).toBeFalsy()
+    expect(called).toBeTruthy().catch();
+    expect(returnVal).toBeFalsy().catch();
   });
 
   it("should return true and callback if username used", async () => {
@@ -110,11 +117,11 @@ describe("UNListService", () => {
       body: true,
     };
     let called: boolean = false;
-
+    // tslint:disable-next-line: no-any
     const returnVal: boolean = (service as any).handleUserNameCheck(message, () => {
-      called = true
+      called = true;
     });
-    expect(called).toBeTruthy();
-    expect(returnVal).toBeTruthy()
+    expect(called).toBeTruthy().catch();
+    expect(returnVal).toBeTruthy().catch();
   });
 });
