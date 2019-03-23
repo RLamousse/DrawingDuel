@@ -54,7 +54,7 @@ export const assertBodyFieldsOfRequest: (req: Request, ...fields: string[]) => v
 const assertBasicSceneFields: (req: Request) => boolean = (req: Request): boolean => {
     return (req.body.theme !== Themes.Geometry &&
         req.body.theme !== Themes.Sanic &&
-        req.body.theme !== Themes.Forest) ||
+        req.body.theme !== Themes.Space) ||
         !Array.isArray(req.body.modificationTypes) ||
         req.body.modificationTypes.length < 1 ||
         req.body.modificationTypes.length > NUMBER_OF_MODIFICATION_TYPES ||

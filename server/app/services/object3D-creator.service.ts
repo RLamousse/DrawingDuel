@@ -2,7 +2,7 @@ import { injectable } from "inversify";
 import { ObjectGeometry } from "../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
 import * as JsonScene from "../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
 import {IImportedObject} from "../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
-import {spaceObjects} from "../../../common/model/modelThematicTheme";
+import {spaceObjects} from "../../../common/free-game-json-interface/modelThematicTheme";
 
 @injectable()
 export class Object3DCreatorService {

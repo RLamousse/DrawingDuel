@@ -1,4 +1,4 @@
-import {thematicObject} from "./game/thematicObject";
+import {thematicObject} from "./JSONInterface/IScenesJSON";
 
 export const spaceObjects: thematicObject[] = [
     {name:"UFO", scale: 1},

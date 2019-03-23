@@ -6,6 +6,6 @@ export enum Coordinate { X, Y, Z }
 
 export enum Themes {
     Geometry = "geometry",
-    Forest = "forest",
+    Space = "space",
     Sanic = "sanic-got-to-go-fast"
 }

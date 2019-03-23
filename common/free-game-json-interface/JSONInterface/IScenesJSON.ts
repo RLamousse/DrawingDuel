@@ -1,5 +1,4 @@
 ﻿import { ObjectGeometry } from "../FreeGameCreatorInterface/free-game-enum";
-import {thematicObject} from "../../model/game/thematicObject";
 
 export interface IScenesJSON{
     originalObjects: IJson3DObject[],
@@ -48,3 +47,9 @@ export interface IImportedObject extends thematicObject{
     position: number[],
     rotation: number[]
 }
+
+export interface thematicObject {
+    name: string;
+    scale: number;
+}
+

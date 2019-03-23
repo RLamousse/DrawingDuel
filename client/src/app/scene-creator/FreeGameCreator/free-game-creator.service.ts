@@ -4,6 +4,9 @@ import { ObjectGeometry } from "../../../../../common/free-game-json-interface/F
 import * as IObject from "../../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
 import { IScene } from "../../scene-interface";
 import { Form3DService } from "../3DFormService/3-dform.service";
+import GLTFLoader from "three-gltf-loader";
+import {spaceObjects} from "../../../../../common/free-game-json-interface/modelThematicTheme";
+import {thematicObject} from "../../../../../common/model/game/thematicObject";
 
 @Injectable()
 export class FreeGameCreatorService {
@@ -94,5 +97,18 @@ export class FreeGameCreatorService {
     }
 
     return createdObject;
+  }
+
+  private generateThematicObject(object: thematicObject): void {
+    const loader: GLTFLoader = new GLTFLoader();
+    loader.load(object.name, (gltf: THREE.GLTF) => {
+      this.scaleObject(object.scale);
+      // gltf.scene.rotateY(10);
+      this.scene.add(gltf.scene);
+    });
+  }
+
+  private scaleObject(scale: number): void {
+    gltf.scene.scale.set(scale, scale, scale);
   }
 }
