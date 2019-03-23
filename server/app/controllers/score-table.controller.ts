@@ -15,7 +15,7 @@ export class ScoreTableController {
         router.put("/modifyScores", async (req: Request, res: Response, next: NextFunction) => {
             executePromiseSafely(res, next, async () => {
                 assertUpdateScoreTable(req);
-                res.json(await this.scoreTableService.updateTableScore(req.body.gameName, req.body.newTime));
+                res.json(await this.scoreTableService.updateTableScore(req.body.gameName, req.body.newTime, req.body.isSolo));
             });
         });
 
