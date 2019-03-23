@@ -27,6 +27,11 @@ describe("ChatWebsocketActionService", () => {
     beforeEach(() => {
         service = new ChatWebsocketActionService();
         socket = new Socket();
+        // Private member access
+        // tslint:disable-next-line: no-any
+        (service as any).formatTime = () => {
+            return "12:51:46";
+        };
     });
 
     it("should emit right connection message", () => {
@@ -125,6 +130,8 @@ describe("ChatWebsocketActionService", () => {
     });
 
     it("should emit broken message when input was broken", () => {
+        // To test an impossible case
+        // tslint:disable-next-line: no-any
         const message: WebsocketMessage<any> = {
             title: SocketEvent.CHAT,
             body: {
