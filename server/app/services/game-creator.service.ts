@@ -5,7 +5,11 @@ import {inject, injectable} from "inversify";
 import "reflect-metadata";
 import {Message} from "../../../common/communication/messages/message";
 import {DB_FREE_GAME, DB_SIMPLE_GAME, DIFF_CREATOR_BASE, SERVER_BASE_URL} from "../../../common/communication/routes";
-import {AlreadyExistentGameError, NonExistentGameError, NonExistentThemeError} from "../../../common/errors/database.errors";
+import {
+    AlreadyExistentGameError,
+    NonExistentGameError,
+    NonExistentThemeError
+} from "../../../common/errors/database.errors";
 import {DifferenceCountError} from "../../../common/errors/services.errors";
 import {
     ModificationType,
@@ -214,7 +218,7 @@ export class GameCreatorService {
     private generateScene(numberOfObjects: number, theme: Themes, modTypes: ModificationType[]): IScenesJSON {
         if (theme === Themes.Geometry) {
 
-            return this.freeGameCreatorService.generateIScenes(numberOfObjects, modTypes);
+            return this.freeGameCreatorService.generateIScenes(numberOfObjects, modTypes, Themes.Geometry);
         }
         throw new NonExistentThemeError();
     }

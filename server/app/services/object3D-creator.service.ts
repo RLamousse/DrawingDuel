@@ -103,7 +103,7 @@ export class Object3DCreatorService {
         };
     }
 
-    public createThematicObject(size: number): JsonScene.IJson3DObject {
+    public createThematicObject(): JsonScene.IJson3DObject {
         //const index: number =  Math.random() * (14 - 5) + 5;
 
         return {

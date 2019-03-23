@@ -81,7 +81,7 @@ export class FreeGameCreatorService {
         return createdObject;
     }
 
-    public generateIScenes(obj3DToCreate: number, modificationTypes: ModificationType[]): IObject.IScenesJSON {
+    public generateIScenes(obj3DToCreate: number, modificationTypes: ModificationType[], sceneType: Themes): IObject.IScenesJSON {
         const objects: IObject.IJson3DObject[] = [];
 
         const PI: number = Math.PI;
@@ -89,7 +89,8 @@ export class FreeGameCreatorService {
         const MAXROTATIONANGLE: number = PI * FACTOR2;
         for (let i: number = 0; i < obj3DToCreate; ++i) {
             let object: IObject.IJson3DObject;
-            object = this.generate3DObject();
+            (sceneType === Themes.Geometry) ?
+                object = this.generate3DObject() : object = this.object3DCreatorService.createThematicObject();
             object.position = [
                 this.getRandomValue(-this.MAX_GAME_X, this.MAX_GAME_X),
                 this.getRandomValue(-this.MAX_GAME_Y, this.MAX_GAME_Y),
@@ -104,7 +105,9 @@ export class FreeGameCreatorService {
             objects.push(object);
         }
         const modifiedObjects: IObject.IJson3DObject[] = JSON.parse(JSON.stringify(objects));
-        this.generateDifferences(modificationTypes, modifiedObjects);
+        if (sceneType === Themes.Geometry) {
+            this.generateDifferences(modificationTypes, modifiedObjects);
+        }
 
         return {originalObjects: objects, modifiedObjects: modifiedObjects};
     }

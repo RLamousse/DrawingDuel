@@ -1,15 +1,19 @@
 /* tslint:disable:max-file-line-count */
 // tslint:disable:no-magic-numbers
 import Axios from "axios";
-import AxiosAdapter from "axios-mock-adapter";
 // tslint:disable-next-line:no-duplicate-imports Weird interaction between singletons and interface (olivier st-o approved)
+import AxiosAdapter from "axios-mock-adapter";
 import MockAdapter from "axios-mock-adapter";
 import {expect} from "chai";
 import * as fs from "fs";
 import * as HttpStatus from "http-status-codes";
 import {anything, instance, mock, when} from "ts-mockito";
 import {DB_FREE_GAME, DB_SIMPLE_GAME, DIFF_CREATOR_BASE, SERVER_BASE_URL} from "../../../common/communication/routes";
-import {AlreadyExistentGameError, NonExistentGameError, NonExistentThemeError} from "../../../common/errors/database.errors";
+import {
+    AlreadyExistentGameError,
+    NonExistentGameError,
+    NonExistentThemeError
+} from "../../../common/errors/database.errors";
 import {DifferenceCountError} from "../../../common/errors/services.errors";
 import {
     ModificationType,
@@ -56,7 +60,7 @@ describe("A service that creates a game", () => {
         when(mockedDifferenceEvaluatorServiceMock.getSimpleNDifferences(anything()))
             .thenReturn(createdMockedDiffData(EXPECTED_DIFF_NUMBER));
         when(mockedImageUploadService.uploadImage(anything())).thenResolve("");
-        when(mockedFreeGameCreatorService.generateIScenes(anything(), anything()))
+        when(mockedFreeGameCreatorService.generateIScenes(anything(), anything(), Themes.Geometry))
             .thenReturn({originalObjects: [], modifiedObjects: []});
     });
 
@@ -373,7 +377,7 @@ describe("A service that creates a game", () => {
             axiosMock.onPost(SERVER_BASE_URL + DB_FREE_GAME)
                 .reply(HttpStatus.OK);
 
-            when(mockedFreeGameCreatorService.generateIScenes(anything(), anything()))
+            when(mockedFreeGameCreatorService.generateIScenes(anything(), anything(), Themes.Geometry))
                 .thenReturn({originalObjects: [], modifiedObjects: []});
 
             return expect((await getMockedService()
