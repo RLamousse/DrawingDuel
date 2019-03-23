@@ -7,6 +7,7 @@ export const GAME_CREATOR_BASE: string = "/api/game-creator/";
 export const DB_BASE: string = "/api/data-base/";
 
 export const SCORE_TABLE_UPDATE: string = "/api/score-table/";
+export const MODIFY_SCORES: string = SCORE_TABLE_UPDATE + "modifyScores/";
 
 export const SIMPLE_GAME_CREATION_ROUTE: string = GAME_CREATOR_BASE + "create-simple-game/";
 export const FREE_GAME_CREATION_ROUTE: string = GAME_CREATOR_BASE + "create-free-game/";
