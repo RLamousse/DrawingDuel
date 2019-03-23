@@ -1,7 +1,7 @@
 import { Component, Inject } from "@angular/core";
 import {MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
 import {Router} from "@angular/router";
-import {IDialogData} from "../dialog-data-interface/IDialogData";
+import {IDialogData} from "../../../../../../common/dialog-data-interface/IDialogData";
 
 @Component({
   selector: "app-reinitialiser-form",

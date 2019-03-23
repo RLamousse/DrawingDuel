@@ -3,6 +3,7 @@ import {MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
 import {Router} from "@angular/router";
 import {WebsocketMessage} from "../../../../../../common/communication/messages/message";
 import {SocketEvent} from "../../../../../../common/communication/socket-events";
+import {IDialogData} from "../../../../../../common/dialog-data-interface/IDialogData";
 import {SocketService} from "../../../socket.service";
 import {IDialogData} from "../dialog-data-interface/IDialogData";
 
