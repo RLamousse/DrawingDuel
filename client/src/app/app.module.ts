@@ -18,8 +18,7 @@ import {FormPostService} from "./form-post.service";
 import {GameListComponent} from "./game-list/game-list.component";
 import { DeleteGameFormComponent } from "./game-list/game/delete-game-form/delete-game-form.component";
 import {GameComponent} from "./game-list/game/game.component";
-import { ReinitialiserFormComponent } from "./game-list/game/reinitialiser-form/reinitialiser-form.component";
-import { SupprimerFormComponent } from "./game-list/game/supprimer-form/supprimer-form.component";
+import { ResetGameFormComponent } from "./game-list/game/reset-game-form/reset-game-form.component";
 import {GameService} from "./game.service";
 import {InitialViewComponent} from "./initial-view/initial-view.component";
 import { MessageBoxComponent } from "./message-box/message-box.component";
@@ -56,7 +55,7 @@ import {VueAdminComponent} from "./vue-admin/vue-admin.component";
     TimerComponent,
     AwaitViewComponent,
     DeleteGameFormComponent,
-    ReinitialiserFormComponent,
+    ResetGameFormComponent,
     GameDeletionNotifComponent,
     MessageBoxComponent,
   ],
@@ -92,7 +91,7 @@ import {VueAdminComponent} from "./vue-admin/vue-admin.component";
   ],
   bootstrap: [AppComponent],
   entryComponents: [SimpleGameCreatorFormComponent, Create3DGameComponent, DeleteGameFormComponent,
-                    ReinitialiserFormComponent, GameDeletionNotifComponent],
+                    ResetGameFormComponent, GameDeletionNotifComponent],
   schemas: [NO_ERRORS_SCHEMA],
 })
 export class AppModule { }

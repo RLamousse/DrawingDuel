@@ -3,7 +3,7 @@ import {MatDialog, MatDialogConfig} from "@angular/material";
 import {Router} from "@angular/router";
 import {IRecordTime} from "../../../../../common/model/game/record-time";
 import {DeleteGameFormComponent} from "./delete-game-form/delete-game-form.component";
-import {SupprimerFormComponent} from "./supprimer-form/supprimer-form.component";
+import {ResetGameFormComponent} from "./reset-game-form/reset-game-form.component";
 @Component({
   selector: "app-game",
   templateUrl: "./game.component.html",
@@ -42,7 +42,7 @@ export class GameComponent {
       const dialogConfig: MatDialogConfig = new MatDialogConfig();
       dialogConfig.autoFocus = true;
       dialogConfig.data = {gameName: this.gameName, isSimpleGame: this.isSimpleGame};
-      this.dialog.open(ReinitialiserFormComponent, dialogConfig);
+      this.dialog.open(ResetGameFormComponent, dialogConfig);
     }
   }
 
