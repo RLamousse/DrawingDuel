@@ -17,8 +17,8 @@ import { GameCreatorService } from "./services/game-creator.service";
 import { ImageUploadService } from "./services/image-upload.service";
 import { Object3DCreatorService } from "./services/object3D-creator.service";
 import { UsernameService } from "./services/username.service";
-import { DummyWebsocketActionService } from "./services/websocket/dummy-websocket-action.service";
 import { DeleteWebsocketActionService } from "./services/websocket/delete-websocket-action.service";
+import { DummyWebsocketActionService } from "./services/websocket/dummy-websocket-action.service";
 import Types from "./types";
 
 const container: Container = new Container();
