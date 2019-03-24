@@ -33,7 +33,6 @@ import {SocketService} from "./socket.service";
 import {TimerComponent} from "./timer/timer.component";
 import {UNListService} from "./username.service";
 import {VueAdminComponent} from "./vue-admin/vue-admin.component";
-import { MessageCanvasComponent } from './scene-creator/message-canvas/message-canvas/message-canvas.component';
 
 @NgModule({
   declarations: [
@@ -52,7 +51,6 @@ import { MessageCanvasComponent } from './scene-creator/message-canvas/message-c
     SimpleGameContainerComponent,
     TimerComponent,
     Game3DControlsDirective,
-    MessageCanvasComponent,
     MessageBoxComponent,
   ],
   imports: [
