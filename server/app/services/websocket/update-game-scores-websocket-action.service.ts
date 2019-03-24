@@ -39,7 +39,7 @@ export class UpdateGameScoresWebsocketActionService implements WebsocketActionSe
             if (error.response.data.message === ScoreNotGoodEnough.SCORE_NOT_GOOD_ENOUGH) {
                 return;
             } else {
-                throw error;
+                throw error.response.data;
             }
         }
         const resBody: ChatMessage = {type: ChatMessageType.BEST_TIME,
