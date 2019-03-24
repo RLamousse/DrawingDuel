@@ -19,6 +19,8 @@ import { ImageUploadService } from "./services/image-upload.service";
 import { Object3DCreatorService } from "./services/object3D-creator.service";
 import { ScoreTableService} from "./services/score-table.service";
 import { UsernameService } from "./services/username.service";
+import { ChatWebsocketActionService } from "./services/websocket/chat-websocket-action.service";
+import { CheckUserWebsocketActionService } from "./services/websocket/check-user-websocket-action.service";
 import { DummyWebsocketActionService } from "./services/websocket/dummy-websocket-action.service";
 import Types from "./types";
 
@@ -53,5 +55,7 @@ container.bind(Types.ScoreTableController).to(ScoreTableController);
 
 container.bind(Types.WebsocketController).to(WebsocketController);
 container.bind(Types.DummyWebsocketActionService).to(DummyWebsocketActionService);
+container.bind(Types.ChatWebsocketActionService).to(ChatWebsocketActionService);
+container.bind(Types.CheckUserWebsocketActionService).to(CheckUserWebsocketActionService);
 
 export { container };
