@@ -16,10 +16,9 @@ export class WebsocketController {
 
     public constructor (@inject(types.DummyWebsocketActionService) private dummyAction: DummyWebsocketActionService,
                         @inject(types.ChatWebsocketActionService) private chatAction: ChatWebsocketActionService,
-                        @inject(types.CheckUserWebsocketActionService) private userNameService: CheckUserWebsocketActionService) {
-        this.sockets = new Map();
-    public constructor (@inject(types.DummyWebsocketActionService) private dummyAction: DummyWebsocketActionService,
+                        @inject(types.CheckUserWebsocketActionService) private userNameService: CheckUserWebsocketActionService,
                         @inject(types.DeleteWebsocketActionService) private deleteAction: DeleteWebsocketActionService) {
+        this.sockets = new Map();
         this.registerSocket = this.registerSocket.bind(this);
         this.routeSocket = this.routeSocket.bind(this);
     }
