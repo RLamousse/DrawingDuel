@@ -58,17 +58,19 @@ export class FreeGameCreatorService {
 
   private generateThematicScene(primitiveScenes: IObject.IScenesJSON): void {
     for (const i of primitiveScenes.originalObjects) {
-      this.generateThematicObject(i);
+      this.generateThematicObject(i, true);
       //this.objects.push(object);
+    }
+    for (const j of primitiveScenes.modifiedObjects) {
+      this.generateThematicObject(j, false);
     }
   }
 
-  private generateThematicObject(object: IObject.IJson3DObject): void {
+  private generateThematicObject(object: IObject.IJson3DObject, isOriginalObject: boolean): void {
     const loader: GLTFLoader = new GLTFLoader();
     loader.load(this.buildPath(ObjectGeometry[object.type]), (gltf: THREE.GLTF) => {
       this.formService.setUpThematicParameters(object, gltf);
-      this.modifiedScene.add(gltf.scene);
-      this.scene.add(gltf.scene);
+      (isOriginalObject) ? this.scene.add(gltf.scene) : this.modifiedScene.add(gltf.scene);
     });
   }
 
