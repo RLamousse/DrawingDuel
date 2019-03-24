@@ -2,8 +2,8 @@ import { inject, injectable } from "inversify";
 import * as io from "socket.io";
 import { WebsocketMessage } from "../../../common/communication/messages/message";
 import { SocketEvent } from "../../../common/communication/socket-events";
-import { DummyWebsocketActionService } from "../services/websocket/dummy-websocket-action.service";
 import { DeleteWebsocketActionService } from "../services/websocket/delete-websocket-action.service";
+import { DummyWebsocketActionService } from "../services/websocket/dummy-websocket-action.service";
 import types from "../types";
 
 @injectable()
@@ -25,7 +25,7 @@ export class WebsocketController {
         socket.on(SocketEvent.DUMMY, (message: WebsocketMessage) => {
             this.dummyAction.execute(message, socket);
         });
-        socket.on(SocketEvent.DELETE, (message:WebsocketMessage) => {
+        socket.on(SocketEvent.DELETE, (message: WebsocketMessage) => {
            this.deleteAction.execute(message, socket);
         });
         socket.emit(SocketEvent.WELCOME, "Connection has been made via a websocket");
