@@ -1,14 +1,19 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import {MatDialogModule, MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
+import { Router } from "@angular/router";
+import { ReinitialiserFormComponent } from "./reinitialiser-form.component";
 
-import { ReinitialiserFormComponent } from './reinitialiser-form.component';
-
-describe('ReinitialiserFormComponent', () => {
+describe("ReinitialiserFormComponent", () => {
   let component: ReinitialiserFormComponent;
   let fixture: ComponentFixture<ReinitialiserFormComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ReinitialiserFormComponent ]
+      declarations: [ ReinitialiserFormComponent ],
+      imports: [ MatDialogModule],
+      providers: [{ provide: Router, useClass: class { public navigate: jasmine.Spy = jasmine.createSpy("navigate"); } },
+                  {provide: MatDialogRef, useValue: {}},
+                  {provide: MAT_DIALOG_DATA, useValue: {}, } ],
     })
     .compileComponents();
   }));
@@ -19,7 +24,7 @@ describe('ReinitialiserFormComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });
