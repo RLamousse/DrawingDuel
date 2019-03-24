@@ -1,5 +1,9 @@
 import {injectable} from "inversify";
-import {ObjectGeometry, Themes} from "../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
+import {
+    ObjectGeometry,
+    spaceObjects,
+    Themes
+} from "../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
 import * as JsonScene from "../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
 
 @injectable()
@@ -104,11 +108,11 @@ export class Object3DCreatorService {
     }
 
     public createThematicObject(): JsonScene.IJson3DObject {
-        //const index: number =  Math.random() * (14 - 5) + 5;
+        const index: number =  Math.floor(Math.random() * Math.floor(spaceObjects.length));
 
         return {
-            type: ObjectGeometry.rocket,
-            scale: 50,
+            type: spaceObjects[index].type,
+            scale: spaceObjects[index].scale,
             position: [0, 0, 0],
             rotation: [0, 0, 0],
             gameType: Themes.Space,
