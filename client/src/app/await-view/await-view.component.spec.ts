@@ -28,6 +28,8 @@ describe("AwaitViewComponent", () => {
               ,
             ),
         }, } , },
+        SocketService,
+
       ],
     });
     done();
@@ -40,7 +42,7 @@ describe("AwaitViewComponent", () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });
