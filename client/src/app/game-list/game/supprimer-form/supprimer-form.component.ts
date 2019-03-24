@@ -21,17 +21,14 @@ export class SupprimerFormComponent  {
                       protected socket: SocketService,
                       @Inject(MAT_DIALOG_DATA) public data: IDialogData,
                       private gameService: GameService,
-                     ) {/*vide*/}
+                     ) {}
 
   public exit(message: Object = { status: "cancelled" }): void {
     this.dialogRef.close(message);
   }
+
   public deleteGame(): void {
-    this.socketMessage = {
-      title: SocketEvent.DELETE,
-      body: this.data.gameName,
-    };
-    this.socket.send(SocketEvent.DELETE, this.socketMessage);
+    this.sendDeleteMessage();
     this.deleteGameByType(this.data.gameName, this.data.isSimpleGame);
     this.dialogRef.close();
     this.router.navigate(["/admin/"]) // tslint:disable-next-line:no-any Generic error response
@@ -40,7 +37,15 @@ export class SupprimerFormComponent  {
     });
   }
 
-  public deleteGameByType(gameName: string, isSimpleGame: boolean ): void {
+  private sendDeleteMessage(): void {
+    this.socketMessage = {
+      title: SocketEvent.DELETE,
+      body: this.data.gameName,
+    };
+    this.socket.send(SocketEvent.DELETE, this.socketMessage);
+  }
+
+  private deleteGameByType(gameName: string, isSimpleGame: boolean ): void {
     isSimpleGame ? this.gameService.deleteSimpleGameByName(gameName) : this.gameService.deleteFreeGameByName(gameName);
   }
 }
