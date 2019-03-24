@@ -23,6 +23,7 @@ import { ChatWebsocketActionService } from "./services/websocket/chat-websocket-
 import { CheckUserWebsocketActionService } from "./services/websocket/check-user-websocket-action.service";
 import { DummyWebsocketActionService } from "./services/websocket/dummy-websocket-action.service";
 import Types from "./types";
+import {UpdateGameScoresWebsocketActionService} from "./services/websocket/update-game-scores-websocket-action.service";
 
 const container: Container = new Container();
 
@@ -57,5 +58,6 @@ container.bind(Types.WebsocketController).to(WebsocketController);
 container.bind(Types.DummyWebsocketActionService).to(DummyWebsocketActionService);
 container.bind(Types.ChatWebsocketActionService).to(ChatWebsocketActionService);
 container.bind(Types.CheckUserWebsocketActionService).to(CheckUserWebsocketActionService);
+container.bind(Types.UpdateGameScoresWebsocketActionService).to(UpdateGameScoresWebsocketActionService);
 
 export { container };

@@ -22,4 +22,5 @@ export default  {
         DummyWebsocketActionService: Symbol("DummyWebsocketActionService"),
         ChatWebsocketActionService: Symbol("ChatWebsocketActionService"),
         CheckUserWebsocketActionService: Symbol("CheckUserWebsocketActionService"),
+        UpdateGameScoresWebsocketActionService: Symbol("UpdateGameScoresWebsocketActionService"),
 };
