@@ -126,4 +126,14 @@ describe("SceneCreatorComponent", () => {
     component.onDivContClick(mouseEvt);
     expect(mockSceneCreatorService.objDiffCalled).toEqual("objDiffValidation");
   });
+  it("should have call the mocked diffObjValidation function on modified scene click", () => {
+    const mouseEvt: MouseEvent = new MouseEvent("click", {
+      button: 0,
+      clientX: 1120,
+      clientY: 430,
+    });
+
+    component.onDivContClick(mouseEvt);
+    expect(mockSceneCreatorService.objDiffCalled).toEqual("objDiffValidation");
+  });
 });
