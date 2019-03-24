@@ -15,8 +15,6 @@ import {IScenesJSON} from "../../../common/free-game-json-interface/JSONInterfac
 import {Bitmap} from "../../../common/image/bitmap/bitmap";
 import {BITMAP_MEME_TYPE} from "../../../common/image/bitmap/bitmap-utils";
 import {IFreeGame} from "../../../common/model/game/free-game";
-import {TIMES_ARRAY_SIZE} from "../../../common/model/game/game";
-import {IRecordTime} from "../../../common/model/game/record-time";
 import {ISimpleDifferenceData, ISimpleGame} from "../../../common/model/game/simple-game";
 import {
     GAME_CREATION_SUCCESS_MESSAGE,
@@ -29,6 +27,7 @@ import Types from "../types";
 import {DifferenceEvaluatorService} from "./difference-evaluator.service";
 import {FreeGameCreatorService} from "./free-game-creator.service";
 import {ImageUploadService} from "./image-upload.service";
+import {createRandomScores} from "./service-utils";
 
 export const EXPECTED_DIFF_NUMBER: number = 7;
 
@@ -40,19 +39,6 @@ export class GameCreatorService {
         @inject(Types.ImageUploadService) private imageUploadService: ImageUploadService,
         @inject(Types.FreeGameCreatorService) private freeGameCreatorService: FreeGameCreatorService) {
     }
-
-    private readonly _MIN_GENERATED_SCORE: number = 120;
-    private readonly _MAX_GENERATED_SCORE: number = 360;
-    private readonly _GENERATED_NAMES: string[] = ["normie",
-                                                   "hardTryer4269",
-                                                   "xXx_D4B0W5_xXx",
-                                                   "spongebob",
-                                                   "pikatchu",
-                                                   "sanic",
-                                                   "Donald J. Trump",
-                                                   "some aliens",
-                                                   "ur mom",
-                                                   "Som Ting Wong"];
 
     private static async testNameExistence(gameName: string): Promise<void> {
         try {
@@ -137,8 +123,8 @@ export class GameCreatorService {
     private async uploadSimpleGame(gameName: string, imagesUrls: string[], differenceData: ISimpleDifferenceData): Promise<void> {
         const game: ISimpleGame = {
             gameName: gameName,
-            bestSoloTimes: this.createRandomScores(),
-            bestMultiTimes: this.createRandomScores(),
+            bestSoloTimes: createRandomScores(),
+            bestMultiTimes: createRandomScores(),
             originalImage: imagesUrls[0],
             modifiedImage: imagesUrls[1],
             diffData: differenceData,
@@ -153,12 +139,13 @@ export class GameCreatorService {
     private async uploadFreeGame(gameName: string, scenes: IScenesJSON): Promise<void> {
         const game: IFreeGame = {
             gameName: gameName,
-            bestSoloTimes: this.createRandomScores(),
-            bestMultiTimes: this.createRandomScores(),
+            bestSoloTimes: createRandomScores(),
+            bestMultiTimes: createRandomScores(),
             scenes: scenes,
         };
         await Axios.post<Message>(SERVER_BASE_URL + DB_FREE_GAME, game)
-        // tslint:disable-next-line:no-any Generic error response
+            // any is the default type of the required callback function
+            // tslint:disable-next-line:no-any Generic error response
             .catch((reason: any) => {
                 throw new Error("dataBase: Unable to create game: " + reason.response.data.message);
             });
@@ -172,22 +159,6 @@ export class GameCreatorService {
         }
 
         return imagesUrls;
-    }
-
-    private createRandomScores(): IRecordTime[] {
-
-        const scoreArray: number[] = new Array(TIMES_ARRAY_SIZE);
-        for (let i: number = 0; i < TIMES_ARRAY_SIZE; i++) {
-            scoreArray[i] = Number((this._MIN_GENERATED_SCORE +
-                Math.random() * (this._MAX_GENERATED_SCORE - this._MIN_GENERATED_SCORE)).toFixed(0));
-        }
-
-        scoreArray.sort((a: number, b: number) => b - a);
-        const randomNames: string[] = this.generateRandomNames();
-
-        return [{name: randomNames[2], time: scoreArray[2]},
-                {name: randomNames[1], time: scoreArray[1]},
-                {name: randomNames[0], time: scoreArray[0]}];
     }
 
     private testSimpleGameNumberOfDifference(diffImage: Buffer): ISimpleDifferenceData {
@@ -217,19 +188,5 @@ export class GameCreatorService {
             return this.freeGameCreatorService.generateIScenes(numberOfObjects, modTypes);
         }
         throw new NonExistentThemeError();
-    }
-
-    private generateRandomNames(): string[] {
-        const randomNamesIndex: number[] = [];
-        while (randomNamesIndex.length < TIMES_ARRAY_SIZE) {
-            const randomNumber: number = Math.floor(Math.random() * (this._GENERATED_NAMES.length));
-            if (randomNamesIndex.indexOf(randomNumber) < 0) {
-                randomNamesIndex.push(randomNumber);
-            }
-        }
-
-        return [this._GENERATED_NAMES[randomNamesIndex[0]],
-                this._GENERATED_NAMES[randomNamesIndex[1]],
-                this._GENERATED_NAMES[randomNamesIndex[2]]];
     }
 }

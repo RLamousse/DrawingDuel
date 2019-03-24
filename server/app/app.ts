@@ -4,11 +4,13 @@ import * as cors from "cors";
 import * as express from "express";
 import { inject, injectable } from "inversify";
 import * as logger from "morgan";
-import {DB_BASE, DIFF_CREATOR_BASE, DIFF_VALIDATOR_BASE, GAME_CREATOR_BASE, USERNAME_BASE} from "../../common/communication/routes";
+import {DB_BASE, DIFF_CREATOR_BASE, DIFF_VALIDATOR_BASE, GAME_CREATOR_BASE,
+    SCORE_TABLE_UPDATE, USERNAME_BASE} from "../../common/communication/routes";
 import {BitmapDiffController} from "./controllers/bitmap-diff.controller";
 import {DataBaseController} from "./controllers/data-base.controller";
 import {DiffValidatorController} from "./controllers/diff-validator.controller";
 import {GameCreatorController} from "./controllers/game-creator.controller";
+import {ScoreTableController} from "./controllers/score-table.controller";
 import { UserController } from "./controllers/username.controller";
 import Types from "./types";
 
@@ -21,6 +23,7 @@ export class Application {
     public constructor(@inject(Types.GameCreatorController) private gameCreatorController: GameCreatorController,
                        @inject(Types.DataBaseController) private dataBaseController: DataBaseController,
                        @inject(Types.UserNameController) private userController: UserController,
+                       @inject(Types.ScoreTableController) private scoreTableController: ScoreTableController,
                        @inject(Types.BitmapDiffController) private bitmapDiffController: BitmapDiffController,
                        @inject(Types.DiffValidatorController) private diffValidatorController: DiffValidatorController) {
 
@@ -43,6 +46,7 @@ export class Application {
 
     public bindRoutes(): void {
         this.app.use(USERNAME_BASE, this.userController.router);
+        this.app.use(SCORE_TABLE_UPDATE, this.scoreTableController.router);
         this.app.use(DIFF_CREATOR_BASE, this.bitmapDiffController.router);
         this.app.use(GAME_CREATOR_BASE, this.gameCreatorController.router);
         this.app.use(DB_BASE, this.dataBaseController.router);
