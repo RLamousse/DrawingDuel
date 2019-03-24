@@ -78,21 +78,24 @@ export class SceneCreatorComponent implements AfterViewInit, OnInit {
   }
 
   public onDivContClick($event: MouseEvent): void {
-    const CANVAS_TAG: string = "CANVAS";
     if (
-      $event.srcElement !== null &&
-      $event.srcElement.tagName === CANVAS_TAG &&
       this.clickEnabled
     ) {
       this.clickEnabled = false;
+
       this.renderService.objDiffValidation($event.clientX, $event.clientY).then(() => {
-        this.clickEnabled = true; })
+        this.clickEnabled = true;
+
+        return;
+      })
         .catch(() => {
           this.cursorEnabled = false;
           const canvasContext: CanvasRenderingContext2D | null = this.canvasErrorDraw($event);
           if (canvasContext !== null) {
             this.resetRoutine(canvasContext);
           }
+
+          return;
         });
     }
   }

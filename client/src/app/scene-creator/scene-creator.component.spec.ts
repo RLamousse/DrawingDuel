@@ -1,8 +1,7 @@
 import {ComponentFixture, TestBed} from "@angular/core/testing";
 import {ActivatedRoute} from "@angular/router";
-import {of, Observable} from "rxjs";
+import {of, Observable, Subject} from "rxjs";
 import * as THREE from "three";
-import {IJson3DObject} from "../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
 import {IFreeGame} from "../../../../common/model/game/free-game";
 import {CompteurDiffComponent} from "../compteur-diff/compteur-diff.component";
 import {GameService} from "../game.service";
@@ -28,9 +27,15 @@ describe("SceneCreatorComponent", () => {
       return;
     }
 
-    public objDiffValidation(): Promise<IJson3DObject> {
-      return new Promise<IJson3DObject>(() => {
-        this.objDiffCalled = "objDiffValidation";
+    public get foundDifferenceCount(): Observable<number> {
+      return new Subject<number>();
+    }
+
+    public objDiffValidation(x?: number): Promise<void> {
+      this.objDiffCalled = "objDiffValidation";
+
+      return new Promise<void>(() => {
+        return;
       });
     }
   }
@@ -110,5 +115,15 @@ describe("SceneCreatorComponent", () => {
     expect(mockedGameService.called).toEqual(true);
   });
 
-  //
+  // Test onDivContClick
+  it("should have call the mocked diffObjValidation function on original scene click", () => {
+    const mouseEvt: MouseEvent = new MouseEvent("click", {
+      button: 0,
+      clientX: 325,
+      clientY: 430,
+    });
+
+    component.onDivContClick(mouseEvt);
+    expect(mockSceneCreatorService.objDiffCalled).toEqual("objDiffValidation");
+  });
 });
