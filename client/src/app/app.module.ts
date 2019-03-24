@@ -16,6 +16,7 @@ import {CompteurDiffComponent} from "./compteur-diff/compteur-diff.component";
 import {Create3DGameComponent} from "./create3-dgame/create3-dgame.component";
 import {FormPostService} from "./form-post.service";
 import {GameListComponent} from "./game-list/game-list.component";
+import { DeleteGameFormComponent } from "./game-list/game/delete-game-form/delete-game-form.component";
 import {GameComponent} from "./game-list/game/game.component";
 import { ReinitialiserFormComponent } from "./game-list/game/reinitialiser-form/reinitialiser-form.component";
 import { SupprimerFormComponent } from "./game-list/game/supprimer-form/supprimer-form.component";
@@ -54,7 +55,7 @@ import {VueAdminComponent} from "./vue-admin/vue-admin.component";
     SimpleGameContainerComponent,
     TimerComponent,
     AwaitViewComponent,
-    SupprimerFormComponent,
+    DeleteGameFormComponent,
     ReinitialiserFormComponent,
     GameDeletionNotifComponent,
     MessageBoxComponent,
@@ -90,7 +91,7 @@ import {VueAdminComponent} from "./vue-admin/vue-admin.component";
     HttpClientModule,
   ],
   bootstrap: [AppComponent],
-  entryComponents: [SimpleGameCreatorFormComponent, Create3DGameComponent, SupprimerFormComponent,
+  entryComponents: [SimpleGameCreatorFormComponent, Create3DGameComponent, DeleteGameFormComponent,
                     ReinitialiserFormComponent, GameDeletionNotifComponent],
   schemas: [NO_ERRORS_SCHEMA],
 })

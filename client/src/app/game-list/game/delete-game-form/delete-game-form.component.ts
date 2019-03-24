@@ -8,15 +8,15 @@ import {GameService} from "../../../game.service";
 import {SocketService} from "../../../socket.service";
 
 @Component({
-  selector: "app-supprimer-form",
-  templateUrl: "./supprimer-form.component.html",
-  styleUrls: ["./supprimer-form.component.css"],
+  selector: "app-delete-game-form",
+  templateUrl: "./delete-game-form.component.html",
+  styleUrls: ["./delete-game-form.component.css"],
 })
 
-export class SupprimerFormComponent  {
+export class DeleteGameFormComponent  {
   private socketMessage: WebsocketMessage<string>;
 
-  public constructor( protected dialogRef: MatDialogRef<SupprimerFormComponent>,
+  public constructor( protected dialogRef: MatDialogRef<DeleteGameFormComponent>,
                       protected router: Router,
                       protected socket: SocketService,
                       @Inject(MAT_DIALOG_DATA) public data: IDialogData,

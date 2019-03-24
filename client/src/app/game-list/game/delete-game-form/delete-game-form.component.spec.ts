@@ -6,15 +6,15 @@ import { GameService } from "../../../game.service";
 import { FreeGameCreatorService } from "../../../scene-creator/FreeGameCreator/free-game-creator.service";
 import { FreeGamePhotoService } from "../../../scene-creator/free-game-photo-service/free-game-photo.service";
 import { SocketService } from "../../../socket.service";
-import { SupprimerFormComponent } from "./supprimer-form.component";
+import { DeleteGameFormComponent } from "./delete-game-form.component";
 
 describe("SupprimerFormComponent", () => {
-  let component: SupprimerFormComponent;
-  let fixture: ComponentFixture<SupprimerFormComponent>;
+  let component: DeleteGameFormComponent;
+  let fixture: ComponentFixture<DeleteGameFormComponent>;
 
   beforeEach((done) => {
     TestBed.configureTestingModule({
-      declarations: [ SupprimerFormComponent ],
+      declarations: [ DeleteGameFormComponent ],
       imports: [ MatDialogModule, HttpClientModule],
       providers: [{ provide: Router, useClass: class { public navigate: jasmine.Spy = jasmine.createSpy("navigate"); } },
                   {provide: MatDialogRef, useValue: {}},
@@ -22,12 +22,12 @@ describe("SupprimerFormComponent", () => {
                   SocketService, GameService, FreeGamePhotoService, FreeGameCreatorService ],
     });
     done();
-    fixture = TestBed.createComponent(SupprimerFormComponent);
+    fixture = TestBed.createComponent(DeleteGameFormComponent);
     component = fixture.componentInstance;
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SupprimerFormComponent);
+    fixture = TestBed.createComponent(DeleteGameFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
