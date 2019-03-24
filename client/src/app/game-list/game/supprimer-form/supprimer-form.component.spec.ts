@@ -1,5 +1,5 @@
 import { HttpClientModule } from "@angular/common/http";
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA  } from "@angular/material/dialog";
 import { Router } from "@angular/router";
 import { GameService } from "../../../game.service";
@@ -12,7 +12,7 @@ describe("SupprimerFormComponent", () => {
   let component: SupprimerFormComponent;
   let fixture: ComponentFixture<SupprimerFormComponent>;
 
-  beforeEach(async(() => {
+  beforeEach((done) => {
     TestBed.configureTestingModule({
       declarations: [ SupprimerFormComponent ],
       imports: [ MatDialogModule, HttpClientModule],
@@ -21,9 +21,10 @@ describe("SupprimerFormComponent", () => {
                   {provide: MAT_DIALOG_DATA, useValue: {}, },
                   SocketService, GameService, FreeGamePhotoService, FreeGameCreatorService ],
     });
+    done();
     fixture = TestBed.createComponent(SupprimerFormComponent);
     component = fixture.componentInstance;
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SupprimerFormComponent);
