@@ -1,9 +1,14 @@
-import { format } from "date-and-time";
-import { injectable } from "inversify";
+import {format} from "date-and-time";
+import {injectable} from "inversify";
 import * as io from "socket.io";
-import { ChatMessage, ChatMessagePlayerCount, ChatMessageType, WebsocketMessage } from "../../../../common/communication/messages/message";
-import { SocketEvent } from "../../../../common/communication/socket-events";
-import { WebsocketActionService } from "./websocket-action.service";
+import {
+    ChatMessage,
+    ChatMessagePlayerCount,
+    ChatMessageType,
+    WebsocketMessage
+} from "../../../../common/communication/messages/message";
+import {SocketEvent} from "../../../../common/communication/socket-events";
+import {WebsocketActionService} from "./websocket-action.service";
 
 @injectable()
 export class ChatWebsocketActionService extends WebsocketActionService {
@@ -15,8 +20,15 @@ export class ChatWebsocketActionService extends WebsocketActionService {
 
     public execute(data: WebsocketMessage<ChatMessage>, socket: io.Socket): void {
         const message: WebsocketMessage<string> = this.generateMessage(data.body);
-        socket.broadcast.emit(this._EVENT_TYPE, message);
         socket.emit(this._EVENT_TYPE, message);
+        switch (data.body.type) {
+            case ChatMessageType.CONNECTION:
+            case ChatMessageType.DISCONNECTION:
+            case ChatMessageType.BEST_TIME:
+                socket.broadcast.emit(this._EVENT_TYPE, message);
+                break;
+            default:
+        }
     }
 
     private generateMessage(data: ChatMessage): WebsocketMessage<string> {
