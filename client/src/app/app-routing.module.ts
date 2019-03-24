@@ -1,5 +1,6 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
+import { AwaitViewComponent} from "./await-view/await-view.component";
 import { GameListComponent } from "./game-list/game-list.component";
 import { InitialViewComponent } from "./initial-view/initial-view.component";
 import { PlayViewComponent } from "./play-view/play-view.component";
@@ -12,6 +13,7 @@ const routes: Routes = [
     { path: "admin", component: VueAdminComponent },
     { path: "play-view", component: PlayViewComponent },
     { path: "3d-view", component: SceneCreatorComponent },
+    { path: "await-view", component: AwaitViewComponent },
 ];
 
 @NgModule({
