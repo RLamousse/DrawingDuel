@@ -5,7 +5,7 @@ import {SocketService} from "../socket.service";
 import { AwaitViewComponent } from "./await-view.component";
 import {GameDeletionNotifComponent} from "./game-deletion-notif/game-deletion-notif.component";
 
-import { AwaitViewComponent } from './await-view.component';
+describe("AwaitViewComponent", () => {
 
 describe('AwaitViewComponent', () => {
   let component: AwaitViewComponent;
@@ -14,9 +14,11 @@ describe('AwaitViewComponent', () => {
   beforeEach((done) => {
     TestBed.configureTestingModule(
       {
-    })
-    .compileComponents();
-  }));
+        declarations: [
+          AwaitViewComponent,
+          GameDeletionNotifComponent,
+        ],
+        imports: [MatDialogModule],
         providers: [
         { provide: Router, useClass: class { public navigate: jasmine.Spy = jasmine.createSpy("navigate"); }, },
       ],
