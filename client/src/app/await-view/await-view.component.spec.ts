@@ -46,3 +46,7 @@ describe("AwaitViewComponent", () => {
     expect(component).toBeTruthy();
   });
 });
+
+afterEach(() => {
+  TestBed.resetTestingModule();
+});
