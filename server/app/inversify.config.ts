@@ -21,6 +21,7 @@ import { ScoreTableService} from "./services/score-table.service";
 import { UsernameService } from "./services/username.service";
 import { ChatWebsocketActionService } from "./services/websocket/chat-websocket-action.service";
 import { CheckUserWebsocketActionService } from "./services/websocket/check-user-websocket-action.service";
+import { DeleteWebsocketActionService } from "./services/websocket/delete-websocket-action.service";
 import { DummyWebsocketActionService } from "./services/websocket/dummy-websocket-action.service";
 import Types from "./types";
 import {UpdateGameScoresWebsocketActionService} from "./services/websocket/update-game-scores-websocket-action.service";
@@ -59,5 +60,6 @@ container.bind(Types.DummyWebsocketActionService).to(DummyWebsocketActionService
 container.bind(Types.ChatWebsocketActionService).to(ChatWebsocketActionService);
 container.bind(Types.CheckUserWebsocketActionService).to(CheckUserWebsocketActionService);
 container.bind(Types.UpdateGameScoresWebsocketActionService).to(UpdateGameScoresWebsocketActionService);
+container.bind(Types.DeleteWebsocketActionService).to(DeleteWebsocketActionService);
 
 export { container };
