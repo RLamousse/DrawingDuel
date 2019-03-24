@@ -112,7 +112,7 @@ export class Object3DCreatorService {
 
         return {
             type: spaceObjects[index].type,
-            scale: spaceObjects[index].scale,
+            scale: this.sizeGenerator(spaceObjects[index].scale),
             position: [0, 0, 0],
             rotation: [0, 0, 0],
             gameType: Themes.Space,
