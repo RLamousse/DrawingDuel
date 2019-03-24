@@ -12,13 +12,13 @@ export class ReinitialiserFormComponent {
 
   public constructor (protected dialogRef: MatDialogRef<ReinitialiserFormComponent>,
                       @Inject(MAT_DIALOG_DATA) public data: IDialogData,
-                      private router: Router) {/*vide*/}
+                      private router: Router) {}
 
   public exit(message: Object = { status: "cancelled" }): void {
     this.dialogRef.close(message);
   }
   public resetGame(): void {
-    /*call deleteGame from server*/
+    /*call rsesetGame from server*/
     this.dialogRef.close();
     this.router.navigate(["/admin/"]) // tslint:disable-next-line:no-any Generic error response
     .catch((reason: any) => {

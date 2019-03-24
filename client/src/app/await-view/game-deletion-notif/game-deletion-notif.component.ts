@@ -11,7 +11,7 @@ export class GameDeletionNotifComponent {
 
   public constructor(protected dialogRef: MatDialogRef<GameDeletionNotifComponent>,
                      @Inject(MAT_DIALOG_DATA) public data: IDialogData,
-                    ) {/*vide*/ }
+                    ) {}
 
   public exit(): void {
     this.dialogRef.close();
