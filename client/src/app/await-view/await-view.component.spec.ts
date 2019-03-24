@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {ActivatedRoute, Router} from "@angular/router";
 
 import { AwaitViewComponent } from './await-view.component';
 
@@ -12,6 +13,9 @@ describe('AwaitViewComponent', () => {
     })
     .compileComponents();
   }));
+        providers: [
+        { provide: Router, useClass: class { public navigate: jasmine.Spy = jasmine.createSpy("navigate"); }, },
+      ],
 
   beforeEach(() => {
     fixture = TestBed.createComponent(AwaitViewComponent);
