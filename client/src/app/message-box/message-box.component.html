@@ -1,0 +1,8 @@
+<h3 style="text-align: center">Messages:</h3>
+<div class="eventNotif">
+    <div class="chatContainer" #container [scrollTop]="container.scrollHeight">
+        <div *ngFor="let message of messages">
+            <span>{{message.body}}</span>
+        </div>
+    </div>
+</div>

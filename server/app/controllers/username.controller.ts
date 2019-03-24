@@ -20,7 +20,7 @@ export class UserController {
                 if (req.body.constructor === Object && Object.keys(req.body).length === 0) {
                     throw new NoUsernameInRequestError();
                 }
-                const result: UserValidationMessage = await this.userService.checkAvailability(req.body);
+                const result: UserValidationMessage = this.userService.checkAvailability(req.body);
                 res.json(result);
             } catch (error) {
                 UserController.answerWithError(error, res);
@@ -34,7 +34,7 @@ export class UserController {
                 if (req.body.constructor === Object && Object.keys(req.body).length === 0) {
                     throw new NoUsernameInRequestError();
                 }
-                const response: UserValidationMessage = await this.userService.releaseUsername(req.body);
+                const response: UserValidationMessage = this.userService.releaseUsername(req.body);
                 res.json(response);
             } catch (error) {
                 UserController.answerWithError(error, res);
