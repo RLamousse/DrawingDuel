@@ -61,3 +61,11 @@ export class ImageDimensionsMismatchError extends Error {
         super(ImageDimensionsMismatchError.IMAGE_DIMENSIONS_MISMATCH_ERROR_MESSAGE);
     }
 }
+
+export class Object3DIsNotADifference extends  Error {
+    public static readonly OBJ_3D_NOT_A_DIFFERENCE_ERROR_MESSAGE: string = "The object is not a difference!";
+
+    constructor(){
+        super(Object3DIsNotADifference.OBJ_3D_NOT_A_DIFFERENCE_ERROR_MESSAGE);
+    }
+}

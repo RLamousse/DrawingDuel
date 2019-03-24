@@ -11,7 +11,7 @@ import {
     ModificationType,
     Themes
 } from "../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
-import {IScenesJSON} from "../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
+import {IScenesDB} from "../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
 import {Bitmap} from "../../../common/image/bitmap/bitmap";
 import {BITMAP_MEME_TYPE} from "../../../common/image/bitmap/bitmap-utils";
 import {IFreeGame} from "../../../common/model/game/free-game";
@@ -99,7 +99,7 @@ export class GameCreatorService {
 
         await GameCreatorService.testNameExistence(gameName);
 
-        const scenes: IScenesJSON = this.generateScene(numberOfObjects, theme, modTypes);
+        const scenes: IScenesDB = this.generateScene(numberOfObjects, theme, modTypes);
 
         return this.generateFreeGame(gameName, scenes);
     }
@@ -150,7 +150,7 @@ export class GameCreatorService {
             });
     }
 
-    private async uploadFreeGame(gameName: string, scenes: IScenesJSON): Promise<void> {
+    private async uploadFreeGame(gameName: string, scenes: IScenesDB): Promise<void> {
         const game: IFreeGame = {
             gameName: gameName,
             bestSoloTimes: this.createRandomScores(),
@@ -205,13 +205,13 @@ export class GameCreatorService {
         return diffData;
     }
 
-    private async generateFreeGame(gameName: string, scenes: IScenesJSON): Promise<Message> {
+    private async generateFreeGame(gameName: string, scenes: IScenesDB): Promise<Message> {
         await this.uploadFreeGame(gameName, scenes);
 
         return GAME_CREATION_SUCCESS_MESSAGE;
     }
 
-    private generateScene(numberOfObjects: number, theme: Themes, modTypes: ModificationType[]): IScenesJSON {
+    private generateScene(numberOfObjects: number, theme: Themes, modTypes: ModificationType[]): IScenesDB {
         if (theme === Themes.Geometry) {
 
             return this.freeGameCreatorService.generateIScenes(numberOfObjects, modTypes);

@@ -21,6 +21,8 @@ import { ChatWebsocketActionService } from "./services/websocket/chat-websocket-
 import { CheckUserWebsocketActionService } from "./services/websocket/check-user-websocket-action.service";
 import { DeleteWebsocketActionService } from "./services/websocket/delete-websocket-action.service";
 import { DummyWebsocketActionService } from "./services/websocket/dummy-websocket-action.service";
+import { DiffValidator3DService } from "./services/diff-validator-3D.service";
+import { DiffValidator3DController } from "./controllers/diff-validator-3D.controller";
 import Types from "./types";
 
 const container: Container = new Container();
@@ -54,5 +56,8 @@ container.bind(Types.DummyWebsocketActionService).to(DummyWebsocketActionService
 container.bind(Types.ChatWebsocketActionService).to(ChatWebsocketActionService);
 container.bind(Types.CheckUserWebsocketActionService).to(CheckUserWebsocketActionService);
 container.bind(Types.DeleteWebsocketActionService).to(DeleteWebsocketActionService);
+
+container.bind(Types.DiffValidator3DController).to(DiffValidator3DController);
+container.bind(Types.DiffValidator3DService).to(DiffValidator3DService);
 
 export { container };

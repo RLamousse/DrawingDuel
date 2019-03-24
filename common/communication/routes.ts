@@ -14,3 +14,5 @@ export const DB_FREE_GAME: string = DB_BASE + "games/free/";
 
 export const USERNAME_ADD: string = USERNAME_BASE + "add/";
 export const USERNAME_RELEASE: string = USERNAME_BASE + "release/";
+
+export const DIFF_VALIDATOR_3D_BASE: string = "/api/3d-diff-validator/";

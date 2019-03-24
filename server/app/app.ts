@@ -4,12 +4,19 @@ import * as cors from "cors";
 import * as express from "express";
 import { inject, injectable } from "inversify";
 import * as logger from "morgan";
-import {DB_BASE, DIFF_CREATOR_BASE, DIFF_VALIDATOR_BASE, GAME_CREATOR_BASE, USERNAME_BASE} from "../../common/communication/routes";
+import {DB_BASE,
+    DIFF_CREATOR_BASE,
+    DIFF_VALIDATOR_3D_BASE,
+    DIFF_VALIDATOR_BASE,
+    GAME_CREATOR_BASE,
+    USERNAME_BASE
+} from "../../common/communication/routes";
 import {BitmapDiffController} from "./controllers/bitmap-diff.controller";
 import {DataBaseController} from "./controllers/data-base.controller";
+import {DiffValidator3DController} from "./controllers/diff-validator-3D.controller";
 import {DiffValidatorController} from "./controllers/diff-validator.controller";
 import {GameCreatorController} from "./controllers/game-creator.controller";
-import { UserController } from "./controllers/username.controller";
+import {UserController} from "./controllers/username.controller";
 import Types from "./types";
 
 @injectable()
@@ -22,7 +29,8 @@ export class Application {
                        @inject(Types.DataBaseController) private dataBaseController: DataBaseController,
                        @inject(Types.UserNameController) private userController: UserController,
                        @inject(Types.BitmapDiffController) private bitmapDiffController: BitmapDiffController,
-                       @inject(Types.DiffValidatorController) private diffValidatorController: DiffValidatorController) {
+                       @inject(Types.DiffValidatorController) private diffValidatorController: DiffValidatorController,
+                       @inject(Types.DiffValidator3DController) private diffValidator3DController: DiffValidator3DController) {
 
         this.app = express();
 
@@ -47,6 +55,7 @@ export class Application {
         this.app.use(GAME_CREATOR_BASE, this.gameCreatorController.router);
         this.app.use(DB_BASE, this.dataBaseController.router);
         this.app.use(DIFF_VALIDATOR_BASE, this.diffValidatorController.router);
+        this.app.use(DIFF_VALIDATOR_3D_BASE, this.diffValidator3DController.router);
         this.errorHandeling();
     }
 

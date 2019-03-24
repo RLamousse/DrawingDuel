@@ -20,5 +20,7 @@ export default  {
         DummyWebsocketActionService: Symbol("DummyWebsocketActionService"),
         ChatWebsocketActionService: Symbol("ChatWebsocketActionService"),
         CheckUserWebsocketActionService: Symbol("CheckUserWebsocketActionService"),
+        DiffValidator3DController: Symbol("DiffValidator3DController"),
+        DiffValidator3DService: Symbol("DiffValidator3DService"),
         DeleteWebsocketActionService: Symbol("DeleteWebsocketActionService"),
 };
