@@ -2,6 +2,7 @@ import {Injectable} from "@angular/core";
 import * as THREE from "three";
 //import GLTFLoader from "three-gltf-loader";
 import {ComponentNotLoadedError} from "../../../../common/errors/component.errors";
+import GLTFLoader from "three-gltf-loader";
 //import {spaceObjects} from "../../../../common/free-game-json-interface/modelThematicTheme";
 require("three-first-person-controls")(THREE);
 
@@ -89,17 +90,19 @@ export class SceneRendererService {
     }
     this.scene = original;
     this.modifiedScene = modified;
-    // this.displayObject("assets/Models/space/rocket/scene.gltf");
+    this.displayObject("assets/Models/space/rocket/scene.gltf");
     this.renderLoop();
   }
 
-  // public displayObject(path: string): void {
-  //   const loader: GLTFLoader = new GLTFLoader();
-  //   loader.load(path, (gltf: THREE.GLTF) => {
-  //     const test: number = spaceObjects[3].scale;
-  //     gltf.scene.scale.set(test, test, test);
-  //     // gltf.scene.rotateY(10);
-  //     this.scene.add(gltf.scene);
-  //   });
-  // }
+  public displayObject(path: string): void {
+    const loader: GLTFLoader = new GLTFLoader();
+    loader.load(path, (gltf: THREE.GLTF) => {
+      const test: number = 50;
+      gltf.scene.scale.set(test, test, test);
+      // gltf.scene.rotateY(10);
+      gltf.scene.position.set(500, 10,10);
+      this.scene.add(gltf.scene);
+      this.modifiedScene.add(gltf.scene);
+    });
+  }
 }

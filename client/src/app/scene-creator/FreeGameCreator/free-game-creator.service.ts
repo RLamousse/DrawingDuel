@@ -2,7 +2,6 @@ import {Injectable} from "@angular/core";
 import * as THREE from "three";
 import GLTFLoader from "three-gltf-loader";
 import {
-  Coordinate,
   ObjectGeometry,
   Themes
 } from "../../../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
@@ -67,13 +66,8 @@ export class FreeGameCreatorService {
   private generateThematicObject(object: IObject.IJson3DObject): void {
     const loader: GLTFLoader = new GLTFLoader();
     loader.load(this.buildPath(ObjectGeometry[object.type]), (gltf: THREE.GLTF) => {
-      const scaleFactor: number = object.scale;
-      gltf.scene.scale.set(scaleFactor, scaleFactor, scaleFactor);
-      gltf.scene.rotateX(object.rotation[Coordinate.X]);
-      gltf.scene.rotateY(object.rotation[Coordinate.Y]);
-      gltf.scene.rotateZ(object.rotation[Coordinate.Z]);
+      this.formService.setUpThematicParameters(object, gltf);
       this.scene.add(gltf.scene);
-      console.log(gltf.scene);
       this.modifiedScene.add(gltf.scene);
     });
   }
