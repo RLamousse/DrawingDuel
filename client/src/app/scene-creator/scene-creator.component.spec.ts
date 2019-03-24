@@ -1,7 +1,8 @@
 import {ComponentFixture, TestBed} from "@angular/core/testing";
 import {ActivatedRoute} from "@angular/router";
-import {of, Observable, Subject} from "rxjs";
+import {of, Observable} from "rxjs";
 import * as THREE from "three";
+import {IJson3DObject} from "../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
 import {IFreeGame} from "../../../../common/model/game/free-game";
 import {CompteurDiffComponent} from "../compteur-diff/compteur-diff.component";
 import {GameService} from "../game.service";
@@ -17,14 +18,20 @@ describe("SceneCreatorComponent", () => {
 
   class MockSceneCreatorService {
     public initCalled: string = "";
+    public objDiffCalled: string = "";
+
     public init(): void {
       this.initCalled = "init";
     }
-    public get foundDifferenceCount(): Observable<number> {
-      return new Subject<number>();
-    }
+
     public loadScenes(): void {
       return;
+    }
+
+    public objDiffValidation(): Promise<IJson3DObject> {
+      return new Promise<IJson3DObject>(() => {
+        this.objDiffCalled = "objDiffValidation";
+      });
     }
   }
 
@@ -102,4 +109,6 @@ describe("SceneCreatorComponent", () => {
     expect(mockFreeGameCreatorService.isCalled).toEqual(true);
     expect(mockedGameService.called).toEqual(true);
   });
+
+  //
 });

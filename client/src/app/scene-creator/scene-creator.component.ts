@@ -130,7 +130,7 @@ export class SceneCreatorComponent implements AfterViewInit, OnInit {
     return canvasContext;
   }
 
-  public drawText(text: string, position: IPoint, ctx: CanvasRenderingContext2D, textType?: TextType): void {
+  private drawText(text: string, position: IPoint, ctx: CanvasRenderingContext2D, textType?: TextType): void {
     switch (textType) {
       case TextType.ERROR:
         ctx.fillStyle = ERROR_TEXT_COLOR;
