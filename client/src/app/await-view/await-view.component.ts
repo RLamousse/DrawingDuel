@@ -35,7 +35,10 @@ export class AwaitViewComponent implements OnInit {
       dialogConfig.autoFocus = true;
       dialogConfig.data = {gameName: this.gameName, isSimpleGame: this.isSimpleGame};
       this.dialog.open(GameDeletionNotifComponent, dialogConfig);
-      this.route.navigate(["/game-list/"]);
+      this.route.navigate(["/game-list/"]) // tslint:disable-next-line:no-any Generic error response
+      .catch((reason: any) => {
+        throw new Error(reason);
+      });
     }
   }
 }

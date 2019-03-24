@@ -12,8 +12,9 @@ describe("GameDeletionNotifComponent", () => {
       imports: [ MatDialogModule],
       providers: [{provide: MatDialogRef, useValue: {}},
                   {provide: MAT_DIALOG_DATA, useValue: {}, } ],
-    })
-    .compileComponents();
+    });
+    fixture = TestBed.createComponent(GameDeletionNotifComponent);
+    component = fixture.componentInstance;
   }));
 
   beforeEach(() => {
