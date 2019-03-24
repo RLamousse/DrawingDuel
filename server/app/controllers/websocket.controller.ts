@@ -1,12 +1,13 @@
 import { format } from "date-and-time";
 import { inject, injectable } from "inversify";
 import * as io from "socket.io";
-import { ChatMessage, WebsocketMessage } from "../../../common/communication/messages/message";
+import {ChatMessage, UpdateScoreMessage, WebsocketMessage} from "../../../common/communication/messages/message";
 import { SocketEvent } from "../../../common/communication/socket-events";
 import { ChatWebsocketActionService } from "../services/websocket/chat-websocket-action.service";
 import { CheckUserWebsocketActionService } from "../services/websocket/check-user-websocket-action.service";
 import { DummyWebsocketActionService } from "../services/websocket/dummy-websocket-action.service";
 import types from "../types";
+import {UpdateGameScoresWebsocketActionService} from "../services/websocket/update-game-scores-websocket-action.service";
 
 @injectable()
 export class WebsocketController {
@@ -15,6 +16,8 @@ export class WebsocketController {
 
     public constructor (@inject(types.DummyWebsocketActionService) private dummyAction: DummyWebsocketActionService,
                         @inject(types.ChatWebsocketActionService) private chatAction: ChatWebsocketActionService,
+                        @inject(types.UpdateGameScoresWebsocketActionService)
+                        private scoreUpdateAction: UpdateGameScoresWebsocketActionService,
                         @inject(types.CheckUserWebsocketActionService) private userNameService: CheckUserWebsocketActionService) {
         this.sockets = new Map();
         this.registerSocket = this.registerSocket.bind(this);
@@ -30,6 +33,9 @@ export class WebsocketController {
     private routeSocket(socket: io.Socket): void {
         socket.on(SocketEvent.DUMMY, (message: WebsocketMessage) => {
             this.dummyAction.execute(message, socket);
+        });
+        socket.on(SocketEvent.UPDATE_SCORE, async (message: WebsocketMessage<UpdateScoreMessage>) => {
+            await this.scoreUpdateAction.execute(message, socket);
         });
         socket.on(SocketEvent.CHAT, (message: WebsocketMessage<ChatMessage>) => {
             this.chatAction.execute(message, socket);
