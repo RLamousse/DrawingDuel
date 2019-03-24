@@ -1,5 +1,5 @@
 import { HttpClientModule } from "@angular/common/http";
-import {CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
+import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormsModule } from "@angular/forms";
 import { Router } from "@angular/router";
@@ -12,7 +12,7 @@ describe("Initial View Component tests", () => {
   let unListSpyService: jasmine.SpyObj<UNListService>;
 
   beforeEach(async(() => {
-    unListSpyService = jasmine.createSpyObj("UNListService", ["validateName"]);
+    unListSpyService = jasmine.createSpyObj("UNListService", ["checkAvailability"]);
     TestBed.configureTestingModule({
       declarations: [InitialViewComponent],
       imports: [FormsModule, HttpClientModule],
@@ -43,31 +43,34 @@ describe("Initial View Component tests", () => {
     component.username = "perry24";
     UNListService.username = "perry24";
     component.newUsername = "nop";
-    unListSpyService.validateName.and.callFake(() => false);
-    component.updateUsername().then(() => {
-      expect(component.username).toBe("perry24");
-      expect(UNListService.username).toBe("perry24");
-    }).catch();
+    component.updateUsername();
+    // Here we want to test a private method since it is the callback
+    // tslint:disable-next-line: no-any
+    (component as any).handleUsernameAvailability(false);
+    expect(component.username).toBe("perry24");
+    expect(UNListService.username).toBe("perry24");
   });
 
   it("should have an error message if validateName return false", async () => {
     component.username = "phineas";
     component.newUsername = "123";
     component.userService.message = "error message send";
-    unListSpyService.validateName.and.callFake(() => false);
-    component.updateUsername().then(() => {
-      expect(component.errorMessage.length).not.toEqual(0);
-    }).catch();
+    component.updateUsername();
+    // Here we want to test a private method since it is the callback
+    // tslint:disable-next-line: no-any
+    (component as any).handleUsernameAvailability(false);
+    expect(component.errorMessage.length).not.toEqual(0);
   });
 
   it("should update username (service and component) if a valid one is enter", async () => {
     component.username = "ferb123";
     unListSpyService.username = "ferb123";
     component.newUsername = "Candice";
-    unListSpyService.validateName.and.callFake(() => true);
-    component.updateUsername().then(() => {
-      expect(component.username).toBe("Candice");
-      expect(UNListService.username).toBe("Candice");
-    }).catch();
+    component.updateUsername();
+    // Here we want to test a private method since it is the callback
+    // tslint:disable-next-line: no-any
+    (component as any).handleUsernameAvailability(true);
+    expect(component.username).toBe("Candice");
+    expect(UNListService.username).toBe("Candice");
   });
 });
