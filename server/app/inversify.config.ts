@@ -17,6 +17,8 @@ import { GameCreatorService } from "./services/game-creator.service";
 import { ImageUploadService } from "./services/image-upload.service";
 import { Object3DCreatorService } from "./services/object3D-creator.service";
 import { UsernameService } from "./services/username.service";
+import { ChatWebsocketActionService } from "./services/websocket/chat-websocket-action.service";
+import { CheckUserWebsocketActionService } from "./services/websocket/check-user-websocket-action.service";
 import { DeleteWebsocketActionService } from "./services/websocket/delete-websocket-action.service";
 import { DummyWebsocketActionService } from "./services/websocket/dummy-websocket-action.service";
 import Types from "./types";
@@ -49,6 +51,8 @@ container.bind(Types.Object3DCreatorService).to(Object3DCreatorService);
 
 container.bind(Types.WebsocketController).to(WebsocketController);
 container.bind(Types.DummyWebsocketActionService).to(DummyWebsocketActionService);
+container.bind(Types.ChatWebsocketActionService).to(ChatWebsocketActionService);
+container.bind(Types.CheckUserWebsocketActionService).to(CheckUserWebsocketActionService);
 container.bind(Types.DeleteWebsocketActionService).to(DeleteWebsocketActionService);
 
 export { container };

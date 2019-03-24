@@ -5,9 +5,38 @@ export interface Message {
     body: string;
 }
 
-export interface WebsocketMessage <type = Object> {
+export interface WebsocketMessage<type = Object> {
     title: SocketEvent;
     body: type;
+}
+
+export enum ChatMessagePosition {
+    FIRST = "première",
+    SECOND = "deuxième",
+    THIRD = "troisième",
+    NA = "NA",
+}
+
+export enum ChatMessagePlayerCount {
+    SOLO = "solo",
+    MULTI = "un contre un"
+}
+
+export enum ChatMessageType {
+    DIFF_FOUND,
+    DIFF_ERROR,
+    BEST_TIME,
+    CONNECTION,
+    DISCONNECTION
+}
+
+export interface ChatMessage {
+    type: ChatMessageType;
+    timestamp: Date;
+    playerName: string;
+    gameName: string;
+    position: ChatMessagePosition;
+    playerCount: ChatMessagePlayerCount;
 }
 
 export function isAWebsocketMessage (object: any) {

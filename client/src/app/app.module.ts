@@ -2,7 +2,7 @@ import {HttpClientModule} from "@angular/common/http";
 import {NgModule, NO_ERRORS_SCHEMA} from "@angular/core";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {
-  MatButtonModule, MatCheckboxModule, MatFormFieldModule, MatIconModule, MatInputModule, MatSelectModule, MatSliderModule
+  MatButtonModule, MatCheckboxModule, MatFormFieldModule, MatIconModule, MatInputModule, MatListModule, MatSelectModule, MatSliderModule
 } from "@angular/material";
 import {MatDialogModule} from "@angular/material/dialog";
 import {BrowserModule} from "@angular/platform-browser";
@@ -21,6 +21,7 @@ import { ReinitialiserFormComponent } from "./game-list/game/reinitialiser-form/
 import { SupprimerFormComponent } from "./game-list/game/supprimer-form/supprimer-form.component";
 import {GameService} from "./game.service";
 import {InitialViewComponent} from "./initial-view/initial-view.component";
+import { MessageBoxComponent } from "./message-box/message-box.component";
 import {PlayViewComponent} from "./play-view/play-view.component";
 import {Form3DService} from "./scene-creator/3DFormService/3-dform.service";
 import {FreeGameCreatorService} from "./scene-creator/FreeGameCreator/free-game-creator.service";
@@ -35,14 +36,12 @@ import {SocketService} from "./socket.service";
 import {TimerComponent} from "./timer/timer.component";
 import {UNListService} from "./username.service";
 import {VueAdminComponent} from "./vue-admin/vue-admin.component";
-import {WindowEventHandlerDirective} from "./window-event-handler.directive";
 
 @NgModule({
   declarations: [
     AppComponent,
     InitialViewComponent,
     GameListComponent,
-    WindowEventHandlerDirective,
     GameComponent,
     AppComponent,
     VueAdminComponent,
@@ -58,6 +57,7 @@ import {WindowEventHandlerDirective} from "./window-event-handler.directive";
     SupprimerFormComponent,
     ReinitialiserFormComponent,
     GameDeletionNotifComponent,
+    MessageBoxComponent,
   ],
   imports: [
     BrowserModule,
@@ -75,6 +75,7 @@ import {WindowEventHandlerDirective} from "./window-event-handler.directive";
     MatSliderModule,
     MatCheckboxModule,
     MatSelectModule,
+    MatListModule,
   ],
   providers: [
     UNListService,

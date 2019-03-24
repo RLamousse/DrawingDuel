@@ -1,0 +1,21 @@
+.eventNotif {
+  margin: auto;
+  width: 1320px;
+  border: 5px rgb(194, 185, 185) solid;
+  padding: 10px;
+  min-height: 100px;
+}
+
+.chatContainer {
+  height: 100px;
+  overflow: auto;
+}
+
+.chat-message {
+  font-family: Orbitron, serif;
+  color: white;
+}
+
+.message-list-item{
+  height: 20px !important;
+}
