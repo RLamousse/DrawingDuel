@@ -20,6 +20,9 @@ export class ReinitialiserFormComponent {
   public resetGame(): void {
     /*call deleteGame from server*/
     this.dialogRef.close();
-    this.router.navigate(["/admin/"]);
+    this.router.navigate(["/admin/"]) // tslint:disable-next-line:no-any Generic error response
+    .catch((reason: any) => {
+      throw new Error(reason);
+    });
   }
 }

@@ -34,7 +34,10 @@ export class SupprimerFormComponent  {
     this.socket.send(SocketEvent.DELETE, this.socketMessage);
     this.deleteGameByType(this.data.gameName, this.data.isSimpleGame);
     this.dialogRef.close();
-    this.router.navigate(["/admin/"]);
+    this.router.navigate(["/admin/"]) // tslint:disable-next-line:no-any Generic error response
+    .catch((reason: any) => {
+      throw new Error(reason);
+    });
   }
 
   public deleteGameByType(gameName: string, isSimpleGame: boolean ): void {

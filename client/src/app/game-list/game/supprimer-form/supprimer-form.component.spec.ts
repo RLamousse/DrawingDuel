@@ -20,8 +20,9 @@ describe("SupprimerFormComponent", () => {
                   {provide: MatDialogRef, useValue: {}},
                   {provide: MAT_DIALOG_DATA, useValue: {}, },
                   SocketService, GameService, FreeGamePhotoService, FreeGameCreatorService ],
-    })
-    .compileComponents();
+    });
+    fixture = TestBed.createComponent(SupprimerFormComponent);
+    component = fixture.componentInstance;
   }));
 
   beforeEach(() => {

@@ -14,8 +14,9 @@ describe("ReinitialiserFormComponent", () => {
       providers: [{ provide: Router, useClass: class { public navigate: jasmine.Spy = jasmine.createSpy("navigate"); } },
                   {provide: MatDialogRef, useValue: {}},
                   {provide: MAT_DIALOG_DATA, useValue: {}, } ],
-    })
-    .compileComponents();
+    });
+    fixture = TestBed.createComponent(ReinitialiserFormComponent);
+    component = fixture.componentInstance;
   }));
 
   beforeEach(() => {
