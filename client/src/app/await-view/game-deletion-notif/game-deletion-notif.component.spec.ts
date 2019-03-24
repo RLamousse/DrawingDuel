@@ -1,14 +1,17 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import {MatDialogModule, MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
+import { GameDeletionNotifComponent } from "./game-deletion-notif.component";
 
-import { GameDeletionNotifComponent } from './game-deletion-notif.component';
-
-describe('GameDeletionNotifComponent', () => {
+describe("GameDeletionNotifComponent", () => {
   let component: GameDeletionNotifComponent;
   let fixture: ComponentFixture<GameDeletionNotifComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ GameDeletionNotifComponent ]
+      declarations: [ GameDeletionNotifComponent ],
+      imports: [ MatDialogModule],
+      providers: [{provide: MatDialogRef, useValue: {}},
+                  {provide: MAT_DIALOG_DATA, useValue: {}, } ],
     })
     .compileComponents();
   }));
@@ -19,7 +22,7 @@ describe('GameDeletionNotifComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });
