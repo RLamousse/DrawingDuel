@@ -19,6 +19,7 @@ import { Object3DCreatorService } from "./services/object3D-creator.service";
 import { UsernameService } from "./services/username.service";
 import { ChatWebsocketActionService } from "./services/websocket/chat-websocket-action.service";
 import { CheckUserWebsocketActionService } from "./services/websocket/check-user-websocket-action.service";
+import { DeleteWebsocketActionService } from "./services/websocket/delete-websocket-action.service";
 import { DummyWebsocketActionService } from "./services/websocket/dummy-websocket-action.service";
 import { DiffValidator3DService } from "./services/diff-validator-3D.service";
 import { DiffValidator3DController } from "./controllers/diff-validator-3D.controller";
@@ -54,6 +55,7 @@ container.bind(Types.WebsocketController).to(WebsocketController);
 container.bind(Types.DummyWebsocketActionService).to(DummyWebsocketActionService);
 container.bind(Types.ChatWebsocketActionService).to(ChatWebsocketActionService);
 container.bind(Types.CheckUserWebsocketActionService).to(CheckUserWebsocketActionService);
+container.bind(Types.DeleteWebsocketActionService).to(DeleteWebsocketActionService);
 
 container.bind(Types.DiffValidator3DController).to(DiffValidator3DController);
 container.bind(Types.DiffValidator3DService).to(DiffValidator3DService);

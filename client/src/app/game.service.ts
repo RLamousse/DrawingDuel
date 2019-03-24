@@ -24,6 +24,7 @@ export class GameService {
   private readonly GET_SIMPLEGAME_ERROR: string = "get simple game from server error";
   private readonly GET_FREEGAME_ERROR: string = "get free game from server error";
   private readonly GET_FREEGAME_BY_NAME_ERROR: string = "get free game by name from server error";
+  private readonly DELETE_GAME_BY_NAME: string = "delete game by name server error";
 
   public constructor(
     private http: HttpClient,
@@ -101,6 +102,20 @@ export class GameService {
       catchError(this.handleError<IFreeGame>(this.GET_FREEGAME_BY_NAME_ERROR)),
     );
   }
+
+  public deleteSimpleGameByName(gameName: string): void {
+   this.http.delete(this.SIMPLE_GAME_BASE_URL + gameName).pipe(
+      catchError(this.handleError<IFreeGame>(this.DELETE_GAME_BY_NAME)),
+    ).subscribe();
+
+  }
+
+  public deleteFreeGameByName(gameName: string): void {
+    this.http.delete(this.FREE_GAME_BASE_URL + gameName).pipe(
+       catchError(this.handleError<IFreeGame>(this.DELETE_GAME_BY_NAME)),
+     ).subscribe();
+
+   }
 
   private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {
 
