@@ -27,7 +27,6 @@ export class SupprimerFormComponent  {
     this.dialogRef.close(message);
   }
   public deleteGame(): void {
-    /*call deleteGame from server*/
     this.socketMessage = {
       title: SocketEvent.DELETE,
       body: this.data.gameName,
