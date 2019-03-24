@@ -11,6 +11,7 @@ import {MaterialFileInputModule} from "ngx-material-file-input";
 import {AppRoutingModule} from "./app-routing.module";
 import {AppComponent} from "./app.component";
 import { AwaitViewComponent } from "./await-view/await-view.component";
+import { GameDeletionNotifComponent } from "./await-view/game-deletion-notif/game-deletion-notif.component";
 import {CompteurDiffComponent} from "./compteur-diff/compteur-diff.component";
 import {Create3DGameComponent} from "./create3-dgame/create3-dgame.component";
 import {FormPostService} from "./form-post.service";
@@ -35,7 +36,6 @@ import {TimerComponent} from "./timer/timer.component";
 import {UNListService} from "./username.service";
 import {VueAdminComponent} from "./vue-admin/vue-admin.component";
 import {WindowEventHandlerDirective} from "./window-event-handler.directive";
-import { GameDeletionNotifComponent } from './await-view/game-deletion-notif/game-deletion-notif.component';
 
 @NgModule({
   declarations: [
@@ -86,6 +86,7 @@ import { GameDeletionNotifComponent } from './await-view/game-deletion-notif/gam
     FreeGameCreatorService,
     FreeGamePhotoService,
     SimpleGameService,
+    HttpClientModule,
   ],
   bootstrap: [AppComponent],
   entryComponents: [SimpleGameCreatorFormComponent, Create3DGameComponent, SupprimerFormComponent,
