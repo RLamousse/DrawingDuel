@@ -15,6 +15,7 @@ export class ChatWebsocketActionService extends WebsocketActionService {
 
     public execute(data: WebsocketMessage<ChatMessage>, socket: io.Socket): void {
         const message: WebsocketMessage<string> = this.generateMessage(data.body);
+        socket.broadcast.emit(this._EVENT_TYPE, message);
         socket.emit(this._EVENT_TYPE, message);
     }
 
