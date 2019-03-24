@@ -10,11 +10,15 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {MaterialFileInputModule} from "ngx-material-file-input";
 import {AppRoutingModule} from "./app-routing.module";
 import {AppComponent} from "./app.component";
+import { AwaitViewComponent } from "./await-view/await-view.component";
+import { GameDeletionNotifComponent } from "./await-view/game-deletion-notif/game-deletion-notif.component";
 import {CompteurDiffComponent} from "./compteur-diff/compteur-diff.component";
 import {Create3DGameComponent} from "./create3-dgame/create3-dgame.component";
 import {FormPostService} from "./form-post.service";
 import {GameListComponent} from "./game-list/game-list.component";
+import { DeleteGameFormComponent } from "./game-list/game/delete-game-form/delete-game-form.component";
 import {GameComponent} from "./game-list/game/game.component";
+import { ResetGameFormComponent } from "./game-list/game/reset-game-form/reset-game-form.component";
 import {GameService} from "./game.service";
 import {InitialViewComponent} from "./initial-view/initial-view.component";
 import { MessageBoxComponent } from "./message-box/message-box.component";
@@ -49,6 +53,10 @@ import {VueAdminComponent} from "./vue-admin/vue-admin.component";
     SimpleGameCanvasComponent,
     SimpleGameContainerComponent,
     TimerComponent,
+    AwaitViewComponent,
+    DeleteGameFormComponent,
+    ResetGameFormComponent,
+    GameDeletionNotifComponent,
     MessageBoxComponent,
   ],
   imports: [
@@ -79,9 +87,11 @@ import {VueAdminComponent} from "./vue-admin/vue-admin.component";
     FreeGameCreatorService,
     FreeGamePhotoService,
     SimpleGameService,
+    HttpClientModule,
   ],
   bootstrap: [AppComponent],
-  entryComponents: [SimpleGameCreatorFormComponent, Create3DGameComponent],
+  entryComponents: [SimpleGameCreatorFormComponent, Create3DGameComponent, DeleteGameFormComponent,
+                    ResetGameFormComponent, GameDeletionNotifComponent],
   schemas: [NO_ERRORS_SCHEMA],
 })
 export class AppModule { }
