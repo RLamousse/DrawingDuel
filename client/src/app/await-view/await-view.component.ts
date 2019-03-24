@@ -18,7 +18,7 @@ export class AwaitViewComponent implements OnInit {
 
   public constructor(private activatedRoute: ActivatedRoute, private route: Router,
                      private socket: SocketService, private dialog: MatDialog) {
-    this.gameDeleted = this.gameDeleted.bind(this);
+    this.notifyGameDeletion = this.notifyGameDeletion.bind(this);
   }
 
   public ngOnInit(): void {
@@ -26,10 +26,10 @@ export class AwaitViewComponent implements OnInit {
       this.gameName = params["gameName"];
       this.isSimpleGame = params["gameType"];
     });
-    this.socket.onEvent(SocketEvent.DELETE).subscribe(this.gameDeleted);
+    this.socket.onEvent(SocketEvent.DELETE).subscribe(this.notifyGameDeletion);
   }
 
-  private gameDeleted(message: WebsocketMessage<string>): void {
+  private notifyGameDeletion(message: WebsocketMessage<string>): void {
     if (message.body === this.gameName) {
       const dialogConfig: MatDialogConfig = new MatDialogConfig();
       dialogConfig.autoFocus = true;
