@@ -66,15 +66,20 @@ export class FreeGameCreatorService {
 
   private generateThematicObject(object: IObject.IJson3DObject): void {
     const loader: GLTFLoader = new GLTFLoader();
-    loader.load(object.type.toString(), (gltf: THREE.GLTF) => {
+    loader.load(this.generatePath(object.type.toString()), (gltf: THREE.GLTF) => {
       const scaleFactor: number = object.scale;
       gltf.scene.scale.set(scaleFactor, scaleFactor, scaleFactor);
       gltf.scene.rotateX(object.rotation[Coordinate.X]);
       gltf.scene.rotateY(object.rotation[Coordinate.Y]);
       gltf.scene.rotateZ(object.rotation[Coordinate.Z]);
       this.scene.add(gltf.scene);
+      console.log(gltf.scene);
       this.modifiedScene.add(gltf.scene);
     });
+  }
+
+  private generatePath(name: string): string {
+    return ("assets/Models/space/" + name + "/scene.gltf");
   }
 
   private generateOriginalScene(primitiveScenes: IObject.IScenesJSON): void {
