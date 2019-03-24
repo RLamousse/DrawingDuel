@@ -105,9 +105,7 @@ export class FreeGameCreatorService {
             objects.push(object);
         }
         const modifiedObjects: IObject.IJson3DObject[] = JSON.parse(JSON.stringify(objects));
-        if (sceneType === Themes.Geometry) {
-            this.generateDifferences(modificationTypes, modifiedObjects);
-        }
+        this.generateDifferences(modificationTypes, modifiedObjects);
 
         return {originalObjects: objects, modifiedObjects: modifiedObjects};
     }
@@ -133,7 +131,10 @@ export class FreeGameCreatorService {
                     break;
                 }
                 case ModificationType.add: {
-                    let object: IObject.IJson3DObject = this.generate3DObject();
+                    let object: IObject.IJson3DObject;
+                    (modifiedObjects[0].gameType === Themes.Geometry) ?
+                        object = this.generate3DObject() :
+                        object = this.object3DCreatorService.createThematicObject();
                     object = this.handleCollision(object, modifiedObjects);
                     modifiedObjects.push(object);
                     break;
