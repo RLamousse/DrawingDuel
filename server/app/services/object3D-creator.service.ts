@@ -107,8 +107,8 @@ export class Object3DCreatorService {
         //const index: number =  Math.random() * (14 - 5) + 5;
 
         return {
-            type: ObjectGeometry.apollo,
-            scale: 1,
+            type: ObjectGeometry.rocket,
+            scale: 50,
             position: [0, 0, 0],
             rotation: [0, 0, 0],
             gameType: Themes.Space,

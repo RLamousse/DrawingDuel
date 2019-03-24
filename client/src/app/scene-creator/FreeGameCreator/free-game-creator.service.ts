@@ -67,8 +67,8 @@ export class FreeGameCreatorService {
     const loader: GLTFLoader = new GLTFLoader();
     loader.load(this.buildPath(ObjectGeometry[object.type]), (gltf: THREE.GLTF) => {
       this.formService.setUpThematicParameters(object, gltf);
-      this.scene.add(gltf.scene);
       this.modifiedScene.add(gltf.scene);
+      this.scene.add(gltf.scene);
     });
   }
 
