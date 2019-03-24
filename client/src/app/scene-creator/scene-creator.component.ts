@@ -89,20 +89,10 @@ export class SceneCreatorComponent implements AfterViewInit, OnInit {
         this.clickEnabled = true; })
         .catch(() => {
           this.cursorEnabled = false;
-          const canvasElm: HTMLElement | null = document.getElementById("originalCanvasMessage");
-          const canvasContext: CanvasRenderingContext2D | null = (canvasElm as HTMLCanvasElement).getContext("2d");
-          if (canvasContext === null) {
-            return;
+          const canvasContext: CanvasRenderingContext2D | null = this.canvasErrorDraw($event);
+          if (canvasContext !== null) {
+            this.resetRoutine(canvasContext);
           }
-          canvasContext.font = TEXT_FONT;
-          canvasContext.textAlign = "center";
-          canvasContext.strokeStyle = "black";
-          const point: IPoint = {
-            x: Math.floor($event.clientX / 2 - canvasContext.canvas.getBoundingClientRect().left),
-            y: Math.floor($event.clientY - 2*canvasContext.canvas.getBoundingClientRect().top),
-          };
-          this.drawText(IDENTIFICATION_ERROR_TEXT, point, canvasContext, TextType.ERROR);
-          this.resetRoutine(canvasContext);
         });
     }
   }
@@ -115,6 +105,29 @@ export class SceneCreatorComponent implements AfterViewInit, OnInit {
       ctx.clearRect(0 , 0, ctx.canvas.width, ctx.canvas.height);
       },
                TIMEOUT);
+  }
+
+  private canvasErrorDraw($event: MouseEvent): CanvasRenderingContext2D | null {
+    const canvasElm: HTMLElement | null = document.getElementById("modifiedCanvasMessage");
+    let canvasContext: CanvasRenderingContext2D | null = (canvasElm as HTMLCanvasElement).getContext("2d");
+    if ($event.clientX < (canvasContext as CanvasRenderingContext2D).canvas.offsetLeft) {
+      canvasContext = (document.getElementById("originalCanvasMessage") as HTMLCanvasElement).getContext("2d");
+    }
+    if (canvasContext === null) {
+      return canvasContext;
+    }
+    canvasContext.font = TEXT_FONT;
+    canvasContext.textAlign = "center";
+    canvasContext.strokeStyle = "black";
+    const X_FACTOR: number = 2;
+    const Y_FACTOR: number = 3;
+    const point: IPoint = {
+      x: Math.floor($event.clientX - canvasContext.canvas.offsetLeft) / X_FACTOR,
+      y: Math.floor($event.clientY - canvasContext.canvas.offsetTop) / Y_FACTOR,
+    };
+    this.drawText(IDENTIFICATION_ERROR_TEXT, point, canvasContext, TextType.ERROR);
+
+    return canvasContext;
   }
 
   public drawText(text: string, position: IPoint, ctx: CanvasRenderingContext2D, textType?: TextType): void {

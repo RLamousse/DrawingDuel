@@ -118,6 +118,7 @@ describe("A db service for free games", () => {
                 scenes: {
                     originalObjects: [],
                     modifiedObjects: [],
+                    differentObjects: [],
                 },
                 bestMultiTimes: [],
                 bestSoloTimes: [],
@@ -142,6 +143,7 @@ describe("A db service for free games", () => {
                 scenes: {
                     originalObjects: [],
                     modifiedObjects: [],
+                    differentObjects: [],
                 },
                 bestMultiTimes: [],
                 bestSoloTimes: [],
