@@ -87,7 +87,7 @@ describe("SceneRendererService", () => {
     const oriCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
     const modCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
     service.init(oriCont, modCont);
-    service.loadScenes(original, modified);
+    service.loadScenes(original, modified, "someGame");
     await service.modifyCheatState(async () => {
       return new Promise<IJson3DObject[]>((resolve) => {
         resolve([{position: [12, 0, 0]} as IJson3DObject]);

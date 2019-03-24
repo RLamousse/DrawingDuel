@@ -2,6 +2,7 @@ import {AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit, V
 import {ActivatedRoute} from "@angular/router";
 import {IFreeGame} from "../../../../common/model/game/free-game";
 import {IPoint} from "../../../../common/model/point";
+import {X_FACTOR, Y_FACTOR} from "../../../../common/util/util";
 import {GameService} from "../game.service";
 import {IScene} from "../scene-interface";
 import {FreeGameCreatorService} from "./FreeGameCreator/free-game-creator.service";
@@ -23,8 +24,8 @@ export const IDENTIFICATION_ERROR_TEXT: string = "Erreur";
              templateUrl: "./scene-creator.component.html",
              styleUrls: ["./scene-creator.component.css"],
            })
-  private clickEnabled: boolean;
 export class SceneCreatorComponent implements AfterViewInit, OnInit, OnDestroy {
+  private clickEnabled: boolean;
   public constructor(private renderService: SceneRendererService, private route: ActivatedRoute,
                      private freeGameCreator: FreeGameCreatorService, private gameService: GameService) {
     this.clickEnabled = true;
@@ -42,8 +43,6 @@ export class SceneCreatorComponent implements AfterViewInit, OnInit, OnDestroy {
   }
 
   private readonly CHEAT_KEY_CODE: string = "KeyT";
-
-  protected gameName: string;
 
   @ViewChild("originalView")
   private originalRef: ElementRef;
@@ -138,8 +137,6 @@ export class SceneCreatorComponent implements AfterViewInit, OnInit, OnDestroy {
     canvasContext.font = TEXT_FONT;
     canvasContext.textAlign = "center";
     canvasContext.strokeStyle = "black";
-    const X_FACTOR: number = 2;
-    const Y_FACTOR: number = 3;
     const point: IPoint = {
       x: Math.floor($event.clientX - canvasContext.canvas.offsetLeft) / X_FACTOR,
       y: Math.floor($event.clientY - canvasContext.canvas.offsetTop) / Y_FACTOR,

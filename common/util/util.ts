@@ -1,3 +1,7 @@
+
+export const X_FACTOR: number = 2;
+export const Y_FACTOR: number = 3;
+
 export function create2dArray<T>(width: number, height: number, filledWith: T): T[][] {
     return new Array(height)
         .fill(filledWith)

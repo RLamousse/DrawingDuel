@@ -123,7 +123,6 @@ export class GameService {
 
       this.http.get<IFreeGame>(
         SERVER_BASE_URL + DB_FREE_GAME + gameName).subscribe((value: IFreeGame) => {
-        // @ts-ignore //TODO remove the ignore after anthony merge
         resolve(value.scenes.differentObjects);
       });
     });
