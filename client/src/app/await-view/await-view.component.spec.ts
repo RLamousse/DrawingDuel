@@ -1,5 +1,9 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed } from "@angular/core/testing";
+import {MatDialogModule} from "@angular/material";
 import {ActivatedRoute, Router} from "@angular/router";
+import {SocketService} from "../socket.service";
+import { AwaitViewComponent } from "./await-view.component";
+import {GameDeletionNotifComponent} from "./game-deletion-notif/game-deletion-notif.component";
 
 import { AwaitViewComponent } from './await-view.component';
 
