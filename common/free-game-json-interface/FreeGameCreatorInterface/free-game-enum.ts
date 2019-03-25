@@ -22,8 +22,8 @@ export const spaceObjects: thematicObject[] = [
     {type: ObjectGeometry.dog, scale: 12, probability: 0.05, maxRotation: Math.PI / 4},
     {type: ObjectGeometry.rocket, scale: 17, probability: 0.10, maxRotation: Math.PI / 4},
     {type: ObjectGeometry.fighter, scale: 0.5, probability: 0.10, maxRotation: Math.PI * 2},
-    {type: ObjectGeometry.shuttle, scale: 1, probability: 0.10, maxRotation: Math.PI / 4},
-    {type: ObjectGeometry.UFO, scale: 0.4, probability: 0.04, maxRotation: Math.PI / 4},
+    {type: ObjectGeometry.shuttle, scale: 2, probability: 0.10, maxRotation: Math.PI / 4},
+    {type: ObjectGeometry.UFO, scale: 0.6, probability: 0.04, maxRotation: Math.PI / 4},
     {type: ObjectGeometry.earth, scale: 10, probability: 0.03, maxRotation: Math.PI * 2},
     {type: ObjectGeometry.buzz, scale: 0.6, probability: 0.03, maxRotation: Math.PI / 4},
 ];

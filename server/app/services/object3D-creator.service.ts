@@ -140,15 +140,15 @@ export class Object3DCreatorService {
         const index: number =  Math.random();
         const spaceObjectSize: number = 9;
         let floor: number = 0;
-        const objectIndex: indexObj = {type: ObjectGeometry.comet, index: 0};
+        let objectIndex: indexObj = {type: ObjectGeometry.comet, index: 0};
 
         for (let i: number = 0; i <= spaceObjectSize; i++) {
             if (index >= floor && index <= floor + spaceObjects[i].probability) {
-
-                return {
+                objectIndex = {
                     type: spaceObjects[i].type,
                     index: i,
                 };
+                break;
             }
             floor += spaceObjects[i].probability;
         }
