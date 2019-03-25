@@ -8,6 +8,7 @@ import {
 import * as IObject from "../../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
 import {IScene} from "../../scene-interface";
 import {Form3DService} from "../3DFormService/3-dform.service";
+import set = Reflect.set;
 
 @Injectable()
 export class FreeGameCreatorService {
@@ -67,7 +68,8 @@ export class FreeGameCreatorService {
 
   private generateThematicObject(object: IObject.IJson3DObject, isOriginalObject: boolean): void {
     const loader: GLTFLoader = new GLTFLoader();
-    loader.load(this.buildPath(ObjectGeometry[object.type]), (gltf: THREE.GLTF) => {
+    const enumOffset: number = 5;
+    loader.load(this.buildPath(ObjectGeometry[object.type + enumOffset]), (gltf: THREE.GLTF) => {
       // if (object.texture) {
       //   this.setTexture(object.texture as string, gltf);
       // }
