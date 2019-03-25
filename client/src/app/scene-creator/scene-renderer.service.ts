@@ -204,8 +204,6 @@ export class SceneRendererService {
       // Only take the first intersected object by the ray, hence the 0's
       if (intersectOri.length === 0 && intersectMod.length !== 0) {// add
         return this.differenceValidationAtPoint(intersectMod[0]);
-      } else if (intersectOri.length !== 0 && intersectMod.length === 0) {// remove
-        return this.differenceValidationAtPoint(intersectOri[0]);
       } else {
         return this.differenceValidationAtPoint(intersectOri[0]);
       }

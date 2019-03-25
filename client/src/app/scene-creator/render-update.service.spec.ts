@@ -152,4 +152,7 @@ describe("RenderUpdateService", () => {
     expect(service.deltaY).toEqual((0 - 100) / 4000);
     expect(service.deltaX).toEqual((0 - (-150)) / 4000);
   });
+
+  // Test UpdateDifference
+
 });
