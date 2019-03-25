@@ -22,7 +22,17 @@ export class CompteurDiffComponent implements OnInit {
   public ngOnInit(): void {
     this.simpleGameService.foundDifferencesCount.subscribe((differenceCount: number) => {
       this.diffNumber = differenceCount;
+      if (this.diffNumber === this.MAX_DIFF_NUM) {
+        this.endGame();
+      }
     });
+  }
+
+  private endGame(): void {
+    if (this.isDeleted) {/* */
+      console.log(UNListService.username);
+
+    } else {/* */}
   }
 
 }
