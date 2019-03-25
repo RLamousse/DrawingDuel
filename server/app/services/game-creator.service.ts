@@ -5,7 +5,12 @@ import {inject, injectable} from "inversify";
 import "reflect-metadata";
 import {Message} from "../../../common/communication/messages/message";
 import {DB_FREE_GAME, DB_SIMPLE_GAME, DIFF_CREATOR_BASE, SERVER_BASE_URL} from "../../../common/communication/routes";
-import {AlreadyExistentGameError, NonExistentGameError, NonExistentThemeError} from "../../../common/errors/database.errors";
+import {
+    AbstractDataBaseError,
+    AlreadyExistentGameError,
+    NonExistentGameError,
+    NonExistentThemeError
+} from "../../../common/errors/database.errors";
 import {DifferenceCountError} from "../../../common/errors/services.errors";
 import {
     ModificationType,
@@ -45,13 +50,13 @@ export class GameCreatorService {
             await Axios.get<ISimpleGame>(SERVER_BASE_URL + DB_SIMPLE_GAME + gameName);
         } catch (error) {
             if (error.response.status !== Httpstatus.NOT_FOUND) {
-                throw new Error("dataBase: " + error.response.data.message);
+                throw new AbstractDataBaseError(error.response.data.message);
             }
             try {
                 await Axios.get<IFreeGame>(SERVER_BASE_URL + DB_FREE_GAME + gameName);
             } catch (error) {
                 if (error.response.status !== Httpstatus.NOT_FOUND) {
-                    throw new Error("dataBase: " + error.response.data.message);
+                    throw new AbstractDataBaseError(error.response.data.message);
                 }
 
                 return;
@@ -113,7 +118,7 @@ export class GameCreatorService {
             await this.uploadSimpleGame(gameName, imagesUrls, differenceData);
         } catch (error) {
             if (error.message !== NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE) {
-                throw new Error("dataBase: " + error.message);
+                throw new AbstractDataBaseError(error.message);
             }
         }
 
@@ -147,7 +152,7 @@ export class GameCreatorService {
             // any is the default type of the required callback function
             // tslint:disable-next-line:no-any Generic error response
             .catch((reason: any) => {
-                throw new Error("dataBase: Unable to create game: " + reason.response.data.message);
+                throw new AbstractDataBaseError("Unable to create game: " + reason.response.data.message);
             });
     }
 
