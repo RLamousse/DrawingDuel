@@ -13,6 +13,7 @@ export const MOCKED_SIMPLE_GAMES: ISimpleGame[] = [
                        { name: "mockedUser2", time: 1450 },
                        { name: "mockedUser3", time: 1600 }],
       diffData: [],
+      toBeDeleted:  false,
     },
     {
         gameName: "mockedSimpleGameName2",
@@ -25,6 +26,7 @@ export const MOCKED_SIMPLE_GAMES: ISimpleGame[] = [
                          { name: "mockedUser2", time: 1450 },
                          { name: "mockedUser3", time: 1600 }],
         diffData: [],
+        toBeDeleted: false,
     },
     {
         gameName: "mockedSimpleName3",
@@ -38,6 +40,7 @@ export const MOCKED_SIMPLE_GAMES: ISimpleGame[] = [
                          { name: "mockedUser2", time: 1450 },
                          { name: "mockedUser3", time: 1600 }],
         diffData: [],
+        toBeDeleted: false,
     },
   ];
 
@@ -52,6 +55,7 @@ export const MOCKED_FREE_GAMES: IExtendedFreeGame[] = [
                        { name: "mockedUser2", time: 1450 },
                        { name: "mockedUser3", time: 1600 }],
       scenes: {originalObjects: [], modifiedObjects: [] },
+      toBeDeleted: false,
     },
     {
         gameName: "mockedFreeGameName2",
@@ -63,6 +67,7 @@ export const MOCKED_FREE_GAMES: IExtendedFreeGame[] = [
                          { name: "mockedUser2", time: 1450 },
                          { name: "mockedUser3", time: 1600 }],
         scenes: {originalObjects: [], modifiedObjects: [] },
+        toBeDeleted: false,
     },
     {
         gameName: "mockedFreeName3",
@@ -74,5 +79,6 @@ export const MOCKED_FREE_GAMES: IExtendedFreeGame[] = [
                          { name: "mockedUser2", time: 1450 },
                          { name: "mockedUser3", time: 1600 }],
         scenes: {originalObjects: [], modifiedObjects: [] },
+        toBeDeleted: false,
     },
   ];

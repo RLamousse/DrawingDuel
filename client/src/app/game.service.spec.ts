@@ -23,6 +23,7 @@ describe("GameService", () => {
       bestSoloTimes: [{ name: "mockedUser1", time: 120 }],
       bestMultiTimes: [{ name: "mockedUser2", time: 23 }],
       diffData: [],
+      toBeDeleted: false,
     } as ISimpleGame,
     {
       gameName: "mockedName",
@@ -39,6 +40,7 @@ describe("GameService", () => {
       bestSoloTimes: [{ name: "mockedUser1", time: 120 }],
       bestMultiTimes: [{ name: "mockedUser2", time: 23 }],
       diffData: [],
+      toBeDeleted: false,
     },
     {
       gameName: "mockedSimpleName",
@@ -47,6 +49,7 @@ describe("GameService", () => {
       bestSoloTimes: [{ name: "mockedUser1", time: 120 }],
       bestMultiTimes: [{ name: "mockedUser2", time: 23 }],
       diffData: [],
+      toBeDeleted: false,
     },
   ];
 
@@ -57,6 +60,7 @@ describe("GameService", () => {
       bestSoloTimes: [{ name: "mockedUser1", time: 120 }],
       bestMultiTimes: [{ name: "mockedUser2", time: 23 }],
       scenes: {originalObjects: [], modifiedObjects: []},
+      toBeDeleted: false,
     },
     {
       gameName: "mockedSimpleName",
@@ -64,6 +68,7 @@ describe("GameService", () => {
       bestSoloTimes: [{ name: "mockedUser1", time: 120 }],
       bestMultiTimes: [{ name: "mockedUser2", time: 23 }],
       scenes: {originalObjects: [], modifiedObjects: []},
+      toBeDeleted: false,
     },
   ];
 
@@ -115,6 +120,7 @@ describe("GameService", () => {
       bestSoloTimes: [],
       bestMultiTimes: [],
       diffData: [],
+      toBeDeleted: false,
     }];
     serviceGame.convertScoresObject(incompleteList);
     expect(incompleteList[0].gameName).toBe("incompleteList");
@@ -122,6 +128,7 @@ describe("GameService", () => {
     expect(incompleteList[0].modifiedImage).toBe("name2.bmp");
     expect(incompleteList[0].bestSoloTimes.length).toBe(0);
     expect(incompleteList[0].bestMultiTimes.length).toBe(0);
+    expect(incompleteList[0].toBeDeleted).toBe(false);
   });
 
   it ("pushFreeGames should push in extendedFreeGames", () => {

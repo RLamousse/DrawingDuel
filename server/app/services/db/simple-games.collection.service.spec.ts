@@ -24,6 +24,7 @@ describe("A db service for simple games", () => {
         originalImage: "originalImage",
         modifiedImage: "modifiedImage",
         gameName: "sampleGame",
+        toBeDeleted: false,
     };
 
     let simpleGamesCollectionService: SimpleGamesCollectionService;
@@ -49,6 +50,7 @@ describe("A db service for simple games", () => {
                 originalImage: "",
                 modifiedImage: "",
                 gameName: "",
+                toBeDeleted: false,
             };
 
             simpleGamesCollectionService = new SimpleGamesCollectionService(mockedCollection.object);

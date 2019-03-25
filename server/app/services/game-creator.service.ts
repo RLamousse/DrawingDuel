@@ -128,6 +128,7 @@ export class GameCreatorService {
             originalImage: imagesUrls[0],
             modifiedImage: imagesUrls[1],
             diffData: differenceData,
+            toBeDeleted: false,
         };
         await Axios.post<Message>(SERVER_BASE_URL + DB_SIMPLE_GAME, game)
         // tslint:disable-next-line:no-any Generic error response
@@ -142,6 +143,7 @@ export class GameCreatorService {
             bestSoloTimes: createRandomScores(),
             bestMultiTimes: createRandomScores(),
             scenes: scenes,
+            toBeDeleted: false,
         };
         await Axios.post<Message>(SERVER_BASE_URL + DB_FREE_GAME, game)
             // any is the default type of the required callback function

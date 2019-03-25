@@ -58,6 +58,7 @@ describe("Data-base controller", () => {
                 originalImage: "",
                 modifiedImage: "",
                 diffData: [],
+                toBeDeleted: false,
             };
 
             return request(app)
@@ -140,6 +141,7 @@ describe("Data-base controller", () => {
                     originalObjects: [],
                     modifiedObjects: [],
                 },
+                toBeDeleted: false,
             };
 
             return request(app)

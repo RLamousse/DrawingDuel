@@ -33,6 +33,7 @@ describe("A service validating if there is a difference at a coord for a game", 
         bestSoloTimes: [],
         bestMultiTimes: [],
         diffData: createdMockedDiffData(EXPECTED_DIFF_NUMBER),
+        toBeDeleted: false,
     };
 
     beforeEach(() => {
