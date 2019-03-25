@@ -9,8 +9,8 @@ import * as HttpStatus from "http-status-codes";
 import * as THREE from "three";
 import {DIFF_VALIDATOR_3D_BASE, SERVER_BASE_URL} from "../../../../common/communication/routes";
 import { ComponentNotLoadedError } from "../../../../common/errors/component.errors";
-import {IJson3DObject} from "../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
 import {NoDifferenceAtPointError} from "../../../../common/errors/services.errors";
+import {IJson3DObject} from "../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
 import {RenderUpdateService} from "./render-update.service";
 import { SceneRendererService } from "./scene-renderer.service";
 /* tslint:disable:no-magic-numbers*/
@@ -101,11 +101,12 @@ describe("SceneRendererService", () => {
       done.fail();
     },                                            1000);
     setInterval(() => {
-      if (!original.children[0].visible && original.children[1].visible) {
+      if (!((original.children[0] as THREE.Mesh).material as THREE.Material).visible &&
+        ((original.children[1] as THREE.Mesh).material as THREE.Material).visible) {
         clearTimeout(failThread);
         clearInterval(updateThread);
         done();
-      } else if (!original.children[1].visible) {
+      } else if (!((original.children[1] as THREE.Mesh).material as THREE.Material).visible) {
         clearTimeout(failThread);
         clearInterval(updateThread);
         done.fail();
