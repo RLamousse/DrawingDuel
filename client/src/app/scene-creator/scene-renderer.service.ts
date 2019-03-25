@@ -50,7 +50,7 @@ export class SceneRendererService {
   private readonly cameraZ: number = 100;
   private readonly timeFactor: number = 1000;
 
-  private readonly BLINK_INTERVAL_MS: number = 250;
+  private readonly BLINK_INTERVAL_MS: number = 3000;
   private readonly INVISIBLE_INTERVAL_MS: number = this.BLINK_INTERVAL_MS / X_FACTOR;
   // et la mettre dans utile si necessaire
   private readonly WATCH_THREAD_FINISH_INTERVAL: number = 30;
@@ -119,11 +119,11 @@ export class SceneRendererService {
     this.renderLoop();
   }
   private async blink(): Promise<void> {
-    (this.gameState.cheatDiffData as Set<THREE.Object3D>).forEach((value) => {value.visible = false; });
+    (this.gameState.cheatDiffData as Set<THREE.Mesh>).forEach((value: THREE.Mesh) => this.changeVisibility(value));
     this.gameState.isWaitingInThread = true;
     await sleep(this.INVISIBLE_INTERVAL_MS);
     this.gameState.isWaitingInThread = false;
-    (this.gameState.cheatDiffData as Set<THREE.Object3D>).forEach((value) => {value.visible = true; });
+    (this.gameState.cheatDiffData as Set<THREE.Mesh>).forEach((value: THREE.Mesh) => this.changeVisibility(value));
   }
   public async modifyCheatState(loadCheatData: () => Promise<IJson3DObject[]>): Promise<void> {
     this.gameState.isCheatModeActive = !this.gameState.isCheatModeActive;
@@ -289,5 +289,9 @@ export class SceneRendererService {
     this.updateDifference(obj);
     this.differenceCountSubject.next(this.gameState.foundDifference.length);
     playRandomSound(FOUND_DIFFERENCE_SOUNDS);
+  }
+  private changeVisibility(value: THREE.Mesh): void {
+    Array.isArray(value.material) ? value.material.forEach((material) => {material.visible = !material.visible; } ) :
+      value.material.visible = !value.material.visible;
   }
 }
