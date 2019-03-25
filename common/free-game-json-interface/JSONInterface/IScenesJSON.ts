@@ -9,6 +9,7 @@ export interface IJson3DObject {
     position: number[],
     rotation: number[],
     color: number,
+    texture?: string,
     type: ObjectGeometry,
     scale: number
     gameType: Themes,

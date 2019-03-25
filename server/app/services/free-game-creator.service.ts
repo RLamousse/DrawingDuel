@@ -83,7 +83,7 @@ export class FreeGameCreatorService {
 
     public generateIScenes(obj3DToCreate: number, modificationTypes: ModificationType[], sceneType: Themes): IObject.IScenesJSON {
         const objects: IObject.IJson3DObject[] = [];
-
+        console.log(sceneType);
         for (let i: number = 0; i < obj3DToCreate; ++i) {
             let object: IObject.IJson3DObject;
             (sceneType === Themes.Geometry) ?
@@ -133,7 +133,9 @@ export class FreeGameCreatorService {
                 }
                 case ModificationType.changeColor: {
                     const MASK: number = 0xFFFFFF;
-                    modifiedObjects[index].color = (Math.random() * MASK);
+                    (modifiedObjects[0].gameType === Themes.Geometry) ?
+                        modifiedObjects[index].color = (Math.random() * MASK) :
+                        modifiedObjects[index].texture = "common/image/texture.jpg";
                     break;
                 }
                 default: {

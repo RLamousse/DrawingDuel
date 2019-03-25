@@ -120,6 +120,7 @@ export class Object3DCreatorService {
             rotation: this.logicRandomRotation(spaceObjects[randomObj.index].maxRotation),
             gameType: Themes.Space,
             color: this.COLOR_MASK,
+            texture: "",
         };
     }
 
