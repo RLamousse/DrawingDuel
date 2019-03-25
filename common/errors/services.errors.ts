@@ -62,6 +62,14 @@ export class ImageDimensionsMismatchError extends Error {
     }
 }
 
+export class ScoreNotGoodEnough extends Error {
+    public static readonly SCORE_NOT_GOOD_ENOUGH: string = "Your score is not good enough to deserve a place in the podium!";
+
+    constructor() {
+        super(ScoreNotGoodEnough.SCORE_NOT_GOOD_ENOUGH);
+    }
+}
+
 export class Object3DIsNotADifference extends  Error {
     public static readonly OBJ_3D_NOT_A_DIFFERENCE_ERROR_MESSAGE: string = "The object is not a difference!";
 
