@@ -155,5 +155,57 @@ describe("RenderUpdateService", () => {
   });
 
   // Test UpdateDifference
+  it("should add inside the modifiedScene the deleted element", () => {
+    const service: RenderUpdateService = TestBed.get(RenderUpdateService);
+    const scene: THREE.Scene = new THREE.Scene();
+    const modifiedScene: THREE.Scene = new THREE.Scene();
+    const obj: THREE.Object3D = new THREE.Object3D();
+    scene.add(obj);
+    const intersection: THREE.Intersection = {
+      distance: 0,
+      distanceToRay: 0,
+      faceIndex: 0,
+      object: obj,
+      point: new THREE.Vector3(0, 0, 0),
+    };
+    service.updateDifference(intersection, scene, modifiedScene);
+    expect(modifiedScene.children.length).toEqual(1);
+  });
 
+  it("should not add obj inside the modifiedScene since not the same obj", () => {
+    const service: RenderUpdateService = TestBed.get(RenderUpdateService);
+    const scene: THREE.Scene = new THREE.Scene();
+    const modifiedScene: THREE.Scene = new THREE.Scene();
+    const obj1: THREE.Object3D = new THREE.Object3D();
+    obj1.position.set(50, 50, 50);
+    const obj2: THREE.Object3D = new THREE.Object3D();
+    scene.add(obj1);
+    const intersection: THREE.Intersection = {
+      distance: 0,
+      distanceToRay: 0,
+      faceIndex: 0,
+      object: obj2,
+      point: new THREE.Vector3(0, 0, 0),
+    };
+    service.updateDifference(intersection, scene, modifiedScene);
+    expect(modifiedScene.children.length).toEqual(0);
+  });
+
+  it("should delete the added obj inside modifiedScene", () => {
+    const service: RenderUpdateService = TestBed.get(RenderUpdateService);
+    const scene: THREE.Scene = new THREE.Scene();
+    const modifiedScene: THREE.Scene = new THREE.Scene();
+    const obj: THREE.Object3D = new THREE.Object3D();
+    modifiedScene.add(obj);
+    const intersection: THREE.Intersection = {
+      distance: 0,
+      distanceToRay: 0,
+      faceIndex: 0,
+      object: obj,
+      point: new THREE.Vector3(0, 0, 0),
+    };
+    expect(modifiedScene.children.length).toEqual(1);
+    service.updateDifference(intersection, scene, modifiedScene);
+    expect(modifiedScene.children.length).toEqual(0);
+  });
 });
