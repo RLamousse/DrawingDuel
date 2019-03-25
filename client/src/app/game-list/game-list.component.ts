@@ -1,4 +1,3 @@
-
 import { Component, Input, OnInit } from "@angular/core";
 import { IFreeGame } from "../../../../common/model/game/free-game";
 import { ISimpleGame } from "../../../../common/model/game/simple-game";
@@ -14,7 +13,7 @@ export class GameListComponent implements OnInit {
 
   @Input() protected readonly rightButton: string = "joindre";
   @Input() protected readonly leftButton: string = "jouer";
-  public constructor(private gameService: GameService) {}
+
 
   public ngOnInit(): void {
     this.gameService.getSimpleGames().subscribe((simpleGamesToPush: ISimpleGame[]) => {
@@ -24,5 +23,7 @@ export class GameListComponent implements OnInit {
     this.gameService.getFreeGames().subscribe((freeGamesToPush: IFreeGame[]) => {
       this.gameService.pushFreeGames(freeGamesToPush);
     });
+
   }
+
 }
