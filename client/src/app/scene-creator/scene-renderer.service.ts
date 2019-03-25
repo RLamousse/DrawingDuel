@@ -5,11 +5,10 @@ import {Observable, Subject} from "rxjs";
 import * as THREE from "three";
 import { DIFF_VALIDATOR_3D_BASE, SERVER_BASE_URL } from "../../../../common/communication/routes";
 import { ComponentNotLoadedError } from "../../../../common/errors/component.errors";
-import {IJson3DObject} from "../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
-import {deepCompare, sleep, X_FACTOR} from "../../../../common/util/util";
-require("three-first-person-controls")(THREE);
 import { AlreadyFoundDifferenceError, NoDifferenceAtPointError } from "../../../../common/errors/services.errors";
 import { Coordinate } from "../../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
+import {IJson3DObject} from "../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
+import {deepCompare, sleep, X_FACTOR} from "../../../../common/util/util";
 import { playRandomSound, FOUND_DIFFERENCE_SOUNDS, NO_DIFFERENCE_SOUNDS } from "../simple-game/game-sounds";
 import { RenderUpdateService } from "./render-update.service";
 
@@ -55,7 +54,7 @@ export class SceneRendererService {
   private readonly INVISIBLE_INTERVAL_MS: number = this.BLINK_INTERVAL_MS / X_FACTOR;
   // et la mettre dans utile si necessaire
   private readonly WATCH_THREAD_FINISH_INTERVAL: number = 30;
-  private gameState: IFreeGameState = {isCheatModeActive: false, isWaitingInThread: false, foundDifference: []};
+  public gameState: IFreeGameState = {isCheatModeActive: false, isWaitingInThread: false, foundDifference: []};
 
   private differenceCountSubject: Subject<number> = new Subject();
 

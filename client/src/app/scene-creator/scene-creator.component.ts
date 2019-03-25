@@ -18,6 +18,7 @@ export const ERROR_TEXT_COLOR: string = "#ff0000";
 export const VICTORY_TEXT_COLOR: string = "#008000";
 export const DEFAULT_TEXT_COLOR: string = "#000000";
 export const IDENTIFICATION_ERROR_TEXT: string = "Erreur";
+export const VICTORY_TEXT: string = "VICTOIRE";
 
 @Component({
              selector: "app-scene-creator",
@@ -97,12 +98,16 @@ export class SceneCreatorComponent implements AfterViewInit, OnInit, OnDestroy {
       this.clickEnabled
     ) {
       this.clickEnabled = false;
-
       this.renderService.objDiffValidation($event.clientX, $event.clientY).then(() => {
+        const VICTORY_COUNT: number = 7;
         this.clickEnabled = true;
+        if (this.renderService.gameState.foundDifference.length === VICTORY_COUNT) {
+          this.canvasVictoryDraw();
+          this.clickEnabled = false;
+        }
 
         return;
-      })
+        })
         .catch(() => {
           this.cursorEnabled = false;
           const canvasContext: CanvasRenderingContext2D | null = this.canvasErrorDraw($event);
@@ -144,6 +149,22 @@ export class SceneCreatorComponent implements AfterViewInit, OnInit, OnDestroy {
     this.drawText(IDENTIFICATION_ERROR_TEXT, point, canvasContext, TextType.ERROR);
 
     return canvasContext;
+  }
+
+  private canvasVictoryDraw(): void {
+    const END_GAME_ID: string = "endGameMessage";
+    const victoryElm: HTMLElement | null = document.getElementById(END_GAME_ID);
+    const elmCtx: CanvasRenderingContext2D | null = (victoryElm as HTMLCanvasElement).getContext("2d");
+    if (elmCtx !== null) {
+      const position: IPoint = {
+        x: elmCtx.canvas.width / X_FACTOR,
+        y: elmCtx.canvas.height / Y_FACTOR,
+      };
+      elmCtx.font = TEXT_FONT;
+      elmCtx.textAlign = "center";
+      elmCtx.strokeStyle = "black";
+      this.drawText(VICTORY_TEXT, position, elmCtx, TextType.VICTORY);
+    }
   }
 
   private drawText(text: string, position: IPoint, ctx: CanvasRenderingContext2D, textType?: TextType): void {
