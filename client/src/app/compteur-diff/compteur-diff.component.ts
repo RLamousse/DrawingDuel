@@ -1,6 +1,6 @@
-import {Component, OnInit} from "@angular/core";
+import {Component, Input, OnInit} from "@angular/core";
 import {SimpleGameService} from "../simple-game/simple-game.service";
-
+import {UNListService} from "../username.service";
 @Component({
              selector: "app-compteur-diff",
              templateUrl: "./compteur-diff.component.html",
@@ -8,6 +8,12 @@ import {SimpleGameService} from "../simple-game/simple-game.service";
            })
 export class CompteurDiffComponent implements OnInit {
   protected diffNumber: number;
+  protected gameDeleted: boolean;
+  @Input() public gameName: string;
+  @Input() public minutes: number;
+  @Input() public seconds: number;
+  @Input() public isDeleted: boolean;
+  private readonly MAX_DIFF_NUM: number = 7;
 
   public constructor(private simpleGameService: SimpleGameService) {
     this.diffNumber = 0;
