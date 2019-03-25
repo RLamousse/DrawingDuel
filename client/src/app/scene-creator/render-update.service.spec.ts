@@ -208,4 +208,56 @@ describe("RenderUpdateService", () => {
     service.updateDifference(intersection, scene, modifiedScene);
     expect(modifiedScene.children.length).toEqual(0);
   });
+
+  it("should update the color of the modObj, modObj clicked", () => {
+    const service: RenderUpdateService = TestBed.get(RenderUpdateService);
+    const scene: THREE.Scene = new THREE.Scene();
+    const modifiedScene: THREE.Scene = new THREE.Scene();
+    const oriGeo: THREE.BoxGeometry = new THREE.BoxGeometry();
+    const oriMaterial: THREE.MeshPhongMaterial = new THREE.MeshPhongMaterial();
+    oriMaterial.color.setHex(0xFFFFFF);
+    const modGeo: THREE.BoxGeometry = new THREE.BoxGeometry();
+    const modMaterial: THREE.MeshPhongMaterial = new THREE.MeshPhongMaterial();
+    oriMaterial.color.setHex(0x000000);
+    const oriObj: THREE.Mesh = new THREE.Mesh(oriGeo, oriMaterial);
+    const modObj: THREE.Mesh = new THREE.Mesh(modGeo, modMaterial);
+    scene.add(oriObj);
+    modifiedScene.add(modObj);
+    const intersection: THREE.Intersection = {
+      distance: 0,
+      distanceToRay: 0,
+      faceIndex: 0,
+      object: modObj,
+      point: new THREE.Vector3(0, 0, 0),
+    };
+    service.updateDifference(intersection, scene, modifiedScene);
+    expect(((modifiedScene.children[0] as THREE.Mesh).material as THREE.MeshPhongMaterial).color.getHex())
+      .toEqual(0x000000);
+  });
+
+  it("should update the color of the modObj, oriObj clicked", () => {
+    const service: RenderUpdateService = TestBed.get(RenderUpdateService);
+    const scene: THREE.Scene = new THREE.Scene();
+    const modifiedScene: THREE.Scene = new THREE.Scene();
+    const oriGeo: THREE.BoxGeometry = new THREE.BoxGeometry();
+    const oriMaterial: THREE.MeshPhongMaterial = new THREE.MeshPhongMaterial();
+    oriMaterial.color.setHex(0xFFFFFF);
+    const modGeo: THREE.BoxGeometry = new THREE.BoxGeometry();
+    const modMaterial: THREE.MeshPhongMaterial = new THREE.MeshPhongMaterial();
+    oriMaterial.color.setHex(0x000000);
+    const oriObj: THREE.Mesh = new THREE.Mesh(oriGeo, oriMaterial);
+    const modObj: THREE.Mesh = new THREE.Mesh(modGeo, modMaterial);
+    scene.add(oriObj);
+    modifiedScene.add(modObj);
+    const intersection: THREE.Intersection = {
+      distance: 0,
+      distanceToRay: 0,
+      faceIndex: 0,
+      object: oriObj,
+      point: new THREE.Vector3(0, 0, 0),
+    };
+    service.updateDifference(intersection, scene, modifiedScene);
+    expect(((modifiedScene.children[0] as THREE.Mesh).material as THREE.MeshPhongMaterial).color.getHex())
+      .toEqual(0x000000);
+  });
 });
