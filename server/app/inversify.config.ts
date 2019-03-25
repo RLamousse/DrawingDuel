@@ -23,8 +23,8 @@ import { ChatWebsocketActionService } from "./services/websocket/chat-websocket-
 import { CheckUserWebsocketActionService } from "./services/websocket/check-user-websocket-action.service";
 import { DeleteWebsocketActionService } from "./services/websocket/delete-websocket-action.service";
 import { DummyWebsocketActionService } from "./services/websocket/dummy-websocket-action.service";
-import Types from "./types";
 import {UpdateGameScoresWebsocketActionService} from "./services/websocket/update-game-scores-websocket-action.service";
+import Types from "./types";
 
 const container: Container = new Container();
 

@@ -1,9 +1,9 @@
 /* tslint:disable:max-file-line-count */
-// tslint:disable:no-magic-numbers
+// tslint:disable:no-magic-numbers we want to use magic numbers to simplify our tests
 import Axios from "axios";
-import AxiosAdapter from "axios-mock-adapter";
-// tslint:disable-next-line:no-duplicate-imports Weird interaction between singletons and interface (olivier st-o approved)
 import MockAdapter from "axios-mock-adapter";
+// tslint:disable-next-line:no-duplicate-imports Weird interaction between singletons and interface (olivier st-o approved)
+import AxiosAdapter from "axios-mock-adapter";
 import {expect} from "chai";
 import * as HttpStatus from "http-status-codes";
 import {Socket} from "socket.io";
@@ -17,9 +17,9 @@ import {
 } from "../../../../common/communication/messages/message";
 import {MODIFY_SCORES, SERVER_BASE_URL} from "../../../../common/communication/routes";
 import {SocketEvent} from "../../../../common/communication/socket-events";
+import {IllegalArgumentError, ScoreNotGoodEnough} from "../../../../common/errors/services.errors";
 import {ChatWebsocketActionService} from "./chat-websocket-action.service";
 import {UpdateGameScoresWebsocketActionService} from "./update-game-scores-websocket-action.service";
-import {IllegalArgumentError, ScoreNotGoodEnough} from "../../../../common/errors/services.errors";
 
 describe("Update Game Scores Websocket Action Service", () => {
 
@@ -76,16 +76,16 @@ describe("Update Game Scores Websocket Action Service", () => {
         when(mockedChatWebsocketActionService.execute(anything(), anything())).thenCall(
             (data: WebsocketMessage<ChatMessage>, socket: Socket) => {
                 expect(data.body).to.contain({type: ChatMessageType.BEST_TIME,
-                    gameName: "someGame",
-                    playerName: "someGuy",
-                    playerCount: ChatMessagePlayerCount.SOLO,
-                    position: ChatMessagePosition.FIRST,
+                                              gameName: "someGame",
+                                              playerName: "someGuy",
+                                              playerCount: ChatMessagePlayerCount.SOLO,
+                                              position: ChatMessagePosition.FIRST,
                 });
             });
         const message: WebsocketMessage<UpdateScoreMessage> = {title: SocketEvent.UPDATE_SCORE,
-            body: {isSolo: true,
-                gameName: "someGame",
-                newTime: {name: "someGuy", time: 123}}};
+                                                               body: {isSolo: true,
+                                                                      gameName: "someGame",
+                                                                      newTime: {name: "someGuy", time: 123}}};
         await getMockedService().execute(message, {} as Socket);
     });
 });
