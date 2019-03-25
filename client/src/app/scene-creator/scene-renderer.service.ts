@@ -17,7 +17,7 @@ interface IFreeGameState {
   isCheatModeActive: boolean;
   isWaitingInThread: boolean;
   foundDifference: IJson3DObject[];
-  cheatDiffData?: THREE.Object3D[];
+  cheatDiffData?: Set<THREE.Object3D>;
   blinkThread?: NodeJS.Timeout;
 }
 
@@ -120,11 +120,11 @@ export class SceneRendererService {
     this.renderLoop();
   }
   private async blink(): Promise<void> {
-    (this.gameState.cheatDiffData as THREE.Object3D[]).forEach((value) => {value.visible = false; });
+    (this.gameState.cheatDiffData as Set<THREE.Object3D>).forEach((value) => {value.visible = false; });
     this.gameState.isWaitingInThread = true;
     await sleep(this.INVISIBLE_INTERVAL_MS);
     this.gameState.isWaitingInThread = false;
-    (this.gameState.cheatDiffData as THREE.Object3D[]).forEach((value) => {value.visible = true; });
+    (this.gameState.cheatDiffData as Set<THREE.Object3D>).forEach((value) => {value.visible = true; });
   }
   public async modifyCheatState(loadCheatData: () => Promise<IJson3DObject[]>): Promise<void> {
     this.gameState.isCheatModeActive = !this.gameState.isCheatModeActive;
@@ -142,9 +142,9 @@ export class SceneRendererService {
     if (this.gameState.isCheatModeActive) {
 
       newData.forEach((jsonValue: IJson3DObject) => {
-        (this.gameState.cheatDiffData as THREE.Object3D[]).forEach((objectValue: THREE.Object3D, index: number) => {
+        (this.gameState.cheatDiffData as Set<THREE.Object3D>).forEach((objectValue: THREE.Object3D) => {
           if (this.isObjectAtSamePlace(jsonValue.position, objectValue.position)) {
-            (this.gameState.cheatDiffData as THREE.Object3D[]).splice(index, 1);
+            (this.gameState.cheatDiffData as Set<THREE.Object3D>).delete(objectValue);
           }
         });
       });
@@ -152,11 +152,11 @@ export class SceneRendererService {
   }
 
   private async loadCheatData(callBackFunction: () => Promise<IJson3DObject[]>): Promise<void> {
-    this.gameState.cheatDiffData = [];
+    this.gameState.cheatDiffData = new Set<THREE.Object3D>();
     (await callBackFunction()).forEach((jsonValue: IJson3DObject) => {
       this.scene.children.concat(this.modifiedScene.children).forEach((objectValue: THREE.Object3D) => {
         if (this.isObjectAtSamePlace(jsonValue.position, objectValue.position) && objectValue instanceof THREE.Mesh) {
-          (this.gameState.cheatDiffData as THREE.Object3D[]).push(objectValue);
+          (this.gameState.cheatDiffData as Set<THREE.Object3D>).add(objectValue);
         }
       });
     });
