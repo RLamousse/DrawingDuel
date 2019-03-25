@@ -1,7 +1,8 @@
-import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from "@angular/core";
+import {AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild} from "@angular/core";
 import {ActivatedRoute} from "@angular/router";
 import {IFreeGame} from "../../../../common/model/game/free-game";
 import {IPoint} from "../../../../common/model/point";
+import {X_FACTOR, Y_FACTOR} from "../../../../common/util/util";
 import {GameService} from "../game.service";
 import {IScene} from "../scene-interface";
 import {FreeGameCreatorService} from "./FreeGameCreator/free-game-creator.service";
@@ -23,7 +24,7 @@ export const IDENTIFICATION_ERROR_TEXT: string = "Erreur";
              templateUrl: "./scene-creator.component.html",
              styleUrls: ["./scene-creator.component.css"],
            })
-export class SceneCreatorComponent implements AfterViewInit, OnInit {
+export class SceneCreatorComponent implements AfterViewInit, OnInit, OnDestroy {
   private clickEnabled: boolean;
   public constructor(private renderService: SceneRendererService, private route: ActivatedRoute,
                      private freeGameCreator: FreeGameCreatorService, private gameService: GameService) {
@@ -41,11 +42,17 @@ export class SceneCreatorComponent implements AfterViewInit, OnInit {
     return this.modifiedRef.nativeElement;
   }
 
+  private readonly CHEAT_KEY_CODE: string = "KeyT";
+
   @ViewChild("originalView")
   private originalRef: ElementRef;
 
   @ViewChild("modifiedView")
   private modifiedRef: ElementRef;
+
+  public async ngOnDestroy(): Promise<void> {
+   await this.renderService.deactivateCheatMode();
+  }
 
   public ngOnInit(): void {
     this.route.queryParams.subscribe((params) => {
@@ -72,6 +79,14 @@ export class SceneCreatorComponent implements AfterViewInit, OnInit {
       e.message = errMsg;
       throw e;
     });
+  }
+
+  @HostListener("document:keyup", ["$event"])
+  // @ts-ignore even if the onKeyPress function is never explicitly read, the HostListener will call it when a key is pressed
+  private async onKeyPress(event: KeyboardEvent): Promise<void> {
+    if (event.code === this.CHEAT_KEY_CODE) {
+      await this.renderService.modifyCheatState(async () => this.gameService.loadCheatData(this.gameName));
+    }
   }
   public onRightClick($event: MouseEvent): void {
     $event.preventDefault();
@@ -122,8 +137,6 @@ export class SceneCreatorComponent implements AfterViewInit, OnInit {
     canvasContext.font = TEXT_FONT;
     canvasContext.textAlign = "center";
     canvasContext.strokeStyle = "black";
-    const X_FACTOR: number = 2;
-    const Y_FACTOR: number = 3;
     const point: IPoint = {
       x: Math.floor($event.clientX - canvasContext.canvas.offsetLeft) / X_FACTOR,
       y: Math.floor($event.clientY - canvasContext.canvas.offsetTop) / Y_FACTOR,
