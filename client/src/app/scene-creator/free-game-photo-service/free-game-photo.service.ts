@@ -18,7 +18,7 @@ export class FreeGamePhotoService {
       this.nearClippingPane,
       this.farClippingPane,
     );
-    camera.position = new THREE.Vector3(0, 0, this.cameraZ );
+    camera.position.set(0, 0, this.cameraZ);
 
     const renderer: THREE.WebGLRenderer = new THREE.WebGLRenderer({ preserveDrawingBuffer: true });
     renderer.setClearColor(this.backGroundColor);

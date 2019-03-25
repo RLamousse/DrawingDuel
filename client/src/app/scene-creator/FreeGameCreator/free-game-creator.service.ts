@@ -94,14 +94,11 @@ export class FreeGameCreatorService {
 
   private generateOriginalScene(primitiveScenes: IObject.IScenesJSON): void {
     let object: THREE.Mesh;
-    console.log(this.scene);
-    console.log(primitiveScenes.originalObjects);
     for (const i of primitiveScenes.originalObjects) {
       object = this.generate3DObject(i);
       this.scene.add(object);
       this.objects.push(object);
     }
-    console.log(this.scene);
   }
 
   private generateModifiedScene(primitiveScenes: IObject.IScenesJSON): void {

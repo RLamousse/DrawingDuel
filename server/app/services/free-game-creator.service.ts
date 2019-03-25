@@ -83,7 +83,6 @@ export class FreeGameCreatorService {
 
     public generateIScenes(obj3DToCreate: number, modificationTypes: ModificationType[], sceneType: Themes): IObject.IScenesJSON {
         const objects: IObject.IJson3DObject[] = [];
-        console.log(sceneType);
         for (let i: number = 0; i < obj3DToCreate; ++i) {
             let object: IObject.IJson3DObject;
             (sceneType === Themes.Geometry) ?
