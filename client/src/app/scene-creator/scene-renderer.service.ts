@@ -1,14 +1,14 @@
 import { Injectable } from "@angular/core";
 import Axios, { AxiosResponse } from "axios";
 import * as Httpstatus from "http-status-codes";
-import {Observable, Subject} from "rxjs";
+import { Observable, Subject } from "rxjs";
 import * as THREE from "three";
 import { DIFF_VALIDATOR_3D_BASE, SERVER_BASE_URL } from "../../../../common/communication/routes";
 import { ComponentNotLoadedError } from "../../../../common/errors/component.errors";
 import { AlreadyFoundDifferenceError, NoDifferenceAtPointError } from "../../../../common/errors/services.errors";
 import { Coordinate } from "../../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
-import {IJson3DObject} from "../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
-import {deepCompare, sleep, X_FACTOR} from "../../../../common/util/util";
+import { IJson3DObject } from "../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
+import { deepCompare, sleep, X_FACTOR } from "../../../../common/util/util";
 import { playRandomSound, FOUND_DIFFERENCE_SOUNDS, NO_DIFFERENCE_SOUNDS } from "../simple-game/game-sounds";
 import { RenderUpdateService } from "./render-update.service";
 
@@ -251,42 +251,13 @@ export class SceneRendererService {
     return (obj1[Coordinate.X] === obj2[Coordinate.X] &&
       obj1[Coordinate.Y] === obj2[Coordinate.Y] &&
       obj1[Coordinate.Z] === obj2[Coordinate.Z]);
-}
-  private isSameCenter (center1: THREE.Vector3, center2: THREE.Vector3): boolean {
-    return (center1.x === center2.x &&
-      center1.y === center2.y &&
-      center1.z === center2.z);
-  }
-  private updateDifference(object: THREE.Intersection): void {
-    let originalObj: THREE.Object3D = new THREE.Object3D();
-    let modifObj: THREE.Object3D = new THREE.Object3D();
-    for (const obj of this.modifiedScene.children) {
-      if (this.isSameCenter(obj.position, object.object.position)) {
-        modifObj = obj;
-        modifObj.name = "modified";
-      }
-    }
-    for (const obj of this.scene.children) {
-      if (this.isSameCenter(obj.position, object.object.position)) {
-        originalObj = obj.clone();
-        originalObj.name = "original";
-      }
-    }
-    if (originalObj.name !== "" && modifObj.name !== "") {
-      ((modifObj as THREE.Mesh).material as THREE.MeshPhongMaterial).color =
-        ((originalObj as THREE.Mesh).material as THREE.MeshPhongMaterial).color;
-    } else if (originalObj.name === "") {
-      this.modifiedScene.remove(modifObj);
-    } else {
-      this.modifiedScene.add(originalObj);
-    }
   }
   public get foundDifferenceCount(): Observable<number> {
     return this.differenceCountSubject;
   }
   private updateRoutine(jsonObj: IJson3DObject, obj: THREE.Intersection): void {
     this.gameState.foundDifference.push(jsonObj);
-    this.updateDifference(obj);
+    this.renderUpdateService.updateDifference(obj, this.scene, this.modifiedScene);
     this.differenceCountSubject.next(this.gameState.foundDifference.length);
     playRandomSound(FOUND_DIFFERENCE_SOUNDS);
   }

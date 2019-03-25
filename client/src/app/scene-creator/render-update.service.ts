@@ -72,4 +72,35 @@ export class RenderUpdateService {
     this.deltaY = (this.oldX - xPos) / this.camRotationSpeedFactor;
     this.deltaX = (this.oldY - yPos) / this.camRotationSpeedFactor;
   }
+
+  public updateDifference(object: THREE.Intersection, scene: THREE.Scene, modifiedScene: THREE.Scene): void {
+    let originalObj: THREE.Object3D = new THREE.Object3D();
+    let modifObj: THREE.Object3D = new THREE.Object3D();
+    for (const obj of modifiedScene.children) {
+      if (this.isSameCenter(obj.position, object.object.position)) {
+        modifObj = obj;
+        modifObj.name = "modified";
+      }
+    }
+    for (const obj of scene.children) {
+      if (this.isSameCenter(obj.position, object.object.position)) {
+        originalObj = obj.clone();
+        originalObj.name = "original";
+      }
+    }
+    if (originalObj.name !== "" && modifObj.name !== "") {
+      ((modifObj as THREE.Mesh).material as THREE.MeshPhongMaterial).color =
+        ((originalObj as THREE.Mesh).material as THREE.MeshPhongMaterial).color;
+    } else if (originalObj.name === "") {
+      modifiedScene.remove(modifObj);
+    } else {
+      modifiedScene.add(originalObj);
+    }
+  }
+
+  private isSameCenter (center1: THREE.Vector3, center2: THREE.Vector3): boolean {
+    return (center1.x === center2.x &&
+      center1.y === center2.y &&
+      center1.z === center2.z);
+  }
 }
