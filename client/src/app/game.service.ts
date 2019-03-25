@@ -138,11 +138,16 @@ export class GameService {
   public deleteFreeGameByName(gameName: string): void {
     this.http.delete(this.FREE_GAME_BASE_URL + gameName).pipe(
        catchError(this.handleError<IFreeGame>(this.DELETE_GAME_BY_NAME)),
-     ).subscribe();
-
+      ).subscribe();
    }
 
-  private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {
+  public resetGameTime(gameName: string): void {
+    this.http.put(this.RESET_SCORES_URL + gameName, null).pipe(
+    catchError(this.handleError<IFreeGame>(this.RESET_SCORES_ERROR)),
+    ).subscribe();
+  }
+
+  private handleError<T>(request: string, result ?: T): (error: Error) => Observable < T > {
 
     return (error: Error): Observable<T> => {
       return of(result as T);
