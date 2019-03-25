@@ -1,4 +1,4 @@
-import {Component, OnInit} from "@angular/core";
+import {Component, Input, OnInit} from "@angular/core";
 
 @Component({
   selector: "app-timer",
@@ -9,7 +9,7 @@ export class TimerComponent implements OnInit {
 
   public minutes: number = 0;
   public seconds: number = 0;
-
+  @Input() public gameName: string;
   private readonly maxSeconds: number = 59;
   private readonly milliseconds: number = 1000;
   private interval: number;
