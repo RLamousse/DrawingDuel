@@ -50,7 +50,7 @@ export class SceneRendererService {
   private readonly cameraZ: number = 100;
   private readonly timeFactor: number = 1000;
 
-  private readonly BLINK_INTERVAL_MS: number = 3000;
+  private readonly BLINK_INTERVAL_MS: number = 250;
   private readonly INVISIBLE_INTERVAL_MS: number = this.BLINK_INTERVAL_MS / X_FACTOR;
   // et la mettre dans utile si necessaire
   private readonly WATCH_THREAD_FINISH_INTERVAL: number = 30;
