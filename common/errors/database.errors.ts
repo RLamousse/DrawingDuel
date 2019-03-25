@@ -77,3 +77,11 @@ export class NoElementFoundError extends Error {
         super(NoElementFoundError.NO_ELEMENT_FOUND_ERROR_MESSAGE);
     }
 }
+
+export class AbstractDataBaseError extends Error {
+    public static readonly PREFIX: string = "Database error: ";
+
+    constructor(message: string) {
+        super(AbstractDataBaseError.PREFIX + message);
+    }
+}

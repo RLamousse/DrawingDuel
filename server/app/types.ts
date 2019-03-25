@@ -8,6 +8,8 @@ export default  {
         DifferenceEvaluatorService: Symbol("DifferenceEvaluatorService"),
         UserNameService: Symbol("UserNameService"),
         UserNameController : Symbol("UserNameController"),
+        ScoreTableService: Symbol("ScoreTableService"),
+        ScoreTableController: Symbol("ScoreTableController"),
         BitmapDiffController: Symbol("BitmapDiffController"),
         BitmapDiffService: Symbol("BitmapDiffService"),
         BitmapWriter: Symbol("BitmapWriter"),
@@ -21,4 +23,5 @@ export default  {
         ChatWebsocketActionService: Symbol("ChatWebsocketActionService"),
         CheckUserWebsocketActionService: Symbol("CheckUserWebsocketActionService"),
         DeleteWebsocketActionService: Symbol("DeleteWebsocketActionService"),
+        UpdateGameScoresWebsocketActionService: Symbol("UpdateGameScoresWebsocketActionService"),
 };

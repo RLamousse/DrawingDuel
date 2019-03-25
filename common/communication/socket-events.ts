@@ -6,6 +6,7 @@ export enum SocketEvent {
     WELCOME = "welcome",
     DELETE = "delete",
     CHECK_DIFFERENCE = "check-diff",
+    UPDATE_SCORE = "update-score",
     DUMMY = "dummy",
     CHAT = "chat",
     USERNAME_CHECK = "username-check",
