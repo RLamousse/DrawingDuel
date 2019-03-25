@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import * as THREE from "three";
+import {Coordinate} from "../../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
 
 @Injectable({
   providedIn: "root",
@@ -9,15 +10,15 @@ export class RenderUpdateService {
   private readonly accelerationFactor: number = 600;
   private readonly camRotationSpeedFactor: number = 4000;
 
-  public up: boolean;
-  public down: boolean;
-  public left: boolean;
-  public right: boolean;
-  public rightClick: boolean = false;
-  public oldX: number = 0;
-  public oldY: number = 0;
-  public deltaX: number = 0;
-  public deltaY: number = 0;
+  private up: boolean;
+  private down: boolean;
+  private left: boolean;
+  private right: boolean;
+  private rightClick: boolean = false;
+  private oldX: number = 0;
+  private oldY: number = 0;
+  private deltaX: number = 0;
+  private deltaY: number = 0;
 
   public constructor() {/*vide*/}
 
@@ -102,5 +103,11 @@ export class RenderUpdateService {
     return (center1.x === center2.x &&
       center1.y === center2.y &&
       center1.z === center2.z);
+  }
+
+  public isSameObject(obj1: number[], obj2: number[]): boolean {
+    return (obj1[Coordinate.X] === obj2[Coordinate.X] &&
+      obj1[Coordinate.Y] === obj2[Coordinate.Y] &&
+      obj1[Coordinate.Z] === obj2[Coordinate.Z]);
   }
 }
