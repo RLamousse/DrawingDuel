@@ -2,7 +2,6 @@ import {Injectable} from "@angular/core";
 import * as THREE from "three";
 import {ComponentNotLoadedError} from "../../../../common/errors/component.errors";
 require("three-first-person-controls")(THREE);
-// import * as cucco from '../Models/cucco/scene.gltf';
 
 @Injectable()
 export class SceneRendererService {
