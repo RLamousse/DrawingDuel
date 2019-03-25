@@ -6,19 +6,26 @@ export enum ObjectGeometry { UFO, astronaut, asteroid, rocket, dog, fighter, shu
 export interface thematicObject {
     type: ObjectGeometry,
     scale: number,
+    probability: number,
+    maxRotation: number,
+}
+
+export interface indexObj {
+    type: ObjectGeometry,
+    index: number,
 }
 
 export const spaceObjects: thematicObject[] = [
-    {type: ObjectGeometry.UFO, scale: 0.2},
-    {type: ObjectGeometry.astronaut, scale: 7},
-    {type: ObjectGeometry.asteroid, scale: 20},
-    {type: ObjectGeometry.rocket, scale: 17},
-    {type: ObjectGeometry.dog, scale: 7},
-    {type: ObjectGeometry.fighter, scale: 0.3},
-    {type: ObjectGeometry.shuttle, scale: 1},
-    {type: ObjectGeometry.comet, scale: 3},
-    {type: ObjectGeometry.earth, scale: 10},
-    {type: ObjectGeometry.buzz, scale: 0.6},
+    {type: ObjectGeometry.comet, scale: 2.3, probability: 0.19, maxRotation: Math.PI * 2},
+    {type: ObjectGeometry.asteroid, scale: 25, probability: 0.2, maxRotation: Math.PI * 2},
+    {type: ObjectGeometry.astronaut, scale: 7, probability: 0.15, maxRotation: Math.PI / 4},
+    {type: ObjectGeometry.dog, scale: 12, probability: 0.05, maxRotation: Math.PI / 4},
+    {type: ObjectGeometry.rocket, scale: 17, probability: 0.10, maxRotation: Math.PI / 4},
+    {type: ObjectGeometry.fighter, scale: 0.5, probability: 0.10, maxRotation: Math.PI * 2},
+    {type: ObjectGeometry.shuttle, scale: 1, probability: 0.10, maxRotation: Math.PI / 4},
+    {type: ObjectGeometry.UFO, scale: 0.4, probability: 0.04, maxRotation: Math.PI / 4},
+    {type: ObjectGeometry.earth, scale: 10, probability: 0.03, maxRotation: Math.PI * 2},
+    {type: ObjectGeometry.buzz, scale: 0.6, probability: 0.03, maxRotation: Math.PI / 4},
 ];
 
 export enum Coordinate { X, Y, Z }

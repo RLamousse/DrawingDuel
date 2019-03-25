@@ -84,9 +84,6 @@ export class FreeGameCreatorService {
     public generateIScenes(obj3DToCreate: number, modificationTypes: ModificationType[], sceneType: Themes): IObject.IScenesJSON {
         const objects: IObject.IJson3DObject[] = [];
 
-        const PI: number = Math.PI;
-        const FACTOR2: number = 2;
-        const MAXROTATIONANGLE: number = PI * FACTOR2;
         for (let i: number = 0; i < obj3DToCreate; ++i) {
             let object: IObject.IJson3DObject;
             (sceneType === Themes.Geometry) ?
@@ -95,11 +92,6 @@ export class FreeGameCreatorService {
                 this.getRandomValue(-this.MAX_GAME_X, this.MAX_GAME_X),
                 this.getRandomValue(-this.MAX_GAME_Y, this.MAX_GAME_Y),
                 this.getRandomValue(-this.MAX_GAME_Z, this.MAX_GAME_Z),
-            ];
-            object.rotation = [
-                this.getRandomValue(0, MAXROTATIONANGLE),
-                this.getRandomValue(0, MAXROTATIONANGLE),
-                this.getRandomValue(0, MAXROTATIONANGLE),
             ];
             object = this.handleCollision(object, objects);
             objects.push(object);
