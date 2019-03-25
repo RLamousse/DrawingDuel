@@ -13,7 +13,7 @@ export class PlayViewComponent implements OnInit {
   protected originalImage: string;
   protected modifiedImage: string;
 
-  public constructor(private route: ActivatedRoute, private simpleGameService: SimpleGameService) {
+  public constructor(private route: ActivatedRoute, private simpleGameService: SimpleGameService) {}
     /*vide*/
   }
 
