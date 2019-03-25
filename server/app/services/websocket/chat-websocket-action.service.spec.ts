@@ -14,13 +14,6 @@ class Socket {
     }
     public eventValue: string;
     public emitValue: string;
-    public broadcast: {emitValue: string, eventValue: string, emit(event: string, message: WebsocketMessage<string>): void} = {
-        emitValue: "",
-        eventValue: "",
-        emit(event: string, message: WebsocketMessage<string>): void {
-            this.eventValue = event;
-            this.emitValue = message.body;
-        }};
     public emit(event: string, message: WebsocketMessage<string>): void {
         this.eventValue = event;
         this.emitValue = message.body;
@@ -57,8 +50,6 @@ describe("ChatWebsocketActionService", () => {
         service.execute(message, socket as unknown as SocketIO.Socket);
         expect(socket.eventValue).to.equal(SocketEvent.CHAT);
         expect(socket.emitValue).to.equal("12:51:46 – Maxime vient de se connecter.");
-        expect(socket.broadcast.eventValue).to.equal(SocketEvent.CHAT);
-        expect(socket.broadcast.emitValue).to.equal("12:51:46 – Maxime vient de se connecter.");
     });
 
     it("should emit right disconnection message", () => {
@@ -76,8 +67,6 @@ describe("ChatWebsocketActionService", () => {
         service.execute(message, socket as unknown as SocketIO.Socket);
         expect(socket.eventValue).to.equal(SocketEvent.CHAT);
         expect(socket.emitValue).to.equal("12:51:46 – Maxime vient de se déconnecter.");
-        expect(socket.broadcast.eventValue).to.equal(SocketEvent.CHAT);
-        expect(socket.broadcast.emitValue).to.equal("12:51:46 – Maxime vient de se déconnecter.");
     });
 
     it("should emit right difference found message", () => {
@@ -95,14 +84,10 @@ describe("ChatWebsocketActionService", () => {
         service.execute(message, socket as unknown as SocketIO.Socket);
         expect(socket.eventValue).to.equal(SocketEvent.CHAT);
         expect(socket.emitValue).to.equal("12:51:46 – Différence trouvée.");
-        expect(socket.broadcast.eventValue).to.equal("");
-        expect(socket.broadcast.emitValue).to.equal("");
         message.body.playerCount = ChatMessagePlayerCount.MULTI;
         service.execute(message, socket as unknown as SocketIO.Socket);
         expect(socket.eventValue).to.equal(SocketEvent.CHAT);
         expect(socket.emitValue).to.equal("12:51:46 – Différence trouvée par Maxime.");
-        expect(socket.broadcast.eventValue).to.equal("");
-        expect(socket.broadcast.emitValue).to.equal("");
     });
 
     it("should emit right difference error message", () => {
@@ -120,14 +105,10 @@ describe("ChatWebsocketActionService", () => {
         service.execute(message, socket as unknown as SocketIO.Socket);
         expect(socket.eventValue).to.equal(SocketEvent.CHAT);
         expect(socket.emitValue).to.equal("12:51:46 – Erreur.");
-        expect(socket.broadcast.eventValue).to.equal("");
-        expect(socket.broadcast.emitValue).to.equal("");
         message.body.playerCount = ChatMessagePlayerCount.MULTI;
         service.execute(message, socket as unknown as SocketIO.Socket);
         expect(socket.eventValue).to.equal(SocketEvent.CHAT);
         expect(socket.emitValue).to.equal("12:51:46 – Erreur par Maxime.");
-        expect(socket.broadcast.eventValue).to.equal("");
-        expect(socket.broadcast.emitValue).to.equal("");
     });
 
     it("should emit right new time record message", () => {
@@ -146,9 +127,6 @@ describe("ChatWebsocketActionService", () => {
         expect(socket.eventValue).to.equal(SocketEvent.CHAT);
         expect(socket.emitValue).to.equal("12:51:46 – Maxime obtient la première place dans"
                                         + " les meilleurs temps du jeu MicheDePain en solo.");
-        expect(socket.broadcast.eventValue).to.equal(SocketEvent.CHAT);
-        expect(socket.broadcast.emitValue).to.equal("12:51:46 – Maxime obtient la première place dans"
-            + " les meilleurs temps du jeu MicheDePain en solo.");
     });
 
     it("should emit broken message when input was broken", () => {
@@ -167,7 +145,5 @@ describe("ChatWebsocketActionService", () => {
         service.execute(message, socket as unknown as SocketIO.Socket);
         expect(socket.eventValue).to.equal(SocketEvent.CHAT);
         expect(socket.emitValue).to.equal("12:51:46 – Voici pourquoi les default existent dans les switchs.");
-        expect(socket.broadcast.eventValue).to.equal("");
-        expect(socket.broadcast.emitValue).to.equal("");
     });
 });
