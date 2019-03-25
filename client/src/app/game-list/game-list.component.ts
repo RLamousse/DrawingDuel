@@ -14,6 +14,9 @@ export class GameListComponent implements OnInit {
   @Input() protected readonly rightButton: string = "joindre";
   @Input() protected readonly leftButton: string = "jouer";
 
+  public constructor(private gameService: GameService, ) {
+
+  }
 
   public ngOnInit(): void {
     this.gameService.getSimpleGames().subscribe((simpleGamesToPush: ISimpleGame[]) => {
