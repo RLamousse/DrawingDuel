@@ -5,12 +5,13 @@ import * as express from "express";
 import {inject, injectable} from "inversify";
 import * as logger from "morgan";
 import {
-    DB_BASE, DIFF_CREATOR_BASE,
+    DB_BASE,
+    DIFF_CREATOR_BASE,
+    DIFF_VALIDATOR_3D_BASE,
     DIFF_VALIDATOR_BASE,
     GAME_CREATOR_BASE,
     SCORE_TABLE_UPDATE,
     USERNAME_BASE
-    
 } from "../../common/communication/routes";
 import {BitmapDiffController} from "./controllers/bitmap-diff.controller";
 import {DataBaseController} from "./controllers/data-base.controller";
