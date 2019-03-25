@@ -14,13 +14,23 @@ export class RenderUpdateService {
   private down: boolean;
   private left: boolean;
   private right: boolean;
-  private rightClick: boolean = false;
-  private oldX: number = 0;
-  private oldY: number = 0;
-  private deltaX: number = 0;
-  private deltaY: number = 0;
+  private oldX: number;
+  private oldY: number;
+  private deltaX: number;
+  private deltaY: number;
 
-  public constructor() {/*vide*/}
+  public rightClick: boolean = false;
+
+  public constructor() {
+    this.up = false;
+    this.down = false;
+    this.left = false;
+    this.right = false;
+    this.oldX = 0;
+    this.oldY = 0;
+    this.deltaX = 0;
+    this.deltaY = 0;
+  }
 
   public updateVelocity(velocity: THREE.Vector3, delta: number): void {
     velocity.z -= velocity.z * this.decelerationFactor * delta;
