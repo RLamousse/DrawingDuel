@@ -6,7 +6,6 @@ import * as THREE from "three";
 import { DIFF_VALIDATOR_3D_BASE, SERVER_BASE_URL } from "../../../../common/communication/routes";
 import { ComponentNotLoadedError } from "../../../../common/errors/component.errors";
 import { AlreadyFoundDifferenceError, NoDifferenceAtPointError } from "../../../../common/errors/services.errors";
-import { Coordinate } from "../../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
 import { IJson3DObject } from "../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
 import { deepCompare, sleep, X_FACTOR } from "../../../../common/util/util";
 import { playRandomSound, FOUND_DIFFERENCE_SOUNDS, NO_DIFFERENCE_SOUNDS } from "../simple-game/game-sounds";
@@ -202,7 +201,7 @@ export class SceneRendererService {
         return this.differenceValidationAtPoint(undefined);
       }
       // Only take the first intersected object by the ray, hence the 0's
-      if (intersectOri.length === 0 && intersectMod.length !== 0) {// add
+      if (intersectOri.length === 0 && intersectMod.length !== 0) {
         return this.differenceValidationAtPoint(intersectMod[0]);
       } else {
         return this.differenceValidationAtPoint(intersectOri[0]);
@@ -239,16 +238,11 @@ export class SceneRendererService {
   }
   private checkIfAlreadyFound(object: IJson3DObject): void {
     for (const obj of this.gameState.foundDifference) {
-      if (this.isSameObject(obj.position, object.position)) {
+      if (this.renderUpdateService.isSameObject(obj.position, object.position)) {
         playRandomSound(NO_DIFFERENCE_SOUNDS);
         throw new AlreadyFoundDifferenceError();
       }
     }
-  }
-  private isSameObject(obj1: number[], obj2: number[]): boolean {
-    return (obj1[Coordinate.X] === obj2[Coordinate.X] &&
-      obj1[Coordinate.Y] === obj2[Coordinate.Y] &&
-      obj1[Coordinate.Z] === obj2[Coordinate.Z]);
   }
   public get foundDifferenceCount(): Observable<number> {
     return this.differenceCountSubject;
