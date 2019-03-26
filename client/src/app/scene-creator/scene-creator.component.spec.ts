@@ -4,8 +4,8 @@ import { ActivatedRoute, Router } from "@angular/router";
 import {of, Observable} from "rxjs";
 import * as THREE from "three";
 import {IFreeGame} from "../../../../common/model/game/free-game";
-import { CompteurDiffComponent } from "../compteur-diff/compteur-diff.component";
-import { EndGameNotifComponent } from "../compteur-diff/end-game-notif/end-game-notif.component";
+import { DiffCounterComponent } from "../diff-counter/diff-counter.component";
+import { EndGameNotifComponent } from "../diff-counter/end-game-notif/end-game-notif.component";
 import {GameService} from "../game.service";
 import {IScene} from "../scene-interface";
 import {SocketService} from "../socket.service";
@@ -101,7 +101,7 @@ describe("SceneCreatorComponent", () => {
 
         ],
         imports: [MatDialogModule],
-        declarations: [SceneCreatorComponent, TimerComponent, CompteurDiffComponent, EndGameNotifComponent],
+        declarations: [SceneCreatorComponent, TimerComponent, DiffCounterComponent, EndGameNotifComponent],
 
       });
 
