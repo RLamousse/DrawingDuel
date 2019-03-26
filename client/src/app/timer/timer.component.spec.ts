@@ -14,6 +14,10 @@ describe("TimerComponent", () => {
     return TestBed.configureTestingModule({
       declarations: [ TimerComponent, CompteurDiffComponent, EndGameNotifComponent],
       imports: [MatDialogModule],
+      providers: [{ provide: Router, useClass: class { public navigate: jasmine.Spy = jasmine.createSpy("navigate"); } },
+                  {provide: MatDialogRef, useValue: {}},
+                  {provide: MAT_DIALOG_DATA, useValue: {}, },
+                  SocketService ],
     })
     .compileComponents();
   }));
