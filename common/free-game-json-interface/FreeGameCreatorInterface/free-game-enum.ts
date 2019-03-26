@@ -1,7 +1,7 @@
 ﻿export enum ModificationType { remove, add, changeColor }
 
-export enum ObjectGeometry {sphere, cube, cone, cylinder, pyramid, UFO, astronaut, asteroid,
-                            rocket, dog, fighter, shuttle, comet, earth, buzz}
+export enum ObjectGeometry {sphere, cube, cone, cylinder, pyramid, comet, asteroid, astronaut,
+                            dog, rocket, fighter, shuttle, UFO, earth, buzz}
 
 export interface thematicObject {
     type: ObjectGeometry,
