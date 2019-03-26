@@ -57,7 +57,7 @@ describe("A service that creates a game", () => {
             .thenReturn(createdMockedDiffData(EXPECTED_DIFF_NUMBER));
         when(mockedImageUploadService.uploadImage(anything())).thenResolve("");
         when(mockedFreeGameCreatorService.generateIScenes(anything(), anything()))
-            .thenReturn({originalObjects: [], modifiedObjects: []});
+            .thenReturn({originalObjects: [], modifiedObjects: [], differentObjects: []});
     });
 
     describe("Create simple game", () => {
@@ -374,7 +374,7 @@ describe("A service that creates a game", () => {
                 .reply(HttpStatus.OK);
 
             when(mockedFreeGameCreatorService.generateIScenes(anything(), anything()))
-                .thenReturn({originalObjects: [], modifiedObjects: []});
+                .thenReturn({originalObjects: [], modifiedObjects: [], differentObjects: []});
 
             return expect((await getMockedService()
                 .createFreeGame( "someGameTest",

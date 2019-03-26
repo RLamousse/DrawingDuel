@@ -114,6 +114,7 @@ describe("A db service for simple games", () => {
                 scenes: {
                     originalObjects: [],
                     modifiedObjects: [],
+                    differentObjects: [],
                 },
                 bestMultiTimes: [],
                 bestSoloTimes: [],
@@ -138,6 +139,7 @@ describe("A db service for simple games", () => {
                 scenes: {
                     originalObjects: [],
                     modifiedObjects: [],
+                    differentObjects: [],
                 },
                 bestMultiTimes: [],
                 bestSoloTimes: [],
