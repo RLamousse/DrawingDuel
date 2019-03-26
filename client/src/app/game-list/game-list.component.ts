@@ -29,7 +29,11 @@ export class GameListComponent implements OnInit {
     this.gameService.getFreeGames().subscribe((freeGamesToPush: IFreeGame[]) => {
       this.gameService.pushFreeGames(freeGamesToPush);
     });
+    this.socket.onEvent(SocketEvent.DELETE).subscribe(this.reloadList);
+  }
 
+  private reloadList(message: WebsocketMessage<[string, boolean]>): void {
+    this.ngOnInit();
   }
 
 }
