@@ -23,4 +23,5 @@ export default  {
         ChatWebsocketActionService: Symbol("ChatWebsocketActionService"),
         CheckUserWebsocketActionService: Symbol("CheckUserWebsocketActionService"),
         DeleteWebsocketActionService: Symbol("DeleteWebsocketActionService"),
+        UpdateGameScoresWebsocketActionService: Symbol("UpdateGameScoresWebsocketActionService"),
 };

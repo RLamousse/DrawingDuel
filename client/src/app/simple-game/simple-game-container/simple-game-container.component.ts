@@ -2,6 +2,7 @@ import {Component, Input, ViewChild} from "@angular/core";
 import {AlreadyFoundDifferenceError, NoDifferenceAtPointError} from "../../../../../common/errors/services.errors";
 import {DifferenceCluster, DIFFERENCE_CLUSTER_POINTS_INDEX} from "../../../../../common/model/game/simple-game";
 import {tansformOrigin, IPoint} from "../../../../../common/model/point";
+import {playRandomSound, NO_DIFFERENCE_SOUNDS} from "../game-sounds";
 import {PixelData, SimpleGameCanvasComponent, TextType} from "../simple-game-canvas/simple-game-canvas.component";
 import {SimpleGameService} from "../simple-game.service";
 
@@ -52,6 +53,7 @@ export class SimpleGameContainerComponent {
       .catch((reason: Error) => {
         if (reason.message === AlreadyFoundDifferenceError.ALREADY_FOUND_DIFFERENCE_ERROR_MESSAGE ||
           reason.message === NoDifferenceAtPointError.NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE) {
+          playRandomSound(NO_DIFFERENCE_SOUNDS);
           this.handleIdentificationError(clickEvent, clickedComponent);
         }
       });

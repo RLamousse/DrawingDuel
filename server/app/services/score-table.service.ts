@@ -2,7 +2,7 @@ import Axios from "axios";
 import * as Httpstatus from "http-status-codes";
 import {injectable} from "inversify";
 import {DB_FREE_GAME, DB_SIMPLE_GAME, SERVER_BASE_URL} from "../../../common/communication/routes";
-import {NonExistentGameError} from "../../../common/errors/database.errors";
+import {AbstractDataBaseError, NonExistentGameError} from "../../../common/errors/database.errors";
 import {ScoreNotGoodEnough} from "../../../common/errors/services.errors";
 import {IFreeGame} from "../../../common/model/game/free-game";
 import {IGame} from "../../../common/model/game/game";
@@ -55,7 +55,7 @@ export class ScoreTableService {
                 isSimple = true;
             } catch (error2) {
                 if (error.response.status !== Httpstatus.NOT_FOUND) {
-                    throw new Error("dataBase: " + error.response.data.message);
+                    throw new AbstractDataBaseError(error.response.data.message);
                 }
                 throw new NonExistentGameError();
             }
@@ -74,7 +74,7 @@ export class ScoreTableService {
             // any is the default type of the required callback function
             // tslint:disable-next-line:no-any Generic error response
             .catch((reason: any) => {
-            throw new Error("dataBase: Unable to modify game: " + reason.response.data.message);
+            throw new AbstractDataBaseError("Unable to modify game: " + reason.response.data.message);
         });
     }
 
@@ -85,7 +85,7 @@ export class ScoreTableService {
         // any is the default type of the required callback function
         // tslint:disable-next-line:no-any Generic error response
             .catch((reason: any) => {
-                throw new Error("dataBase: Unable to modify game: " + reason.response.data.message);
+                throw new AbstractDataBaseError("Unable to modify game: " + reason.response.data.message);
             });
     }
 }
