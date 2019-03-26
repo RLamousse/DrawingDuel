@@ -20,7 +20,7 @@ export class Create3DGameComponent extends AbstractForm implements OnInit {
   @ViewChild("photoContainer") public divElemt: ElementRef;
   protected modTypes: SelectType<ModificationType>[] = AVAILABLE_MODIF_TYPES;
   protected themes: SelectType<Themes>[] = AVAILABLE_THEMES;
-  protected sliderValue: number = 10;
+  protected sliderValue: number = 50;
 
   public checkboxes: {
     modificationTypes: Set<ModificationType>,
