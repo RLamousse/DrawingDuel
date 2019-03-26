@@ -97,10 +97,21 @@ export const OOF2_SOUND: Howl = new Howl(
     src: ["assets/sounds/oof2.webm", "assets/sounds/oof2.mp3"],
   });
 
+export const ANIME_WOW_SOUND: Howl = new Howl(
+  {
+    src: ["assets/sounds/anime-wow.webm", "assets/sounds/anime-wow.mp3"],
+  });
+
+export const STAR_THEME_SOUND: Howl = new Howl(
+  {
+    src: ["assets/sounds/star-theme.webm", "assets/sounds/star-theme.mp3"],
+    loop: true,
+  });
+
 export const FOUND_DIFFERENCE_SOUNDS: Howl[] = [
   AIRHORN_SOUND, DAMN_SON_SOUND, HOT_SOUND,
   NOICE_SOUND, SANIC_SOUND, WOW_SOUND,
-  ZELDA_SOUND, OH_BABY_SOUND,
+  ZELDA_SOUND, OH_BABY_SOUND, ANIME_WOW_SOUND
 ];
 
 export const NO_DIFFERENCE_SOUNDS: Howl[] = [
