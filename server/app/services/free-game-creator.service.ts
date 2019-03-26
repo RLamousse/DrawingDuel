@@ -1,5 +1,6 @@
 import {inject, injectable} from "inversify";
 import {
+    Coordinate,
     ModificationType,
     ObjectGeometry,
     Themes
@@ -23,34 +24,33 @@ export class FreeGameCreatorService {
         return Math.floor(Math.random() * (max - min + 1) + min);
     }
 
-    private handleCollision(
-        object: IObject.IJson3DObject, list: IObject.IJson3DObject[]): IObject.IJson3DObject {
+    private handleCollision(object: IObject.IJson3DObject,
+                            list: IObject.IJson3DObject[]): IObject.IJson3DObject {
         let collision: boolean = true;
-        let distance: number;
-        const POWER: number = 2;
-        enum coordinate { X, Y, Z }
         if (list.length !== 0) {
             while (collision) {
                 for (const i of list) {
-                    distance = Math.sqrt(
-                        (Math.pow((i.position[coordinate.X] - object.position[coordinate.X]), POWER)) +
-                        (Math.pow((i.position[coordinate.Y] - object.position[coordinate.Y]), POWER)) +
-                        (Math.pow((i.position[coordinate.Z] - object.position[coordinate.Z]), POWER)),
-                    );
-                    if (distance < this.MIN_DIST) {
-                        object.position = [
-                            this.getRandomValue(-this.MAX_GAME_X, this.MAX_GAME_X),
-                            this.getRandomValue(-this.MAX_GAME_Y, this.MAX_GAME_Y),
-                            this.getRandomValue(-this.MAX_GAME_Z, this.MAX_GAME_Z),
-                        ];
-                        collision = true;
+                    collision = this.isColliding(i, object);
+                    if (collision) {
+                        object.position = this.generateRandomPosition();
                         break;
-                    } else { collision = false; }
+                    }
                 }
             }
         }
 
         return object;
+    }
+
+    private isColliding (currObject: IObject.IJson3DObject, object: IObject.IJson3DObject): boolean {
+        const power: number = 2;
+        const distance: number = Math.sqrt(
+            (Math.pow((currObject.position[Coordinate.X] - object.position[Coordinate.X]), power)) +
+            (Math.pow((currObject.position[Coordinate.Y] - object.position[Coordinate.Y]), power)) +
+            (Math.pow((currObject.position[Coordinate.Z] - object.position[Coordinate.Z]), power)),
+        );
+
+        return (distance < this.MIN_DIST);
     }
 
     private generate3DObject(): IObject.IJson3DObject {
@@ -87,19 +87,29 @@ export class FreeGameCreatorService {
             let object: IObject.IJson3DObject;
             (sceneType === Themes.Geometry) ?
                 object = this.generate3DObject() : object = this.object3DCreatorService.createThematicObject();
-            object.position = [
-                this.getRandomValue(-this.MAX_GAME_X, this.MAX_GAME_X),
-                this.getRandomValue(-this.MAX_GAME_Y, this.MAX_GAME_Y),
-                this.getRandomValue(-this.MAX_GAME_Z, this.MAX_GAME_Z),
-            ];
+            object.position = this.generateRandomPosition();
+            // if (object.type === ObjectGeometry.comet || object.type === ObjectGeometry.asteroid) {
+            //     object.position[Coordinate.Y] = 0;
+            // }
             object = this.handleCollision(object, objects);
+            // const type: ObjectGeometry = object.type;
+            // const position: number[] = object.position;
             objects.push(object);
+            // if (this.isPossibleSpaceSquad(i, obj3DToCreate, type)) {
+            //     objects.push(this.generateIntelligentObject(position));
+            //     i++;
+            // }
         }
         const modifiedObjects: IObject.IJson3DObject[] = JSON.parse(JSON.stringify(objects));
         this.generateDifferences(modificationTypes, modifiedObjects);
 
         return {originalObjects: objects, modifiedObjects: modifiedObjects};
     }
+
+
+    // private isPossibleSpaceSquad(index: number, obj3DToCreate: number, objectType: ObjectGeometry): boolean {
+    //     return ((index + 1) < obj3DToCreate && objectType === ObjectGeometry.shuttle);
+    // }
 
     private generateDifferences(modificationTypes: ModificationType[], modifiedObjects: IObject.IJson3DObject[]): void {
         const MOD_COUNT: number = 7;
@@ -143,4 +153,23 @@ export class FreeGameCreatorService {
             }
         }
     }
+
+    private generateRandomPosition(): number[] {
+
+        return [
+            this.getRandomValue(-this.MAX_GAME_X, this.MAX_GAME_X),
+            this.getRandomValue(-this.MAX_GAME_Y, this.MAX_GAME_Y),
+            this.getRandomValue(-this.MAX_GAME_Z, this.MAX_GAME_Z),
+        ];
+    }
+
+    // private generateIntelligentObject(position: number[]): IObject.IJson3DObject {
+    //     const margin: number = 2000;
+    //     const newObj: IObject.IJson3DObject = this.object3DCreatorService.createThematicObject(ObjectGeometry.astronaut);
+    //     newObj.position = position;
+    //     newObj.position[Coordinate.X] -= margin;
+    //     newObj.position[Coordinate.Y] += margin;
+    //
+    //     return newObj;
+    // }
 }

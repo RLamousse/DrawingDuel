@@ -1,7 +1,10 @@
 import {Injectable} from "@angular/core";
 import {TestBed} from "@angular/core/testing";
 import * as THREE from "three";
-import {ObjectGeometry} from "../../../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
+import {
+  ObjectGeometry,
+  Themes
+} from "../../../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
 import * as IObject from "../../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
 import {IScene} from "../../scene-interface";
 import {Form3DService} from "../3DFormService/3-dform.service";
@@ -35,6 +38,8 @@ const dummyCube: IObject.ICube = {
   type: ObjectGeometry.cube,
   color: 0xF4F4F4, position: [0, 0, 0],
   rotation: [0, 0, 0], sideLenght: 10,
+  scale: 1,
+  gameType: Themes.Geometry,
 };
 const dummyCone: IObject.ICone = {
   type: ObjectGeometry.cone,
@@ -43,6 +48,8 @@ const dummyCone: IObject.ICone = {
   height: 10,
   radialSegment: 32,
   radius: 10,
+  scale: 1,
+  gameType: Themes.Geometry,
 };
 const dummySphere: IObject.ISphere = {
   type: ObjectGeometry.sphere,
@@ -51,6 +58,8 @@ const dummySphere: IObject.ISphere = {
   heightSegments: 32,
   radius: 10,
   widthSegments: 32,
+  scale: 1,
+  gameType: Themes.Geometry,
 };
 const dummyCylinder: IObject.ICylinder = {
   type: ObjectGeometry.cylinder,
@@ -60,6 +69,8 @@ const dummyCylinder: IObject.ICylinder = {
   height: 10,
   radiusSegment: 32,
   topRadius: 10,
+  scale: 1,
+  gameType: Themes.Geometry,
 };
 const dummyPyramid: IObject.IPyramid = {
   type: ObjectGeometry.pyramid,
@@ -70,6 +81,8 @@ const dummyPyramid: IObject.IPyramid = {
   radiusSegment: 3,
   botRadius: 10,
   height: 10,
+  scale: 1,
+  gameType: Themes.Geometry,
 };
 const dummyScenes: IObject.IScenesJSON = {
   originalObjects: [dummyCube, dummyCone, dummyCylinder, dummyPyramid, dummySphere],

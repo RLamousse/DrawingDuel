@@ -3,19 +3,19 @@
 export enum ObjectGeometry {sphere, cube, cone, cylinder, pyramid, comet, asteroid, astronaut,
                             dog, rocket, fighter, shuttle, UFO, earth, buzz}
 
-export interface thematicObject {
+export interface IThematicObject {
     type: ObjectGeometry,
     scale: number,
     probability: number,
     maxRotation: number,
 }
 
-export interface indexObj {
+export interface IIndexObj {
     type: ObjectGeometry,
     index: number,
 }
 
-export const spaceObjects: thematicObject[] = [
+export const spaceObjects: IThematicObject[] = [
     {type: ObjectGeometry.comet, scale: 2.3, probability: 0.19, maxRotation: Math.PI * 2},
     {type: ObjectGeometry.asteroid, scale: 25, probability: 0.2, maxRotation: Math.PI * 2},
     {type: ObjectGeometry.astronaut, scale: 7, probability: 0.15, maxRotation: Math.PI / 4},

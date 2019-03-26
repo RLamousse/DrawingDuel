@@ -1,8 +1,8 @@
 import {injectable} from "inversify";
 import {
-    indexObj,
-    spaceObjects,
+    IIndexObj,
     ObjectGeometry,
+    spaceObjects,
     Themes
 } from "../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
 import * as JsonScene from "../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
@@ -110,8 +110,11 @@ export class Object3DCreatorService {
         };
     }
 
-    public createThematicObject(): JsonScene.IJson3DObject {
-        const randomObj: indexObj = this.randomTypeByProba();
+    public createThematicObject(objectType?: ObjectGeometry): JsonScene.IJson3DObject {
+        let randomObj: IIndexObj = this.randomTypeByProba();
+        (objectType) ?
+            randomObj = {type: objectType, index: 2} :
+            randomObj = this.randomTypeByProba();
 
         return {
             type: randomObj.type,
@@ -137,11 +140,11 @@ export class Object3DCreatorService {
         ];
     }
 
-    private randomTypeByProba(): indexObj {
+    private randomTypeByProba(): IIndexObj {
         const index: number =  Math.random();
         const spaceObjectSize: number = 9;
         let floor: number = 0;
-        let objectIndex: indexObj = {type: ObjectGeometry.comet, index: 0};
+        let objectIndex: IIndexObj = {type: ObjectGeometry.comet, index: 0};
 
         for (let i: number = 0; i <= spaceObjectSize; i++) {
             if (index >= floor && index <= floor + spaceObjects[i].probability) {

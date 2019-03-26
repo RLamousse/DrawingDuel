@@ -70,6 +70,10 @@ export class FreeGameCreatorService {
       // if (object.texture) {
       //   this.setTexture(object.texture as string, gltf);
       // }
+      // const material: THREE.MeshBasicMaterial = new THREE.MeshBasicMaterial();
+      // const loaderTexture: THREE.TextureLoader = new THREE.TextureLoader();
+      // material.map = loaderTexture.load("common/image/texture.jpg");
+      // gltf.scene.overrideMaterial = material;
       this.formService.setUpThematicParameters(object, gltf);
       (isOriginalObject) ? this.scene.add(gltf.scene) : this.modifiedScene.add(gltf.scene);
     });
