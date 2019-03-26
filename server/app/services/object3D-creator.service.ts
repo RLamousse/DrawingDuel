@@ -124,7 +124,6 @@ export class Object3DCreatorService {
             rotation: this.logicRandomRotation(spaceObjects[randomObj.index].maxRotation),
             gameType: Themes.Space,
             color: this.COLOR_MASK,
-            texture: "",
         };
     }
 
@@ -135,9 +134,9 @@ export class Object3DCreatorService {
     private logicRandomRotation(maxRotation: number): number[] {
 
         return [
-            this.getRandomValue(- maxRotation, maxRotation), // axe vers le coté
-            this.getRandomValue(0, this.FULL_ROTATION), // axe vers le haut
-            this.getRandomValue( - maxRotation, maxRotation), // axe vers la camera
+            this.getRandomValue(- maxRotation, maxRotation),
+            this.getRandomValue(0, this.FULL_ROTATION),
+            this.getRandomValue( - maxRotation, maxRotation),
         ];
     }
 
