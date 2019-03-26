@@ -15,6 +15,7 @@ export class AwaitViewComponent implements OnInit {
 
   protected gameName: string;
   protected isSimpleGame: boolean;
+  protected readonly indexString: number = 0;
 
   public constructor(private activatedRoute: ActivatedRoute, private route: Router,
                      private socket: SocketService, private dialog: MatDialog) {
@@ -29,8 +30,8 @@ export class AwaitViewComponent implements OnInit {
     this.socket.onEvent(SocketEvent.DELETE).subscribe(this.notifyGameDeletion);
   }
 
-  private notifyGameDeletion(message: WebsocketMessage<string>): void {
-    if (message.body === this.gameName) {
+  private notifyGameDeletion(message: WebsocketMessage<[string, boolean]>): void {
+    if (message.body[this.indexString] === this.gameName) {
       const dialogConfig: MatDialogConfig = new MatDialogConfig();
       dialogConfig.autoFocus = true;
       dialogConfig.data = {gameName: this.gameName, isSimpleGame: this.isSimpleGame};
