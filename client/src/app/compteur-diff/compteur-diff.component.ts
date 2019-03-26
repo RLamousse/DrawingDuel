@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, } from "@angular/core";
+import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {MatDialog, MatDialogConfig} from "@angular/material";
 import {Router} from "@angular/router";
 import {UpdateScoreMessage, WebsocketMessage} from "../../../../common/communication/messages/message";
@@ -14,6 +14,8 @@ import {EndGameNotifComponent} from "./end-game-notif/end-game-notif.component";
              styleUrls: ["./compteur-diff.component.css"],
            })
 export class CompteurDiffComponent implements OnInit {
+
+  @Output() private stopTime: EventEmitter<undefined> = new EventEmitter();
 
   protected diffNumber: number;
   @Input() private gameName: string;
@@ -41,6 +43,7 @@ export class CompteurDiffComponent implements OnInit {
 
   private endGame(): void {
     this.simpleGameService.resetDifferenceCount();
+    this.stopTime.next();
     this.postTime();
     this.openCongratDialog();
   }
