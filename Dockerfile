@@ -4,7 +4,6 @@ WORKDIR /app
 
 # Less prone to changes
 COPY test test
-RUN chmod +x test
 COPY client/package*.json client/
 COPY server/package*.json server/
 
@@ -23,4 +22,4 @@ COPY client/ client/
 COPY server/ server/
 
 # Execute tests by default
-CMD ./test
+CMD sh test
