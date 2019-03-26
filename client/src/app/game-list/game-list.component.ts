@@ -23,6 +23,7 @@ export class GameListComponent implements OnInit {
 
     this.gameService.getFreeGames().subscribe((freeGamesToPush: IFreeGame[]) => {
       this.gameService.pushFreeGames(freeGamesToPush);
+      this.gameService.updateFreeGameImages();
     });
   }
 }

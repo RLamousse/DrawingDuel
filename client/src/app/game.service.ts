@@ -72,9 +72,7 @@ export class GameService {
       this.freeGames.push(game);
     }
     for (const game of this.freeGames) {
-      const scenes: IScene = this.freeGameCreatorService.createScenes(game.scenes);
-      let img: string = "";
-      this.photoService.takePhoto(scenes.scene).then((value) => {img = value;});
+      const img: string = "";
       const extendedFreeGame: IExtendedFreeGame = {
         thumbnail: img,
         scenes: game.scenes,
@@ -109,5 +107,13 @@ export class GameService {
     return (error: Error): Observable<T> => {
       return of(result as T);
     };
+  }
+
+  public async updateFreeGameImages(): Promise<void> {
+
+    for (const freeGame of this.extendedFreeGames) {
+      const scenes: IScene = this.freeGameCreatorService.createScenes(freeGame.scenes);
+      await this.photoService.takePhoto(scenes.scene).then((value) => {freeGame.thumbnail = value; });
+    }
   }
 }
