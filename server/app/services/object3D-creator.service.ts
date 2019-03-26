@@ -1,8 +1,8 @@
 import {injectable} from "inversify";
 import {
+    spaceObjects,
     IIndexObj,
     ObjectGeometry,
-    spaceObjects,
     Themes
 } from "../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
 import * as JsonScene from "../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
@@ -112,8 +112,9 @@ export class Object3DCreatorService {
 
     public createThematicObject(objectType?: ObjectGeometry): JsonScene.IJson3DObject {
         let randomObj: IIndexObj = this.randomTypeByProba();
+        const OFFSET: number = 5;
         (objectType) ?
-            randomObj = {type: objectType, index: 2} :
+            randomObj = {type: objectType, index: objectType - OFFSET} :
             randomObj = this.randomTypeByProba();
 
         return {
@@ -134,9 +135,9 @@ export class Object3DCreatorService {
     private logicRandomRotation(maxRotation: number): number[] {
 
         return [
-            this.getRandomValue(- maxRotation, maxRotation),//axe vers le coté
-            this.getRandomValue(0, this.FULL_ROTATION),//axe vers le haut
-            this.getRandomValue( - maxRotation, maxRotation),//axe vers la camera
+            this.getRandomValue(- maxRotation, maxRotation), // axe vers le coté
+            this.getRandomValue(0, this.FULL_ROTATION), // axe vers le haut
+            this.getRandomValue( - maxRotation, maxRotation), // axe vers la camera
         ];
     }
 

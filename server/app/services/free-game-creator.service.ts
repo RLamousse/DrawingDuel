@@ -1,9 +1,9 @@
 import {inject, injectable} from "inversify";
 import {
+    spaceObjects,
     Coordinate,
     ModificationType,
     ObjectGeometry,
-    spaceObjects,
     Themes
 } from "../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
 import * as IObject from "../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
@@ -16,7 +16,7 @@ export class FreeGameCreatorService {
     public constructor(@inject(Types.Object3DCreatorService) private object3DCreatorService: Object3DCreatorService) {}
 
     private readonly MAX_TYPE_OBJECTS: number = 4;
-    private readonly MIN_DIST: number = 75;
+    private readonly MIN_DIST: number = 130;
     private readonly MAX_GAME_X: number = 300;
     private readonly MAX_GAME_Y: number = 300;
     private readonly MAX_GAME_Z: number = 300;
@@ -43,7 +43,7 @@ export class FreeGameCreatorService {
         return object;
     }
 
-    private isColliding (currObject: IObject.IJson3DObject, object: IObject.IJson3DObject): boolean {
+    private isColliding (currObject: IObject.IJson3DObject, object: IObject.IJson3DObject, distanceMin: number = this.MIN_DIST): boolean {
         const power: number = 2;
         const distance: number = Math.sqrt(
             (Math.pow((currObject.position[Coordinate.X] - object.position[Coordinate.X]), power)) +
@@ -51,7 +51,7 @@ export class FreeGameCreatorService {
             (Math.pow((currObject.position[Coordinate.Z] - object.position[Coordinate.Z]), power)),
         );
 
-        return (distance < this.MIN_DIST);
+        return (distance < distanceMin);
     }
 
     private generate3DObject(): IObject.IJson3DObject {
@@ -96,6 +96,8 @@ export class FreeGameCreatorService {
             //     object.position[Coordinate.Y] = 0;
             // }
             object = this.handleCollision(object, objects);
+
+            this.setAstronautCloseFromEarth(object, objects);
             // const type: ObjectGeometry = object.type;
             // const position: number[] = object.position;
             objects.push(object);
@@ -109,7 +111,6 @@ export class FreeGameCreatorService {
 
         return {originalObjects: objects, modifiedObjects: modifiedObjects};
     }
-
 
     // private isPossibleSpaceSquad(index: number, obj3DToCreate: number, objectType: ObjectGeometry): boolean {
     //     return ((index + 1) < obj3DToCreate && objectType === ObjectGeometry.shuttle);
@@ -182,5 +183,33 @@ export class FreeGameCreatorService {
         earth.position = [0, 0, 0];
 
         return earth;
+    }
+
+    private setAstronautCloseFromEarth(object: IObject.IJson3DObject, objects: IObject.IJson3DObject[]): void {
+        const CLOSE_FROM_EARTH: number = 50;
+        const FURTHER_FROM_EARTH: number = 70;
+        const MIN_DIST: number = 10;
+        if (object.type === ObjectGeometry.astronaut) {
+            let collision: boolean = true;
+            while (collision) {
+                object.position[Coordinate.X] = this.randomNegative() * this.getRandomValue(CLOSE_FROM_EARTH, FURTHER_FROM_EARTH);
+                object.position[Coordinate.Y] = this.randomNegative() * this.getRandomValue(CLOSE_FROM_EARTH, FURTHER_FROM_EARTH);
+                object.position[Coordinate.Z] = this.randomNegative() * this.getRandomValue(CLOSE_FROM_EARTH, FURTHER_FROM_EARTH);
+                for (const indexObj of objects) {
+                    collision = this.isColliding(object, indexObj, MIN_DIST);
+                    if (collision) {
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    private randomNegative(): number {
+        const NEGATIF: number = -1;
+
+        return (this.getRandomValue(0, 1) > 0) ?
+            1 :
+            NEGATIF;
     }
 }
