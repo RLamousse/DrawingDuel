@@ -41,6 +41,8 @@ export class CompteurDiffComponent implements OnInit {
 
   private endGame(): void {
     this.simpleGameService.resetDifferenceCount();
+    this.postTime();
+    this.openCongratDialog();
   }
 
 }
