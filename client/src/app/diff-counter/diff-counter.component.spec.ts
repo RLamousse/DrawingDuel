@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { CompteurDiffComponent } from "./compteur-diff.component";
+import {DiffCounterComponent} from "./diff-counter.component";
 
 describe("CompteurDiffComponent", () => {
-  let component: CompteurDiffComponent;
-  let fixture: ComponentFixture<CompteurDiffComponent>;
+  let component: DiffCounterComponent;
+  let fixture: ComponentFixture<DiffCounterComponent>;
 
   beforeEach(async(async () => {
     return TestBed.configureTestingModule({
-      declarations: [ CompteurDiffComponent, ],
+                                            declarations: [DiffCounterComponent,],
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(CompteurDiffComponent);
+    fixture = TestBed.createComponent(DiffCounterComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
