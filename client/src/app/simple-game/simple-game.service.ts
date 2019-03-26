@@ -3,10 +3,9 @@ import Axios, {AxiosResponse} from "axios";
 import * as Httpstatus from "http-status-codes";
 import {Observable, Subject} from "rxjs";
 import {IDiffValidatorControllerRequest} from "../../../../common/communication/requests/diff-validator-controller.request";
-import {IDiffValidatorControllerResponse} from "../../../../common/communication/responses/diff-validator-controller.response";
-import {DIFF_VALIDATOR_BASE, SERVER_BASE_URL} from "../../../../common/communication/routes";
+import {DB_SIMPLE_GAME, DIFF_VALIDATOR_BASE, SERVER_BASE_URL} from "../../../../common/communication/routes";
 import {AlreadyFoundDifferenceError, NoDifferenceAtPointError} from "../../../../common/errors/services.errors";
-import {DifferenceCluster, DIFFERENCE_CLUSTER_POINTS_INDEX} from "../../../../common/model/game/simple-game";
+import {DifferenceCluster, DIFFERENCE_CLUSTER_POINTS_INDEX, ISimpleGame} from "../../../../common/model/game/simple-game";
 import ISimpleGameState from "../../../../common/model/game/simple-game-state";
 import {IPoint} from "../../../../common/model/point";
 import {playRandomSound, FOUND_DIFFERENCE_SOUNDS} from "./game-sounds";
@@ -16,6 +15,7 @@ import {playRandomSound, FOUND_DIFFERENCE_SOUNDS} from "./game-sounds";
             })
 export class SimpleGameService {
 
+  private _game: ISimpleGame;
   private _gameState: ISimpleGameState;
   private _gameName: string;
   private _differenceCountSubject: Subject<number> = new Subject();
@@ -29,6 +29,14 @@ export class SimpleGameService {
   public set gameName(value: string) {
     this._gameName = value;
 
+    this.getGame()
+      .then((game: ISimpleGame) => {
+        this._game = game;
+      })
+      .catch((error: Error) => {
+        throw error;
+      });
+
     this._gameState = {
       foundDifferenceClusters: [],
     };
@@ -41,7 +49,9 @@ export class SimpleGameService {
   public async validateDifferenceAtPoint(point: IPoint): Promise<DifferenceCluster> {
     this.assertAlreadyFoundDifference(point);
 
-    return Axios.get<IDiffValidatorControllerResponse>(
+    // TODO: console.time("client_validate");
+
+    return Axios.get(
       SERVER_BASE_URL + DIFF_VALIDATOR_BASE,
       {
         params: {
@@ -50,16 +60,15 @@ export class SimpleGameService {
           gameName: this._gameName,
         } as IDiffValidatorControllerRequest,
       })
-      .then((value: AxiosResponse<IDiffValidatorControllerResponse>) => {
-        const differenceCluster: DifferenceCluster = [value.data.differenceClusterId, value.data.differenceClusterCoords];
-        this._gameState.foundDifferenceClusters.push(differenceCluster);
-        this._differenceCountSubject.next(this._gameState.foundDifferenceClusters.length);
+      .then(() => {
         playRandomSound(FOUND_DIFFERENCE_SOUNDS);
+        // TODO: console.timeEnd("client_validate");
 
-        return differenceCluster;
+        return this.updateGameState(point);
       })
       // tslint:disable-next-line:no-any Generic error response
       .catch((reason: any) => {
+        // TODO: console.timeEnd("client_validate");
         if (reason.response && reason.response.status === Httpstatus.NOT_FOUND) {
           throw new NoDifferenceAtPointError();
         }
@@ -75,15 +84,35 @@ export class SimpleGameService {
   }
 
   private wasDifferenceFound(point: IPoint): boolean {
-    for (const cluster of this._gameState.foundDifferenceClusters) {
-      for (const pointOfCluster of cluster[DIFFERENCE_CLUSTER_POINTS_INDEX]) {
-        if (point.x === pointOfCluster.x && point.y === pointOfCluster.y) {
-          return true;
-        }
-      }
+    return this._gameState.foundDifferenceClusters
+      .some((cluster: DifferenceCluster) =>
+              cluster[DIFFERENCE_CLUSTER_POINTS_INDEX]
+                .some((p: IPoint) => p.x === point.x && p.y === point.y));
+  }
+
+  private async getGame(): Promise<ISimpleGame> {
+    return Axios.get<ISimpleGame>(SERVER_BASE_URL + DB_SIMPLE_GAME + this._gameName)
+      .then((value: AxiosResponse<ISimpleGame>) => value.data)
+      // tslint:disable-next-line:no-any Since Axios defines reason as `any`
+      .catch((reason: any) => {
+        throw new Error(reason.response.data.message);
+      });
+  }
+
+  private updateGameState(clickedPoint: IPoint): DifferenceCluster {
+    const differenceCluster: DifferenceCluster | undefined = this._game.diffData
+      .find((cluster: DifferenceCluster) =>
+              cluster[DIFFERENCE_CLUSTER_POINTS_INDEX]
+                .some((point: IPoint) => point.x === clickedPoint.x && point.y === clickedPoint.y));
+
+    if (differenceCluster === undefined) {
+      throw new NoDifferenceAtPointError();
     }
 
-    return false;
+    this._gameState.foundDifferenceClusters.push(differenceCluster);
+    this._differenceCountSubject.next(this._gameState.foundDifferenceClusters.length);
+
+    return differenceCluster;
   }
 
 }
