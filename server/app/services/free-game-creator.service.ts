@@ -77,7 +77,7 @@ export class FreeGameCreatorService {
         return createdObject;
     }
 
-    public generateIScenes(obj3DToCreate: number, modificationTypes: ModificationType[]): IObject.IScenesJSON {
+    public generateIScenes(obj3DToCreate: number, modificationTypes: ModificationType[]): IObject.IScenesDB {
         const objects: IObject.IJson3DObject[] = [];
 
         const PI: number = Math.PI;
@@ -100,46 +100,54 @@ export class FreeGameCreatorService {
             objects.push(object);
         }
         const modifiedObjects: IObject.IJson3DObject[] = JSON.parse(JSON.stringify(objects));
-        this.generateDifferences(modificationTypes, modifiedObjects);
+        const differentObjects: IObject.IJson3DObject[] = this.generateDifferences(modificationTypes, modifiedObjects);
 
-        return {originalObjects: objects, modifiedObjects: modifiedObjects};
+        return {originalObjects: objects, modifiedObjects: modifiedObjects, differentObjects: differentObjects};
     }
 
-    private generateDifferences(modificationTypes: ModificationType[], modifiedObjects: IObject.IJson3DObject[]): void {
+    private generateDifferences(
+        modificationTypes: ModificationType[],
+        modifiedObjects: IObject.IJson3DObject[],
+    ): IObject.IJson3DObject[] {
         const MOD_COUNT: number = 7;
         const INDEXES: Set<number> = new Set();
         while (INDEXES.size !== MOD_COUNT) {
             INDEXES.add(this.getRandomValue(0, modifiedObjects.length - 1));
         }
-        this.randomDifference(INDEXES, modificationTypes, modifiedObjects);
+
+        return this.randomDifference(INDEXES, modificationTypes, modifiedObjects);
     }
 
-    private randomDifference(table: Set<number>, modificationTypes: ModificationType[], modifiedObjects: IObject.IJson3DObject[]): void {
+    private randomDifference(
+        table: Set<number>, modificationTypes: ModificationType[], modifiedObjects: IObject.IJson3DObject[],
+    ): IObject.IJson3DObject[] {
         const MAX_MOD_TYPE: number = modificationTypes.length - 1;
         const ARRAY_INDEXES: number[] = Array.from(table).sort((n1: number, n2: number) => n1 - n2).reverse();
+        const modObjects: IObject.IJson3DObject[] = [];
         let randomModifications: number;
         for (const index of ARRAY_INDEXES) {
             randomModifications = this.getRandomValue(0, MAX_MOD_TYPE);
             switch (modificationTypes[randomModifications]) {
                 case ModificationType.remove: {
+                    modObjects.push(JSON.parse(JSON.stringify(modifiedObjects[index])));
                     modifiedObjects.splice(index, 1);
-                    break;
-                }
+                    break; }
                 case ModificationType.add: {
                     let object: IObject.IJson3DObject = this.generate3DObject();
                     object = this.handleCollision(object, modifiedObjects);
                     modifiedObjects.push(object);
-                    break;
-                }
+                    modObjects.push(JSON.parse(JSON.stringify(object)));
+                    break; }
                 case ModificationType.changeColor: {
                     const MASK: number = 0xFFFFFF;
                     modifiedObjects[index].color = (Math.random() * MASK);
-                    break;
-                }
+                    modObjects.push(JSON.parse(JSON.stringify(modifiedObjects[index])));
+                    break; }
                 default: {
-                    break;
-                }
+                    break; }
             }
         }
+
+        return modObjects;
     }
 }

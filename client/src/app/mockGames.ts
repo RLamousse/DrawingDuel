@@ -54,7 +54,7 @@ export const MOCKED_FREE_GAMES: IExtendedFreeGame[] = [
       bestMultiTimes: [{ name: "mockedUser1", time: 1200 },
                        { name: "mockedUser2", time: 1450 },
                        { name: "mockedUser3", time: 1600 }],
-      scenes: {originalObjects: [], modifiedObjects: [] },
+      scenes: {originalObjects: [], modifiedObjects: [], differentObjects: []},
       toBeDeleted: false,
     },
     {
@@ -66,7 +66,7 @@ export const MOCKED_FREE_GAMES: IExtendedFreeGame[] = [
         bestMultiTimes: [{ name: "mockedUser1", time: 1200 },
                          { name: "mockedUser2", time: 1450 },
                          { name: "mockedUser3", time: 1600 }],
-        scenes: {originalObjects: [], modifiedObjects: [] },
+        scenes: {originalObjects: [], modifiedObjects: [], differentObjects: []},
         toBeDeleted: false,
     },
     {
@@ -78,7 +78,7 @@ export const MOCKED_FREE_GAMES: IExtendedFreeGame[] = [
         bestMultiTimes: [{ name: "mockedUser1", time: 1200 },
                          { name: "mockedUser2", time: 1450 },
                          { name: "mockedUser3", time: 1600 }],
-        scenes: {originalObjects: [], modifiedObjects: [] },
+        scenes: {originalObjects: [], modifiedObjects: [], differentObjects: []},
         toBeDeleted: false,
     },
   ];

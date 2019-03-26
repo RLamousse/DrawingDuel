@@ -3,6 +3,7 @@ import {MatDialog, MatDialogConfig} from "@angular/material";
 import {Router} from "@angular/router";
 import {UpdateScoreMessage, WebsocketMessage} from "../../../../common/communication/messages/message";
 import {SocketEvent} from "../../../../common/communication/socket-events";
+import {SceneRendererService} from "../scene-creator/scene-renderer.service";
 import {SimpleGameService} from "../simple-game/simple-game.service";
 import {SocketService} from "../socket.service";
 import {UNListService} from "../username.service";
@@ -29,6 +30,7 @@ export class DiffCounterComponent implements OnInit {
   public constructor(private simpleGameService: SimpleGameService, private dialog: MatDialog,
                      protected socket: SocketService, private router: Router) {
     this.diffNumber = 0;
+                     private  sceneRendererService: SceneRendererService,
   }
 
   public ngOnInit(): void {
@@ -38,7 +40,9 @@ export class DiffCounterComponent implements OnInit {
       }
       this.diffNumber = differenceCount;
     });
-
+    this.sceneRendererService.foundDifferenceCount.subscribe((differenceCount: number) => {
+      this.diffCount = differenceCount;
+    });
   }
 
   private endGame(): void {

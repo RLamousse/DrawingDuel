@@ -2,6 +2,7 @@ import {HttpClient} from "@angular/common/http";
 import {Injectable} from "@angular/core";
 import {of, Observable} from "rxjs";
 import {catchError} from "rxjs/operators";
+import {IJson3DObject} from "../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
 import {DB_FREE_GAME, DB_SIMPLE_GAME, RESET_SCORES, SERVER_BASE_URL} from "../../../common/communication/routes";
 import {IExtendedFreeGame} from "../../../common/model/game/extended-free-game";
 import {IFreeGame} from "../../../common/model/game/free-game";
@@ -146,6 +147,16 @@ export class GameService {
     catchError(this.handleError<IFreeGame>(this.RESET_SCORES_ERROR)),
     ).subscribe();
   }
+  public async loadCheatData(gameName: string): Promise<IJson3DObject[]> {
+    return new Promise<IJson3DObject[]>((resolve) => {
+
+      this.http.get<IFreeGame>(
+        SERVER_BASE_URL + DB_FREE_GAME + gameName).subscribe((value: IFreeGame) => {
+        resolve(value.scenes.differentObjects);
+      });
+    });
+  }
+
 
   private handleError<T>(request: string, result ?: T): (error: Error) => Observable < T > {
 

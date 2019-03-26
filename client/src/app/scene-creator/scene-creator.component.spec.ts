@@ -1,7 +1,7 @@
 import {ComponentFixture, TestBed} from "@angular/core/testing";
 import {MatDialogModule, MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
 import { ActivatedRoute, Router } from "@angular/router";
-import {of, Observable} from "rxjs";
+import {of, Observable, Subject} from "rxjs";
 import * as THREE from "three";
 import {IFreeGame} from "../../../../common/model/game/free-game";
 import { DiffCounterComponent } from "../diff-counter/diff-counter.component";
@@ -19,12 +19,8 @@ describe("SceneCreatorComponent", () => {
   let fixture: ComponentFixture<SceneCreatorComponent>;
 
   class MockSceneCreatorService {
-    public resizedCalled: string = "";
     public initCalled: string = "";
-
-    public onResize(): void {
-      this.resizedCalled = "onResize";
-    }
+    public objDiffCalled: string = "";
 
     public init(): void {
       this.initCalled = "init";
@@ -32,6 +28,18 @@ describe("SceneCreatorComponent", () => {
 
     public loadScenes(): void {
       return;
+    }
+
+    public get foundDifferenceCount(): Observable<number> {
+      return new Subject<number>();
+    }
+
+    public async objDiffValidation(x?: number): Promise<void> {
+      this.objDiffCalled = "objDiffValidation";
+
+      return new Promise<void>(() => {
+        return;
+      });
     }
   }
 
@@ -57,7 +65,7 @@ describe("SceneCreatorComponent", () => {
       bestMultiTimes: [],
       bestSoloTimes: [],
       gameName: "TEST",
-      scenes: {modifiedObjects: [], originalObjects: []},
+      scenes: {modifiedObjects: [], originalObjects: [], differentObjects: []},
       toBeDeleted: false,
     };
 
@@ -111,12 +119,34 @@ describe("SceneCreatorComponent", () => {
   });
 
   it("should create", () => {
-    expect(component).toBeDefined();
+    expect(component).toBeTruthy();
   });
 
   it("should have the right value inside each mockService after created", () => {
     expect(mockSceneCreatorService.initCalled).toEqual("init");
     expect(mockFreeGameCreatorService.isCalled).toEqual(true);
     expect(mockedGameService.called).toEqual(true);
+  });
+
+  // Test onDivContClick
+  it("should have call the mocked diffObjValidation function on original scene click", () => {
+    const mouseEvt: MouseEvent = new MouseEvent("click", {
+      button: 0,
+      clientX: 325,
+      clientY: 430,
+    });
+
+    component.onDivContClick(mouseEvt);
+    expect(mockSceneCreatorService.objDiffCalled).toEqual("objDiffValidation");
+  });
+  it("should have call the mocked diffObjValidation function on modified scene click", () => {
+    const mouseEvt: MouseEvent = new MouseEvent("click", {
+      button: 0,
+      clientX: 1120,
+      clientY: 430,
+    });
+
+    component.onDivContClick(mouseEvt);
+    expect(mockSceneCreatorService.objDiffCalled).toEqual("objDiffValidation");
   });
 });
