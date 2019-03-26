@@ -100,7 +100,8 @@ describe("SceneCreatorComponent", () => {
           SocketService,
 
         ],
-        declarations: [SceneCreatorComponent, TimerComponent],
+        imports: [MatDialogModule],
+        declarations: [SceneCreatorComponent, TimerComponent, CompteurDiffComponent, EndGameNotifComponent],
 
       });
 
