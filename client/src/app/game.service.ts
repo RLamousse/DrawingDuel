@@ -74,7 +74,7 @@ export class GameService {
     for (const game of this.freeGames) {
       const scenes: IScene = this.freeGameCreatorService.createScenes(game.scenes);
       let img: string = "";
-      await this.photoService.takePhoto(scenes.scene).then((value) => {img = value;});
+      this.photoService.takePhoto(scenes.scene).then((value) => {img = value;});
       const extendedFreeGame: IExtendedFreeGame = {
         thumbnail: img,
         scenes: game.scenes,

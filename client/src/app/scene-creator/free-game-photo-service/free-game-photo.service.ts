@@ -28,10 +28,9 @@ export class FreeGamePhotoService {
     renderer.setPixelRatio(devicePixelRatio);
     renderer.setSize(this.renderSize, this.renderSize);
     divElem.appendChild(renderer.domElement);
-
     renderer.render(scene, camera);
-    await sleep(10000);
-
+    await sleep(1500);
+    renderer.render(scene, camera);
     return (divElem.children[0] as HTMLCanvasElement).toDataURL();
   }
 }
