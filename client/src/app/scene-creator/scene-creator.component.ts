@@ -89,6 +89,7 @@ export class SceneCreatorComponent implements AfterViewInit, OnInit, OnDestroy {
       await this.renderService.modifyCheatState(async () => this.gameService.loadCheatData(this.gameName));
     }
   }
+
   public onRightClick($event: MouseEvent): void {
     $event.preventDefault();
   }
