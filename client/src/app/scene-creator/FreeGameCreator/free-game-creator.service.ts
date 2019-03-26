@@ -66,8 +66,7 @@ export class FreeGameCreatorService {
 
   private generateThematicObject(object: IObject.IJson3DObject, isOriginalObject: boolean): void {
     const loader: GLTFLoader = new GLTFLoader();
-    const enumOffset: number = 5;
-    loader.load(this.buildPath(ObjectGeometry[object.type - enumOffset]), (gltf: THREE.GLTF) => {
+    loader.load(this.buildPath(ObjectGeometry[object.type]), (gltf: THREE.GLTF) => {
       // if (object.texture) {
       //   this.setTexture(object.texture as string, gltf);
       // }
