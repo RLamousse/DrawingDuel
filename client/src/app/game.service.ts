@@ -64,7 +64,7 @@ export class GameService {
     }
   }
 
-  public pushFreeGames(freeGamesToModify: IFreeGame[]): void {
+  public async pushFreeGames(freeGamesToModify: IFreeGame[]): Promise<void> {
     this.freeGames = [];
     this.extendedFreeGames = [];
     this.convertScoresObject(freeGamesToModify);
@@ -73,8 +73,10 @@ export class GameService {
     }
     for (const game of this.freeGames) {
       const scenes: IScene = this.freeGameCreatorService.createScenes(game.scenes);
+      let img: string = "";
+      await this.photoService.takePhoto(scenes.scene).then((value) => {img = value;});
       const extendedFreeGame: IExtendedFreeGame = {
-        thumbnail: this.photoService.takePhoto(scenes.scene),
+        thumbnail: img,
         scenes: game.scenes,
         gameName: game.gameName,
         bestSoloTimes: game.bestSoloTimes,

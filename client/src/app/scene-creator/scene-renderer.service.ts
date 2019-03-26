@@ -27,7 +27,7 @@ export class SceneRendererService {
 
   private readonly cameraX: number = 0;
   private readonly cameraY: number = 0;
-  private readonly cameraZ: number = 350;
+  private readonly cameraZ: number = 120;
 
   private setRenderer(): void {
     this.rendererOri = new THREE.WebGLRenderer({preserveDrawingBuffer: true});
