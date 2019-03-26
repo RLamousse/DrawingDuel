@@ -1,18 +1,16 @@
-import Axios, {AxiosResponse} from "axios";
-import {injectable} from "inversify";
+import {inject, injectable} from "inversify";
 import "reflect-metadata";
-import {DB_SIMPLE_GAME, SERVER_BASE_URL} from "../../../common/communication/routes";
-import {InvalidPointError, NoDifferenceAtPointError} from "../../../common/errors/services.errors";
-import {
-    DifferenceCluster,
-    DIFFERENCE_CLUSTER_POINTS_INDEX,
-    ISimpleDifferenceData,
-    ISimpleGame
-} from "../../../common/model/game/simple-game";
+import {DatabaseError} from "../../../common/errors/database.errors";
+import {InvalidPointError} from "../../../common/errors/services.errors";
 import {IPoint} from "../../../common/model/point";
+import Types from "./../types";
+import {DataBaseService} from "./data-base.service";
 
 @injectable()
 export class DiffValidatorService {
+
+    public constructor(@inject(Types.DataBaseService) private databaseService: DataBaseService) {
+    }
 
     private static assertPoint(point: IPoint): void {
         if (point.x < 0 || point.y < 0) {
@@ -20,36 +18,16 @@ export class DiffValidatorService {
         }
     }
 
-    private static getDifferenceClusterOfPoint(diffData: ISimpleDifferenceData, point: IPoint): DifferenceCluster|undefined {
-        for (const diffCluster of diffData) {
-            if (diffCluster[DIFFERENCE_CLUSTER_POINTS_INDEX].findIndex((x: IPoint) => x.x === point.x && x.y === point.y) >= 0) {
-                return diffCluster;
-            }
-        }
-
-        return undefined;
-    }
-
-    public async getDifferenceCluster(gameName: string, point: IPoint): Promise<DifferenceCluster> {
+    public async validatePoint(gameName: string, point: IPoint): Promise<boolean> {
         DiffValidatorService.assertPoint(point);
 
-        const game: ISimpleGame = await this.getGame(gameName);
-        const diffData: ISimpleDifferenceData = game.diffData;
-        const differenceGroup: DifferenceCluster | undefined = DiffValidatorService.getDifferenceClusterOfPoint(diffData, point);
-
-        if (differenceGroup === undefined) {
-            throw new NoDifferenceAtPointError();
-        }
-
-        return differenceGroup;
-    }
-
-    private async getGame(gameName: string): Promise<ISimpleGame> {
-        return Axios.get<ISimpleGame>(SERVER_BASE_URL + DB_SIMPLE_GAME + gameName)
-            .then((value: AxiosResponse<ISimpleGame>) => value.data)
-            // tslint:disable-next-line:no-any Since Axios defines reason as `any`
-            .catch((reason: any) => {
-                throw new Error(reason.response.data.message);
+        return this.databaseService
+            .simpleGames
+            .documentCountWithQuery({gameName: gameName, diffData: {$elemMatch: {$elemMatch: {$elemMatch: point}}}})
+            .then((documentCount: number) => {
+                return documentCount >= 1;
+            }).catch((dbError: DatabaseError) => {
+                throw dbError;
             });
     }
 }

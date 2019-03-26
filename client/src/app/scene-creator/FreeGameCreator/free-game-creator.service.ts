@@ -48,8 +48,11 @@ export class FreeGameCreatorService {
     this.scene.add(originalLighting);
     this.modifiedScene.add(modifiedLighting);
 
+    const AMBIENT_LIGHT_POS: number = 300;
     const originalAmbiantLight: THREE.AmbientLight = new THREE.AmbientLight(HOTLIGHT);
+    originalAmbiantLight.position.set(AMBIENT_LIGHT_POS, AMBIENT_LIGHT_POS, AMBIENT_LIGHT_POS);
     const modifiedAmbiantLight: THREE.AmbientLight = new THREE.AmbientLight(HOTLIGHT);
+    modifiedAmbiantLight.position.set(AMBIENT_LIGHT_POS, AMBIENT_LIGHT_POS, AMBIENT_LIGHT_POS);
     this.scene.add(originalAmbiantLight);
     this.modifiedScene.add(modifiedAmbiantLight);
   }

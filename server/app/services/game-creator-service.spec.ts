@@ -61,7 +61,7 @@ describe("A service that creates a game", () => {
             .thenReturn(createdMockedDiffData(EXPECTED_DIFF_NUMBER));
         when(mockedImageUploadService.uploadImage(anything())).thenResolve("");
         when(mockedFreeGameCreatorService.generateIScenes(anything(), anything(), Themes.Geometry))
-            .thenReturn({originalObjects: [], modifiedObjects: []});
+            .thenReturn({originalObjects: [], modifiedObjects: [], differentObjects: []});
     });
 
     describe("Create simple game", () => {
@@ -183,7 +183,7 @@ describe("A service that creates a game", () => {
                     fs.readFileSync("test/test_files_for_game_creator_service/original.bmp"),
                     fs.readFileSync("test/test_files_for_game_creator_service/7diff-modified.bmp"))
                 .catch((reason: Error) => {
-                    expect(reason.message).to.eql("dataBase: error");
+                    expect(reason.message).to.eql("Database error: error");
                 });
         });
 
@@ -204,7 +204,7 @@ describe("A service that creates a game", () => {
                     fs.readFileSync("test/test_files_for_game_creator_service/original.bmp"),
                     fs.readFileSync("test/test_files_for_game_creator_service/7diff-modified.bmp"))
                 .catch((reason: Error) => {
-                    expect(reason.message).to.eql("dataBase: error");
+                    expect(reason.message).to.eql("Database error: error");
                 });
         });
 
@@ -227,7 +227,7 @@ describe("A service that creates a game", () => {
                     fs.readFileSync("test/test_files_for_game_creator_service/original.bmp"),
                     fs.readFileSync("test/test_files_for_game_creator_service/7diff-modified.bmp"))
                 .catch((reason: Error) => {
-                    expect(reason.message).to.eql("dataBase: Unable to create game: error");
+                    expect(reason.message).to.eql("Database error: Unable to create game: error");
                 });
         });
 
@@ -306,7 +306,7 @@ describe("A service that creates a game", () => {
                                  Themes.Geometry,
                                  [ModificationType.add, ModificationType.remove, ModificationType.changeColor])
                 .catch((reason: Error) => {
-                    expect(reason.message).to.eql("dataBase: error");
+                    expect(reason.message).to.eql("Database error: error");
                 });
         });
 
@@ -323,7 +323,7 @@ describe("A service that creates a game", () => {
                                  Themes.Geometry,
                                  [ModificationType.add, ModificationType.remove, ModificationType.changeColor])
                 .catch((reason: Error) => {
-                    expect(reason.message).to.eql("dataBase: error");
+                    expect(reason.message).to.eql("Database error: error");
                 });
         });
 
@@ -363,7 +363,7 @@ describe("A service that creates a game", () => {
                                  Themes.Geometry,
                                  [ModificationType.add, ModificationType.remove, ModificationType.changeColor])
                 .catch((reason: Error) => {
-                    expect(reason.message).to.eql("dataBase: Unable to create game: error");
+                    expect(reason.message).to.eql("Database error: Unable to create game: error");
                 });
         });
 
@@ -378,7 +378,7 @@ describe("A service that creates a game", () => {
                 .reply(HttpStatus.OK);
 
             when(mockedFreeGameCreatorService.generateIScenes(anything(), anything(), Themes.Geometry))
-                .thenReturn({originalObjects: [], modifiedObjects: []});
+                .thenReturn({originalObjects: [], modifiedObjects: [], differentObjects: []});
 
             return expect((await getMockedService()
                 .createFreeGame( "someGameTest",

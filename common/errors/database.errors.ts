@@ -46,6 +46,14 @@ export class InvalidGameError extends Error {
     }
 }
 
+export class InvalidGameInfoError extends Error {
+    public static readonly GAME_INFO_FORMAT_ERROR_MESSAGE: string = "ERROR: the new attributes of the game have the wrong format!";
+
+    constructor() {
+        super(InvalidGameInfoError.GAME_INFO_FORMAT_ERROR_MESSAGE);
+    }
+}
+
 export class NonExistentUserError extends Error {
     public static readonly NON_EXISTENT_USER_ERROR_MESSAGE: string = "ERROR: the specified username does no exist!";
 
@@ -59,5 +67,21 @@ export class AlreadyExistentUserError extends Error {
 
     constructor() {
         super(AlreadyExistentUserError.ALREADY_EXISTENT_USER_ERROR_MESSAGE);
+    }
+}
+
+export class NoElementFoundError extends Error {
+    public static readonly NO_ELEMENT_FOUND_ERROR_MESSAGE: string = "ERROR: no elements were found with the given query!";
+
+    constructor() {
+        super(NoElementFoundError.NO_ELEMENT_FOUND_ERROR_MESSAGE);
+    }
+}
+
+export class AbstractDataBaseError extends Error {
+    public static readonly PREFIX: string = "Database error: ";
+
+    constructor(message: string) {
+        super(AbstractDataBaseError.PREFIX + message);
     }
 }

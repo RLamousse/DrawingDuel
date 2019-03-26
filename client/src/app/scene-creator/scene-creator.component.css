@@ -32,8 +32,21 @@ body {
   font-size: 60px;
   padding-left: 22%;
 }
-
-.differences {
-  color: green;
-  font-size: 60px;
+.disabled {
+  cursor: not-allowed;
+}
+#originalCanvasMessage {
+  position: absolute;
+  width: 640px;
+  height: 480px;
+}
+#modifiedCanvasMessage {
+  position: absolute;
+  width: 640px;
+  height: 480px;
+}
+#endGameMessage {
+  position: absolute;
+  width: 1920px;
+  height: 1080px;
 }

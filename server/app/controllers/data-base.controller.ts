@@ -18,22 +18,6 @@ export class DataBaseController {
         const router: Router = Router();
 
         // ┌──┬───────┬──┐
-        // │  │ USERS │  │
-        // └──┴───────┴──┘
-
-        router.post("/users", async (req: Request, res: Response, next: NextFunction) => {
-            executePromiseSafely(res, next, async () => {
-                res.json(await this.dataBaseService.users.create(req.body));
-            });
-        });
-
-        router.delete("/users/:userId", async (req: Request, res: Response, next: NextFunction) => {
-            executePromiseSafely(res, next, async () => {
-                res.json(await this.dataBaseService.users.delete(req.params["userId"]));
-            });
-        });
-
-        // ┌──┬───────┬──┐
         // │  │ GAMES │  │
         // └──┴───────┴──┘
 
@@ -42,6 +26,12 @@ export class DataBaseController {
         router.post("/games/simple", async (req: Request, res: Response, next: NextFunction) => {
             executePromiseSafely(res, next, async () => {
                 res.json(await this.dataBaseService.simpleGames.create(req.body));
+            });
+        });
+
+        router.put("/games/simple/:id", async (req: Request, res: Response, next: NextFunction) => {
+            executePromiseSafely(res, next, async () => {
+                res.json(await this.dataBaseService.simpleGames.update(req.params["id"], req.body));
             });
         });
 
@@ -79,6 +69,12 @@ export class DataBaseController {
         router.post("/games/free", async (req: Request, res: Response, next: NextFunction) => {
             executePromiseSafely(res, next, async () => {
                 res.json(await this.dataBaseService.freeGames.create(req.body));
+            });
+        });
+
+        router.put("/games/free/:id", async (req: Request, res: Response, next: NextFunction) => {
+            executePromiseSafely(res, next, async () => {
+                res.json(await this.dataBaseService.freeGames.update(req.params["id"], req.body));
             });
         });
 

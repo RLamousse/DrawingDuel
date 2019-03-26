@@ -1,12 +1,22 @@
 import {async, ComponentFixture, TestBed} from "@angular/core/testing";
 import {By} from "@angular/platform-browser";
 import {tansformOrigin, IPoint, ORIGIN} from "../../../../../common/model/point";
+import {createArray} from "../../../../../common/util/util";
 
-import {DEFAULT_CANVAS_HEIGHT, PixelData, SimpleGameCanvasComponent} from "./simple-game-canvas.component";
+import {
+  DEFAULT_CANVAS_HEIGHT, DEFAULT_TEXT_COLOR, ERROR_TEXT_COLOR,
+  IMAGE_DATA_PIXEL_LENGTH,
+  PixelData,
+  SimpleGameCanvasComponent,
+  TextType, VICTORY_TEXT_COLOR
+} from "./simple-game-canvas.component";
 
 describe("SimpleGameCanvasComponent", () => {
   // tslint:disable-next-line:no-magic-numbers 0xFF for pixel channels values
-  const PIXEL: number[] = Array.of(0xFF, 0, 0, 0xFF);
+  const RED_PIXEL: number[] = Array.of(0xFF, 0, 0, 0xFF);
+  // tslint:disable-next-line:no-magic-numbers 0xFF for pixel channels values
+  const WHITE_PIXEL: number[] = Array.of(0xFF, 0xFF, 0xFF, 0xFF);
+
   let component: SimpleGameCanvasComponent;
   let fixture: ComponentFixture<SimpleGameCanvasComponent>;
 
@@ -54,7 +64,7 @@ describe("SimpleGameCanvasComponent", () => {
 
   it("should return the correct pixels", () => {
     const context: CanvasRenderingContext2D = getCanvasContext();
-    context.putImageData(createImageData(PIXEL, 1, 1), 0, 0);
+    context.putImageData(createImageData(RED_PIXEL, 1, 1), 0, 0);
 
     component["_width"] = 1;
     component["_height"] = 1;
@@ -66,9 +76,40 @@ describe("SimpleGameCanvasComponent", () => {
         [
           {
             coords: ORIGIN,
-            data: new Uint8ClampedArray(PIXEL),
+            data: new Uint8ClampedArray(RED_PIXEL),
           },
         ]);
+  });
+
+  it("should return every pixel", () => {
+    const sideLength: number = 10;
+    // tslint:disable-next-line:no-magic-numbers 0xFF for pixel channels values
+    const expectedPixels: Uint8ClampedArray = new Uint8ClampedArray(createArray(sideLength * sideLength * IMAGE_DATA_PIXEL_LENGTH, 0xFF));
+    const context: CanvasRenderingContext2D = getCanvasContext();
+    // tslint:disable-next-line:no-magic-numbers 10x10 pixel grid for tests
+    context.putImageData(createImageData(WHITE_PIXEL, sideLength, sideLength), 0, 0);
+
+    component["_width"] = sideLength;
+    component["_height"] = sideLength;
+    component["_canvasContext"] = context;
+
+    const actualPixels: Uint8ClampedArray = component.getRawPixelData();
+    expect(actualPixels).toEqual(expectedPixels);
+  });
+
+  it("should set the pixels of canvas from raw data", () => {
+    const sideLength: number = 10;
+    // tslint:disable-next-line:no-magic-numbers 0xFF for pixel channels values
+    const expectedPixels: Uint8ClampedArray = new Uint8ClampedArray(createArray(sideLength * sideLength * IMAGE_DATA_PIXEL_LENGTH, 0xFF));
+    const context: CanvasRenderingContext2D = getCanvasContext();
+
+    component["_width"] = sideLength;
+    component["_height"] = sideLength;
+    component["_canvasContext"] = context;
+
+    component.setRawPixelData(expectedPixels);
+    expect(context.getImageData(0, 0, sideLength, sideLength).data)
+      .toEqual(expectedPixels);
   });
 
   it("should draw given pixels successfully", () => {
@@ -82,11 +123,11 @@ describe("SimpleGameCanvasComponent", () => {
       [
         {
           coords: ORIGIN,
-          data: new Uint8ClampedArray(PIXEL),
+          data: new Uint8ClampedArray(RED_PIXEL),
         },
       ]);
     expect(context.getImageData(0, 0, 1, 1).data)
-      .toEqual(new Uint8ClampedArray(PIXEL));
+      .toEqual(new Uint8ClampedArray(RED_PIXEL));
   });
 
   it("should emit a click event on click", () => {
@@ -116,5 +157,62 @@ describe("SimpleGameCanvasComponent", () => {
 
       return done();
     });
+  });
+
+  it("should draw error text on canvas", () => {
+    const sideLength: number = 10;
+    const expectedText: string = "Error";
+    const context: CanvasRenderingContext2D = getCanvasContext();
+    // tslint:disable-next-line:no-magic-numbers 10x10 pixel grid for tests
+    context.putImageData(createImageData(WHITE_PIXEL, sideLength, sideLength), 0, 0);
+
+    component["_width"] = sideLength;
+    component["_height"] = sideLength;
+    component["_canvasContext"] = context;
+
+    spyOn(component["_canvasContext"], "strokeText");
+    spyOn(component["_canvasContext"], "fillText");
+
+    component.drawText(expectedText, ORIGIN, TextType.ERROR);
+
+    expect(component["_canvasContext"].fillStyle).toEqual(ERROR_TEXT_COLOR);
+    expect(component["_canvasContext"].strokeText).toHaveBeenCalledWith(expectedText, ORIGIN.x, ORIGIN.y);
+    expect(component["_canvasContext"].fillText).toHaveBeenCalledWith(expectedText, ORIGIN.x, ORIGIN.y);
+  });
+
+  it("should draw victory text on canvas", () => {
+    const sideLength: number = 10;
+    const expectedText: string = "epic victory royale";
+    const context: CanvasRenderingContext2D = getCanvasContext();
+    // tslint:disable-next-line:no-magic-numbers 10x10 pixel grid for tests
+    context.putImageData(createImageData(WHITE_PIXEL, sideLength, sideLength), 0, 0);
+
+    component["_width"] = sideLength;
+    component["_height"] = sideLength;
+    component["_canvasContext"] = context;
+    spyOn(context, "fillText");
+
+    component.drawText(expectedText, ORIGIN, TextType.VICTORY);
+
+    expect(context.fillStyle).toEqual(VICTORY_TEXT_COLOR);
+    expect(context.fillText).toHaveBeenCalledWith(expectedText, ORIGIN.x, ORIGIN.y);
+  });
+
+  it("should draw black text when textType is not defined", () => {
+    const sideLength: number = 10;
+    const expectedText: string = "epic victory royale";
+    const context: CanvasRenderingContext2D = getCanvasContext();
+    // tslint:disable-next-line:no-magic-numbers 10x10 pixel grid for tests
+    context.putImageData(createImageData(WHITE_PIXEL, sideLength, sideLength), 0, 0);
+
+    component["_width"] = sideLength;
+    component["_height"] = sideLength;
+    component["_canvasContext"] = context;
+    spyOn(context, "fillText");
+
+    component.drawText(expectedText, ORIGIN);
+
+    expect(context.fillStyle).toEqual(DEFAULT_TEXT_COLOR);
+    expect(context.fillText).toHaveBeenCalledWith(expectedText, ORIGIN.x, ORIGIN.y);
   });
 });

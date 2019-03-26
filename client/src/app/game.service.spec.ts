@@ -56,14 +56,14 @@ describe("GameService", () => {
       thumbnail: "",
       bestSoloTimes: [{ name: "mockedUser1", time: 120 }],
       bestMultiTimes: [{ name: "mockedUser2", time: 23 }],
-      scenes: {originalObjects: [], modifiedObjects: []},
+      scenes: {originalObjects: [], modifiedObjects: [], differentObjects: []},
     },
     {
       gameName: "mockedSimpleName",
       thumbnail: "",
       bestSoloTimes: [{ name: "mockedUser1", time: 120 }],
       bestMultiTimes: [{ name: "mockedUser2", time: 23 }],
-      scenes: {originalObjects: [], modifiedObjects: []},
+      scenes: {originalObjects: [], modifiedObjects: [], differentObjects: []},
     },
   ];
 
