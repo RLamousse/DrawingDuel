@@ -1,9 +1,10 @@
 import {inject, injectable} from "inversify";
 import {
-    spaceObjects,
     Coordinate,
     ModificationType,
     ObjectGeometry,
+    ObjectTexture,
+    spaceObjects,
     Themes
 } from "../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
 import * as IObject from "../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
@@ -147,9 +148,10 @@ export class FreeGameCreatorService {
                 }
                 case ModificationType.changeColor: {
                     const MASK: number = 0xFFFFFF;
+                    const TEXTURE_SIZE: number = 4;
                     (modifiedObjects[0].gameType === Themes.Geometry) ?
                         modifiedObjects[index].color = (Math.random() * MASK) :
-                        modifiedObjects[index].texture = "common/image/texture.jpg";
+                        modifiedObjects[index].texture = ObjectTexture[ObjectTexture[this.getRandomValue(0, TEXTURE_SIZE)]];
                     break;
                 }
                 default: {

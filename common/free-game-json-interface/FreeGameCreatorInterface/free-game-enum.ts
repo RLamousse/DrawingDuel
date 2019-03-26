@@ -3,6 +3,8 @@
 export enum ObjectGeometry {sphere, cube, cone, cylinder, pyramid, comet, asteroid, astronaut,
                             dog, rocket, fighter, shuttle, UFO, buzz, earth}
 
+export enum ObjectTexture {blue, fur, rainbow, skulls, spongebob}
+
 export interface IThematicObject {
     type: ObjectGeometry,
     scale: number,

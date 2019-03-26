@@ -1,4 +1,4 @@
-﻿import {ObjectGeometry, Themes} from "../FreeGameCreatorInterface/free-game-enum";
+﻿import {ObjectGeometry, ObjectTexture, Themes} from "../FreeGameCreatorInterface/free-game-enum";
 
 export interface IScenesJSON{
     originalObjects: IJson3DObject[],
@@ -9,7 +9,7 @@ export interface IJson3DObject {
     position: number[],
     rotation: number[],
     color: number,
-    texture?: string,
+    texture?: ObjectTexture,
     type: ObjectGeometry,
     scale: number
     gameType: Themes,

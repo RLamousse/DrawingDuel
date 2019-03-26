@@ -2,12 +2,13 @@ import {Injectable} from "@angular/core";
 import * as THREE from "three";
 import GLTFLoader from "three-gltf-loader";
 import {
-  ObjectGeometry,
+  ObjectGeometry, ObjectTexture,
   Themes
 } from "../../../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
 import * as IObject from "../../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
 import {IScene} from "../../scene-interface";
 import {Form3DService} from "../3DFormService/3-dform.service";
+
 @Injectable()
 export class FreeGameCreatorService {
 
@@ -15,16 +16,11 @@ export class FreeGameCreatorService {
   private modifiedScene: THREE.Scene;
   private formService: Form3DService;
 
-  public objects: THREE.Mesh[];
-  public modifiedObjects: THREE.Mesh[];
   public constructor() {
-    this.objects = [];
-    this.modifiedObjects = [];
     this.formService = new Form3DService();
   }
 
   public createScenes(primitiveScenes: IObject.IScenesJSON): IScene {
-
     this.scene = new THREE.Scene();
     this.modifiedScene = new THREE.Scene();
     this.setLighting();
@@ -57,7 +53,6 @@ export class FreeGameCreatorService {
   private generateThematicScenes(primitiveScenes: IObject.IScenesJSON): void {
     for (const i of primitiveScenes.originalObjects) {
       this.generateThematicObject(i, true);
-      //this.objects.push(object);
     }
     for (const j of primitiveScenes.modifiedObjects) {
       this.generateThematicObject(j, false);
@@ -66,45 +61,42 @@ export class FreeGameCreatorService {
 
   private generateThematicObject(object: IObject.IJson3DObject, isOriginalObject: boolean): void {
     const loader: GLTFLoader = new GLTFLoader();
-    loader.load(this.buildPath(ObjectGeometry[object.type]), (gltf: THREE.GLTF) => {
-      // if (object.texture) {
-      //   this.setTexture(object.texture as string, gltf);
-      // }
-      // const material: THREE.MeshBasicMaterial = new THREE.MeshBasicMaterial();
-      // const loaderTexture: THREE.TextureLoader = new THREE.TextureLoader();
-      // material.map = loaderTexture.load("common/image/texture.jpg");
-      // gltf.scene.overrideMaterial = material;
-      this.inception(gltf.scene.children[0]);
+    loader.load(this.buildObjectPath(ObjectGeometry[object.type]), (gltf: THREE.GLTF) => {
+      if (object.texture) {
+        this.traverseChildren(gltf.scene.children[0], object.texture);
+      }
       this.formService.setUpThematicParameters(object, gltf);
       (isOriginalObject) ? this.scene.add(gltf.scene) : this.modifiedScene.add(gltf.scene);
     });
   }
-  private inception(object: THREE.Object3D): void {
+
+  private traverseChildren(object: THREE.Object3D, type: ObjectTexture): void {
     for (const obj of object.children) {
       if (obj.type === "Mesh") {
-        this.setTexture(obj);
+        this.setTexture(obj, type);
       } else if (obj !== undefined) {
-        this.inception(obj);
+        this.traverseChildren(obj, type);
       }
     }
-}
-  private setTexture(object: THREE.Object3D): void {
+  }
+
+  private setTexture(object: THREE.Object3D, type: ObjectTexture): void {
     const textureLoader: THREE.TextureLoader = new THREE.TextureLoader();
-    const texture: THREE.Texture = textureLoader.load("assets/Models/textures/texture.jpg" , (text: THREE.Texture) => {
-      text.name = "textureBleu";
-    });
+    const texture: THREE.Texture = textureLoader.load(this.buildTexturePath(ObjectTexture[type]));
 
     texture.encoding = THREE.sRGBEncoding;
     texture.flipY = false;
 
-    const material: THREE.MeshPhongMaterial = new THREE.MeshPhongMaterial({
+    (object as THREE.Mesh).material = new THREE.MeshPhongMaterial({
       map: texture,
     });
-    material.name = "changing";
-    (object as THREE.Mesh).material = material;
   }
 
-  private buildPath(name: string): string {
+  private buildTexturePath(name: string): string {
+    return ("assets/Models/textures/" + name + ".jpg");
+  }
+
+  private buildObjectPath(name: string): string {
     return ("assets/Models/space/" + name + "/scene.gltf");
   }
 
@@ -113,7 +105,6 @@ export class FreeGameCreatorService {
     for (const i of primitiveScenes.originalObjects) {
       object = this.generate3DObject(i);
       this.scene.add(object);
-      this.objects.push(object);
     }
   }
 
@@ -122,7 +113,6 @@ export class FreeGameCreatorService {
     for (const i of primitiveScenes.modifiedObjects) {
       object = this.generate3DObject(i);
       this.modifiedScene.add(object);
-      this.modifiedObjects.push(object);
     }
   }
 
