@@ -6,6 +6,7 @@ import {IPoint, ORIGIN} from "../../../../../common/model/point";
 import {PixelData, TextType} from "../simple-game-canvas/simple-game-canvas.component";
 import {SimpleGameService} from "../simple-game.service";
 import {IDENTIFICATION_ERROR_TEXT, IDENTIFICATION_ERROR_TIMOUT_MS, SimpleGameContainerComponent} from "./simple-game-container.component";
+import {SocketService} from "../../socket.service";
 
 describe("SimpleGameContainerComponent", () => {
 
@@ -56,6 +57,7 @@ describe("SimpleGameContainerComponent", () => {
         declarations: [SimpleGameContainerComponent, SimpleGameCanvasStubComponent],
         providers: [
           {provide: SimpleGameService, useValue: mockedSimpleGameService},
+          SocketService,
         ],
         schemas: [NO_ERRORS_SCHEMA],
       });
