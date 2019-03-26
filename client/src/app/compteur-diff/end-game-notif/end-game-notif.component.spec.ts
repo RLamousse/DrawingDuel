@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
-
+import {MatDialogModule, MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
 import { EndGameNotifComponent } from "./end-game-notif.component";
 
 describe("EndGameNotifComponent", () => {
@@ -9,6 +9,9 @@ describe("EndGameNotifComponent", () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ EndGameNotifComponent ],
+      imports: [ MatDialogModule],
+      providers: [{provide: MatDialogRef, useValue: {}},
+                  {provide: MAT_DIALOG_DATA, useValue: {}}, ],
     })
     .compileComponents();
   }));
