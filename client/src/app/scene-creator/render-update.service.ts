@@ -87,16 +87,18 @@ export class RenderUpdateService {
   public updateDifference(object: THREE.Intersection, scene: THREE.Scene, modifiedScene: THREE.Scene): void {
     let originalObj: THREE.Object3D = new THREE.Object3D();
     let modifObj: THREE.Object3D = new THREE.Object3D();
+    const ORIGINAL_NAME: string = "original";
+    const MODIFIED_NAME: string = "modified";
     for (const obj of modifiedScene.children) {
       if (this.isSameCenter(obj.position, object.object.position)) {
         modifObj = obj;
-        modifObj.name = "modified";
+        modifObj.name = MODIFIED_NAME;
       }
     }
     for (const obj of scene.children) {
       if (this.isSameCenter(obj.position, object.object.position)) {
         originalObj = obj.clone();
-        originalObj.name = "original";
+        originalObj.name = ORIGINAL_NAME;
       }
     }
     if (originalObj.name !== "" && modifObj.name !== "") {
