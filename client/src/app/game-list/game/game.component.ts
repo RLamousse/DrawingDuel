@@ -13,8 +13,7 @@ import {ResetGameFormComponent} from "./reset-game-form/reset-game-form.componen
 
 export class GameComponent {
 
-  private isDeleted: boolean;
-
+  public constructor(private router: Router, private dialog: MatDialog) {}
   @Input() public gameName: string = "test";
   @Input() public bestSoloTimes: IRecordTime[];
   @Input() public bestMultiTimes: IRecordTime[];
@@ -38,7 +37,7 @@ export class GameComponent {
 
   protected rightButtonClick(): void {
     if (this.rightButton === "joindre") {
-      this.isDeleted ? this.openGameDeletedDialog() : this.navigateAwait();
+      this.navigateAwait();
     } else if (this.rightButton === "reinitialiser") {
       const dialogConfig: MatDialogConfig = new MatDialogConfig();
       dialogConfig.autoFocus = true;
@@ -49,7 +48,7 @@ export class GameComponent {
 
   private navigatePlayView(): void {
    this.router.navigate(["/play-view/"], {queryParams: {
-      gameName: this.gameName, originalImage: this.originalImage, modifiedImage: this.modifiedImage, isDeleted: this.isDeleted },
+      gameName: this.gameName, originalImage: this.originalImage, modifiedImage: this.modifiedImage, },
     })
       // tslint:disable-next-line:no-any Generic error response
      .catch((reason: any) => {
@@ -60,7 +59,7 @@ export class GameComponent {
   private navigateFreeView(): void {
     this.router.navigate(["/3d-view/"], {
       queryParams: {
-        gameName: this.gameName, isDeleted: this.isDeleted,
+        gameName: this.gameName,
       },
     })
       // tslint:disable-next-line:no-any Generic error response
