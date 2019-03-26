@@ -19,7 +19,7 @@ export class AwaitViewComponent implements OnInit {
 
   public constructor(private activatedRoute: ActivatedRoute, private route: Router,
                      private socket: SocketService, private dialog: MatDialog) {
-    this.notifyGameDeletion = this.notifyGameDeletion.bind(this);
+    this.executeGameDeletionRoutine = this.executeGameDeletionRoutine.bind(this);
   }
 
   public ngOnInit(): void {
@@ -27,7 +27,19 @@ export class AwaitViewComponent implements OnInit {
       this.gameName = params["gameName"];
       this.isSimpleGame = params["gameType"];
     });
-    this.socket.onEvent(SocketEvent.DELETE).subscribe(this.notifyGameDeletion);
+    this.socket.onEvent(SocketEvent.DELETE).subscribe(this.executeGameDeletionRoutine);
+  }
+
+  private executeGameDeletionRoutine(message: WebsocketMessage<[string, boolean]>): void {
+    this.notifyGameDeletion(message);
+    this.navigateGameList();
+  }
+
+  private navigateGameList (): void {
+    this.route.navigate(["/game-list/"]) // tslint:disable-next-line:no-any Generic error response
+    .catch((reason: any) => {
+      throw new Error(reason);
+    });
   }
 
   private notifyGameDeletion(message: WebsocketMessage<[string, boolean]>): void {
@@ -36,10 +48,6 @@ export class AwaitViewComponent implements OnInit {
       dialogConfig.autoFocus = true;
       dialogConfig.data = {gameName: this.gameName, isSimpleGame: this.isSimpleGame};
       this.dialog.open(GameDeletionNotifComponent, dialogConfig);
-      this.route.navigate(["/game-list/"]) // tslint:disable-next-line:no-any Generic error response
-      .catch((reason: any) => {
-        throw new Error(reason);
-      });
     }
   }
 }
