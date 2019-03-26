@@ -1,4 +1,4 @@
-import {Collection} from "mongodb";
+import {Collection, FilterQuery} from "mongodb";
 import {Message} from "../../../../common/communication/messages/message";
 import {DatabaseError, EmptyIdError, NoElementFoundError} from "../../../../common/errors/database.errors";
 
@@ -42,6 +42,14 @@ export abstract class CollectionService<T> {
             .catch(() => {
                 throw new DatabaseError();
             });
+    }
+
+    public async documentCountWithQuery(query: FilterQuery<T>): Promise<number> {
+        try {
+            return this._collection.countDocuments(query);
+        } catch (error) {
+            throw new DatabaseError();
+        }
     }
 
     protected async documentCount(id: string): Promise<number> {

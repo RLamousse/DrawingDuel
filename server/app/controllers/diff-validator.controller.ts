@@ -1,9 +1,7 @@
 import {NextFunction, Request, Response, Router} from "express";
 import * as Httpstatus from "http-status-codes";
 import {inject, injectable} from "inversify";
-import {IDiffValidatorControllerResponse} from "../../../common/communication/responses/diff-validator-controller.response";
 import {NoDifferenceAtPointError} from "../../../common/errors/services.errors";
-import {DifferenceCluster, DIFFERENCE_CLUSTER_ID_INDEX, DIFFERENCE_CLUSTER_POINTS_INDEX} from "../../../common/model/game/simple-game";
 import {DiffValidatorService} from "../services/diff-validator.service";
 import Types from "../types";
 import {assertParamsOfRequest, executePromiseSafely} from "./controller-utils";
@@ -19,23 +17,25 @@ export class DiffValidatorController {
         router.get("/",
                    async (req: Request, res: Response, next: NextFunction) => {
                        executePromiseSafely(res, next, async () => {
+
+                           //TODO: console.time("valid");
+
                            assertParamsOfRequest(req, "gameName", "coordX", "coordY");
 
-                           this.diffValidatorService.getDifferenceCluster(req.query.gameName, {
+                           this.diffValidatorService.validatePoint(req.query.gameName, {
                                x: parseInt(req.query.coordX, 10),
                                y: parseInt(req.query.coordY, 10),
-                           }).then((differenceCluster: DifferenceCluster) => {
-                               const response: IDiffValidatorControllerResponse = {
-                                   differenceClusterId: differenceCluster[DIFFERENCE_CLUSTER_ID_INDEX],
-                                   differenceClusterCoords: differenceCluster[DIFFERENCE_CLUSTER_POINTS_INDEX],
-                               };
-
-                               return res.json(response);
-                           }).catch((error: Error) => {
-                               if (error.message === NoDifferenceAtPointError.NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE) {
+                           }).then((hasDifference: boolean) => {
+                               if (!hasDifference) {
                                    res.status(Httpstatus.NOT_FOUND);
+
+                                   return res.json(new NoDifferenceAtPointError());
                                }
 
+                               //TODO: console.timeEnd("valid");
+
+                               return res.end();
+                           }).catch((error: Error) => {
                                return res.json(error);
                            });
                        });
