@@ -143,12 +143,12 @@ describe("RenderUpdateService", () => {
     expect(service["oldY"]).toEqual(200);
   });
 
-  // Test RotateCamera
+  // Test rotationCamera
   it("should compute deltaX and deltaY according to values", () => {
     const service: RenderUpdateService = TestBed.get(RenderUpdateService);
     service["oldX"] = 0;
     service["oldY"] = 0;
-    service.rotateCamera(100, -150);
+    service.rotationCamera(100, -150);
     expect(service["deltaY"]).toEqual((0 - 100) / 4000);
     expect(service["deltaX"]).toEqual((0 - (-150)) / 4000);
   });

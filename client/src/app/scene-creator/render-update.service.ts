@@ -79,7 +79,7 @@ export class RenderUpdateService {
     }
   }
 
-  public rotateCamera(xPos: number, yPos: number): void {
+  public rotationCamera(xPos: number, yPos: number): void {
     this.deltaY = (this.oldX - xPos) / this.camRotationSpeedFactor;
     this.deltaX = (this.oldY - yPos) / this.camRotationSpeedFactor;
   }
