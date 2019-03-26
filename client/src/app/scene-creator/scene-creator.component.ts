@@ -127,7 +127,7 @@ export class SceneCreatorComponent implements AfterViewInit, OnInit, OnDestroy {
       this.clickEnabled = true;
       ctx.clearRect(0 , 0, ctx.canvas.width, ctx.canvas.height);
       },
-               TIMEOUT);
+      TIMEOUT);
   }
 
   private canvasErrorDraw($event: MouseEvent): CanvasRenderingContext2D | null {
