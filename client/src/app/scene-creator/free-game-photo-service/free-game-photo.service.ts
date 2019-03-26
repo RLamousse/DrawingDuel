@@ -1,7 +1,10 @@
 import { Injectable } from "@angular/core";
 import * as THREE from "three";
+import {sleep} from "../../../../../common/util/util";
 
-@Injectable()
+@Injectable({
+  providedIn: "root",
+})
 export class FreeGamePhotoService {
   private readonly fieldOfView: number = 90;
   private readonly nearClippingPane: number = 1;
@@ -10,7 +13,7 @@ export class FreeGamePhotoService {
   private readonly renderSize: number = 400;
   private readonly cameraZ: number = 200;
 
-  public takePhoto(scene: THREE.Scene): string {
+  public async takePhoto(scene: THREE.Scene): Promise<string> {
     const divElem: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
     const camera: THREE.PerspectiveCamera = new THREE.PerspectiveCamera(
       this.fieldOfView,
@@ -25,9 +28,9 @@ export class FreeGamePhotoService {
     renderer.setPixelRatio(devicePixelRatio);
     renderer.setSize(this.renderSize, this.renderSize);
     divElem.appendChild(renderer.domElement);
-
     renderer.render(scene, camera);
-
+    await sleep(1500);
+    renderer.render(scene, camera);
     return (divElem.children[0] as HTMLCanvasElement).toDataURL();
   }
 }

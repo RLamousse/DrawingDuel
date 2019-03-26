@@ -74,22 +74,35 @@ export class FreeGameCreatorService {
       // const loaderTexture: THREE.TextureLoader = new THREE.TextureLoader();
       // material.map = loaderTexture.load("common/image/texture.jpg");
       // gltf.scene.overrideMaterial = material;
+      this.inception(gltf.scene.children[0]);
       this.formService.setUpThematicParameters(object, gltf);
       (isOriginalObject) ? this.scene.add(gltf.scene) : this.modifiedScene.add(gltf.scene);
     });
   }
+  private inception(object: THREE.Object3D): void {
+    for (const obj of object.children) {
+      if (obj.type === "Mesh") {
+        this.setTexture(obj);
+      } else if (obj !== undefined) {
+        this.inception(obj);
+      }
+    }
+}
+  private setTexture(object: THREE.Object3D): void {
+    const textureLoader: THREE.TextureLoader = new THREE.TextureLoader();
+    const texture: THREE.Texture = textureLoader.load("assets/Models/textures/texture.jpg" , (text: THREE.Texture) => {
+      text.name = "textureBleu";
+    });
 
-  // private setTexture(newTexture: string, object: THREE.GLTF): void {
-  //   const textureLoader: THREE.TextureLoader = new THREE.TextureLoader();
-  //   const texture: THREE.Texture = textureLoader.load(newTexture);
-  //
-  //   texture.encoding = THREE.sRGBEncoding;
-  //   texture.flipY = false;
-  //
-  //   object.scene.traverse( (child: THREE.Mesh) =>  {
-  //     (child.material as THREE.MeshBasicMaterial).color = 0xffffff;
-  //   });
-  // }
+    texture.encoding = THREE.sRGBEncoding;
+    texture.flipY = false;
+
+    const material: THREE.MeshPhongMaterial = new THREE.MeshPhongMaterial({
+      map: texture,
+    });
+    material.name = "changing";
+    (object as THREE.Mesh).material = material;
+  }
 
   private buildPath(name: string): string {
     return ("assets/Models/space/" + name + "/scene.gltf");

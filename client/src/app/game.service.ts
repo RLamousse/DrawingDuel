@@ -64,7 +64,7 @@ export class GameService {
     }
   }
 
-  public pushFreeGames(freeGamesToModify: IFreeGame[]): void {
+  public async pushFreeGames(freeGamesToModify: IFreeGame[]): Promise<void> {
     this.freeGames = [];
     this.extendedFreeGames = [];
     this.convertScoresObject(freeGamesToModify);
@@ -72,9 +72,9 @@ export class GameService {
       this.freeGames.push(game);
     }
     for (const game of this.freeGames) {
-      const scenes: IScene = this.freeGameCreatorService.createScenes(game.scenes);
+      const img: string = "";
       const extendedFreeGame: IExtendedFreeGame = {
-        thumbnail: this.photoService.takePhoto(scenes.scene),
+        thumbnail: img,
         scenes: game.scenes,
         gameName: game.gameName,
         bestSoloTimes: game.bestSoloTimes,
@@ -107,5 +107,13 @@ export class GameService {
     return (error: Error): Observable<T> => {
       return of(result as T);
     };
+  }
+
+  public async updateFreeGameImages(): Promise<void> {
+
+    for (const freeGame of this.extendedFreeGames) {
+      const scenes: IScene = this.freeGameCreatorService.createScenes(freeGame.scenes);
+      await this.photoService.takePhoto(scenes.scene).then((value) => {freeGame.thumbnail = value; });
+    }
   }
 }
