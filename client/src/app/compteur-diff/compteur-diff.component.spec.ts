@@ -1,5 +1,7 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
-
+import {MatDialogModule, MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
+import {Router} from "@angular/router";
+import {SocketService} from "../socket.service";
 import { CompteurDiffComponent } from "./compteur-diff.component";
 
 describe("CompteurDiffComponent", () => {
@@ -9,6 +11,11 @@ describe("CompteurDiffComponent", () => {
   beforeEach(async(async () => {
     return TestBed.configureTestingModule({
       declarations: [ CompteurDiffComponent, ],
+      imports: [ MatDialogModule],
+      providers: [{provide: MatDialogRef, useValue: {}},
+                  {provide: MAT_DIALOG_DATA, useValue: {}},
+                  { provide: Router, useClass: class { public navigate: jasmine.Spy = jasmine.createSpy("navigate"); }},
+                  SocketService, ],
     })
     .compileComponents();
   }));
