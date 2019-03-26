@@ -186,7 +186,7 @@ export class SceneRendererService {
     }
   }
 
-  public objDiffValidation(xPos: number, yPos: number): Promise<IJson3DObject> {
+  public async objDiffValidation(xPos: number, yPos: number): Promise<IJson3DObject> {
       let x: number = 0;
       let y: number = 0;
       const POS_FACT: number = 2;
@@ -214,7 +214,7 @@ export class SceneRendererService {
         return this.differenceValidationAtPoint(intersectOri[0]);
       }
   }
-  private differenceValidationAtPoint(object: THREE.Intersection|undefined): Promise<IJson3DObject> {
+  private async differenceValidationAtPoint(object: THREE.Intersection|undefined): Promise<IJson3DObject> {
     let centerObj: number[] = [];
     if (object !== undefined) {
       centerObj = [object.object.position.x, object.object.position.y, object.object.position.z];

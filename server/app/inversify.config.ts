@@ -2,6 +2,7 @@ import { Container } from "inversify";
 import { Application } from "./app";
 import { BitmapDiffController } from "./controllers/bitmap-diff.controller";
 import { DataBaseController } from "./controllers/data-base.controller";
+import { DiffValidator3DController } from "./controllers/diff-validator-3D.controller";
 import { DiffValidatorController } from "./controllers/diff-validator.controller";
 import { GameCreatorController } from "./controllers/game-creator.controller";
 import { ScoreTableController } from "./controllers/score-table.controller";
@@ -11,6 +12,7 @@ import { BitmapWriter } from "./images/bitmap/bitmap-writer";
 import { Server } from "./server";
 import { BitmapDiffService } from "./services/bitmap-diff.service";
 import { DataBaseService } from "./services/data-base.service";
+import { DiffValidator3DService } from "./services/diff-validator-3D.service";
 import { DiffValidatorService } from "./services/diff-validator.service";
 import { DifferenceEvaluatorService } from "./services/difference-evaluator.service";
 import { FreeGameCreatorService } from "./services/free-game-creator.service";
@@ -23,8 +25,6 @@ import { ChatWebsocketActionService } from "./services/websocket/chat-websocket-
 import { CheckUserWebsocketActionService } from "./services/websocket/check-user-websocket-action.service";
 import { DeleteWebsocketActionService } from "./services/websocket/delete-websocket-action.service";
 import { DummyWebsocketActionService } from "./services/websocket/dummy-websocket-action.service";
-import { DiffValidator3DService } from "./services/diff-validator-3D.service";
-import { DiffValidator3DController } from "./controllers/diff-validator-3D.controller";
 import { UpdateGameScoresWebsocketActionService } from "./services/websocket/update-game-scores-websocket-action.service";
 import Types from "./types";
 

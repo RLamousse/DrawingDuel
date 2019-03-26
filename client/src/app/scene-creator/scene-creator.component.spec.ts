@@ -31,7 +31,7 @@ describe("SceneCreatorComponent", () => {
       return new Subject<number>();
     }
 
-    public objDiffValidation(x?: number): Promise<void> {
+    public async objDiffValidation(x?: number): Promise<void> {
       this.objDiffCalled = "objDiffValidation";
 
       return new Promise<void>(() => {
