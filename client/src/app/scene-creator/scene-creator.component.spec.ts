@@ -1,10 +1,14 @@
 import {ComponentFixture, TestBed} from "@angular/core/testing";
-import {ActivatedRoute} from "@angular/router";
+import {MatDialogModule, MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
+import { ActivatedRoute, Router } from "@angular/router";
 import {of, Observable} from "rxjs";
 import * as THREE from "three";
 import {IFreeGame} from "../../../../common/model/game/free-game";
+import { CompteurDiffComponent } from "../compteur-diff/compteur-diff.component";
+import { EndGameNotifComponent } from "../compteur-diff/end-game-notif/end-game-notif.component";
 import {GameService} from "../game.service";
 import {IScene} from "../scene-interface";
+import {SocketService} from "../socket.service";
 import {TimerComponent} from "../timer/timer.component";
 import {FreeGameCreatorService} from "./FreeGameCreator/free-game-creator.service";
 import {SceneCreatorComponent} from "./scene-creator.component";
