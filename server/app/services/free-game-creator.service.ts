@@ -106,7 +106,9 @@ export class FreeGameCreatorService {
     }
 
     private generateDifferences(
-        modificationTypes: ModificationType[], modifiedObjects: IObject.IJson3DObject[]): IObject.IJson3DObject[] {
+        modificationTypes: ModificationType[],
+        modifiedObjects: IObject.IJson3DObject[],
+    ): IObject.IJson3DObject[] {
         const MOD_COUNT: number = 7;
         const INDEXES: Set<number> = new Set();
         while (INDEXES.size !== MOD_COUNT) {

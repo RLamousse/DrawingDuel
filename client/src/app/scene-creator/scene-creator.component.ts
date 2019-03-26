@@ -122,7 +122,8 @@ export class SceneCreatorComponent implements AfterViewInit, OnInit, OnDestroy {
 
   private resetRoutine(ctx: CanvasRenderingContext2D): void {
     const TIMEOUT: number = 1000;
-    setTimeout(() => {
+    setTimeout(
+      () => {
       this.cursorEnabled = true;
       this.clickEnabled = true;
       ctx.clearRect(0 , 0, ctx.canvas.width, ctx.canvas.height);
@@ -131,10 +132,12 @@ export class SceneCreatorComponent implements AfterViewInit, OnInit, OnDestroy {
   }
 
   private canvasErrorDraw($event: MouseEvent): CanvasRenderingContext2D | null {
-    const canvasElm: HTMLElement | null = document.getElementById("modifiedCanvasMessage");
+    const MOD_CANVAS: string = "modifiedCanvasMessage";
+    const ORI_CANVAS: string = "originalCanvasMessage";
+    const canvasElm: HTMLElement | null = document.getElementById(MOD_CANVAS);
     let canvasContext: CanvasRenderingContext2D | null = (canvasElm as HTMLCanvasElement).getContext("2d");
     if ($event.clientX < (canvasContext as CanvasRenderingContext2D).canvas.offsetLeft) {
-      canvasContext = (document.getElementById("originalCanvasMessage") as HTMLCanvasElement).getContext("2d");
+      canvasContext = (document.getElementById(ORI_CANVAS) as HTMLCanvasElement).getContext("2d");
     }
     if (canvasContext === null) {
       return canvasContext;
