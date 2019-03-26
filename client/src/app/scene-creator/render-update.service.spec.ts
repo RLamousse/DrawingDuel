@@ -1,6 +1,7 @@
 import { TestBed } from "@angular/core/testing";
 import * as THREE from "three";
 import { RenderUpdateService } from "./render-update.service";
+// tslint:disable:max-file-line-count
 // tslint:disable:no-magic-numbers
 describe("RenderUpdateService", () => {
 
@@ -281,5 +282,20 @@ describe("RenderUpdateService", () => {
     service.updateDifference(intersection, scene, modifiedScene);
     expect(scene.children[0]).toEqual(obj1);
     expect(modifiedScene.children[0]).toEqual(obj2);
+  });
+
+  // Test isSameObject
+  it("should return true if the 2 object have the same center", () => {
+    const service: RenderUpdateService = TestBed.get(RenderUpdateService);
+    const pos1: number[] = [10, 69, 700];
+    const pos2: number[] = [10, 69, 700];
+    expect(service.isSameObject(pos1, pos2)).toBeTruthy();
+  });
+
+  it("should return false if the 2 object have a different center", () => {
+    const service: RenderUpdateService = TestBed.get(RenderUpdateService);
+    const pos1: number[] = [10, 69, 700];
+    const pos2: number[] = [0, 1, -850];
+    expect(service.isSameObject(pos1, pos2)).toBeFalsy();
   });
 });
