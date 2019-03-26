@@ -58,7 +58,7 @@ export class Game3DControlsDirective {
   @HostListener("document:mousemove", ["$event"])
   public mousemove($event: MouseEvent): void {
     if (this.renderUpdateService.rightClick) {
-      this.renderUpdateService.rotateCamera($event.clientX, $event.clientY);
+      this.renderUpdateService.rotationCamera($event.clientX, $event.clientY);
     }
   }
 }
