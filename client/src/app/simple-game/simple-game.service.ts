@@ -49,8 +49,6 @@ export class SimpleGameService {
   public async validateDifferenceAtPoint(point: IPoint): Promise<DifferenceCluster> {
     this.assertAlreadyFoundDifference(point);
 
-    // TODO: console.time("client_validate");
-
     return Axios.get(
       SERVER_BASE_URL + DIFF_VALIDATOR_BASE,
       {
@@ -62,13 +60,11 @@ export class SimpleGameService {
       })
       .then(() => {
         playRandomSound(FOUND_DIFFERENCE_SOUNDS);
-        // TODO: console.timeEnd("client_validate");
 
         return this.updateGameState(point);
       })
       // tslint:disable-next-line:no-any Generic error response
       .catch((reason: any) => {
-        // TODO: console.timeEnd("client_validate");
         if (reason.response && reason.response.status === Httpstatus.NOT_FOUND) {
           throw new NoDifferenceAtPointError();
         }
