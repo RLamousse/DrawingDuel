@@ -1,7 +1,7 @@
 import { TestBed } from "@angular/core/testing";
 import * as THREE from "three";
 import { RenderUpdateService } from "./render-update.service";
-
+// tslint:disable:no-magic-numbers
 describe("RenderUpdateService", () => {
 
   beforeEach(() => TestBed.configureTestingModule({}));
@@ -54,7 +54,6 @@ describe("RenderUpdateService", () => {
     const service: RenderUpdateService = TestBed.get(RenderUpdateService);
     service["right"] = false;
     const delta: number = 0.5;
-    // tslint:disable-next-line:no-magic-numbers
     const vel: THREE.Vector3 = new THREE.Vector3(10, 10, 100);
     const camera: THREE.Camera = new THREE.Camera();
     service.updateCamera(camera, delta, vel);
@@ -65,7 +64,6 @@ describe("RenderUpdateService", () => {
     const service: RenderUpdateService = TestBed.get(RenderUpdateService);
     service["right"] = true;
     const delta: number = 0;
-    // tslint:disable:no-magic-numbers
     service["deltaX"] = 10;
     service["deltaY"] = -8;
     const vel: THREE.Vector3 = new THREE.Vector3(10, 10, 100);
@@ -77,7 +75,7 @@ describe("RenderUpdateService", () => {
     expect(camera.position.x).toEqual(baseZ);
   });
 
-  // Test moveForward/Backwar/Left/Right
+  // Test moveForward/Backward/Left/Right
   it("should have the right boolean value (forward, false)", () => {
     const service: RenderUpdateService = TestBed.get(RenderUpdateService);
     service.moveForward(false);
@@ -259,5 +257,29 @@ describe("RenderUpdateService", () => {
     service.updateDifference(intersection, scene, modifiedScene);
     expect(((modifiedScene.children[0] as THREE.Mesh).material as THREE.MeshPhongMaterial).color.getHex())
       .toEqual(0x000000);
+  });
+
+  it("should not update the scenes, obj3 does not exist inside scenes", () => {
+    const service: RenderUpdateService = TestBed.get(RenderUpdateService);
+    const scene: THREE.Scene = new THREE.Scene();
+    const modifiedScene: THREE.Scene = new THREE.Scene();
+    const obj1: THREE.Object3D = new THREE.Object3D();
+    obj1.position.set(10, -10, 100);
+    const obj2: THREE.Object3D = new THREE.Object3D();
+    obj2.position.set(0, -10, 200);
+    const obj3: THREE.Object3D = new THREE.Object3D();
+    obj3.position.set(10, 10, 300);
+    scene.add(obj1);
+    modifiedScene.add(obj2);
+    const intersection: THREE.Intersection = {
+      distance: 0,
+      distanceToRay: 0,
+      faceIndex: 0,
+      object: obj3,
+      point: new THREE.Vector3(0, 0, 0),
+    };
+    service.updateDifference(intersection, scene, modifiedScene);
+    expect(scene.children[0]).toEqual(obj1);
+    expect(modifiedScene.children[0]).toEqual(obj2);
   });
 });
