@@ -47,5 +47,6 @@ export class DeleteGameFormComponent  {
 
   private deleteGameByType(gameName: string, isSimpleGame: boolean ): void {
     isSimpleGame ? this.gameService.hideSimpleByName(gameName) : this.gameService.hideFreeByName(gameName);
+    window.location.reload();
   }
 }
