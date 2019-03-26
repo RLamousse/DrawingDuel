@@ -54,6 +54,7 @@ describe("SceneCreatorComponent", () => {
       bestSoloTimes: [],
       gameName: "TEST",
       scenes: {modifiedObjects: [], originalObjects: []},
+      toBeDeleted: false,
     };
 
     public getFreeGameByName(): Observable<IFreeGame> {
