@@ -1,7 +1,7 @@
 import {ComponentFixture, TestBed} from "@angular/core/testing";
 import { MatListModule } from "@angular/material";
 import {ActivatedRoute, Router} from "@angular/router";
-import {CompteurDiffComponent} from "../compteur-diff/compteur-diff.component";
+import {DiffCounterComponent} from "../diff-counter/diff-counter.component";
 import { MessageBoxComponent } from "../message-box/message-box.component";
 import {SimpleGameCanvasComponent} from "../simple-game/simple-game-canvas/simple-game-canvas.component";
 import {SimpleGameContainerComponent} from "../simple-game/simple-game-container/simple-game-container.component";
@@ -18,7 +18,7 @@ describe("PlayViewComponent", () => {
       {
         declarations: [
           PlayViewComponent,
-          CompteurDiffComponent,
+          DiffCounterComponent,
           SimpleGameContainerComponent,
           SimpleGameCanvasComponent,
           TimerComponent,

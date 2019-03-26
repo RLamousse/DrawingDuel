@@ -2,20 +2,20 @@ import {Component, OnInit} from "@angular/core";
 import {SimpleGameService} from "../simple-game/simple-game.service";
 
 @Component({
-             selector: "app-compteur-diff",
-             templateUrl: "./compteur-diff.component.html",
-             styleUrls: ["./compteur-diff.component.css"],
+             selector: "app-diff-counter",
+             templateUrl: "./diff-counter.component.html",
+             styleUrls: ["./diff-counter.component.css"],
            })
-export class CompteurDiffComponent implements OnInit {
-  protected diffNumber: number;
+export class DiffCounterComponent implements OnInit {
+  protected diffCount: number;
 
   public constructor(private simpleGameService: SimpleGameService) {
-    this.diffNumber = 0;
+    this.diffCount = 0;
   }
 
   public ngOnInit(): void {
     this.simpleGameService.foundDifferencesCount.subscribe((differenceCount: number) => {
-      this.diffNumber = differenceCount;
+      this.diffCount = differenceCount;
     });
   }
 
