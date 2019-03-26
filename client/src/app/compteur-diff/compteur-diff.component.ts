@@ -45,4 +45,13 @@ export class CompteurDiffComponent implements OnInit {
     this.openCongratDialog();
   }
 
+  private openCongratDialog(): void {
+    const dialogConfig: MatDialogConfig = new MatDialogConfig();
+    dialogConfig.autoFocus = true;
+    dialogConfig.data = {gameName: this.gameName, isSimpleGame: this.isSimpleGame, };
+    this.dialog.open(EndGameNotifComponent, dialogConfig).afterClosed().subscribe(() => {
+      this.router.navigate(["/game-list/"]);
+    });
+
+  }
 }
