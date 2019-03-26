@@ -4,10 +4,8 @@ import * as HttpStatus from "http-status-codes";
 import * as request from "supertest";
 import {anything, anyString, instance, mock, when} from "ts-mockito";
 import {IDiffValidatorControllerRequest} from "../../../common/communication/requests/diff-validator-controller.request";
-import {IDiffValidatorControllerResponse} from "../../../common/communication/responses/diff-validator-controller.response";
 import {DIFF_VALIDATOR_BASE} from "../../../common/communication/routes";
 import {RequestFormatError} from "../../../common/errors/controller.errors";
-import {NoDifferenceAtPointError} from "../../../common/errors/services.errors";
 import {Application} from "../app";
 import {container} from "../inversify.config";
 import {DiffValidatorService} from "../services/diff-validator.service";
@@ -20,14 +18,19 @@ const errorResponse = (errorMessage: string) => {
     };
 };
 
+class MockedDataBaseService {
+}
+
 describe("Diff validator controller", () => {
     let app: Express.Application;
     let mockedDiffValidatorService: DiffValidatorService;
 
     beforeEach(() => {
+        container.rebind(types.DataBaseService).toConstantValue(instance(MockedDataBaseService));
+
         mockedDiffValidatorService = mock(DiffValidatorService);
-        when(mockedDiffValidatorService.getDifferenceCluster(anyString(), anything()))
-            .thenResolve([0, []]);
+        when(mockedDiffValidatorService.validatePoint(anyString(), anything()))
+            .thenResolve(true);
 
         container.rebind(types.DiffValidatorService).toConstantValue(instance(mockedDiffValidatorService));
 
@@ -61,8 +64,8 @@ describe("Diff validator controller", () => {
             coordY: 42,
         };
 
-        when(mockedDiffValidatorService.getDifferenceCluster(anyString(), anything()))
-            .thenReject(new NoDifferenceAtPointError());
+        when(mockedDiffValidatorService.validatePoint(anyString(), anything()))
+            .thenResolve(false);
 
         container.rebind(types.DiffValidatorService).toConstantValue(instance(mockedDiffValidatorService));
 
@@ -81,17 +84,15 @@ describe("Diff validator controller", () => {
             coordX: 0,
             coordY: 0,
         };
-        const expectedResponse: IDiffValidatorControllerResponse = {
-            differenceClusterId: 0,
-            differenceClusterCoords: [],
-        };
+
+        when(mockedDiffValidatorService.validatePoint(anyString(), anything()))
+            .thenResolve(true);
+
+        container.rebind(types.DiffValidatorService).toConstantValue(instance(mockedDiffValidatorService));
 
         return request(app)
             .get(DIFF_VALIDATOR_BASE)
             .query(query)
-            .expect(HttpStatus.OK)
-            .then((response) => {
-                expect(response.body).to.eql(expectedResponse);
-            });
+            .expect(HttpStatus.OK);
     });
 });
