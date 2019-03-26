@@ -54,4 +54,14 @@ export class CompteurDiffComponent implements OnInit {
     });
 
   }
+
+  private postTime(): void {
+    this.socketMessage = {
+      title: SocketEvent.DELETE,
+      body: {gameName: this.gameName,
+             isSolo: true, newTime: {name: UNListService.username, time: this.minutes * this.MINUTES_FACTOR + this.seconds}},
+    };
+    this.socket.send(SocketEvent.UPDATE_SCORE, this.socketMessage);
+  }
+
 }
