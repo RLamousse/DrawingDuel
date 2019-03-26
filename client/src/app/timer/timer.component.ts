@@ -9,7 +9,9 @@ export class TimerComponent implements OnInit {
 
   public minutes: number = 0;
   public seconds: number = 0;
+
   @Input() public gameName: string;
+  @Input() public isSimpleGame: boolean;
   private readonly maxSeconds: number = 59;
   private readonly milliseconds: number = 1000;
   private interval: number;

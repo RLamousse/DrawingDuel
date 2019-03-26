@@ -2,5 +2,6 @@
   {{minutes < 10 ? "0" + minutes : minutes}}:{{seconds < 10 ? "0" + seconds : seconds}}
 </div>
 <app-compteur-diff [gameName] = "gameName"
+                   [isSimpleGame] = "isSimpleGame"
                    [minutes] = "minutes"
                    [seconds] = "seconds"></app-compteur-diff>
