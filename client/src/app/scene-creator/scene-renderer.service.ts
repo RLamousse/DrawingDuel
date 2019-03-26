@@ -7,9 +7,9 @@ import { DIFF_VALIDATOR_3D_BASE, SERVER_BASE_URL } from "../../../../common/comm
 import { ComponentNotLoadedError } from "../../../../common/errors/component.errors";
 import { AlreadyFoundDifferenceError, NoDifferenceAtPointError } from "../../../../common/errors/services.errors";
 import { Coordinate } from "../../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
-import {IJson3DObject} from "../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
-import {deepCompare, sleep, X_FACTOR} from "../../../../common/util/util";
-import { playRandomSound, FOUND_DIFFERENCE_SOUNDS, NO_DIFFERENCE_SOUNDS } from "../simple-game/game-sounds";
+import { IJson3DObject} from "../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
+import { deepCompare, sleep, X_FACTOR } from "../../../../common/util/util";
+import { playRandomSound, FOUND_DIFFERENCE_SOUNDS, NO_DIFFERENCE_SOUNDS, STAR_THEME_SOUND } from "../simple-game/game-sounds";
 import { RenderUpdateService } from "./render-update.service";
 
 interface IFreeGameState {
@@ -128,6 +128,7 @@ export class SceneRendererService {
   public async modifyCheatState(loadCheatData: () => Promise<IJson3DObject[]>): Promise<void> {
     this.gameState.isCheatModeActive = !this.gameState.isCheatModeActive;
     if (this.gameState.isCheatModeActive) {
+      STAR_THEME_SOUND.play();
       await this.loadCheatData(loadCheatData);
       await this.updateCheateDiffData(this.gameState.foundDifference);
       this.gameState.blinkThread = setInterval(async () => this.blink(),
@@ -162,6 +163,7 @@ export class SceneRendererService {
   }
 
   public async deactivateCheatMode(): Promise<void> {
+    STAR_THEME_SOUND.stop();
     if (this.gameState.blinkThread) {
       clearInterval(this.gameState.blinkThread);
     }
