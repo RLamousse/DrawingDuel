@@ -3,6 +3,7 @@ import {
     Coordinate,
     ModificationType,
     ObjectGeometry,
+    spaceObjects,
     Themes
 } from "../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
 import * as IObject from "../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
@@ -15,7 +16,7 @@ export class FreeGameCreatorService {
     public constructor(@inject(Types.Object3DCreatorService) private object3DCreatorService: Object3DCreatorService) {}
 
     private readonly MAX_TYPE_OBJECTS: number = 4;
-    private readonly MIN_DIST: number = 150;
+    private readonly MIN_DIST: number = 75;
     private readonly MAX_GAME_X: number = 300;
     private readonly MAX_GAME_Y: number = 300;
     private readonly MAX_GAME_Z: number = 300;
@@ -83,6 +84,9 @@ export class FreeGameCreatorService {
 
     public generateIScenes(obj3DToCreate: number, modificationTypes: ModificationType[], sceneType: Themes): IObject.IScenesJSON {
         const objects: IObject.IJson3DObject[] = [];
+        if (sceneType === Themes.Space) {
+            objects.push(this.renderEarth());
+        }
         for (let i: number = 0; i < obj3DToCreate; ++i) {
             let object: IObject.IJson3DObject;
             (sceneType === Themes.Geometry) ?
@@ -115,7 +119,7 @@ export class FreeGameCreatorService {
         const MOD_COUNT: number = 7;
         const INDEXES: Set<number> = new Set();
         while (INDEXES.size !== MOD_COUNT) {
-            INDEXES.add(this.getRandomValue(0, modifiedObjects.length - 1));
+            INDEXES.add(this.getRandomValue(1, modifiedObjects.length - 1));
         }
         this.randomDifference(INDEXES, modificationTypes, modifiedObjects);
     }
@@ -172,4 +176,11 @@ export class FreeGameCreatorService {
     //
     //     return newObj;
     // }
+    private renderEarth(): IObject.IJson3DObject {
+        const earth: IObject.IJson3DObject = this.object3DCreatorService.createThematicObject(ObjectGeometry.earth);
+        earth.scale = spaceObjects[spaceObjects.length - 1].scale;
+        earth.position = [0, 0, 0];
+
+        return earth;
+    }
 }

@@ -142,7 +142,7 @@ export class Object3DCreatorService {
 
     private randomTypeByProba(): IIndexObj {
         const index: number =  Math.random();
-        const spaceObjectSize: number = 9;
+        const spaceObjectSize: number = 8;
         let floor: number = 0;
         let objectIndex: IIndexObj = {type: ObjectGeometry.comet, index: 0};
 

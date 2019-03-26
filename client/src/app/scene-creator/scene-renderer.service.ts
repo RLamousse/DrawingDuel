@@ -23,11 +23,11 @@ export class SceneRendererService {
   private readonly fieldOfView: number = 90;
   private readonly nearClippingPane: number = 1;
   private readonly farClippingPane: number = 1000;
-  private readonly backGroundColor: number = 0x0B7B90;
+  private readonly backGroundColor: number = 0x001A33;//0x0B7B90;
 
   private readonly cameraX: number = 0;
   private readonly cameraY: number = 0;
-  private readonly cameraZ: number = 100;
+  private readonly cameraZ: number = 350;
 
   private setRenderer(): void {
     this.rendererOri = new THREE.WebGLRenderer({preserveDrawingBuffer: true});
@@ -77,7 +77,33 @@ export class SceneRendererService {
     this.modifiedContainer = modCont;
     this.setCamera();
     this.setRenderer();
+    // this.generateSkyBox();
   }
+
+  // private generateSkyBox (): void {
+  //   let geometry: THREE.BoxGeometry = new THREE.BoxGeometry(400, 400, 400);
+  //   var materialArray = [];
+  //   const textureLoader: THREE.TextureLoader = new THREE.TextureLoader();
+  //   materialArray.push(new THREE.SpriteMaterial( { map: textureLoader.load( "https://stemkoski.github.io/Three.js/images/dawnmountain-xpos.png"), side: THREE.DoubleSide}));
+  //   materialArray.push(new THREE.SpriteMaterial( { map: textureLoader.load( "https://stemkoski.github.io/Three.js/images/dawnmountain-xneg.png"), side: THREE.DoubleSide }));
+  //   materialArray.push(new THREE.SpriteMaterial( { map: textureLoader.load( "https://stemkoski.github.io/Three.js/images/dawnmountain-ypos.png"), side: THREE.DoubleSide }));
+  //   materialArray.push(new THREE.SpriteMaterial( { map: textureLoader.load( "https://stemkoski.github.io/Three.js/images/dawnmountain-yneg.png"), side: THREE.DoubleSide }));
+  //   materialArray.push(new THREE.SpriteMaterial( { map: textureLoader.load( "https://stemkoski.github.io/Three.js/images/dawnmountain-zpos.png"), side: THREE.DoubleSide }));
+  //   materialArray.push(new THREE.SpriteMaterial( { map: textureLoader.load( "https://stemkoski.github.io/Three.js/images/dawnmountain-zneg.png"), side: THREE.DoubleSide }));
+  //
+  //   let cubeMaterial: THREE.MeshFaceMaterial = new THREE.MeshFaceMaterial(materialArray);
+  //   let cube: THREE.Mesh = new THREE.Mesh(geometry, cubeMaterial);
+  //   this.scene.add(cube);
+  //   this.modifiedScene.add(cube);
+  //
+  //   // for (let i: number = 0; i < 6; i++) {
+  //   //   materialArray[i].side = THREE.BackSide;
+  //   // }
+  //   // let skyboxMaterial: THREE.MeshFaceMaterial = new THREE.MeshFaceMaterial( materialArray );
+  //   // let skyboxGeom: THREE.BoxGeometry = new THREE.BoxGeometry( 5, 5, 5, 1, 1, 1 );
+  //   // let skybox = new THREE.Mesh( skyboxGeom, skyboxMaterial );
+  //   // this.scene.add(skybox);
+  // }
 
   public loadScenes(original: THREE.Scene, modified: THREE.Scene): void {
     if (this.originalContainer === undefined || this.modifiedContainer === undefined) {
@@ -85,6 +111,7 @@ export class SceneRendererService {
     }
     this.scene = original;
     this.modifiedScene = modified;
+    // this.generateSkyBox();
     this.renderLoop();
   }
 }
