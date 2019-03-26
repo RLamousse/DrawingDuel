@@ -3,7 +3,7 @@ import {ActivatedRoute} from "@angular/router";
 import {of, Observable, Subject} from "rxjs";
 import * as THREE from "three";
 import {IFreeGame} from "../../../../common/model/game/free-game";
-import {CompteurDiffComponent} from "../compteur-diff/compteur-diff.component";
+import {DiffCounterComponent} from "../diff-counter/diff-counter.component";
 import {GameService} from "../game.service";
 import {IScene} from "../scene-interface";
 import {TimerComponent} from "../timer/timer.component";
@@ -96,7 +96,7 @@ describe("SceneCreatorComponent", () => {
           {provide: FreeGameCreatorService, useValue: mockFreeGameCreatorService},
 
         ],
-        declarations: [SceneCreatorComponent, TimerComponent, CompteurDiffComponent],
+        declarations: [SceneCreatorComponent, TimerComponent, DiffCounterComponent],
 
       });
 
