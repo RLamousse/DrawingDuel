@@ -24,7 +24,8 @@ export class CompteurDiffComponent implements OnInit {
   private readonly MINUTES_FACTOR: number = 60;
   private socketMessage: WebsocketMessage<UpdateScoreMessage>;
 
-  public constructor(private simpleGameService: SimpleGameService) {
+  public constructor(private simpleGameService: SimpleGameService, private dialog: MatDialog,
+                     protected socket: SocketService, private router: Router) {
     this.diffNumber = 0;
   }
 
