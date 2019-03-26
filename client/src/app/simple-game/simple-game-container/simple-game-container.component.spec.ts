@@ -3,10 +3,10 @@ import {async, ComponentFixture, TestBed} from "@angular/core/testing";
 import {AlreadyFoundDifferenceError, NoDifferenceAtPointError} from "../../../../../common/errors/services.errors";
 import {DifferenceCluster} from "../../../../../common/model/game/simple-game";
 import {IPoint, ORIGIN} from "../../../../../common/model/point";
+import {SocketService} from "../../socket.service";
 import {PixelData, TextType} from "../simple-game-canvas/simple-game-canvas.component";
 import {SimpleGameService} from "../simple-game.service";
 import {IDENTIFICATION_ERROR_TEXT, IDENTIFICATION_ERROR_TIMOUT_MS, SimpleGameContainerComponent} from "./simple-game-container.component";
-import {SocketService} from "../../socket.service";
 
 describe("SimpleGameContainerComponent", () => {
 

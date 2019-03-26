@@ -1,12 +1,4 @@
 import {Component, Input, ViewChild} from "@angular/core";
-import {AlreadyFoundDifferenceError, NoDifferenceAtPointError} from "../../../../../common/errors/services.errors";
-import {DifferenceCluster, DIFFERENCE_CLUSTER_POINTS_INDEX} from "../../../../../common/model/game/simple-game";
-import {tansformOrigin, IPoint} from "../../../../../common/model/point";
-import {playRandomSound, NO_DIFFERENCE_SOUNDS} from "../game-sounds";
-import {PixelData, SimpleGameCanvasComponent, TextType} from "../simple-game-canvas/simple-game-canvas.component";
-import {SimpleGameService} from "../simple-game.service";
-import {SocketService} from "../../socket.service";
-import {UNListService} from "../../username.service";
 import {
   ChatMessage,
   ChatMessagePlayerCount,
@@ -14,6 +6,14 @@ import {
   ChatMessageType, WebsocketMessage
 } from "../../../../../common/communication/messages/message";
 import {SocketEvent} from "../../../../../common/communication/socket-events";
+import {AlreadyFoundDifferenceError, NoDifferenceAtPointError} from "../../../../../common/errors/services.errors";
+import {DifferenceCluster, DIFFERENCE_CLUSTER_POINTS_INDEX} from "../../../../../common/model/game/simple-game";
+import {tansformOrigin, IPoint} from "../../../../../common/model/point";
+import {SocketService} from "../../socket.service";
+import {UNListService} from "../../username.service";
+import {playRandomSound, NO_DIFFERENCE_SOUNDS} from "../game-sounds";
+import {PixelData, SimpleGameCanvasComponent, TextType} from "../simple-game-canvas/simple-game-canvas.component";
+import {SimpleGameService} from "../simple-game.service";
 
 export const IDENTIFICATION_ERROR_TIMOUT_MS: number = 1000;
 export const IDENTIFICATION_ERROR_TEXT: string = "Erreur";
@@ -70,7 +70,7 @@ export class SimpleGameContainerComponent {
       });
   }
 
-  private notifyClickToWebsocket(good: boolean) {
+  private notifyClickToWebsocket(good: boolean): void {
     const message: WebsocketMessage<ChatMessage> = {
       title: SocketEvent.CHAT,
       body: {
