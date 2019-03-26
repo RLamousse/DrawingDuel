@@ -1,8 +1,8 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import {MatDialogModule, MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
 import { Router } from "@angular/router";
-import { CompteurDiffComponent } from "../compteur-diff/compteur-diff.component";
-import { EndGameNotifComponent } from "../compteur-diff/end-game-notif/end-game-notif.component";
+import { DiffCounterComponent } from "../diff-counter/diff-counter.component";
+import { EndGameNotifComponent } from "../diff-counter/end-game-notif/end-game-notif.component";
 import {SocketService} from "../socket.service";
 import { TimerComponent } from "./timer.component";
 
@@ -12,7 +12,7 @@ describe("TimerComponent", () => {
 
   beforeEach(async(async () => {
     return TestBed.configureTestingModule({
-      declarations: [ TimerComponent, CompteurDiffComponent, EndGameNotifComponent],
+      declarations: [ TimerComponent, DiffCounterComponent, EndGameNotifComponent],
       imports: [MatDialogModule],
       providers: [{ provide: Router, useClass: class { public navigate: jasmine.Spy = jasmine.createSpy("navigate"); } },
                   {provide: MatDialogRef, useValue: {}},
