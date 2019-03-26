@@ -1,5 +1,6 @@
 import {ComponentFixture, TestBed} from "@angular/core/testing";
 import { MatListModule } from "@angular/material";
+import {MatDialogModule, MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
 import {ActivatedRoute, Router} from "@angular/router";
 import {CompteurDiffComponent} from "../compteur-diff/compteur-diff.component";
 import { MessageBoxComponent } from "../message-box/message-box.component";
@@ -25,7 +26,7 @@ describe("PlayViewComponent", () => {
           MessageBoxComponent,
         ],
         imports: [
-          MatListModule,
+          MatListModule, MatDialogModule,
         ],
         providers: [SocketService,
                     { provide: Router, useClass: class { public navigate: jasmine.Spy = jasmine.createSpy("navigate"); },   },
@@ -37,6 +38,8 @@ describe("PlayViewComponent", () => {
                         },
                       },
                     },
+                    {provide: MatDialogRef, useValue: {}},
+                    {provide: MAT_DIALOG_DATA, useValue: {}, },
 
       ],
     });
