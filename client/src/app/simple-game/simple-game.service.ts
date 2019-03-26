@@ -9,7 +9,7 @@ import {AlreadyFoundDifferenceError, NoDifferenceAtPointError} from "../../../..
 import {DifferenceCluster, DIFFERENCE_CLUSTER_POINTS_INDEX} from "../../../../common/model/game/simple-game";
 import ISimpleGameState from "../../../../common/model/game/simple-game-state";
 import {IPoint} from "../../../../common/model/point";
-import {playRandomSound, FOUND_DIFFERENCE_SOUNDS, NO_DIFFERENCE_SOUNDS} from "./game-sounds";
+import {playRandomSound, FOUND_DIFFERENCE_SOUNDS} from "./game-sounds";
 
 @Injectable({
               providedIn: "root",
@@ -61,7 +61,6 @@ export class SimpleGameService {
       // tslint:disable-next-line:no-any Generic error response
       .catch((reason: any) => {
         if (reason.response && reason.response.status === Httpstatus.NOT_FOUND) {
-          playRandomSound(NO_DIFFERENCE_SOUNDS);
           throw new NoDifferenceAtPointError();
         }
 
