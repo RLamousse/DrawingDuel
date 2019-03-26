@@ -2,5 +2,10 @@
   "imgur": {
     "clientID": "5ffdfe1cf33cc76",
     "clientSecret": "a62d495c5f67e461fb4cc936c731f33a19bbf952"
+  },
+  "mongo": {
+    "user": "server",
+    "password": "awvXOBD3idhnWFY5",
+    "database": "projet"
   }
 }
