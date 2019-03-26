@@ -48,7 +48,7 @@ export class GameComponent {
 
   private navigatePlayView(): void {
    this.router.navigate(["/play-view/"], {queryParams: {
-      gameName: this.gameName, originalImage: this.originalImage, modifiedImage: this.modifiedImage, },
+      gameName: this.gameName, originalImage: this.originalImage, modifiedImage: this.modifiedImage, isSimpleGame: this.isSimpleGame },
     })
       // tslint:disable-next-line:no-any Generic error response
      .catch((reason: any) => {
@@ -60,6 +60,7 @@ export class GameComponent {
     this.router.navigate(["/3d-view/"], {
       queryParams: {
         gameName: this.gameName,
+        isSimpleGame: this.isSimpleGame,
       },
     })
       // tslint:disable-next-line:no-any Generic error response
