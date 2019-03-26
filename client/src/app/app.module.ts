@@ -12,8 +12,8 @@ import {AppRoutingModule} from "./app-routing.module";
 import {AppComponent} from "./app.component";
 import { AwaitViewComponent } from "./await-view/await-view.component";
 import { GameDeletionNotifComponent } from "./await-view/game-deletion-notif/game-deletion-notif.component";
-import {CompteurDiffComponent} from "./compteur-diff/compteur-diff.component";
 import { EndGameNotifComponent } from "./compteur-diff/end-game-notif/end-game-notif.component";
+import {DiffCounterComponent} from "./diff-counter/diff-counter.component";
 import {Create3DGameComponent} from "./create3-dgame/create3-dgame.component";
 import {FormPostService} from "./form-post.service";
 import {GameListComponent} from "./game-list/game-list.component";
@@ -49,7 +49,7 @@ import {VueAdminComponent} from "./vue-admin/vue-admin.component";
     Create3DGameComponent,
     SimpleGameCreatorFormComponent,
     PlayViewComponent,
-    CompteurDiffComponent,
+    DiffCounterComponent,
     SceneCreatorComponent,
     SimpleGameCanvasComponent,
     SimpleGameContainerComponent,
