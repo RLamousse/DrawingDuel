@@ -70,6 +70,7 @@ describe("SceneCreatorComponent", () => {
 
   let mockedGameService: MockGameService;
 
+  // tslint:disable-next-line:max-func-body-length
   beforeEach(() => {
     mockSceneCreatorService = new MockSceneCreatorService();
     mockFreeGameCreatorService = new MockFreeGameCreatorService();
@@ -77,6 +78,8 @@ describe("SceneCreatorComponent", () => {
     TestBed.configureTestingModule(
       {
         providers: [
+          // tslint:disable-next-line:max-classes-per-file
+          { provide: Router, useClass: class { public navigate: jasmine.Spy = jasmine.createSpy("navigate"); } },
           {provide: SceneRendererService, useValue: mockSceneCreatorService},
           {
             provide: ActivatedRoute,
@@ -90,6 +93,11 @@ describe("SceneCreatorComponent", () => {
           },
           {provide: GameService, useValue: mockedGameService},
           {provide: FreeGameCreatorService, useValue: mockFreeGameCreatorService},
+          // tslint:disable-next-line:max-classes-per-file
+          { provide: Router, useClass: class { public navigate: jasmine.Spy = jasmine.createSpy("navigate"); } },
+          {provide: MatDialogRef, useValue: {}},
+          {provide: MAT_DIALOG_DATA, useValue: {}, },
+          SocketService,
 
         ],
         declarations: [SceneCreatorComponent, TimerComponent],
