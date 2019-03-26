@@ -51,9 +51,10 @@ describe("RenderUpdateService", () => {
   });
 
   // Test UpdateCamera
-  it("should translate the camera of vel * delta in x and z", () => {
+  it("should translate the camera of vel * delta in x and z, rightClick = true", () => {
     const service: RenderUpdateService = TestBed.get(RenderUpdateService);
     service["right"] = false;
+    service.rightClick = true;
     const delta: number = 0.5;
     const vel: THREE.Vector3 = new THREE.Vector3(10, 10, 100);
     const camera: THREE.Camera = new THREE.Camera();
@@ -61,9 +62,10 @@ describe("RenderUpdateService", () => {
     expect(camera.position.z).toEqual(vel.z * delta);
     expect(camera.position.x).toEqual(vel.x * delta);
   });
-  it("should not translate the camera if vel or delta = 0, in x and z", () => {
+  it("should not translate the camera if vel or delta = 0, in x and z, rightClick = false", () => {
     const service: RenderUpdateService = TestBed.get(RenderUpdateService);
     service["right"] = true;
+    service.rightClick = false;
     const delta: number = 0;
     service["deltaX"] = 10;
     service["deltaY"] = -8;
