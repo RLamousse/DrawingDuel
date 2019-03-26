@@ -12,7 +12,6 @@ export class CompteurDiffComponent implements OnInit {
   @Input() public gameName: string;
   @Input() public minutes: number;
   @Input() public seconds: number;
-  @Input() public isDeleted: boolean;
   private readonly MAX_DIFF_NUM: number = 7;
 
   public constructor(private simpleGameService: SimpleGameService) {
@@ -29,10 +28,7 @@ export class CompteurDiffComponent implements OnInit {
   }
 
   private endGame(): void {
-    if (this.isDeleted) {/* */
-      console.log(UNListService.username);
-
-    } else {/* */}
+    /*vide*/
   }
 
 }
