@@ -18,7 +18,7 @@ const errorResponse = (errorMessage: string) => {
     };
 };
 
-class mockedDataBaseService {
+class MockedDataBaseService {
 }
 
 describe("Diff validator controller", () => {
@@ -26,7 +26,7 @@ describe("Diff validator controller", () => {
     let mockedDiffValidatorService: DiffValidatorService;
 
     beforeEach(() => {
-        container.rebind(types.DataBaseService).toConstantValue(instance(mockedDataBaseService));
+        container.rebind(types.DataBaseService).toConstantValue(instance(MockedDataBaseService));
 
         mockedDiffValidatorService = mock(DiffValidatorService);
         when(mockedDiffValidatorService.validatePoint(anyString(), anything()))

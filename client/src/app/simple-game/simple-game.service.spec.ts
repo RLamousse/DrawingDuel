@@ -38,7 +38,6 @@ describe("SimpleGameService", () => {
   });
 
   it("should be created", () => {
-    const service: SimpleGameService = TestBed.get(SimpleGameService);
     expect(service).toBeTruthy();
   });
 

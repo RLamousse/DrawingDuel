@@ -18,7 +18,7 @@ export class DiffValidatorController {
                    async (req: Request, res: Response, next: NextFunction) => {
                        executePromiseSafely(res, next, async () => {
 
-                           //TODO: console.time("valid");
+                           // TODO: console.time("valid");
 
                            assertParamsOfRequest(req, "gameName", "coordX", "coordY");
 
@@ -32,7 +32,7 @@ export class DiffValidatorController {
                                    return res.json(new NoDifferenceAtPointError());
                                }
 
-                               //TODO: console.timeEnd("valid");
+                               // TODO: console.timeEnd("valid");
 
                                return res.end();
                            }).catch((error: Error) => {
