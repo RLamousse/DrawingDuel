@@ -101,10 +101,10 @@ export class RenderUpdateService {
         originalObj.name = ORIGINAL_NAME;
       }
     }
-    if (originalObj.name !== "" && modifObj.name !== "") {
+    if (originalObj.name && modifObj.name) {
       ((modifObj as THREE.Mesh).material as THREE.MeshPhongMaterial).color =
         ((originalObj as THREE.Mesh).material as THREE.MeshPhongMaterial).color;
-    } else if (originalObj.name === "") {
+    } else if (!originalObj.name) {
       modifiedScene.remove(modifObj);
     } else {
       modifiedScene.add(originalObj);
