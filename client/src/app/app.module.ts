@@ -13,6 +13,7 @@ import {AppComponent} from "./app.component";
 import { AwaitViewComponent } from "./await-view/await-view.component";
 import { GameDeletionNotifComponent } from "./await-view/game-deletion-notif/game-deletion-notif.component";
 import {CompteurDiffComponent} from "./compteur-diff/compteur-diff.component";
+import { EndGameNotifComponent } from "./compteur-diff/end-game-notif/end-game-notif.component";
 import {Create3DGameComponent} from "./create3-dgame/create3-dgame.component";
 import {FormPostService} from "./form-post.service";
 import {GameListComponent} from "./game-list/game-list.component";
@@ -58,6 +59,7 @@ import {VueAdminComponent} from "./vue-admin/vue-admin.component";
     ResetGameFormComponent,
     GameDeletionNotifComponent,
     MessageBoxComponent,
+    EndGameNotifComponent,
   ],
   imports: [
     BrowserModule,
@@ -91,7 +93,7 @@ import {VueAdminComponent} from "./vue-admin/vue-admin.component";
   ],
   bootstrap: [AppComponent],
   entryComponents: [SimpleGameCreatorFormComponent, Create3DGameComponent, DeleteGameFormComponent,
-                    ResetGameFormComponent, GameDeletionNotifComponent],
+                    ResetGameFormComponent, GameDeletionNotifComponent, EndGameNotifComponent],
   schemas: [NO_ERRORS_SCHEMA],
 })
 export class AppModule { }
