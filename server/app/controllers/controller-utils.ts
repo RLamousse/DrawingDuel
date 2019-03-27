@@ -75,7 +75,6 @@ export const assertBodyFieldsOfQuery: (req: Request, ...fields: string[]) => voi
 
 const assertBasicSceneFields: (req: Request) => boolean = (req: Request): boolean => {
     return (req.body.theme !== Themes.Geometry &&
-        req.body.theme !== Themes.Sanic &&
         req.body.theme !== Themes.Space) ||
         !Array.isArray(req.body.modificationTypes) ||
         req.body.modificationTypes.length < 1 ||

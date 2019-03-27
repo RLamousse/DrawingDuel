@@ -35,6 +35,5 @@ export enum Coordinate { X, Y, Z }
 export enum Themes {
     Geometry = "geometry",
     Space = "space",
-    Sanic = "sanic-got-to-go-fast"
 }
 
