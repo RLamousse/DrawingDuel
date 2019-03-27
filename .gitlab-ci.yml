@@ -49,6 +49,8 @@ build server:
   stage: test
   image: node
   script: yarn test
+  except:
+    - merge_requests
 
 test client:
   extends: .test
@@ -98,6 +100,7 @@ test server:
 
 client coverage:
   extends: .coverage
+  image: trion/ng-cli-karma
   dependencies:
     - test client
   before_script:
