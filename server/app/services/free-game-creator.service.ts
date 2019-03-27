@@ -127,20 +127,23 @@ export class FreeGameCreatorService {
     }
 
     private randomDifference(
-        table: Set<number>, modificationTypes: ModificationType[], modifiedObjects: IObject.IJson3DObject[],
-    ): IObject.IJson3DObject[] {
+        table: Set<number>,
+        modificationTypes: ModificationType[],
+        modifiedObjects: IObject.IJson3DObject[]): IObject.IJson3DObject[] {
+
         const MAX_MOD_TYPE: number = modificationTypes.length - 1;
         const ARRAY_INDEXES: number[] = Array.from(table).sort((n1: number, n2: number) => n1 - n2).reverse();
         const modObjects: IObject.IJson3DObject[] = [];
         let randomModifications: number;
+
         for (const index of ARRAY_INDEXES) {
             randomModifications = this.getRandomValue(0, MAX_MOD_TYPE);
             switch (modificationTypes[randomModifications]) {
-                case ModificationType.remove: {
+                case ModificationType.remove:
                     modObjects.push(JSON.parse(JSON.stringify(modifiedObjects[index])));
                     modifiedObjects.splice(index, 1);
-                    break; }
-                case ModificationType.add: {
+                    break;
+                case ModificationType.add:
                     let object: IObject.IJson3DObject;
                     (modifiedObjects[0].gameType === Themes.Geometry) ?
                         object = this.generate3DObject() :
@@ -148,8 +151,8 @@ export class FreeGameCreatorService {
                     object = this.handleCollision(object, modifiedObjects);
                     modifiedObjects.push(object);
                     modObjects.push(JSON.parse(JSON.stringify(object)));
-                    break; }
-                case ModificationType.changeColor: {
+                    break;
+                case ModificationType.changeColor:
                     const MASK: number = 0xFFFFFF;
                     const TEXTURE_SIZE: number = 4;
                     (modifiedObjects[0].gameType === Themes.Geometry) ?
@@ -157,9 +160,8 @@ export class FreeGameCreatorService {
                         modifiedObjects[index].texture = ObjectTexture[ObjectTexture[this.getRandomValue(0, TEXTURE_SIZE)]];
                     modObjects.push(JSON.parse(JSON.stringify(modifiedObjects[index])));
                     break;
-                }
-                default: {
-                    break; }
+                default:
+                    break;
             }
         }
 

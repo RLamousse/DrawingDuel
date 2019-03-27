@@ -24,6 +24,8 @@ interface IFreeGameState {
   blinkThread?: NodeJS.Timeout;
 }
 
+export const SCENE_TYPE: string = "Scene";
+
 @Injectable()
 @Injectable({
     providedIn: "root",
@@ -60,7 +62,6 @@ export class SceneRendererService {
   public gameState: IFreeGameState;
 
   private differenceCountSubject: Subject<number> = new Subject();
-  private readonly SCENE_TYPE_STRING = "Scene";
 
   public constructor(private renderUpdateService: RenderUpdateService) {
     this.gameState = {isCheatModeActive: false, isWaitingInThread: false, foundDifference: []};
@@ -218,23 +219,20 @@ export class SceneRendererService {
         return this.differenceValidationAtPoint(this.get3DObject(intersectOri[0]));
       }
   }
-
   private get3DObject(obj: THREE.Intersection): THREE.Object3D {
-    if ((obj.object.parent as THREE.Object3D).type === this.SCENE_TYPE_STRING) {
+    if ((obj.object.parent as THREE.Object3D).type === SCENE_TYPE) {
       return obj.object;
     } else {
       return this.getRecursiveParent(obj.object);
     }
   }
-
   private getRecursiveParent(obj: THREE.Object3D): THREE.Object3D {
-    while ((obj.parent as THREE.Object3D).type !== this.SCENE_TYPE_STRING) {
+    while ((obj.parent as THREE.Object3D).type !== SCENE_TYPE) {
       return this.getRecursiveParent(obj.parent as THREE.Object3D);
     }
 
     return (obj.parent as THREE.Object3D);
   }
-
   private async differenceValidationAtPoint(object: THREE.Object3D|undefined): Promise<IJson3DObject> {
     let centerObj: number[] = [];
     if (object !== undefined) {
@@ -272,18 +270,15 @@ export class SceneRendererService {
       }
     }
   }
-
   public get foundDifferenceCount(): Observable<number> {
     return this.differenceCountSubject;
   }
-
   private updateRoutine(jsonObj: IJson3DObject, obj: THREE.Object3D): void {
     this.gameState.foundDifference.push(jsonObj);
     this.renderUpdateService.updateDifference(obj, this.scene, this.modifiedScene);
     this.differenceCountSubject.next(this.gameState.foundDifference.length);
     playRandomSound(FOUND_DIFFERENCE_SOUNDS);
   }
-
   private changeVisibility(value: THREE.Mesh|THREE.Scene): void {
     if (value instanceof  THREE.Mesh) {
       Array.isArray(value.material) ? value.material.forEach((material) => {material.visible = !material.visible; } ) :
