@@ -112,6 +112,7 @@ client coverage:
     refs:
       - merge_requests
       - master
+      - dev
     changes:
       - .gitlab-ci.yml
       - client/**/*
@@ -132,6 +133,7 @@ server coverage:
     refs:
       - merge_requests
       - master
+      - dev
     changes:
       - .gitlab-ci.yml
       - server/**/*
