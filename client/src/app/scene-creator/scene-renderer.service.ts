@@ -15,7 +15,6 @@ import {
   STAR_THEME_SOUND
 } from "../simple-game/game-sounds";
 import { RenderUpdateService } from "./render-update.service";
-import {Object3D} from "three";
 
 interface IFreeGameState {
   isCheatModeActive: boolean;
@@ -62,6 +61,7 @@ export class SceneRendererService {
   public gameState: IFreeGameState;
 
   private differenceCountSubject: Subject<number> = new Subject();
+  private readonly SCENE_TYPE_STRING = "Scene";
 
   public constructor(private renderUpdateService: RenderUpdateService) {
     this.gameState = {isCheatModeActive: false, isWaitingInThread: false, foundDifference: []}
@@ -112,7 +112,6 @@ export class SceneRendererService {
     this.modifiedContainer = modCont;
     this.setCamera();
     this.setRenderer();
-    // this.generateSkyBox();
   }
   public loadScenes(original: THREE.Scene, modified: THREE.Scene, gameName: string): void {
     if (this.originalContainer === undefined || this.modifiedContainer === undefined) {
@@ -221,7 +220,7 @@ export class SceneRendererService {
   }
 
   private get3DObject(obj: THREE.Intersection): THREE.Object3D {
-    if ((obj.object.parent as THREE.Object3D).type === "Scene") {
+    if ((obj.object.parent as THREE.Object3D).type === this.SCENE_TYPE_STRING) {
       return obj.object;
     } else {
       return this.getRecursiveParent(obj.object);
@@ -229,7 +228,7 @@ export class SceneRendererService {
   }
 
   private getRecursiveParent(obj: THREE.Object3D): THREE.Object3D {
-    while ((obj.parent as THREE.Object3D).type !== "Scene") {
+    while ((obj.parent as THREE.Object3D).type !== this.SCENE_TYPE_STRING) {
       return this.getRecursiveParent(obj.parent as THREE.Object3D);
     }
 
