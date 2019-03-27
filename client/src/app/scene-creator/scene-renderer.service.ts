@@ -15,7 +15,6 @@ import {
   STAR_THEME_SOUND
 } from "../simple-game/game-sounds";
 import { RenderUpdateService } from "./render-update.service";
-import {Object3D} from "three";
 
 interface IFreeGameState {
   isCheatModeActive: boolean;
