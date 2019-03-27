@@ -14,6 +14,7 @@ import { AwaitViewComponent } from "./await-view/await-view.component";
 import { GameDeletionNotifComponent } from "./await-view/game-deletion-notif/game-deletion-notif.component";
 import {Create3DGameComponent} from "./create3-dgame/create3-dgame.component";
 import {DiffCounterComponent} from "./diff-counter/diff-counter.component";
+import { EndGameNotifComponent } from "./diff-counter/end-game-notif/end-game-notif.component";
 import {FormPostService} from "./form-post.service";
 import {GameListComponent} from "./game-list/game-list.component";
 import { DeleteGameFormComponent } from "./game-list/game/delete-game-form/delete-game-form.component";
@@ -60,6 +61,7 @@ import {VueAdminComponent} from "./vue-admin/vue-admin.component";
     GameDeletionNotifComponent,
     Game3DControlsDirective,
     MessageBoxComponent,
+    EndGameNotifComponent,
   ],
   imports: [
     BrowserModule,
@@ -93,7 +95,7 @@ import {VueAdminComponent} from "./vue-admin/vue-admin.component";
   ],
   bootstrap: [AppComponent],
   entryComponents: [SimpleGameCreatorFormComponent, Create3DGameComponent, DeleteGameFormComponent,
-                    ResetGameFormComponent, GameDeletionNotifComponent],
+                    ResetGameFormComponent, GameDeletionNotifComponent, EndGameNotifComponent],
   schemas: [NO_ERRORS_SCHEMA],
 })
 export class AppModule { }

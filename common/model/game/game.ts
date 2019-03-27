@@ -4,6 +4,7 @@ export interface IGame {
     gameName: string;
     bestSoloTimes: IRecordTime[];
     bestMultiTimes: IRecordTime[];
+    toBeDeleted: boolean ;
 }
 
 export const TIMES_ARRAY_SIZE : number = 3;

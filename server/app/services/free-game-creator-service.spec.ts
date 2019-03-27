@@ -57,14 +57,14 @@ describe("FreeGameCreatorService", () => {
     });
 
     // Test generateIScenes
-    it("should create 10 elements", () => {
+    it("should create 10 3d elements", () => {
         const modTypes: ModificationType[] = [];
         const objNumber: number = 10;
         expect(freeGameCreatorService.generateIScenes(objNumber, modTypes, Themes.Geometry).originalObjects.length).to.eql(objNumber);
     });
 
     // Test handleCollision
-    it("should only have objects with a distance grater than 43", () => {
+    it("should only have objects with a distance greater than 43", () => {
         const modTypes: ModificationType[] = [];
         const objNumber: number = 100;
         const MAX_DIST: number = 43;
@@ -88,7 +88,7 @@ describe("FreeGameCreatorService", () => {
     });
 
     // Test randomDifference
-    it("should remove 7 objects from original table", () => {
+    it("should remove 7 objects from original objects table", () => {
         const modTypes: ModificationType[] = [ModificationType.remove];
         const objNumber: number = 30;
         const DIFF: number = 7;
@@ -97,7 +97,7 @@ describe("FreeGameCreatorService", () => {
         expect(response.modifiedObjects.length).to.eql(objNumber - DIFF);
     });
 
-    it("should add 7 objects from original table", () => {
+    it("should add 7 objects from original objects table", () => {
         const modTypes: ModificationType[] = [ModificationType.add];
         const objNumber: number = 30;
         const DIFF: number = 7;
