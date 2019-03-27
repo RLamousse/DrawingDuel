@@ -18,7 +18,6 @@ export class GameListComponent implements OnInit {
   @Input() protected readonly leftButton: string = "jouer";
 
   public constructor(private gameService: GameService, private socket: SocketService, ) {
-    this.reloadList = this.reloadList.bind(this);
   }
 
   public ngOnInit(): void {
@@ -29,11 +28,6 @@ export class GameListComponent implements OnInit {
     this.gameService.getFreeGames().subscribe((freeGamesToPush: IFreeGame[]) => {
       this.gameService.pushFreeGames(freeGamesToPush);
     });
-    this.socket.onEvent(SocketEvent.DELETE).subscribe(this.reloadList);
-  }
-
-  private reloadList(message: WebsocketMessage<[string, boolean]>): void {
-    this.ngOnInit();
   }
 
 }
