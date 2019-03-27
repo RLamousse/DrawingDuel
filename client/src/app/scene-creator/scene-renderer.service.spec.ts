@@ -13,7 +13,6 @@ import {NoDifferenceAtPointError} from "../../../../common/errors/services.error
 import {IJson3DObject} from "../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
 import {RenderUpdateService} from "./render-update.service";
 import { SceneRendererService } from "./scene-renderer.service";
-/* tslint:disable:no-magic-numbers*/
 describe("SceneRendererService", () => {
   let axiosMock: MockAdapter;
   const CONTROLLER_BASE_URL: string = SERVER_BASE_URL + DIFF_VALIDATOR_3D_BASE;
@@ -96,11 +95,14 @@ describe("SceneRendererService", () => {
     // tslint tries to make updateThread const, but updateThread has a separate declaration and initialisation
     // tslint:disable-next-line:prefer-const
     let updateThread: NodeJS.Timeout;
-    const failThread: NodeJS.Timeout = setTimeout(() => {
+    const failThread: NodeJS.Timeout = setTimeout(
+      () => {
       clearInterval(updateThread);
       done.fail();
-    },                                            1000);
-    setInterval(() => {
+      },
+      1000);
+    setInterval(
+      () => {
       if (!((original.children[0] as THREE.Mesh).material as THREE.Material).visible &&
         ((original.children[1] as THREE.Mesh).material as THREE.Material).visible) {
         clearTimeout(failThread);
@@ -111,7 +113,8 @@ describe("SceneRendererService", () => {
         clearInterval(updateThread);
         done.fail();
       }
-    },          20);
+      },
+      20);
   });
 
   it("should reasign the new scenes at second call", () => {
@@ -228,7 +231,7 @@ describe("SceneRendererService", () => {
 
     return service.objDiffValidation(325, 430)
       .catch((reason: Error) => {
-        expect(reason.message).toEqual("Request failed with status code 500");
+        expect(reason.message).toContain("Request failed with status code 500");
       });
   });
 });

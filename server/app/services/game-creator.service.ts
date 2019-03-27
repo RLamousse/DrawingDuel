@@ -11,7 +11,7 @@ import {
     NonExistentGameError,
     NonExistentThemeError
 } from "../../../common/errors/database.errors";
-import {DifferenceCountError} from "../../../common/errors/services.errors";
+import {AbstractServiceError, DifferenceCountError} from "../../../common/errors/services.errors";
 import {
     ModificationType,
     Themes
@@ -82,7 +82,7 @@ export class GameCreatorService {
 
             return Buffer.from(response.data);
         } catch (error) {
-            throw new Error("game diff: " + error.response.data.message);
+            throw new AbstractServiceError("game diff: " + error.response.data.message);
         }
     }
 
@@ -133,11 +133,12 @@ export class GameCreatorService {
             originalImage: imagesUrls[0],
             modifiedImage: imagesUrls[1],
             diffData: differenceData,
+            toBeDeleted: false,
         };
         await Axios.post<Message>(SERVER_BASE_URL + DB_SIMPLE_GAME, game)
         // tslint:disable-next-line:no-any Generic error response
             .catch((reason: any) => {
-                throw new Error("Unable to create game: " + reason.response.data.message);
+                throw new AbstractServiceError("Unable to create game: " + reason.response.data.message);
             });
     }
 
@@ -147,6 +148,7 @@ export class GameCreatorService {
             bestSoloTimes: createRandomScores(),
             bestMultiTimes: createRandomScores(),
             scenes: scenes,
+            toBeDeleted: false,
         };
         await Axios.post<Message>(SERVER_BASE_URL + DB_FREE_GAME, game)
             // any is the default type of the required callback function
@@ -172,7 +174,7 @@ export class GameCreatorService {
             const diffBitmap: Bitmap = BitmapFactory.createBitmap("diffImage", diffImage);
             diffData = this.differenceEvaluatorService.getSimpleNDifferences(diffBitmap.pixels);
         } catch (error) {
-            throw new Error("bmp diff counting: " + error.message);
+            throw new AbstractServiceError("bmp diff counting: " + error.message);
         }
         if (diffData.length !== EXPECTED_DIFF_NUMBER) {
             throw new DifferenceCountError();

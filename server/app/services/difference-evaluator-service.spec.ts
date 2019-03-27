@@ -20,27 +20,27 @@ describe("Difference evaluator service", () => {
             }
         });
 
-        it("Should calculate 0 zones", () => {
+        it("Should calculate 0 difference zones", () => {
             expect(DIFFERENCE_EVALUATOR_SERVICE.getSimpleNDifferences(TEST_FILE_ARRAYS[0]).length)
                 .to.equal(0);
         });
 
-        it("Should calculate 1 zone", () => {
+        it("Should calculate 1 difference zone", () => {
             expect(DIFFERENCE_EVALUATOR_SERVICE.getSimpleNDifferences(TEST_FILE_ARRAYS[1]).length)
                 .to.equal(1);
         });
 
-        it("Should calculate 6 zones", () => {
+        it("Should calculate 6 difference zones", () => {
             expect(DIFFERENCE_EVALUATOR_SERVICE.getSimpleNDifferences(TEST_FILE_ARRAYS[2]).length)
                 .to.equal(6);
         });
 
-        it("Should calculate 7 zones", () => {
+        it("Should calculate 7 difference zones", () => {
             expect(DIFFERENCE_EVALUATOR_SERVICE.getSimpleNDifferences(TEST_FILE_ARRAYS[3]).length)
                 .to.equal(7);
         });
 
-        it("Should calculate 8 zones", () => {
+        it("Should calculate 8 difference zones", () => {
             expect(DIFFERENCE_EVALUATOR_SERVICE.getSimpleNDifferences(TEST_FILE_ARRAYS[4]).length)
                 .to.equal(8);
         });

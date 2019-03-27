@@ -3,6 +3,7 @@ import {MatDialog, MatDialogConfig} from "@angular/material";
 import {ActivatedRoute, Router} from "@angular/router";
 import {WebsocketMessage} from "../../../../common/communication/messages/message";
 import {SocketEvent} from "../../../../common/communication/socket-events";
+import {ComponentNavigationError} from "../../../../common/errors/component.errors";
 import {SocketService} from "../socket.service";
 import {GameDeletionNotifComponent} from "./game-deletion-notif/game-deletion-notif.component";
 
@@ -15,10 +16,11 @@ export class AwaitViewComponent implements OnInit {
 
   protected gameName: string;
   protected isSimpleGame: boolean;
+  protected readonly indexString: number = 0;
 
   public constructor(private activatedRoute: ActivatedRoute, private route: Router,
                      private socket: SocketService, private dialog: MatDialog) {
-    this.notifyGameDeletion = this.notifyGameDeletion.bind(this);
+    this.executeGameDeletionRoutine = this.executeGameDeletionRoutine.bind(this);
   }
 
   public ngOnInit(): void {
@@ -26,19 +28,27 @@ export class AwaitViewComponent implements OnInit {
       this.gameName = params["gameName"];
       this.isSimpleGame = params["gameType"];
     });
-    this.socket.onEvent(SocketEvent.DELETE).subscribe(this.notifyGameDeletion);
+    this.socket.onEvent(SocketEvent.DELETE).subscribe(this.executeGameDeletionRoutine);
   }
 
-  private notifyGameDeletion(message: WebsocketMessage<string>): void {
-    if (message.body === this.gameName) {
+  private executeGameDeletionRoutine(message: WebsocketMessage<[string, boolean]>): void {
+    this.notifyGameDeletion(message);
+    this.navigateGameList();
+  }
+
+  private navigateGameList (): void {
+    this.route.navigate(["/game-list/"]) // tslint:disable-next-line:no-any Generic error response
+    .catch((reason: any) => {
+      throw new ComponentNavigationError();
+    });
+  }
+
+  private notifyGameDeletion(message: WebsocketMessage<[string, boolean]>): void {
+    if (message.body[this.indexString] === this.gameName) {
       const dialogConfig: MatDialogConfig = new MatDialogConfig();
       dialogConfig.autoFocus = true;
       dialogConfig.data = {gameName: this.gameName, isSimpleGame: this.isSimpleGame};
       this.dialog.open(GameDeletionNotifComponent, dialogConfig);
-      this.route.navigate(["/game-list/"]) // tslint:disable-next-line:no-any Generic error response
-      .catch((reason: any) => {
-        throw new Error(reason);
-      });
     }
   }
 }

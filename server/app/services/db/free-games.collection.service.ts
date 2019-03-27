@@ -26,7 +26,8 @@ export class FreeGamesCollectionService extends CollectionService<IFreeGame> {
         return !!(game || ({} as Partial<IFreeGame>)).gameName ||
         !!(game || ({} as Partial<IFreeGame>)).bestSoloTimes ||
         !!(game || ({} as Partial<IFreeGame>)).bestMultiTimes ||
-        !!(game || ({} as Partial<IFreeGame>)).scenes;
+        !!(game || ({} as Partial<IFreeGame>)).scenes ||
+        typeof (game || ({} as Partial<IFreeGame>)).toBeDeleted !== "undefined";
     }
 
     public async create(data: IFreeGame): Promise<Message> {

@@ -1,9 +1,11 @@
 import {Component, Input} from "@angular/core";
 import {MatDialog, MatDialogConfig} from "@angular/material";
 import {Router} from "@angular/router";
+import {ComponentNavigationError} from "../../../../../common/errors/component.errors";
 import {IRecordTime} from "../../../../../common/model/game/record-time";
 import {DeleteGameFormComponent} from "./delete-game-form/delete-game-form.component";
 import {ResetGameFormComponent} from "./reset-game-form/reset-game-form.component";
+
 @Component({
   selector: "app-game",
   templateUrl: "./game.component.html",
@@ -13,7 +15,6 @@ import {ResetGameFormComponent} from "./reset-game-form/reset-game-form.componen
 export class GameComponent {
 
   public constructor(private router: Router, private dialog: MatDialog) {}
-
   @Input() public gameName: string = "test";
   @Input() public bestSoloTimes: IRecordTime[];
   @Input() public bestMultiTimes: IRecordTime[];
@@ -42,17 +43,17 @@ export class GameComponent {
       const dialogConfig: MatDialogConfig = new MatDialogConfig();
       dialogConfig.autoFocus = true;
       dialogConfig.data = {gameName: this.gameName, isSimpleGame: this.isSimpleGame};
-      this.dialog.open(ResetGameFormComponent, dialogConfig);
+      this.dialog.open(ResetGameFormComponent, dialogConfig).afterClosed().subscribe(() => window.location.reload());
     }
   }
 
   private navigatePlayView(): void {
    this.router.navigate(["/play-view/"], {queryParams: {
-      gameName: this.gameName, originalImage: this.originalImage, modifiedImage: this.modifiedImage },
+      gameName: this.gameName, originalImage: this.originalImage, modifiedImage: this.modifiedImage, isSimpleGame: this.isSimpleGame },
     })
       // tslint:disable-next-line:no-any Generic error response
      .catch((reason: any) => {
-       throw new Error(reason);
+       throw new ComponentNavigationError();
      });
   }
 
@@ -60,11 +61,12 @@ export class GameComponent {
     this.router.navigate(["/3d-view/"], {
       queryParams: {
         gameName: this.gameName,
+        isSimpleGame: this.isSimpleGame,
       },
     })
       // tslint:disable-next-line:no-any Generic error response
       .catch((reason: any) => {
-        throw new Error(reason);
+        throw new ComponentNavigationError();
       });
   }
 
@@ -74,7 +76,7 @@ export class GameComponent {
     })
       // tslint:disable-next-line:no-any Generic error response
      .catch((reason: any) => {
-       throw new Error(reason);
+       throw new ComponentNavigationError();
      });
   }
 

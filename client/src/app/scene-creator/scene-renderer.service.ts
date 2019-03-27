@@ -5,7 +5,7 @@ import { Observable, Subject } from "rxjs";
 import * as THREE from "three";
 import {DIFF_VALIDATOR_3D_BASE, SERVER_BASE_URL} from "../../../../common/communication/routes";
 import { ComponentNotLoadedError } from "../../../../common/errors/component.errors";
-import { AlreadyFoundDifferenceError, NoDifferenceAtPointError } from "../../../../common/errors/services.errors";
+import {AbstractServiceError, AlreadyFoundDifferenceError, NoDifferenceAtPointError} from "../../../../common/errors/services.errors";
 import { IJson3DObject } from "../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
 import { deepCompare, sleep, X_FACTOR } from "../../../../common/util/util";
 import {
@@ -261,7 +261,7 @@ export class SceneRendererService {
           playRandomSound(NO_DIFFERENCE_SOUNDS);
           throw new NoDifferenceAtPointError();
         }
-        throw new Error(reason.message);
+        throw new AbstractServiceError(reason.message);
       });
   }
   private checkIfAlreadyFound(object: IJson3DObject): void {
