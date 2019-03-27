@@ -77,3 +77,11 @@ export class Object3DIsNotADifference extends  Error {
         super(Object3DIsNotADifference.OBJ_3D_NOT_A_DIFFERENCE_ERROR_MESSAGE);
     }
 }
+
+export class AbstractServiceError extends Error {
+    public static readonly PREFIX: string = "Error in service: ";
+
+    constructor(reason: string) {
+        super(AbstractServiceError.PREFIX + reason);
+    }
+}

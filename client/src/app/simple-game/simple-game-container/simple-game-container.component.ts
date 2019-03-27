@@ -1,7 +1,16 @@
 import {Component, Input, ViewChild} from "@angular/core";
+import {
+  ChatMessage,
+  ChatMessagePlayerCount,
+  ChatMessagePosition,
+  ChatMessageType, WebsocketMessage
+} from "../../../../../common/communication/messages/message";
+import {SocketEvent} from "../../../../../common/communication/socket-events";
 import {AlreadyFoundDifferenceError, NoDifferenceAtPointError} from "../../../../../common/errors/services.errors";
 import {DifferenceCluster, DIFFERENCE_CLUSTER_POINTS_INDEX} from "../../../../../common/model/game/simple-game";
 import {tansformOrigin, IPoint} from "../../../../../common/model/point";
+import {SocketService} from "../../socket.service";
+import {UNListService} from "../../username.service";
 import {playRandomSound, NO_DIFFERENCE_SOUNDS} from "../game-sounds";
 import {PixelData, SimpleGameCanvasComponent, TextType} from "../simple-game-canvas/simple-game-canvas.component";
 import {SimpleGameService} from "../simple-game.service";
@@ -24,7 +33,8 @@ export class SimpleGameContainerComponent {
 
   protected clickEnabled: boolean = true;
 
-  public constructor(private simpleGameService: SimpleGameService) {
+  public constructor(private simpleGameService: SimpleGameService,
+                     private socket: SocketService) {
   }
 
   protected async onOriginalCanvasClick(clickEvent: IPoint): Promise<void> {
@@ -43,7 +53,7 @@ export class SimpleGameContainerComponent {
 
     return this.simpleGameService.validateDifferenceAtPoint(clickEvent)
       .then((differenceCluster: DifferenceCluster) => {
-
+        this.notifyClickToWebsocket(true);
         const differencePoints: IPoint[] = differenceCluster[DIFFERENCE_CLUSTER_POINTS_INDEX]
           .map((point: IPoint) => tansformOrigin(point, this.originalImageComponent.height));
         const pixels: PixelData[] = this.originalImageComponent.getPixels(differencePoints);
@@ -56,7 +66,23 @@ export class SimpleGameContainerComponent {
           playRandomSound(NO_DIFFERENCE_SOUNDS);
           this.handleIdentificationError(clickEvent, clickedComponent);
         }
+        this.notifyClickToWebsocket(false);
       });
+  }
+
+  private notifyClickToWebsocket(good: boolean): void {
+    const message: WebsocketMessage<ChatMessage> = {
+      title: SocketEvent.CHAT,
+      body: {
+        gameName: "",
+        playerCount: ChatMessagePlayerCount.SOLO,
+        playerName: UNListService.username,
+        position: ChatMessagePosition.NA,
+        timestamp: new Date(),
+        type: good ? ChatMessageType.DIFF_FOUND : ChatMessageType.DIFF_ERROR,
+      },
+    };
+    this.socket.send(SocketEvent.CHAT, message);
   }
 
   private handleIdentificationError(clickEvent: IPoint, clickedComponent: SimpleGameCanvasComponent): void {
