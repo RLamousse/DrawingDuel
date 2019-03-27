@@ -72,6 +72,7 @@ describe("SceneRendererService", () => {
   // disabling the max function length for this test because it is complex thus long
   // tslint:disable-next-line
   it("should make only diff objets blink when there is a blink event", async (done: DoneFn) => {
+    jasmine.clock().install();
     const service: SceneRendererService = TestBed.get(SceneRendererService);
 
     const original: THREE.Scene = new THREE.Scene();
@@ -92,29 +93,14 @@ describe("SceneRendererService", () => {
         resolve([{position: [12, 0, 0]} as IJson3DObject]);
       });
     });
-    // tslint tries to make updateThread const, but updateThread has a separate declaration and initialisation
-    // tslint:disable-next-line:prefer-const
-    let updateThread: NodeJS.Timeout;
-    const failThread: NodeJS.Timeout = setTimeout(
-      () => {
-      clearInterval(updateThread);
+    jasmine.clock().tick(300);
+    if (!((original.children[0] as THREE.Mesh).material as THREE.Material).visible &&
+      ((original.children[1] as THREE.Mesh).material as THREE.Material).visible) {
+      done();
+    } else {
       done.fail();
-      },
-      1000);
-    setInterval(
-      () => {
-      if (!((original.children[0] as THREE.Mesh).material as THREE.Material).visible &&
-        ((original.children[1] as THREE.Mesh).material as THREE.Material).visible) {
-        clearTimeout(failThread);
-        clearInterval(updateThread);
-        done();
-      } else if (!((original.children[1] as THREE.Mesh).material as THREE.Material).visible) {
-        clearTimeout(failThread);
-        clearInterval(updateThread);
-        done.fail();
-      }
-      },
-      20);
+    }
+    jasmine.clock().uninstall();
   });
 
   it("should reasign the new scenes at second call", () => {
