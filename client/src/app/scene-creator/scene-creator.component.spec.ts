@@ -38,6 +38,10 @@ describe("SceneCreatorComponent", () => {
         return;
       });
     }
+
+    public async deactivateCheatMode(): Promise<void> {
+      return Promise.resolve();
+    }
   }
 
   let mockSceneCreatorService: MockSceneCreatorService;
