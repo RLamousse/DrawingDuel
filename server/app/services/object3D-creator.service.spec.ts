@@ -1,5 +1,8 @@
 import { expect } from "chai";
-import { ObjectGeometry } from "../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
+import {
+    IIndexObj,
+    ObjectGeometry
+} from "../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
 import * as JsonScene from "../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
 import { Object3DCreatorService } from "./object3D-creator.service";
 
@@ -67,5 +70,18 @@ describe("Object3DCreatorService", () => {
         expect(pyr.heightSegment).to.eql(1);
         expect(pyr.position.length).to.eql(TABLE_LENGHT);
         expect(pyr.rotation.length).to.eql(TABLE_LENGHT);
+    });
+
+    // test randomTypeByProba
+    it("should return an IIndexObj", () => {
+        const indexObj: IIndexObj = service["randomTypeByProba"]();
+        expect(typeof indexObj.index).to.be.not.undefined;
+
+        return expect(indexObj).to.be.not.undefined;
+    });
+
+    // test createThematiqueObject
+    it("should return an JsonScene.IJson3DObject", () => {
+        return expect(service.createThematicObject()).to.be.not.undefined;
     });
 });
