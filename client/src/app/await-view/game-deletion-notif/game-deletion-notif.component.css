@@ -1,0 +1,18 @@
+form {
+    margin-left: auto; 
+    margin-right: auto;
+    width: 50%;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    flex-flow: column;
+    min-width: 50vw;
+}
+
+#confirm{
+    color: "white";
+}
+
+#confirmationButtons{
+    padding-top: 2px;
+}

@@ -1,14 +1,22 @@
-﻿import { ObjectGeometry } from "../FreeGameCreatorInterface/free-game-enum";
+﻿import {ObjectGeometry, ObjectTexture, Themes} from "../FreeGameCreatorInterface/free-game-enum";
+
 export interface IScenesJSON{
     originalObjects: IJson3DObject[],
     modifiedObjects: IJson3DObject[],
+}
+
+export interface IScenesDB extends IScenesJSON{
+    differentObjects: IJson3DObject[],
 }
 
 export interface IJson3DObject {
     position: number[],
     rotation: number[],
     color: number,
+    texture?: ObjectTexture,
     type: ObjectGeometry,
+    scale: number
+    gameType: Themes,
 }
 
 export interface ISphere extends IJson3DObject {
@@ -41,3 +49,5 @@ export interface ICylinder extends IJson3DObject {
     height: number,
     radiusSegment: number,
 }
+
+

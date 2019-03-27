@@ -18,10 +18,16 @@ export class InitialViewComponent {
   public constructor(
     public userService: UNListService,
     private router: Router,
-  ) { }
+  ) {
+    this.handleUsernameAvailability = this.handleUsernameAvailability.bind(this);
+  }
 
-  public async updateUsername(): Promise<void> {
-    if (await this.userService.validateName(this.newUsername)) {
+  public updateUsername(): void {
+    this.userService.checkAvailability(this.newUsername, this.handleUsernameAvailability);
+  }
+
+  private async handleUsernameAvailability(answer: boolean): Promise<void> {
+    if (answer) {
       this.username = this.newUsername;
       UNListService.username = this.username;
       await this.router.navigate(["/game-list"]);

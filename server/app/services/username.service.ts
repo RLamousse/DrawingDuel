@@ -3,23 +3,27 @@ import { UserValidationMessage } from "../../../common/communication/messages/us
 
 @injectable()
 export class UsernameService {
-    private list: string[] = [];
-    public async checkAvailability(user: UserValidationMessage): Promise<UserValidationMessage> {
-        if (this.list.find((takenUser: string) => takenUser === user.username )) {
+    private list: Set<string>;
+
+    public constructor () {
+        this.list = new Set();
+    }
+
+    public checkAvailability(user: UserValidationMessage): UserValidationMessage {
+        if (this.list.has(user.username)) {
             user.available = false;
 
             return user;
         }
-        this.list.push(user.username);
+        this.list.add(user.username);
         user.available = true;
 
         return user;
     }
 
-    public async releaseUsername(user: string): Promise<UserValidationMessage> {
-        const index: number = this.list.indexOf(user);
-        if (index !== undefined && this.list.length !== 0) {
-            this.list.splice(index, 1);
+    public releaseUsername(user: string): UserValidationMessage {
+        if (this.list.has(user)) {
+            this.list.delete(user);
 
             return {
                 username: user, available: true,

@@ -1,10 +1,15 @@
 import {ComponentFixture, TestBed} from "@angular/core/testing";
-import {ActivatedRoute} from "@angular/router";
-import {of, Observable} from "rxjs";
+import {MatDialogModule, MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
+import { ActivatedRoute, Router } from "@angular/router";
+import {of, Observable, Subject} from "rxjs";
 import * as THREE from "three";
 import {IFreeGame} from "../../../../common/model/game/free-game";
+import { DiffCounterComponent } from "../diff-counter/diff-counter.component";
+import { EndGameNotifComponent } from "../diff-counter/end-game-notif/end-game-notif.component";
 import {GameService} from "../game.service";
+import { MessageBoxComponent } from "../message-box/message-box.component";
 import {IScene} from "../scene-interface";
+import {SocketService} from "../socket.service";
 import {TimerComponent} from "../timer/timer.component";
 import {FreeGameCreatorService} from "./FreeGameCreator/free-game-creator.service";
 import {SceneCreatorComponent} from "./scene-creator.component";
@@ -15,12 +20,8 @@ describe("SceneCreatorComponent", () => {
   let fixture: ComponentFixture<SceneCreatorComponent>;
 
   class MockSceneCreatorService {
-    public resizedCalled: string = "";
     public initCalled: string = "";
-
-    public onResize(): void {
-      this.resizedCalled = "onResize";
-    }
+    public objDiffCalled: string = "";
 
     public init(): void {
       this.initCalled = "init";
@@ -28,6 +29,22 @@ describe("SceneCreatorComponent", () => {
 
     public loadScenes(): void {
       return;
+    }
+
+    public get foundDifferenceCount(): Observable<number> {
+      return new Subject<number>();
+    }
+
+    public async objDiffValidation(x?: number): Promise<void> {
+      this.objDiffCalled = "objDiffValidation";
+
+      return new Promise<void>(() => {
+        return;
+      });
+    }
+
+    public async deactivateCheatMode(): Promise<void> {
+      return Promise.resolve();
     }
   }
 
@@ -53,7 +70,8 @@ describe("SceneCreatorComponent", () => {
       bestMultiTimes: [],
       bestSoloTimes: [],
       gameName: "TEST",
-      scenes: {modifiedObjects: [], originalObjects: []},
+      scenes: {modifiedObjects: [], originalObjects: [], differentObjects: []},
+      toBeDeleted: false,
     };
 
     public getFreeGameByName(): Observable<IFreeGame> {
@@ -65,6 +83,7 @@ describe("SceneCreatorComponent", () => {
 
   let mockedGameService: MockGameService;
 
+  // tslint:disable-next-line:max-func-body-length
   beforeEach(() => {
     mockSceneCreatorService = new MockSceneCreatorService();
     mockFreeGameCreatorService = new MockFreeGameCreatorService();
@@ -72,6 +91,8 @@ describe("SceneCreatorComponent", () => {
     TestBed.configureTestingModule(
       {
         providers: [
+          // tslint:disable-next-line:max-classes-per-file
+          { provide: Router, useClass: class { public navigate: jasmine.Spy = jasmine.createSpy("navigate"); } },
           {provide: SceneRendererService, useValue: mockSceneCreatorService},
           {
             provide: ActivatedRoute,
@@ -85,9 +106,15 @@ describe("SceneCreatorComponent", () => {
           },
           {provide: GameService, useValue: mockedGameService},
           {provide: FreeGameCreatorService, useValue: mockFreeGameCreatorService},
+          // tslint:disable-next-line:max-classes-per-file
+          { provide: Router, useClass: class { public navigate: jasmine.Spy = jasmine.createSpy("navigate"); } },
+          {provide: MatDialogRef, useValue: {}},
+          {provide: MAT_DIALOG_DATA, useValue: {}, },
+          SocketService,
 
         ],
-        declarations: [SceneCreatorComponent, TimerComponent],
+        imports: [MatDialogModule],
+        declarations: [SceneCreatorComponent, TimerComponent, DiffCounterComponent, EndGameNotifComponent, MessageBoxComponent],
 
       });
 
@@ -97,12 +124,34 @@ describe("SceneCreatorComponent", () => {
   });
 
   it("should create", () => {
-    expect(component).toBeDefined();
+    expect(component).toBeTruthy();
   });
 
   it("should have the right value inside each mockService after created", () => {
     expect(mockSceneCreatorService.initCalled).toEqual("init");
     expect(mockFreeGameCreatorService.isCalled).toEqual(true);
     expect(mockedGameService.called).toEqual(true);
+  });
+
+  // Test onDivContClick
+  it("should have call the mocked diffObjValidation function on original scene click", () => {
+    const mouseEvt: MouseEvent = new MouseEvent("click", {
+      button: 0,
+      clientX: 325,
+      clientY: 430,
+    });
+
+    component.onDivContClick(mouseEvt);
+    expect(mockSceneCreatorService.objDiffCalled).toEqual("objDiffValidation");
+  });
+  it("should have call the mocked diffObjValidation function on modified scene click", () => {
+    const mouseEvt: MouseEvent = new MouseEvent("click", {
+      button: 0,
+      clientX: 1120,
+      clientY: 430,
+    });
+
+    component.onDivContClick(mouseEvt);
+    expect(mockSceneCreatorService.objDiffCalled).toEqual("objDiffValidation");
   });
 });

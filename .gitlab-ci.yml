@@ -111,6 +111,7 @@ client coverage:
   only:
     refs:
       - merge_requests
+      - master
     changes:
       - .gitlab-ci.yml
       - client/**/*
@@ -128,6 +129,7 @@ server coverage:
   only:
     refs:
       - merge_requests
+      - master
     changes:
       - .gitlab-ci.yml
       - server/**/*
@@ -149,6 +151,7 @@ client lint:
   only:
     refs:
       - merge_requests
+      - master
     changes:
       - .gitlab-ci.yml
       - client/**/*
@@ -165,6 +168,7 @@ server lint:
   only:
     refs:
       - merge_requests
+      - master
     changes:
       - .gitlab-ci.yml
       - server/**/*

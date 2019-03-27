@@ -1,42 +1,37 @@
+import * as config from "config";
 import { injectable } from "inversify";
-import { Db, MongoClient, MongoError } from "mongodb";
+import {Db, MongoClient} from "mongodb";
 import "reflect-metadata";
 import { FreeGamesCollectionService } from "./db/free-games.collection.service";
 import { SimpleGamesCollectionService } from "./db/simple-games.collection.service";
-import { UsersCollectionService } from "./db/users.collection.service";
 
 @injectable()
 export class DataBaseService {
 
-    private readonly DB_EXIT_CODE: number = -1;
-    private readonly DB_USER: string = "server";
-    private readonly DB_PASSWORD: string = "RZDpcD8vqu8hmjX";
-    private readonly DB_DB: string = "projet";
-    private readonly DB_HOST: string = "ds145289.mlab.com";
-    private readonly DB_PORT: string = "45289";
-    private readonly DB_URL: string = "mongodb://" + this.DB_USER + ":" + this.DB_PASSWORD + "@"
-        + this.DB_HOST + ":" + this.DB_PORT + "/" + this.DB_DB;
+    private readonly DB_EXIT_CODE: number = -42;
+    private readonly DB_USER: string = config.get("mongo.user");
+    private readonly DB_PASSWORD: string = config.get("mongo.password");
+    private readonly DB_DB: string = config.get("mongo.database");
+    private readonly DB_URL: string = `mongodb+srv://${this.DB_USER}:${this.DB_PASSWORD}@cluster0-ijbac.mongodb.net/test?retryWrites=true`;
 
     private _dataBase: Db;
-    private _users: UsersCollectionService;
     private _simpleGames: SimpleGamesCollectionService;
     private _freeGames: FreeGamesCollectionService;
 
     public constructor() {
-        MongoClient.connect(this.DB_URL, {useNewUrlParser : true}, (err: MongoError, client: MongoClient) => {
-            if (!err) {
+        MongoClient.connect(this.DB_URL, {useNewUrlParser: true})
+            .then((client: MongoClient) => {
                 this._dataBase = client.db(this.DB_DB);
-                this._users = new UsersCollectionService(this._dataBase.collection("users"));
                 this._simpleGames = new SimpleGamesCollectionService(this._dataBase.collection("simpleGames"));
                 this._freeGames = new FreeGamesCollectionService(this._dataBase.collection("freeGames"));
-            } else {
-                process.exit(this.DB_EXIT_CODE);
-            }
-        });
-    }
+            })
+            .catch(() => {
+                console.error("Unable to connect to the database!");
+                console.error(`URL ${this.DB_URL}`);
+                console.error("Exiting...");
 
-    public get users(): UsersCollectionService {
-        return this._users;
+                process.exit(this.DB_EXIT_CODE);
+            });
     }
 
     public get simpleGames(): SimpleGamesCollectionService {

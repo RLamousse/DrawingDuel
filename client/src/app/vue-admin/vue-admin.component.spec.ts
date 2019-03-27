@@ -7,6 +7,7 @@ import {GameComponent} from "../game-list/game/game.component";
 import {FreeGameCreatorService} from "../scene-creator/FreeGameCreator/free-game-creator.service";
 import {FreeGamePhotoService} from "../scene-creator/free-game-photo-service/free-game-photo.service";
 import {IScene} from "../scene-interface";
+import {SocketService} from "../socket.service";
 import {VueAdminComponent} from "./vue-admin.component";
 
 describe("VueAdminComponent", () => {
@@ -30,7 +31,7 @@ describe("VueAdminComponent", () => {
       {
         declarations: [VueAdminComponent, GameListComponent, GameComponent],
         imports: [MatDialogModule, HttpClientModule],
-        providers: [FreeGamePhotoService, {provide: FreeGameCreatorService, useValue: mockedFreeGameCreator}],
+        providers: [FreeGamePhotoService, {provide: FreeGameCreatorService, useValue: mockedFreeGameCreator}, SocketService],
       }).compileComponents();
   });
 

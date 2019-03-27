@@ -2,7 +2,8 @@ import {HttpClient} from "@angular/common/http";
 import {Injectable} from "@angular/core";
 import {of, Observable} from "rxjs";
 import {catchError} from "rxjs/operators";
-import {DB_FREE_GAME, DB_SIMPLE_GAME, SERVER_BASE_URL} from "../../../common/communication/routes";
+import {DB_FREE_GAME, DB_SIMPLE_GAME, RESET_SCORES, SERVER_BASE_URL} from "../../../common/communication/routes";
+import {IJson3DObject} from "../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
 import {IExtendedFreeGame} from "../../../common/model/game/extended-free-game";
 import {IFreeGame} from "../../../common/model/game/free-game";
 import {IGame} from "../../../common/model/game/game";
@@ -15,15 +16,6 @@ import {IScene} from "./scene-interface";
               providedIn: "root",
             })
 export class GameService {
-  public simpleGames: ISimpleGame[] = [];
-  public freeGames: IFreeGame[] = [];
-  public extendedFreeGames: IExtendedFreeGame[] = [];
-  public readonly SIMPLE_GAME_BASE_URL: string = SERVER_BASE_URL + DB_SIMPLE_GAME;
-  public readonly FREE_GAME_BASE_URL: string = SERVER_BASE_URL + DB_FREE_GAME;
-
-  private readonly GET_SIMPLEGAME_ERROR: string = "get simple game from server error";
-  private readonly GET_FREEGAME_ERROR: string = "get free game from server error";
-  private readonly GET_FREEGAME_BY_NAME_ERROR: string = "get free game by name from server error";
 
   public constructor(
     private http: HttpClient,
@@ -31,6 +23,20 @@ export class GameService {
     private freeGameCreatorService: FreeGameCreatorService,
   ) {
   }
+  public simpleGames: ISimpleGame[] = [];
+  public freeGames: IFreeGame[] = [];
+  public extendedFreeGames: IExtendedFreeGame[] = [];
+  public readonly SIMPLE_GAME_BASE_URL: string = SERVER_BASE_URL + DB_SIMPLE_GAME;
+  public readonly FREE_GAME_BASE_URL: string = SERVER_BASE_URL + DB_FREE_GAME;
+  public readonly RESET_SCORES_URL: string = SERVER_BASE_URL + RESET_SCORES;
+
+  private readonly GET_SIMPLEGAME_ERROR: string = "get simple game from server error";
+  private readonly GET_FREEGAME_ERROR: string = "get free game from server error";
+  private readonly GET_FREEGAME_BY_NAME_ERROR: string = "get free game by name from server error";
+  private readonly HIDE_SIMPLE_GAME_BY_NAME: string = "hide simple game from server error";
+  private readonly HIDE_FREE_GAME_BY_NAME: string = "hide free game from server error";
+  private readonly DELETE_GAME_BY_NAME: string = "delete game by name server error";
+  private readonly RESET_SCORES_ERROR: string = "reset scores error";
 
   private convertTimeScores(seconds: number): number {
     const COEFFICIENT: number = 0.6;
@@ -60,27 +66,34 @@ export class GameService {
     this.simpleGames = [];
     this.convertScoresObject(simpleGamesToModify);
     for (const game of simpleGamesToModify) {
-      this.simpleGames.push(game);
+      if (!game.toBeDeleted) {
+        this.simpleGames.push(game);
+      }
     }
   }
 
-  public pushFreeGames(freeGamesToModify: IFreeGame[]): void {
+  public async pushFreeGames(freeGamesToModify: IFreeGame[]): Promise<void> {
     this.freeGames = [];
     this.extendedFreeGames = [];
     this.convertScoresObject(freeGamesToModify);
     for (const game of freeGamesToModify) {
-      this.freeGames.push(game);
+      if (!game.toBeDeleted) {
+        this.freeGames.push(game);
+      }
     }
     for (const game of this.freeGames) {
-      const scenes: IScene = this.freeGameCreatorService.createScenes(game.scenes);
-      const extendedFreeGame: IExtendedFreeGame = {
-        thumbnail: this.photoService.takePhoto(scenes.scene),
-        scenes: game.scenes,
-        gameName: game.gameName,
-        bestSoloTimes: game.bestSoloTimes,
-        bestMultiTimes: game.bestMultiTimes,
-      };
-      this.extendedFreeGames.push(extendedFreeGame);
+      if (!game.toBeDeleted) {
+        const img: string = "";
+        const extendedFreeGame: IExtendedFreeGame = {
+          thumbnail: img,
+          scenes: game.scenes,
+          gameName: game.gameName,
+          bestSoloTimes: game.bestSoloTimes,
+          bestMultiTimes: game.bestMultiTimes,
+          toBeDeleted: game.toBeDeleted,
+        };
+        this.extendedFreeGames.push(extendedFreeGame);
+      }
     }
   }
 
@@ -102,10 +115,60 @@ export class GameService {
     );
   }
 
+  public hideSimpleByName(gameName: string): void {
+    this.http.put(this.SIMPLE_GAME_BASE_URL + gameName, {toBeDeleted: true }).pipe(
+      catchError(this.handleError<IFreeGame>(this.HIDE_SIMPLE_GAME_BY_NAME)),
+    ).subscribe();
+
+  }
+
+  public hideFreeByName(gameName: string): void {
+    this.http.put(this.FREE_GAME_BASE_URL + gameName, {toBeDeleted: true }).pipe(
+      catchError(this.handleError<IFreeGame>(this.HIDE_FREE_GAME_BY_NAME)),
+    ).subscribe();
+
+  }
+
+  public deleteSimpleGameByName(gameName: string): void {
+   this.http.delete(this.SIMPLE_GAME_BASE_URL + gameName).pipe(
+      catchError(this.handleError<IFreeGame>(this.DELETE_GAME_BY_NAME)),
+    ).subscribe();
+
+  }
+
+  public deleteFreeGameByName(gameName: string): void {
+    this.http.delete(this.FREE_GAME_BASE_URL + gameName).pipe(
+       catchError(this.handleError<IFreeGame>(this.DELETE_GAME_BY_NAME)),
+      ).subscribe();
+   }
+
+  public resetGameTime(gameName: string): void {
+    this.http.put(this.RESET_SCORES_URL + gameName, null).pipe(
+    catchError(this.handleError<IFreeGame>(this.RESET_SCORES_ERROR)),
+    ).subscribe();
+  }
+  public async loadCheatData(gameName: string): Promise<IJson3DObject[]> {
+    return new Promise<IJson3DObject[]>((resolve) => {
+
+      this.http.get<IFreeGame>(
+        SERVER_BASE_URL + DB_FREE_GAME + gameName).subscribe((value: IFreeGame) => {
+        resolve(value.scenes.differentObjects);
+      });
+    });
+  }
+
   private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {
 
     return (error: Error): Observable<T> => {
       return of(result as T);
     };
+  }
+
+  public async updateFreeGameImages(): Promise<void> {
+
+    for (const freeGame of this.extendedFreeGames) {
+      const scenes: IScene = this.freeGameCreatorService.createScenes(freeGame.scenes);
+      await this.photoService.takePhoto(scenes.scene).then((value) => {freeGame.thumbnail = value; });
+    }
   }
 }

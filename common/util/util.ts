@@ -1,7 +1,16 @@
+
+export const X_FACTOR: number = 2;
+export const Y_FACTOR: number = 3;
+
 export function create2dArray<T>(width: number, height: number, filledWith: T): T[][] {
     return new Array(height)
         .fill(filledWith)
         .map(() => new Array(width).fill(filledWith));
+}
+
+export function createArray<T>(size: number, filledWith: T): T[] {
+    return new Array(size)
+        .fill(filledWith);
 }
 
 export function customIndexOf<T>(array: T[], elementToFind: T, compareFunction: (elementToFind: T, elementInArray: T) => boolean): number  {
@@ -37,4 +46,8 @@ export function deepCompare(x: any, y: any): boolean {
     const p = Object.keys(x);
     return Object.keys(y).every(function (i) { return p.indexOf(i) !== -1; }) &&
         p.every(function (i) { return deepCompare(x[i], y[i]); });
+}
+
+export async function sleep(timeMs: number): Promise<{}> {
+    return new Promise<{}>(resolve => setTimeout(resolve, timeMs));
 }

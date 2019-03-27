@@ -12,10 +12,7 @@ export const AVAILABLE_THEMES: SelectType<Themes>[] = [
     viewValue: "Géométrie", value: Themes.Geometry,
   },
   {
-    viewValue: "Thème - Forêt", value: Themes.Forest,
-  },
-  {
-    viewValue: "Thème - Sanic the Hedgedog", value: Themes.Sanic,
+    viewValue: "Thème - Space", value: Themes.Space,
   },
 ];
 

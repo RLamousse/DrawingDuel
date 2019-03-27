@@ -1,8 +1,12 @@
 import {ComponentFixture, TestBed} from "@angular/core/testing";
+import { MatListModule } from "@angular/material";
+import {MatDialogModule, MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
 import {ActivatedRoute, Router} from "@angular/router";
-import {CompteurDiffComponent} from "../compteur-diff/compteur-diff.component";
+import {DiffCounterComponent} from "../diff-counter/diff-counter.component";
+import { MessageBoxComponent } from "../message-box/message-box.component";
 import {SimpleGameCanvasComponent} from "../simple-game/simple-game-canvas/simple-game-canvas.component";
 import {SimpleGameContainerComponent} from "../simple-game/simple-game-container/simple-game-container.component";
+import { SocketService } from "../socket.service";
 import {TimerComponent} from "../timer/timer.component";
 import {PlayViewComponent} from "./play-view.component";
 
@@ -15,22 +19,27 @@ describe("PlayViewComponent", () => {
       {
         declarations: [
           PlayViewComponent,
-          CompteurDiffComponent,
+          DiffCounterComponent,
           SimpleGameContainerComponent,
           SimpleGameCanvasComponent,
           TimerComponent,
+          MessageBoxComponent,
         ],
-        providers: [
-        { provide: Router, useClass: class { public navigate: jasmine.Spy = jasmine.createSpy("navigate"); }, },
-        {
-          provide: ActivatedRoute,
-          useValue: {queryParams: {
-            subscribe: (fn: (queryParams: string ) => void) => fn(
-              // tslint:disable-next-line:max-line-length
-              "play-view?gameName=numbers&originalImage=https:%2F%2Fi.imgur.com%2Fvc0cKmB.png&modifiedImage=https:%2F%2Fi.imgur.com%2F5lei5Nb.png"
-              ,
-            ),
-        }, } , },
+        imports: [
+          MatListModule, MatDialogModule,
+        ],
+        providers: [SocketService,
+                    { provide: Router, useClass: class { public navigate: jasmine.Spy = jasmine.createSpy("navigate"); },   },
+                    { provide: ActivatedRoute,
+                      useValue: {queryParams: {
+                          subscribe: (fn: (queryParams: string ) => void) => fn(
+                          // tslint:disable-next-line:max-line-length
+                          "play-view?gameName=numbers&originalImage=https:%2F%2Fi.imgur.com%2Fvc0cKmB.png&modifiedImage=https:%2F%2Fi.imgur.com%2F5lei5Nb.png", ),
+                        },
+                      },
+                    },
+                    {provide: MatDialogRef, useValue: {}},
+                    {provide: MAT_DIALOG_DATA, useValue: {}, },
 
       ],
     });

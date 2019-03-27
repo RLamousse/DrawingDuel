@@ -18,6 +18,7 @@ export const ORIGINAL_IMAGE_FIELD_NAME: string = "originalImage";
 export const MODIFIED_IMAGE_FIELD_NAME: string = "modifiedImage";
 export const EXPECTED_FILES_FORMAT: string = "image/bmp";
 export const GAME_CREATION_SUCCESS_MESSAGE: Message = {title: "Game created", body: "The game was successfully created!"};
+export const MODIFY_TABLE_SUCCESS_MESSAGE: Message = {title: "Modified Table", body: "The score table was successfully modified!"};
 
 const NUMBER_OF_MODIFICATION_TYPES: number = 3;
 export const MAX_3D_OBJECTS: number = 1000;
@@ -42,6 +43,18 @@ export const assertRequestImageFilesFields: (req: Express.Request) => void = (re
     }
 };
 
+export const assertUpdateScoreTable: (req: Express.Request) => void = (req: Request): void => {
+    if (typeof req.body.gameName !== "string" ||
+    req.body.gameName === "" ||
+    !req.body.newTime ||
+    typeof req.body.newTime.name !== "string" ||
+    typeof req.body.newTime.time !== "number" ||
+    req.body.newTime.name === "" ||
+    typeof  req.body.isSolo !== "boolean") {
+        throw new RequestFormatError();
+    }
+};
+
 export const assertBodyFieldsOfRequest: (req: Request, ...fields: string[]) => void = (req: Request, ...fields: string[]): void => {
     let field: string;
     for (field of fields) {
@@ -51,10 +64,19 @@ export const assertBodyFieldsOfRequest: (req: Request, ...fields: string[]) => v
     }
 };
 
+export const assertBodyFieldsOfQuery: (req: Request, ...fields: string[]) => void = (req: Request, ...fields: string[]): void => {
+    let field: string;
+    for (field of fields) {
+        if (typeof req.params[field] === "undefined" || req.params[field] === "") {
+            throw new RequestFormatError();
+        }
+    }
+};
+
 const assertBasicSceneFields: (req: Request) => boolean = (req: Request): boolean => {
     return (req.body.theme !== Themes.Geometry &&
         req.body.theme !== Themes.Sanic &&
-        req.body.theme !== Themes.Forest) ||
+        req.body.theme !== Themes.Space) ||
         !Array.isArray(req.body.modificationTypes) ||
         req.body.modificationTypes.length < 1 ||
         req.body.modificationTypes.length > NUMBER_OF_MODIFICATION_TYPES ||
