@@ -89,16 +89,10 @@ test server:
 # Coverage job template
 .coverage:
   extends: .post test
-  script: yarn coverage
-  coverage: /Lines\s+:\s*(\d+(?:\.\d*)?%)\s+\(\s+\d+\/\d+\s+\)/
-  after_script:
+  script:
+    - yarn coverage
     - yarn codecov
-  artifacts:
-    untracked: false
-    expire_in: 30 days
-    paths:
-      - client/coverage
-      - server/coverage
+  coverage: /Lines\s+:\s*(\d+(?:\.\d*)?%)\s+\(\s+\d+\/\d+\s+\)/
 
 client coverage:
   extends: .coverage
@@ -115,6 +109,11 @@ client coverage:
     changes:
       - .gitlab-ci.yml
       - client/**/*
+  artifacts:
+    untracked: false
+    expire_in: 30 days
+    paths:
+      - client/coverage
 
 server coverage:
   extends: .coverage
@@ -130,6 +129,11 @@ server coverage:
     changes:
       - .gitlab-ci.yml
       - server/**/*
+  artifacts:
+    untracked: false
+    expire_in: 30 days
+    paths:
+      - server/coverage
 
 # Lint report job template
 .lint:
