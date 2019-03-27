@@ -93,19 +93,9 @@ export class FreeGameCreatorService {
             (sceneType === Themes.Geometry) ?
                 object = this.generate3DObject() : object = this.object3DCreatorService.createThematicObject();
             object.position = this.generateRandomPosition();
-            // if (object.type === ObjectGeometry.comet || object.type === ObjectGeometry.asteroid) {
-            //     object.position[Coordinate.Y] = 0;
-            // }
             object = this.handleCollision(object, objects);
-
             this.setAstronautCloseFromEarth(object, objects);
-            // const type: ObjectGeometry = object.type;
-            // const position: number[] = object.position;
             objects.push(object);
-            // if (this.isPossibleSpaceSquad(i, obj3DToCreate, type)) {
-            //     objects.push(this.generateIntelligentObject(position));
-            //     i++;
-            // }
         }
         const modifiedObjects: IObject.IJson3DObject[] = JSON.parse(JSON.stringify(objects));
         const differentObjects: IObject.IJson3DObject[] = this.generateDifferences(modificationTypes, modifiedObjects);
@@ -150,8 +140,8 @@ export class FreeGameCreatorService {
                     this.changeColor(modifiedObjects, index);
                     modObjects.push(JSON.parse(JSON.stringify(modifiedObjects[index])));
                     break;
-                default: {
-                    break; }
+                default:
+                    break;
             }
         }
 
@@ -185,15 +175,6 @@ export class FreeGameCreatorService {
         ];
     }
 
-    // private generateIntelligentObject(position: number[]): IObject.IJson3DObject {
-    //     const margin: number = 2000;
-    //     const newObj: IObject.IJson3DObject = this.object3DCreatorService.createThematicObject(ObjectGeometry.astronaut);
-    //     newObj.position = position;
-    //     newObj.position[Coordinate.X] -= margin;
-    //     newObj.position[Coordinate.Y] += margin;
-    //
-    //     return newObj;
-    // }
     private renderEarth(): IObject.IJson3DObject {
         const earth: IObject.IJson3DObject = this.object3DCreatorService.createThematicObject(ObjectGeometry.earth);
         earth.scale = spaceObjects[spaceObjects.length - 1].scale;
