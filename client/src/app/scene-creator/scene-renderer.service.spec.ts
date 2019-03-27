@@ -11,6 +11,7 @@ import {DIFF_VALIDATOR_3D_BASE, SERVER_BASE_URL} from "../../../../common/commun
 import { ComponentNotLoadedError } from "../../../../common/errors/component.errors";
 import {NoDifferenceAtPointError} from "../../../../common/errors/services.errors";
 import {IJson3DObject} from "../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
+import {SocketService} from "../socket.service";
 import {RenderUpdateService} from "./render-update.service";
 import { SceneRendererService } from "./scene-renderer.service";
 describe("SceneRendererService", () => {
@@ -38,6 +39,7 @@ describe("SceneRendererService", () => {
       providers: [
         SceneRendererService,
         {provide: RenderUpdateService, useValue: mockUpdateRender},
+        SocketService,
       ],
     });
   });
