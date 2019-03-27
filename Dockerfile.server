@@ -1,0 +1,16 @@
+FROM node:slim as builder
+
+WORKDIR /build
+
+# Less prone to changes
+COPY server/package*.json server/
+
+# Install node_modules
+RUN npm i --prod --prefix server
+
+# More prone to changes
+COPY common/ common/
+COPY server/ server/
+
+EXPOSE 3000
+CMD [ "npm", "run", "start-prod" ]
