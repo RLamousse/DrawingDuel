@@ -33,13 +33,17 @@ export class DiffCounterComponent implements OnInit {
   }
 
   public ngOnInit(): void {
+    this.isSimpleGame ? this.checkDiffSimpleGame() : this.checkDiffFreeGame();
+  }
+
+  private endGame(): void {
+    this.simpleGameService.resetDifferenceCount();
+    this.postTime();
+    this.openCongratDialog();
+  }
+
+  private checkDiffSimpleGame(): void {
     this.simpleGameService.foundDifferencesCount.subscribe((differenceCount: number) => {
-      if (this.diffNumber === this.MAX_DIFF_NUM - 1 && this.diffNumber !== differenceCount) {
-        this.endGame();
-      }
-      this.diffNumber = differenceCount;
-    });
-    this.sceneRendererService.foundDifferenceCount.subscribe((differenceCount: number) => {
       if (this.diffNumber === this.MAX_DIFF_NUM - 1 && this.diffNumber !== differenceCount) {
         this.endGame();
       }
@@ -47,11 +51,13 @@ export class DiffCounterComponent implements OnInit {
     });
   }
 
-  private endGame(): void {
-    this.simpleGameService.resetDifferenceCount();
-    this.stopTime.next();
-    this.postTime();
-    this.openCongratDialog();
+  private checkDiffFreeGame(): void {
+    this.sceneRendererService.foundDifferenceCount.subscribe((differenceCount: number) => {
+      if (this.diffNumber === this.MAX_DIFF_NUM - 1 && this.diffNumber !== differenceCount) {
+        this.endGame();
+      }
+      this.diffNumber = differenceCount;
+    });
   }
 
   private openCongratDialog(): void {
@@ -68,6 +74,7 @@ export class DiffCounterComponent implements OnInit {
   }
 
   private postTime(): void {
+    this.stopTime.next();
     this.socketMessage = {
       title: SocketEvent.DELETE,
       body: {gameName: this.gameName,
