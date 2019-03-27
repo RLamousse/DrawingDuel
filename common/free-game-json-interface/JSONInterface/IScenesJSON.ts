@@ -5,6 +5,10 @@ export interface IScenesJSON{
     modifiedObjects: IJson3DObject[],
 }
 
+export interface IScenesDB extends IScenesJSON{
+    differentObjects: IJson3DObject[],
+}
+
 export interface IJson3DObject {
     position: number[],
     rotation: number[],

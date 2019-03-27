@@ -3,6 +3,7 @@ import {Injectable} from "@angular/core";
 import {of, Observable} from "rxjs";
 import {catchError} from "rxjs/operators";
 import {DB_FREE_GAME, DB_SIMPLE_GAME, SERVER_BASE_URL} from "../../../common/communication/routes";
+import {IJson3DObject} from "../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
 import {IExtendedFreeGame} from "../../../common/model/game/extended-free-game";
 import {IFreeGame} from "../../../common/model/game/free-game";
 import {IGame} from "../../../common/model/game/game";
@@ -24,6 +25,7 @@ export class GameService {
   private readonly GET_SIMPLEGAME_ERROR: string = "get simple game from server error";
   private readonly GET_FREEGAME_ERROR: string = "get free game from server error";
   private readonly GET_FREEGAME_BY_NAME_ERROR: string = "get free game by name from server error";
+  private readonly DELETE_GAME_BY_NAME: string = "delete game by name server error";
 
   public constructor(
     private http: HttpClient,
@@ -100,6 +102,30 @@ export class GameService {
     return this.http.get<IFreeGame>(this.FREE_GAME_BASE_URL + gameName + "/").pipe(
       catchError(this.handleError<IFreeGame>(this.GET_FREEGAME_BY_NAME_ERROR)),
     );
+  }
+
+  public deleteSimpleGameByName(gameName: string): void {
+   this.http.delete(this.SIMPLE_GAME_BASE_URL + gameName).pipe(
+      catchError(this.handleError<IFreeGame>(this.DELETE_GAME_BY_NAME)),
+    ).subscribe();
+
+  }
+
+  public deleteFreeGameByName(gameName: string): void {
+    this.http.delete(this.FREE_GAME_BASE_URL + gameName).pipe(
+       catchError(this.handleError<IFreeGame>(this.DELETE_GAME_BY_NAME)),
+     ).subscribe();
+
+   }
+
+  public async loadCheatData(gameName: string): Promise<IJson3DObject[]> {
+    return new Promise<IJson3DObject[]>((resolve) => {
+
+      this.http.get<IFreeGame>(
+        SERVER_BASE_URL + DB_FREE_GAME + gameName).subscribe((value: IFreeGame) => {
+        resolve(value.scenes.differentObjects);
+      });
+    });
   }
 
   private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {

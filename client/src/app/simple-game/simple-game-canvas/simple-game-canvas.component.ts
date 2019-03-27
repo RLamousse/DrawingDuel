@@ -6,8 +6,18 @@ export interface PixelData {
   data: Uint8ClampedArray;
 }
 
+export enum TextType {
+  ERROR,
+  VICTORY,
+}
+
 export const IMAGE_DATA_PIXEL_LENGTH: number = 4;
 export const DEFAULT_CANVAS_HEIGHT: number = 480;
+export const TEXT_FONT: string = "30px Comic Sans MS";
+export const ERROR_TEXT_COLOR: string = "#ff0000";
+export const VICTORY_TEXT_COLOR: string = "#008000";
+export const DEFAULT_TEXT_COLOR: string = "#000000";
+
 @Component({
              selector: "app-simple-game-canvas",
              templateUrl: "./simple-game-canvas.component.html",
@@ -43,6 +53,9 @@ export class SimpleGameCanvasComponent implements OnInit {
         return;
       }
       this._canvasContext = canvasContext;
+      this._canvasContext.font = TEXT_FONT;
+      this._canvasContext.textAlign = "center";
+      this._canvasContext.strokeStyle = "black";
       this._canvasContext.drawImage(imageElement, 0, 0, this._width, this._height);
     };
 
@@ -63,6 +76,14 @@ export class SimpleGameCanvasComponent implements OnInit {
     });
   }
 
+  public getRawPixelData(): Uint8ClampedArray {
+    return this._canvasContext.getImageData(0, 0, this._width, this._height).data;
+  }
+
+  public setRawPixelData(pixelData: Uint8ClampedArray): void {
+    this._canvasContext.putImageData(new ImageData(pixelData, this._width, this._height), 0, 0);
+  }
+
   public drawPixels(pixels: PixelData[]): void {
     const imageData: ImageData = this._canvasContext.getImageData(0, 0, this._width, this._height);
 
@@ -74,6 +95,22 @@ export class SimpleGameCanvasComponent implements OnInit {
     }
 
     this._canvasContext.putImageData(imageData, 0, 0);
+  }
+
+  public drawText(text: string, position: IPoint, textType?: TextType): void {
+    switch (textType) {
+      case TextType.ERROR:
+        this._canvasContext.fillStyle = ERROR_TEXT_COLOR;
+        this._canvasContext.strokeText(text, position.x, position.y);
+        break;
+      case TextType.VICTORY:
+        this._canvasContext.fillStyle = VICTORY_TEXT_COLOR;
+        break;
+      default:
+        this._canvasContext.fillStyle = DEFAULT_TEXT_COLOR;
+        break;
+    }
+    this._canvasContext.fillText(text, position.x, position.y);
   }
 
   protected clickHandler(event: MouseEvent): void {

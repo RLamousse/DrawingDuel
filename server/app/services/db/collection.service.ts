@@ -1,6 +1,6 @@
-import {Collection, MongoError} from "mongodb";
+import {Collection, FilterQuery} from "mongodb";
 import {Message} from "../../../../common/communication/messages/message";
-import {DatabaseError, EmptyIdError} from "../../../../common/errors/database.errors";
+import {DatabaseError, EmptyIdError, NoElementFoundError} from "../../../../common/errors/database.errors";
 
 export abstract class CollectionService<T> {
 
@@ -18,8 +18,10 @@ export abstract class CollectionService<T> {
 
     public async abstract getFromId(id: string): Promise<T>;
     public async abstract create(data: T): Promise<Message>;
+    public async abstract update(id: string, data: Partial<T>): Promise<Message>;
     public async abstract delete(id: string): Promise<Message>;
     protected abstract creationSuccessMessage(data: T): Message;
+    protected abstract updateSuccessMessage(id: string): Message;
     protected abstract deletionSuccessMessage(id: string): Message;
 
     public async contains(id: string): Promise<boolean> {
@@ -27,16 +29,27 @@ export abstract class CollectionService<T> {
     }
 
     public async getAll(): Promise<T[]> {
-        return new Promise<T[]>((resolve: (value?: T[] | PromiseLike<T[]>) => void, reject: (reason?: Error) => void) => {
-            this._collection.find().toArray((error: MongoError, res: T[]) => {
-                if (error) {
-                    reject(new DatabaseError());
-                }
-                // @ts-ignore even thought item is red as a T type(IGame or IUser), mongo generates _id, and we want it removed!
-                res.forEach((item: T) => { delete item._id; });
-                resolve(res);
+        return this._collection.find().toArray()
+            .then((items: T[]) => {
+                items.forEach((item: T) => {
+                    // @ts-ignore even thought item is read as a T type(IFreeGame or ISimpleGame),
+                    // mongo generates an _id attribute, and we want it removed!
+                    delete item._id;
+                });
+
+                return items;
+            })
+            .catch(() => {
+                throw new DatabaseError();
             });
-        });
+    }
+
+    public async documentCountWithQuery(query: FilterQuery<T>): Promise<number> {
+        try {
+            return this._collection.countDocuments(query);
+        } catch (error) {
+            throw new DatabaseError();
+        }
     }
 
     protected async documentCount(id: string): Promise<number> {
@@ -48,42 +61,55 @@ export abstract class CollectionService<T> {
     }
 
     protected async createDocument(data: T): Promise<Message> {
-        return new Promise<Message>((resolve: (value?: Message | PromiseLike<Message>) => void, reject: (reason?: Error) => void) => {
-
-            this._collection.insertOne(data, (error: MongoError) => {
-                if (error) {
-                    reject(new DatabaseError());
-                }
-                resolve(this.creationSuccessMessage(data));
+        return this._collection.insertOne(data)
+            .then(() => {
+                return this.creationSuccessMessage(data);
+            })
+            .catch(() => {
+                throw new DatabaseError();
             });
-        });
+    }
+
+    protected async updateDocument(id: string, data: Partial<T>): Promise<Message> {
+        return this._collection.updateOne({[this.idFieldName]: {$eq: id}}, {$set: data})
+            .then(() => {
+                return this.updateSuccessMessage(id);
+            })
+            .catch(() => {
+                throw new DatabaseError();
+            });
     }
 
     protected async deleteDocument(id: string): Promise<Message> {
-        return new Promise<Message>((resolve: (value?: Message | PromiseLike<Message>) => void, reject: (reason?: Error) => void) => {
-            this._collection.deleteOne({[this.idFieldName]: {$eq: id}}, (error: MongoError) => {
-                if (error) {
-                    reject(new DatabaseError());
-                }
-                resolve(this.deletionSuccessMessage(id));
+        return this._collection.deleteOne({[this.idFieldName]: {$eq: id}})
+            .then(() => {
+                return this.deletionSuccessMessage(id);
+            })
+            .catch(() => {
+                throw new DatabaseError();
             });
-        });
     }
 
-    protected async getDocument(id: string, errorMessage: string): Promise<T> {
-        return new Promise<T>((resolve: (value?: T | PromiseLike<T>) => void, reject: (reason?: Error) => void) => {
-            this._collection.find({[this.idFieldName] : {$eq : id}}).toArray((error: MongoError, res: T[]) => {
-                if (error) {
-                    return reject(new DatabaseError());
-                } else if (res.length === 0) {
-                    return reject(new Error(errorMessage));
+    protected async getDocument(id: string): Promise<T> {
+        return this._collection.findOne({[this.idFieldName]: {$eq: id}})
+            .then((value: T) => {
+                if (value === null) {
+                    throw new NoElementFoundError();
                 }
-                // @ts-ignore even thought item is red as a T type(IGame or IUser), mongo generates _id, and we want it removed!
-                delete res[0]._id;
 
-                return resolve(res[0]);
+                // @ts-ignore even thought item is read as a T type(IFreeGame or ISimpleGame),
+                // mongo generates an _id attribute, and we want it removed!
+                delete value._id;
+
+                return value;
+            })
+            .catch((error: Error) => {
+                if (error.message === NoElementFoundError.NO_ELEMENT_FOUND_ERROR_MESSAGE) {
+                    throw error;
+                }
+
+                throw new DatabaseError();
             });
-        });
     }
 
 }

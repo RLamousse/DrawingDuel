@@ -1,10 +1,10 @@
 import {inject, injectable} from "inversify";
 import {
+    spaceObjects,
     Coordinate,
     ModificationType,
     ObjectGeometry,
     ObjectTexture,
-    spaceObjects,
     Themes
 } from "../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
 import * as IObject from "../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
@@ -83,7 +83,7 @@ export class FreeGameCreatorService {
         return createdObject;
     }
 
-    public generateIScenes(obj3DToCreate: number, modificationTypes: ModificationType[], sceneType: Themes): IObject.IScenesJSON {
+    public generateIScenes(obj3DToCreate: number, modificationTypes: ModificationType[], sceneType: Themes): IObject.IScenesDB {
         const objects: IObject.IJson3DObject[] = [];
         if (sceneType === Themes.Space) {
             objects.push(this.renderEarth());
@@ -108,35 +108,38 @@ export class FreeGameCreatorService {
             // }
         }
         const modifiedObjects: IObject.IJson3DObject[] = JSON.parse(JSON.stringify(objects));
-        this.generateDifferences(modificationTypes, modifiedObjects);
+        const differentObjects: IObject.IJson3DObject[] = this.generateDifferences(modificationTypes, modifiedObjects);
 
-        return {originalObjects: objects, modifiedObjects: modifiedObjects};
+        return {originalObjects: objects, modifiedObjects: modifiedObjects, differentObjects: differentObjects};
     }
 
-    // private isPossibleSpaceSquad(index: number, obj3DToCreate: number, objectType: ObjectGeometry): boolean {
-    //     return ((index + 1) < obj3DToCreate && objectType === ObjectGeometry.shuttle);
-    // }
-
-    private generateDifferences(modificationTypes: ModificationType[], modifiedObjects: IObject.IJson3DObject[]): void {
+    private generateDifferences(
+        modificationTypes: ModificationType[],
+        modifiedObjects: IObject.IJson3DObject[],
+    ): IObject.IJson3DObject[] {
         const MOD_COUNT: number = 7;
         const INDEXES: Set<number> = new Set();
         while (INDEXES.size !== MOD_COUNT) {
             INDEXES.add(this.getRandomValue(1, modifiedObjects.length - 1));
         }
-        this.randomDifference(INDEXES, modificationTypes, modifiedObjects);
+
+        return this.randomDifference(INDEXES, modificationTypes, modifiedObjects);
     }
 
-    private randomDifference(table: Set<number>, modificationTypes: ModificationType[], modifiedObjects: IObject.IJson3DObject[]): void {
+    private randomDifference(
+        table: Set<number>, modificationTypes: ModificationType[], modifiedObjects: IObject.IJson3DObject[],
+    ): IObject.IJson3DObject[] {
         const MAX_MOD_TYPE: number = modificationTypes.length - 1;
         const ARRAY_INDEXES: number[] = Array.from(table).sort((n1: number, n2: number) => n1 - n2).reverse();
+        const modObjects: IObject.IJson3DObject[] = [];
         let randomModifications: number;
         for (const index of ARRAY_INDEXES) {
             randomModifications = this.getRandomValue(0, MAX_MOD_TYPE);
             switch (modificationTypes[randomModifications]) {
                 case ModificationType.remove: {
+                    modObjects.push(JSON.parse(JSON.stringify(modifiedObjects[index])));
                     modifiedObjects.splice(index, 1);
-                    break;
-                }
+                    break; }
                 case ModificationType.add: {
                     let object: IObject.IJson3DObject;
                     (modifiedObjects[0].gameType === Themes.Geometry) ?
@@ -144,21 +147,23 @@ export class FreeGameCreatorService {
                         object = this.object3DCreatorService.createThematicObject();
                     object = this.handleCollision(object, modifiedObjects);
                     modifiedObjects.push(object);
-                    break;
-                }
+                    modObjects.push(JSON.parse(JSON.stringify(object)));
+                    break; }
                 case ModificationType.changeColor: {
                     const MASK: number = 0xFFFFFF;
                     const TEXTURE_SIZE: number = 4;
                     (modifiedObjects[0].gameType === Themes.Geometry) ?
                         modifiedObjects[index].color = (Math.random() * MASK) :
                         modifiedObjects[index].texture = ObjectTexture[ObjectTexture[this.getRandomValue(0, TEXTURE_SIZE)]];
+                    modObjects.push(JSON.parse(JSON.stringify(modifiedObjects[index])));
                     break;
                 }
                 default: {
-                    break;
-                }
+                    break; }
             }
         }
+
+        return modObjects;
     }
 
     private generateRandomPosition(): number[] {
