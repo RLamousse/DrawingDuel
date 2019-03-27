@@ -40,6 +40,9 @@ export class DiffCounterComponent implements OnInit {
       this.diffNumber = differenceCount;
     });
     this.sceneRendererService.foundDifferenceCount.subscribe((differenceCount: number) => {
+      if (this.diffNumber === this.MAX_DIFF_NUM - 1 && this.diffNumber !== differenceCount) {
+        this.endGame();
+      }
       this.diffNumber = differenceCount;
     });
   }
