@@ -58,11 +58,13 @@ export class SceneRendererService {
   private readonly INVISIBLE_INTERVAL_MS: number = this.BLINK_INTERVAL_MS / X_FACTOR;
   // et la mettre dans utile si necessaire
   private readonly WATCH_THREAD_FINISH_INTERVAL: number = 30;
-  public gameState: IFreeGameState = {isCheatModeActive: false, isWaitingInThread: false, foundDifference: []};
+  public gameState: IFreeGameState;
 
   private differenceCountSubject: Subject<number> = new Subject();
 
-  public constructor(private renderUpdateService: RenderUpdateService) {}
+  public constructor(private renderUpdateService: RenderUpdateService) {
+    this.gameState = {isCheatModeActive: false, isWaitingInThread: false, foundDifference: []}
+  }
 
   private setRenderer(): void {
     this.rendererOri = new THREE.WebGLRenderer({preserveDrawingBuffer: true});
@@ -231,8 +233,9 @@ export class SceneRendererService {
       return this.getRecursiveParent(obj.parent as THREE.Object3D);
     }
 
-    return obj.parent;
+    return (obj.parent as THREE.Object3D);
   }
+
   private async differenceValidationAtPoint(object: THREE.Object3D|undefined): Promise<IJson3DObject> {
     let centerObj: number[] = [];
     if (object !== undefined) {
