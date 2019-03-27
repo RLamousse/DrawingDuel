@@ -13,7 +13,8 @@
       <div>Vous</div>
       <div>jouez</div>
       <div>depuis</div>
-      <div class="timer"><app-timer></app-timer></div>
+      <div class="timer"><app-timer [gameName] = "gameName"
+                                    [isSimpleGame] = "isSimpleGame"></app-timer></div>
     </div>
     <div>
       <h1>Scene Modifiée</h1>
@@ -22,5 +23,5 @@
       </div>
     </div>
   </div>
-  <h1 style="text-align: center">Message:</h1>
+  <app-message-box></app-message-box>
 </body>
