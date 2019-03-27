@@ -28,9 +28,8 @@ export class DiffCounterComponent implements OnInit {
   private socketMessage: WebsocketMessage<UpdateScoreMessage>;
 
   public constructor(private simpleGameService: SimpleGameService, private dialog: MatDialog,
-                     protected socket: SocketService, private router: Router) {
+                     protected socket: SocketService, private router: Router, private sceneRendererService: SceneRendererService) {
     this.diffNumber = 0;
-                     private  sceneRendererService: SceneRendererService,
   }
 
   public ngOnInit(): void {
@@ -41,7 +40,7 @@ export class DiffCounterComponent implements OnInit {
       this.diffNumber = differenceCount;
     });
     this.sceneRendererService.foundDifferenceCount.subscribe((differenceCount: number) => {
-      this.diffCount = differenceCount;
+      this.diffNumber = differenceCount;
     });
   }
 
