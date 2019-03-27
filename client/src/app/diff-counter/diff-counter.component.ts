@@ -3,6 +3,7 @@ import {MatDialog, MatDialogConfig} from "@angular/material";
 import {Router} from "@angular/router";
 import {UpdateScoreMessage, WebsocketMessage} from "../../../../common/communication/messages/message";
 import {SocketEvent} from "../../../../common/communication/socket-events";
+import {ComponentNavigationError} from "../../../../common/errors/component.errors";
 import {SceneRendererService} from "../scene-creator/scene-renderer.service";
 import {SimpleGameService} from "../simple-game/simple-game.service";
 import {SocketService} from "../socket.service";
@@ -37,6 +38,7 @@ export class DiffCounterComponent implements OnInit {
   }
 
   private endGame(): void {
+    this.stopTime.next();
     this.simpleGameService.resetDifferenceCount();
     this.postTime();
     this.openCongratDialog();
@@ -67,14 +69,13 @@ export class DiffCounterComponent implements OnInit {
     this.dialog.open(EndGameNotifComponent, dialogConfig).afterClosed().subscribe(() => {
       this.router.navigate(["/game-list/"]) // tslint:disable-next-line:no-any Generic error response
       .catch((reason: any) => {
-        throw new Error(reason);
+        throw new ComponentNavigationError();
       });
     });
 
   }
 
   private postTime(): void {
-    this.stopTime.next();
     this.socketMessage = {
       title: SocketEvent.DELETE,
       body: {gameName: this.gameName,

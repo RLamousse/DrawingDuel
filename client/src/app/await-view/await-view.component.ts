@@ -37,9 +37,9 @@ export class AwaitViewComponent implements OnInit {
   }
 
   private navigateGameList (): void {
-    this.route.navigate(["/game-list/"])
-      .catch(() => {
-        throw new ComponentNavigationError();
+    this.route.navigate(["/game-list/"]) // tslint:disable-next-line:no-any Generic error response
+    .catch((reason: any) => {
+      throw new ComponentNavigationError();
     });
   }
 
