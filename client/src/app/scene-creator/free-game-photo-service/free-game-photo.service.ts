@@ -31,6 +31,7 @@ export class FreeGamePhotoService {
     renderer.render(scene, camera);
     await sleep(1500);
     renderer.render(scene, camera);
+
     return (divElem.children[0] as HTMLCanvasElement).toDataURL();
   }
 }
