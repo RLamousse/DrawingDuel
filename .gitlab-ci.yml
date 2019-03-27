@@ -91,6 +91,8 @@ test server:
   extends: .post test
   script: yarn coverage
   coverage: /Lines\s+:\s*(\d+(?:\.\d*)?%)\s+\(\s+\d+\/\d+\s+\)/
+  after_script:
+    - yarn codecov
   artifacts:
     untracked: false
     expire_in: 30 days

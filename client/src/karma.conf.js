@@ -20,7 +20,7 @@ module.exports = function (config) {
     },
     coverageIstanbulReporter: {
       dir: require('path').join(__dirname, '../coverage'),
-      reports: ['html', 'lcovonly', 'text', 'text-summary'],
+      reports: ['json', 'lcovonly', 'text', 'text-summary'],
       fixWebpackSourcePaths: true,
       combineBrowserReports: true,
     },
@@ -37,6 +37,6 @@ module.exports = function (config) {
         flags: ['--no-sandbox']
       }
     }
-    
+
   });
 };
