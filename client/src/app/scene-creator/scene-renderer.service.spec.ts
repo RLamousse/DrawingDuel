@@ -13,6 +13,7 @@ import {NoDifferenceAtPointError} from "../../../../common/errors/services.error
 import {IJson3DObject} from "../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
 import {RenderUpdateService} from "./render-update.service";
 import { SceneRendererService } from "./scene-renderer.service";
+import {SocketService} from "../socket.service";
 describe("SceneRendererService", () => {
   let axiosMock: MockAdapter;
   const CONTROLLER_BASE_URL: string = SERVER_BASE_URL + DIFF_VALIDATOR_3D_BASE;
@@ -38,6 +39,7 @@ describe("SceneRendererService", () => {
       providers: [
         SceneRendererService,
         {provide: RenderUpdateService, useValue: mockUpdateRender},
+        SocketService,
       ],
     });
   });

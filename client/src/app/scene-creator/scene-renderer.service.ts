@@ -15,6 +15,15 @@ import {
   STAR_THEME_SOUND
 } from "../simple-game/game-sounds";
 import { RenderUpdateService } from "./render-update.service";
+import {SocketService} from "../socket.service";
+import {
+  ChatMessage,
+  ChatMessagePlayerCount,
+  ChatMessagePosition, ChatMessageType,
+  WebsocketMessage
+} from "../../../../common/communication/messages/message";
+import {SocketEvent} from "../../../../common/communication/socket-events";
+import {UNListService} from "../username.service";
 
 interface IFreeGameState {
   isCheatModeActive: boolean;
@@ -63,7 +72,8 @@ export class SceneRendererService {
 
   private differenceCountSubject: Subject<number> = new Subject();
 
-  public constructor(private renderUpdateService: RenderUpdateService) {
+  public constructor(private renderUpdateService: RenderUpdateService,
+                     private socket: SocketService) {
     this.gameState = {isCheatModeActive: false, isWaitingInThread: false, foundDifference: []};
   }
 
@@ -248,6 +258,7 @@ export class SceneRendererService {
         if (this.gameState.foundDifference.length !== 0 || this.gameState.foundDifference !== undefined) {
           this.checkIfAlreadyFound(value.data);
         }
+        this.notifyClickToWebsocket(true);
         this.updateRoutine(value.data, object as THREE.Object3D);
         await this.updateCheateDiffData([value.data as IJson3DObject]);
 
@@ -255,12 +266,28 @@ export class SceneRendererService {
       })
       // tslint:disable-next-line:no-any Generic error response
       .catch((reason: any) => {
+        this.notifyClickToWebsocket(false);
         if (reason.response && reason.response.status === Httpstatus.NOT_FOUND) {
           playRandomSound(NO_DIFFERENCE_SOUNDS);
           throw new NoDifferenceAtPointError();
         }
         throw new AbstractServiceError(reason.message);
       });
+  }
+
+  private notifyClickToWebsocket(good: boolean): void {
+    const message: WebsocketMessage<ChatMessage> = {
+      title: SocketEvent.CHAT,
+      body: {
+        gameName: "",
+        playerCount: ChatMessagePlayerCount.SOLO,
+        playerName: UNListService.username,
+        position: ChatMessagePosition.NA,
+        timestamp: new Date(),
+        type: good ? ChatMessageType.DIFF_FOUND : ChatMessageType.DIFF_ERROR,
+      },
+    };
+    this.socket.send(SocketEvent.CHAT, message);
   }
   private checkIfAlreadyFound(object: IJson3DObject): void {
     for (const obj of this.gameState.foundDifference) {
