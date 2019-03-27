@@ -11,10 +11,12 @@ stages:
 # ║ Stage: Build ║
 # ╚══════════════╝
 
-build client:
+.build:
   stage: build
-  tags:
-    - angular
+  image: node
+
+build client:
+  extends: .build
   before_script:
     - cd client
     - npm ci
@@ -26,9 +28,7 @@ build client:
       - client/**/*
 
 build server:
-  stage: build
-  tags:
-    - ts
+  extends: .build
   before_script:
     - cd server
     - npm ci
@@ -47,14 +47,12 @@ build server:
 # Test job template
 .test:
   stage: test
+  image: node
   script: yarn test
 
 test client:
   extends: .test
-  tags:
-    - angular
-    - ng-test
-    - chrome
+  image: trion/ng-cli-karma
   dependencies:
     - build client
   before_script:
@@ -68,8 +66,6 @@ test client:
 
 test server:
   extends: .test
-  tags:
-    - mocha
   dependencies:
     - build server
   before_script:
@@ -86,6 +82,7 @@ test server:
 
 .post test:
   stage: post-test
+  image: node
 
 # Coverage job template
 .coverage:
@@ -101,8 +98,6 @@ test server:
 
 client coverage:
   extends: .coverage
-  tags:
-    - angular
   dependencies:
     - test client
   before_script:
@@ -118,9 +113,6 @@ client coverage:
 
 server coverage:
   extends: .coverage
-  tags:
-    - mocha
-    - nyc
   dependencies:
     - test server
   before_script:
@@ -141,8 +133,6 @@ server coverage:
 
 client lint:
   extends: .lint
-  tags:
-    - angular
   dependencies:
     - test client
   before_script:
@@ -158,8 +148,6 @@ client lint:
 
 server lint:
   extends: .lint
-  tags:
-    - ts
   dependencies:
     - test server
   before_script:
