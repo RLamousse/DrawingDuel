@@ -7,6 +7,7 @@ import {IFreeGame} from "../../../../common/model/game/free-game";
 import { DiffCounterComponent } from "../diff-counter/diff-counter.component";
 import { EndGameNotifComponent } from "../diff-counter/end-game-notif/end-game-notif.component";
 import {GameService} from "../game.service";
+import { MessageBoxComponent } from "../message-box/message-box.component";
 import {IScene} from "../scene-interface";
 import {SocketService} from "../socket.service";
 import {TimerComponent} from "../timer/timer.component";
@@ -109,7 +110,7 @@ describe("SceneCreatorComponent", () => {
 
         ],
         imports: [MatDialogModule],
-        declarations: [SceneCreatorComponent, TimerComponent, DiffCounterComponent, EndGameNotifComponent],
+        declarations: [SceneCreatorComponent, TimerComponent, DiffCounterComponent, EndGameNotifComponent, MessageBoxComponent],
 
       });
 
