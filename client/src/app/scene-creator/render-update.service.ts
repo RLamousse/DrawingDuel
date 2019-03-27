@@ -102,8 +102,14 @@ export class RenderUpdateService {
       }
     }
     if (originalObj.name && modifObj.name) {
-      ((modifObj as THREE.Mesh).material as THREE.MeshPhongMaterial).color =
-        ((originalObj as THREE.Mesh).material as THREE.MeshPhongMaterial).color;
+      const modifMaterial: THREE.MeshPhongMaterial = (modifObj as THREE.Mesh).material as THREE.MeshPhongMaterial;
+      if (modifMaterial) {
+        (modifMaterial).color =
+          ((originalObj as THREE.Mesh).material as THREE.MeshPhongMaterial).color;
+      } else {
+        modifObj.visible = false;
+        modifiedScene.add(originalObj);
+      }
     } else if (!originalObj.name) {
       modifiedScene.remove(modifObj);
     } else {
