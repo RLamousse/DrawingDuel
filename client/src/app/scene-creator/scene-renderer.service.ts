@@ -15,6 +15,7 @@ import {
   STAR_THEME_SOUND
 } from "../simple-game/game-sounds";
 import { RenderUpdateService } from "./render-update.service";
+import {Object3D} from "three";
 
 interface IFreeGameState {
   isCheatModeActive: boolean;
@@ -159,7 +160,6 @@ export class SceneRendererService {
 
   private async loadCheatData(callBackFunction: () => Promise<IJson3DObject[]>): Promise<void> {
     this.gameState.cheatDiffData = new Set<THREE.Object3D>();
-    console.log((await callBackFunction()));
     (await callBackFunction()).forEach((jsonValue: IJson3DObject) => {
       this.scene.children.concat(this.modifiedScene.children).forEach((objectValue: THREE.Object3D) => {
         if (this.isObjectAtSamePlace(jsonValue.position, objectValue.position) && objectValue instanceof THREE.Mesh) {
@@ -231,8 +231,9 @@ export class SceneRendererService {
       return this.getRecursiveParent(obj.parent as THREE.Object3D);
     }
 
-    return obj.parent;
+    return obj.parent as Object3D;
   }
+
   private async differenceValidationAtPoint(object: THREE.Object3D|undefined): Promise<IJson3DObject> {
     let centerObj: number[] = [];
     if (object !== undefined) {

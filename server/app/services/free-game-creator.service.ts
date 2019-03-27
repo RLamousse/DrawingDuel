@@ -196,8 +196,10 @@ export class FreeGameCreatorService {
         const CLOSE_FROM_EARTH: number = 50;
         const FURTHER_FROM_EARTH: number = 70;
         const MIN_DIST: number = 10;
+        const ASTRONAUT_INDEX: number = 2;
         if (object.type === ObjectGeometry.astronaut) {
             let collision: boolean = true;
+            object.scale = spaceObjects[ASTRONAUT_INDEX].scale;
             while (collision) {
                 object.position[Coordinate.X] = this.randomNegative() * this.getRandomValue(CLOSE_FROM_EARTH, FURTHER_FROM_EARTH);
                 object.position[Coordinate.Y] = this.randomNegative() * this.getRandomValue(CLOSE_FROM_EARTH, FURTHER_FROM_EARTH);
