@@ -162,14 +162,7 @@ describe("RenderUpdateService", () => {
     const modifiedScene: THREE.Scene = new THREE.Scene();
     const obj: THREE.Object3D = new THREE.Object3D();
     scene.add(obj);
-    const intersection: THREE.Intersection = {
-      distance: 0,
-      distanceToRay: 0,
-      faceIndex: 0,
-      object: obj,
-      point: new THREE.Vector3(0, 0, 0),
-    };
-    service.updateDifference(intersection, scene, modifiedScene);
+    service.updateDifference(obj, scene, modifiedScene);
     expect(modifiedScene.children.length).toEqual(1);
   });
 
@@ -181,14 +174,7 @@ describe("RenderUpdateService", () => {
     obj1.position.set(50, 50, 50);
     const obj2: THREE.Object3D = new THREE.Object3D();
     scene.add(obj1);
-    const intersection: THREE.Intersection = {
-      distance: 0,
-      distanceToRay: 0,
-      faceIndex: 0,
-      object: obj2,
-      point: new THREE.Vector3(0, 0, 0),
-    };
-    service.updateDifference(intersection, scene, modifiedScene);
+    service.updateDifference(obj2, scene, modifiedScene);
     expect(modifiedScene.children.length).toEqual(0);
   });
 
@@ -198,15 +184,8 @@ describe("RenderUpdateService", () => {
     const modifiedScene: THREE.Scene = new THREE.Scene();
     const obj: THREE.Object3D = new THREE.Object3D();
     modifiedScene.add(obj);
-    const intersection: THREE.Intersection = {
-      distance: 0,
-      distanceToRay: 0,
-      faceIndex: 0,
-      object: obj,
-      point: new THREE.Vector3(0, 0, 0),
-    };
     expect(modifiedScene.children.length).toEqual(1);
-    service.updateDifference(intersection, scene, modifiedScene);
+    service.updateDifference(obj, scene, modifiedScene);
     expect(modifiedScene.children.length).toEqual(0);
   });
 
@@ -224,14 +203,7 @@ describe("RenderUpdateService", () => {
     const modObj: THREE.Mesh = new THREE.Mesh(modGeo, modMaterial);
     scene.add(oriObj);
     modifiedScene.add(modObj);
-    const intersection: THREE.Intersection = {
-      distance: 0,
-      distanceToRay: 0,
-      faceIndex: 0,
-      object: modObj,
-      point: new THREE.Vector3(0, 0, 0),
-    };
-    service.updateDifference(intersection, scene, modifiedScene);
+    service.updateDifference(modObj, scene, modifiedScene);
     expect(((modifiedScene.children[0] as THREE.Mesh).material as THREE.MeshPhongMaterial).color.getHex())
       .toEqual(0x000000);
   });
@@ -250,14 +222,7 @@ describe("RenderUpdateService", () => {
     const modObj: THREE.Mesh = new THREE.Mesh(modGeo, modMaterial);
     scene.add(oriObj);
     modifiedScene.add(modObj);
-    const intersection: THREE.Intersection = {
-      distance: 0,
-      distanceToRay: 0,
-      faceIndex: 0,
-      object: oriObj,
-      point: new THREE.Vector3(0, 0, 0),
-    };
-    service.updateDifference(intersection, scene, modifiedScene);
+    service.updateDifference(oriObj, scene, modifiedScene);
     expect(((modifiedScene.children[0] as THREE.Mesh).material as THREE.MeshPhongMaterial).color.getHex())
       .toEqual(0x000000);
   });
@@ -274,16 +239,38 @@ describe("RenderUpdateService", () => {
     obj3.position.set(10, 10, 300);
     scene.add(obj1);
     modifiedScene.add(obj2);
-    const intersection: THREE.Intersection = {
-      distance: 0,
-      distanceToRay: 0,
-      faceIndex: 0,
-      object: obj3,
-      point: new THREE.Vector3(0, 0, 0),
-    };
-    service.updateDifference(intersection, scene, modifiedScene);
+    service.updateDifference(obj3, scene, modifiedScene);
     expect(scene.children[0]).toEqual(obj1);
     expect(modifiedScene.children[0]).toEqual(obj2);
+  });
+
+  it("should modified the scenes, the modified scene added should not be visible", () => {
+    const service: RenderUpdateService = TestBed.get(RenderUpdateService);
+    const scene: THREE.Scene = new THREE.Scene();
+    const modifiedScene: THREE.Scene = new THREE.Scene();
+    const obj1: THREE.Scene = new THREE.Scene();
+    obj1.position.set(10, -10, 100);
+    const obj2: THREE.Scene = new THREE.Scene();
+    obj2.position.set(10, -10, 100);
+    scene.add(obj1);
+    modifiedScene.add(obj2);
+    service.updateDifference(obj1, scene, modifiedScene);
+    expect(scene.children[0].visible).toBeTruthy();
+    expect(modifiedScene.children[0].visible).toBeFalsy();
+  });
+
+  it("should modified the scenes, the modifiedScene should have length + 1", () => {
+    const service: RenderUpdateService = TestBed.get(RenderUpdateService);
+    const scene: THREE.Scene = new THREE.Scene();
+    const modifiedScene: THREE.Scene = new THREE.Scene();
+    const obj1: THREE.Scene = new THREE.Scene();
+    obj1.position.set(10, -10, 100);
+    const obj2: THREE.Scene = new THREE.Scene();
+    obj2.position.set(10, -10, 100);
+    scene.add(obj1);
+    modifiedScene.add(obj2);
+    service.updateDifference(obj1, scene, modifiedScene);
+    expect(modifiedScene.children.length).toEqual(2);
   });
 
   // Test isSameObject
