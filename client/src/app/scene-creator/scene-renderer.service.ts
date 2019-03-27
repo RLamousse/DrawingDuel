@@ -58,11 +58,13 @@ export class SceneRendererService {
   private readonly INVISIBLE_INTERVAL_MS: number = this.BLINK_INTERVAL_MS / X_FACTOR;
   // et la mettre dans utile si necessaire
   private readonly WATCH_THREAD_FINISH_INTERVAL: number = 30;
-  public gameState: IFreeGameState = {isCheatModeActive: false, isWaitingInThread: false, foundDifference: []};
+  public gameState: IFreeGameState;
 
   private differenceCountSubject: Subject<number> = new Subject();
 
-  public constructor(private renderUpdateService: RenderUpdateService) {}
+  public constructor(private renderUpdateService: RenderUpdateService) {
+    this.gameState = {isCheatModeActive: false, isWaitingInThread: false, foundDifference: []}
+  }
 
   private setRenderer(): void {
     this.rendererOri = new THREE.WebGLRenderer({preserveDrawingBuffer: true});
@@ -159,10 +161,9 @@ export class SceneRendererService {
 
   private async loadCheatData(callBackFunction: () => Promise<IJson3DObject[]>): Promise<void> {
     this.gameState.cheatDiffData = new Set<THREE.Object3D>();
-    console.log((await callBackFunction()));
     (await callBackFunction()).forEach((jsonValue: IJson3DObject) => {
       this.scene.children.concat(this.modifiedScene.children).forEach((objectValue: THREE.Object3D) => {
-        if (this.isObjectAtSamePlace(jsonValue.position, objectValue.position) && objectValue instanceof THREE.Mesh) {
+        if (this.isObjectAtSamePlace(jsonValue.position, objectValue.position) && (objectValue instanceof THREE.Mesh || objectValue instanceof THREE.Scene)) {
           (this.gameState.cheatDiffData as Set<THREE.Object3D>).add(objectValue);
         }
       });
@@ -231,8 +232,9 @@ export class SceneRendererService {
       return this.getRecursiveParent(obj.parent as THREE.Object3D);
     }
 
-    return obj.parent;
+    return (obj.parent as THREE.Object3D);
   }
+
   private async differenceValidationAtPoint(object: THREE.Object3D|undefined): Promise<IJson3DObject> {
     let centerObj: number[] = [];
     if (object !== undefined) {
@@ -282,8 +284,14 @@ export class SceneRendererService {
     playRandomSound(FOUND_DIFFERENCE_SOUNDS);
   }
 
-  private changeVisibility(value: THREE.Mesh): void {
-    Array.isArray(value.material) ? value.material.forEach((material) => {material.visible = !material.visible; } ) :
-      value.material.visible = !value.material.visible;
+  private changeVisibility(value: THREE.Mesh|THREE.Scene): void {
+    if (value instanceof  THREE.Mesh) {
+      Array.isArray(value.material) ? value.material.forEach((material) => {material.visible = !material.visible; } ) :
+        value.material.visible = !value.material.visible;
+    } else {
+      value.children.forEach((valueChild: THREE.Object3D) => {
+        this.changeVisibility(valueChild as THREE.Scene);
+      });
+    }
   }
 }
