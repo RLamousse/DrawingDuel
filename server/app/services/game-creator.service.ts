@@ -82,7 +82,7 @@ export class GameCreatorService {
 
             return Buffer.from(response.data);
         } catch (error) {
-            throw new AbstractService("game diff: " + error.response.data.message);
+            throw new AbstractServiceError("game diff: " + error.response.data.message);
         }
     }
 
