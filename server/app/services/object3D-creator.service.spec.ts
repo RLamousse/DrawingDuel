@@ -75,13 +75,12 @@ describe("Object3DCreatorService", () => {
     // test randomTypeByProba
     it("should return an IIndexObj", () => {
         const indexObj: IIndexObj = service["randomTypeByProba"]();
-        expect(typeof indexObj.index).to.be.not.undefined;
-
-        return expect(indexObj).to.be.not.undefined;
+        expect(typeof indexObj.index).to.not.eql(undefined);
+        expect(indexObj).to.not.eql(undefined);
     });
 
     // test createThematiqueObject
     it("should return an JsonScene.IJson3DObject", () => {
-        return expect(service.createThematicObject()).to.be.not.undefined;
+        return expect(service.createThematicObject()).to.not.eql(undefined);
     });
 });

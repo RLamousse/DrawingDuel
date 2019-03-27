@@ -1,16 +1,16 @@
 import Axios from "axios";
-// tslint:disable-next-line:no-duplicate-imports Weird interaction between singletons and interface (olivier st-o approved)
 import AxiosAdapter from "axios-mock-adapter";
+// tslint:disable-next-line:no-duplicate-imports Weird interaction between singletons and interface (olivier st-o approved)
 import MockAdapter from "axios-mock-adapter";
 import {expect} from "chai";
 import * as HttpStatus from "http-status-codes";
 import {DB_FREE_GAME, SERVER_BASE_URL} from "../../../common/communication/routes";
 import {NonExistentGameError} from "../../../common/errors/database.errors";
 import {Object3DIsNotADifference} from "../../../common/errors/services.errors";
+import {Themes} from "../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
 import {IJson3DObject} from "../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
 import {IFreeGame} from "../../../common/model/game/free-game";
 import {DiffValidator3DService} from "./diff-validator-3D.service";
-import {Themes} from "../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
 
 describe("A service validating if there is a difference at a coord for a free game", () => {
 
