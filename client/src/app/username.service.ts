@@ -13,9 +13,9 @@ export class UNListService {
   private readonly USERNAME_TOO_SHORT_MESSAGE: string = "Ton identifiant est trop court!";
   private readonly USERNAME_TAKEN_MESSAGE: string = "Cet identifiant est deja pris! Essaie un nouvel identifiant";
   private readonly USERNAME_MIN_LENGTH: number = 4;
-  private readonly regex: RegExp = /^[a-zA-Z0-9]+$/i;
+  private readonly usernameValidationRegex: RegExp = /^[a-zA-Z0-9]+$/i;
 
-  private minLength: number;
+  private readonly minLength: number;
   public message: string;
   public username: string;
   public response: UserValidationMessage;
@@ -30,7 +30,7 @@ export class UNListService {
   }
 
   public isAlphanumeric(testString: string): boolean {
-    if (testString.match(this.regex) !== null) {
+    if (testString.match(this.usernameValidationRegex) !== null) {
 
       return true;
     } else {

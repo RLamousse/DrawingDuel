@@ -144,7 +144,7 @@ describe("A service that creates a game", () => {
                         fs.readFileSync("test/test_files_for_game_creator_service/original.bmp"),
                         fs.readFileSync("test/test_files_for_game_creator_service/7diff-modified.bmp"))
                     .catch((reason: Error) => {
-                        expect(reason.message).to.eql("game diff: error");
+                        expect(reason.message).to.contain("game diff: error");
                     });
         });
 
@@ -165,7 +165,7 @@ describe("A service that creates a game", () => {
                     fs.readFileSync("test/test_files_for_game_creator_service/original.bmp"),
                     fs.readFileSync("test/test_files_for_game_creator_service/7diff-modified.bmp"))
                 .catch((reason: Error) => {
-                    expect(reason.message).to.eql("bmp diff counting: error");
+                    expect(reason.message).to.contain("bmp diff counting: error");
                 });
         });
 
@@ -223,7 +223,7 @@ describe("A service that creates a game", () => {
                     fs.readFileSync("test/test_files_for_game_creator_service/original.bmp"),
                     fs.readFileSync("test/test_files_for_game_creator_service/7diff-modified.bmp"))
                 .catch((reason: Error) => {
-                    expect(reason.message).to.eql("Database error: Unable to create game: error");
+                    expect(reason.message).to.contain("Unable to create game: error");
                 });
         });
 

@@ -2,6 +2,7 @@ import { Component, Inject } from "@angular/core";
 import {MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
 import {Router} from "@angular/router";
 import {IDialogData} from "../../../../../../common/dialog-data-interface/IDialogData";
+import {ComponentNavigationError} from "../../../../../../common/errors/component.errors";
 import {GameService} from "../../../game.service";
 
 @Component({
@@ -23,9 +24,9 @@ export class ResetGameFormComponent {
   public resetGame(): void {
     this.gameService.resetGameTime(this.data.gameName);
     this.dialogRef.close();
-    this.router.navigate(["/admin/"]) // tslint:disable-next-line:no-any Generic error response
-    .catch((reason: any) => {
-      throw new Error(reason);
+    this.router.navigate(["/admin/"])
+      .catch(() => {
+        throw new ComponentNavigationError();
     });
   }
 }

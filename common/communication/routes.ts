@@ -5,8 +5,8 @@ export const DIFF_VALIDATOR_BASE: string = "/api/diff-validator/";
 export const DIFF_CREATOR_BASE: string = "/api/image-diff/";
 export const GAME_CREATOR_BASE: string = "/api/game-creator/";
 export const DB_BASE: string = "/api/data-base/";
-
 export const SCORE_TABLE_UPDATE: string = "/api/score-table/";
+
 export const MODIFY_SCORES: string = SCORE_TABLE_UPDATE + "modify-scores/";
 export const RESET_SCORES: string = SCORE_TABLE_UPDATE + "reset-scores/";
 

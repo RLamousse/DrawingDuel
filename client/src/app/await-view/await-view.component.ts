@@ -3,6 +3,7 @@ import {MatDialog, MatDialogConfig} from "@angular/material";
 import {ActivatedRoute, Router} from "@angular/router";
 import {WebsocketMessage} from "../../../../common/communication/messages/message";
 import {SocketEvent} from "../../../../common/communication/socket-events";
+import {ComponentNavigationError} from "../../../../common/errors/component.errors";
 import {SocketService} from "../socket.service";
 import {GameDeletionNotifComponent} from "./game-deletion-notif/game-deletion-notif.component";
 
