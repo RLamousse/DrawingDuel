@@ -31,7 +31,7 @@ describe("A service validating if there is a difference at a coord for a free ga
         axiosMock = new AxiosAdapter(Axios);
     });
 
-    it("should throw an invalid gameName is entered", async () => {
+    it("should throw when an invalid gameName is entered", async () => {
         axiosMock.onGet(SERVER_BASE_URL + DB_FREE_GAME + "notAValidGame")
             .reply(HttpStatus.NOT_FOUND, {message: NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE});
 
@@ -41,7 +41,7 @@ describe("A service validating if there is a difference at a coord for a free ga
             });
     });
 
-    it("should return an IJSONObject corresponding to the center", async () => {
+    it("should return an object corresponding to the center", async () => {
         axiosMock.onGet(SERVER_BASE_URL + DB_FREE_GAME + "game")
             .reply(HttpStatus.OK, mockedFreeGame);
 
@@ -51,7 +51,7 @@ describe("A service validating if there is a difference at a coord for a free ga
             });
     });
 
-    it("should throw Object3DIsNotADifference", async () => {
+    it("should throw an Object3DIsNotADifference error when passed bad coordinates", async () => {
         axiosMock.onGet(SERVER_BASE_URL + DB_FREE_GAME + "game")
             .reply(HttpStatus.OK, mockedFreeGame);
 

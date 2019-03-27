@@ -18,7 +18,7 @@ describe("A service uploading images to imgur", () => {
         mockedImgurClient = mock(Client);
     });
 
-    it("should return the image link on success", async () => {
+    it("should return the image link on upload success", async () => {
         when(mockedImgurClient.Image)
             .thenReturn(
                 // @ts-ignore We only want to mock! Ignore missing fields
@@ -41,7 +41,7 @@ describe("A service uploading images to imgur", () => {
             });
     });
 
-    it("should throw on failure", async () => {
+    it("should throw an error on image upload failure", async () => {
         when(mockedImgurClient.Image)
             .thenReturn(
                 // @ts-ignore We only want to mock! Ignore missing fields

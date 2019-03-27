@@ -1,9 +1,17 @@
 import { format } from "date-and-time";
 import { injectable } from "inversify";
-import * as io from "socket.io";
 import { ChatMessage, ChatMessagePlayerCount, ChatMessageType, WebsocketMessage } from "../../../../common/communication/messages/message";
 import { SocketEvent } from "../../../../common/communication/socket-events";
 import { WebsocketActionService } from "./websocket-action.service";
+import {Socket} from "socket.io";
+import {
+    ChatMessage,
+    ChatMessagePlayerCount,
+    ChatMessageType,
+    WebsocketMessage
+} from "../../../../common/communication/messages/message";
+import {SocketEvent} from "../../../../common/communication/socket-events";
+import {WebsocketActionService} from "./websocket-action.service";
 
 @injectable()
 export class ChatWebsocketActionService extends WebsocketActionService {
@@ -13,7 +21,7 @@ export class ChatWebsocketActionService extends WebsocketActionService {
     private readonly _DIFF_ERROR_BASE_MESSAGE: string = " – Erreur";
     private readonly _WRONG_INPUT_FORMAT: string = " – Voici pourquoi les default existent dans les switchs.";
 
-    public execute(data: WebsocketMessage<ChatMessage>, socket: io.Socket): void {
+    public execute(data: WebsocketMessage<ChatMessage>, socket: Socket): void {
         const message: WebsocketMessage<string> = this.generateMessage(data.body);
         socket.emit(this._EVENT_TYPE, message);
     }
