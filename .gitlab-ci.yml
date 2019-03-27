@@ -1,3 +1,9 @@
+# ╔═══════════╗
+# ║ Variables ║
+# ╚══════════╝
+variables:
+  CODECOV_TOKEN: "1edf15e3-19b5-420b-a54a-35fac689ef0c"
+
 # ╔════════╗
 # ║ Stages ║
 # ╚════════╝
@@ -11,10 +17,12 @@ stages:
 # ║ Stage: Build ║
 # ╚══════════════╝
 
-build client:
+.build:
   stage: build
-  tags:
-    - angular
+  image: node
+
+build client:
+  extends: .build
   before_script:
     - cd client
     - npm ci
@@ -26,9 +34,7 @@ build client:
       - client/**/*
 
 build server:
-  stage: build
-  tags:
-    - ts
+  extends: .build
   before_script:
     - cd server
     - npm ci
@@ -47,14 +53,14 @@ build server:
 # Test job template
 .test:
   stage: test
+  image: node
   script: yarn test
+  except:
+    - merge_requests
 
 test client:
   extends: .test
-  tags:
-    - angular
-    - ng-test
-    - chrome
+  image: trion/ng-cli-karma
   dependencies:
     - build client
   before_script:
@@ -68,8 +74,6 @@ test client:
 
 test server:
   extends: .test
-  tags:
-    - mocha
   dependencies:
     - build server
   before_script:
@@ -86,23 +90,19 @@ test server:
 
 .post test:
   stage: post-test
+  image: node
 
 # Coverage job template
 .coverage:
   extends: .post test
-  script: yarn coverage
+  script:
+    - yarn coverage
+    - yarn codecov
   coverage: /Lines\s+:\s*(\d+(?:\.\d*)?%)\s+\(\s+\d+\/\d+\s+\)/
-  artifacts:
-    untracked: false
-    expire_in: 30 days
-    paths:
-      - client/coverage
-      - server/coverage
 
 client coverage:
   extends: .coverage
-  tags:
-    - angular
+  image: trion/ng-cli-karma
   dependencies:
     - test client
   before_script:
@@ -112,15 +112,18 @@ client coverage:
     refs:
       - merge_requests
       - master
+      - dev
     changes:
       - .gitlab-ci.yml
       - client/**/*
+  artifacts:
+    untracked: false
+    expire_in: 30 days
+    paths:
+      - client/coverage
 
 server coverage:
   extends: .coverage
-  tags:
-    - mocha
-    - nyc
   dependencies:
     - test server
   before_script:
@@ -130,9 +133,15 @@ server coverage:
     refs:
       - merge_requests
       - master
+      - dev
     changes:
       - .gitlab-ci.yml
       - server/**/*
+  artifacts:
+    untracked: false
+    expire_in: 30 days
+    paths:
+      - server/coverage
 
 # Lint report job template
 .lint:
@@ -141,8 +150,6 @@ server coverage:
 
 client lint:
   extends: .lint
-  tags:
-    - angular
   dependencies:
     - test client
   before_script:
@@ -158,8 +165,6 @@ client lint:
 
 server lint:
   extends: .lint
-  tags:
-    - ts
   dependencies:
     - test server
   before_script:
