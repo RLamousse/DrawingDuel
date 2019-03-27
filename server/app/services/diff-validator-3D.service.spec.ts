@@ -1,6 +1,6 @@
 import Axios from "axios";
-import AxiosAdapter from "axios-mock-adapter";
 // tslint:disable-next-line:no-duplicate-imports Weird interaction between singletons and interface (olivier st-o approved)
+import AxiosAdapter from "axios-mock-adapter";
 import MockAdapter from "axios-mock-adapter";
 import {expect} from "chai";
 import * as HttpStatus from "http-status-codes";
@@ -10,6 +10,7 @@ import {Object3DIsNotADifference} from "../../../common/errors/services.errors";
 import {IJson3DObject} from "../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
 import {IFreeGame} from "../../../common/model/game/free-game";
 import {DiffValidator3DService} from "./diff-validator-3D.service";
+import {Themes} from "../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
 
 describe("A service validating if there is a difference at a coord for a free game", () => {
 
@@ -21,7 +22,14 @@ describe("A service validating if there is a difference at a coord for a free ga
         scenes : {
             originalObjects: [],
             modifiedObjects: [],
-            differentObjects: [{position: [0, 0, 0], type: 0, rotation: [0, 0, 0], color: 0xFFFFFF}],
+            differentObjects: [{
+                position: [0, 0, 0],
+                type: 0,
+                rotation: [0, 0, 0],
+                color: 0xFFFFFF,
+                gameType: Themes.Geometry,
+                scale: 1,
+            }],
         },
         bestSoloTimes: [],
         bestMultiTimes: [],

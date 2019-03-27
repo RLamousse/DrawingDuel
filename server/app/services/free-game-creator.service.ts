@@ -83,7 +83,7 @@ export class FreeGameCreatorService {
         return createdObject;
     }
 
-    public generateIScenes(obj3DToCreate: number, modificationTypes: ModificationType[], sceneType: Themes): IObject.IScenesJSON {
+    public generateIScenes(obj3DToCreate: number, modificationTypes: ModificationType[], sceneType: Themes): IObject.IScenesDB {
         const objects: IObject.IJson3DObject[] = [];
         if (sceneType === Themes.Space) {
             objects.push(this.renderEarth());

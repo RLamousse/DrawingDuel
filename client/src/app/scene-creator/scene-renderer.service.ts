@@ -47,7 +47,7 @@ export class SceneRendererService {
   private readonly fieldOfView: number = 90;
   private readonly nearClippingPane: number = 1;
   private readonly farClippingPane: number = 1000;
-  private readonly backGroundColor: number = 0x001A33;//0x0B7B90;
+  private readonly backGroundColor: number = 0x001A33;
 
   private readonly cameraX: number = 0;
   private readonly cameraY: number = 0;
@@ -159,6 +159,7 @@ export class SceneRendererService {
 
   private async loadCheatData(callBackFunction: () => Promise<IJson3DObject[]>): Promise<void> {
     this.gameState.cheatDiffData = new Set<THREE.Object3D>();
+    console.log((await callBackFunction()));
     (await callBackFunction()).forEach((jsonValue: IJson3DObject) => {
       this.scene.children.concat(this.modifiedScene.children).forEach((objectValue: THREE.Object3D) => {
         if (this.isObjectAtSamePlace(jsonValue.position, objectValue.position) && objectValue instanceof THREE.Mesh) {
@@ -202,8 +203,8 @@ export class SceneRendererService {
       const direction: THREE.Vector2 = new THREE.Vector2(x, y);
       const rayCast: THREE.Raycaster = new THREE.Raycaster();
       rayCast.setFromCamera(direction, this.camera);
-      const intersectOri: THREE.Intersection[] = rayCast.intersectObjects(this.scene.children);
-      const intersectMod: THREE.Intersection[] = rayCast.intersectObjects(this.modifiedScene.children);
+      const intersectOri: THREE.Intersection[] = rayCast.intersectObjects(this.scene.children, true);
+      const intersectMod: THREE.Intersection[] = rayCast.intersectObjects(this.modifiedScene.children, true);
       if (intersectOri.length === 0 && intersectMod.length === 0) {
         playRandomSound(NO_DIFFERENCE_SOUNDS);
 
@@ -211,15 +212,31 @@ export class SceneRendererService {
       }
       // Only take the first intersected object by the ray, hence the 0's
       if (intersectOri.length === 0 && intersectMod.length !== 0) {
-        return this.differenceValidationAtPoint(intersectMod[0]);
+        return this.differenceValidationAtPoint(this.get3DObject(intersectMod[0]));
       } else {
-        return this.differenceValidationAtPoint(intersectOri[0]);
+        return this.differenceValidationAtPoint(this.get3DObject(intersectOri[0]));
       }
   }
-  private async differenceValidationAtPoint(object: THREE.Intersection|undefined): Promise<IJson3DObject> {
+
+  private get3DObject(obj: THREE.Intersection): THREE.Object3D {
+    if ((obj.object.parent as THREE.Object3D).type === "Scene") {
+      return obj.object;
+    } else {
+      return this.getRecursiveParent(obj.object);
+    }
+  }
+
+  private getRecursiveParent(obj: THREE.Object3D): THREE.Object3D {
+    while ((obj.parent as THREE.Object3D).type !== "Scene") {
+      return this.getRecursiveParent(obj.parent as THREE.Object3D);
+    }
+
+    return obj.parent;
+  }
+  private async differenceValidationAtPoint(object: THREE.Object3D|undefined): Promise<IJson3DObject> {
     let centerObj: number[] = [];
     if (object !== undefined) {
-      centerObj = [object.object.position.x, object.object.position.y, object.object.position.z];
+      centerObj = [object.position.x, object.position.y, object.position.z];
     }
 
     return Axios.get<IJson3DObject>(
@@ -231,7 +248,7 @@ export class SceneRendererService {
         if (this.gameState.foundDifference.length !== 0 || this.gameState.foundDifference !== undefined) {
           this.checkIfAlreadyFound(value.data);
         }
-        this.updateRoutine(value.data, object as THREE.Intersection);
+        this.updateRoutine(value.data, object as THREE.Object3D);
         await this.updateCheateDiffData([value.data as IJson3DObject]);
 
         return value.data as IJson3DObject;
@@ -253,15 +270,18 @@ export class SceneRendererService {
       }
     }
   }
+
   public get foundDifferenceCount(): Observable<number> {
     return this.differenceCountSubject;
   }
-  private updateRoutine(jsonObj: IJson3DObject, obj: THREE.Intersection): void {
+
+  private updateRoutine(jsonObj: IJson3DObject, obj: THREE.Object3D): void {
     this.gameState.foundDifference.push(jsonObj);
     this.renderUpdateService.updateDifference(obj, this.scene, this.modifiedScene);
     this.differenceCountSubject.next(this.gameState.foundDifference.length);
     playRandomSound(FOUND_DIFFERENCE_SOUNDS);
   }
+
   private changeVisibility(value: THREE.Mesh): void {
     Array.isArray(value.material) ? value.material.forEach((material) => {material.visible = !material.visible; } ) :
       value.material.visible = !value.material.visible;
