@@ -57,6 +57,7 @@ build server:
   script: yarn test
   except:
     - merge_requests
+    - dev
 
 test client:
   extends: .test
