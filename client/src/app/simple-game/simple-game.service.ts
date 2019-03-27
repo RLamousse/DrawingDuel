@@ -4,7 +4,8 @@ import * as Httpstatus from "http-status-codes";
 import {Observable, Subject} from "rxjs";
 import {IDiffValidatorControllerRequest} from "../../../../common/communication/requests/diff-validator-controller.request";
 import {DB_SIMPLE_GAME, DIFF_VALIDATOR_BASE, SERVER_BASE_URL} from "../../../../common/communication/routes";
-import {AlreadyFoundDifferenceError, NoDifferenceAtPointError} from "../../../../common/errors/services.errors";
+import {NonExistentGameError} from "../../../../common/errors/database.errors";
+import {AbstractServiceError, AlreadyFoundDifferenceError, NoDifferenceAtPointError} from "../../../../common/errors/services.errors";
 import {DifferenceCluster, DIFFERENCE_CLUSTER_POINTS_INDEX, ISimpleGame} from "../../../../common/model/game/simple-game";
 import ISimpleGameState from "../../../../common/model/game/simple-game-state";
 import {IPoint} from "../../../../common/model/point";
@@ -69,7 +70,7 @@ export class SimpleGameService {
           throw new NoDifferenceAtPointError();
         }
 
-        throw new Error(reason.message);
+        throw new AbstractServiceError(reason.message);
       });
   }
 
@@ -90,8 +91,8 @@ export class SimpleGameService {
     return Axios.get<ISimpleGame>(SERVER_BASE_URL + DB_SIMPLE_GAME + this._gameName)
       .then((value: AxiosResponse<ISimpleGame>) => value.data)
       // tslint:disable-next-line:no-any Since Axios defines reason as `any`
-      .catch((reason: any) => {
-        throw new Error(reason.response.data.message);
+      .catch(() => {
+        throw new NonExistentGameError();
       });
   }
 

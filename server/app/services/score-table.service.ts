@@ -49,7 +49,7 @@ export class ScoreTableService {
         } catch (error) {
             try {
                 if (error.response.status !== Httpstatus.NOT_FOUND) {
-                    throw new Error(error.response.data.message);
+                    throw new AbstractDataBaseError(error.response.data.message);
                 }
                 gameToModify = (await Axios.get<ISimpleGame>(SERVER_BASE_URL + DB_SIMPLE_GAME + gameName)).data;
                 isSimple = true;

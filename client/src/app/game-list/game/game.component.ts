@@ -1,6 +1,7 @@
 import {Component, Input} from "@angular/core";
 import {MatDialog, MatDialogConfig} from "@angular/material";
 import {Router} from "@angular/router";
+import {ComponentNavigationError} from "../../../../../common/errors/component.errors";
 import {IRecordTime} from "../../../../../common/model/game/record-time";
 import {DeleteGameFormComponent} from "./delete-game-form/delete-game-form.component";
 import {ResetGameFormComponent} from "./reset-game-form/reset-game-form.component";
@@ -52,7 +53,7 @@ export class GameComponent {
     })
       // tslint:disable-next-line:no-any Generic error response
      .catch((reason: any) => {
-       throw new Error(reason);
+       throw new ComponentNavigationError();
      });
   }
 
@@ -64,7 +65,7 @@ export class GameComponent {
     })
       // tslint:disable-next-line:no-any Generic error response
       .catch((reason: any) => {
-        throw new Error(reason);
+        throw new ComponentNavigationError();
       });
   }
 
@@ -74,7 +75,7 @@ export class GameComponent {
     })
       // tslint:disable-next-line:no-any Generic error response
      .catch((reason: any) => {
-       throw new Error(reason);
+       throw new ComponentNavigationError();
      });
   }
 

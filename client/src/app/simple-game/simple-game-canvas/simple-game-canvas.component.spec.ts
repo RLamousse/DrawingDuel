@@ -1,5 +1,6 @@
 import {async, ComponentFixture, TestBed} from "@angular/core/testing";
 import {By} from "@angular/platform-browser";
+import {ComponentCanvasError} from "../../../../../common/errors/component.errors";
 import {tansformOrigin, IPoint, ORIGIN} from "../../../../../common/model/point";
 import {createArray} from "../../../../../common/util/util";
 
@@ -25,12 +26,12 @@ describe("SimpleGameCanvasComponent", () => {
     const canvas: HTMLCanvasElement | null = gameCanvasComponentElement.querySelector("canvas");
     if (canvas === null) {
       fail();
-      throw new Error("Cannot get 2d canvas");
+      throw new ComponentCanvasError();
     }
     const context: CanvasRenderingContext2D | null = canvas.getContext("2d");
     if (context === null) {
       fail();
-      throw new Error("Cannot get 2d canvas context");
+      throw new ComponentCanvasError();
     }
 
     return context;

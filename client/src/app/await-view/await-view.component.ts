@@ -3,6 +3,7 @@ import {MatDialog, MatDialogConfig} from "@angular/material";
 import {ActivatedRoute, Router} from "@angular/router";
 import {WebsocketMessage} from "../../../../common/communication/messages/message";
 import {SocketEvent} from "../../../../common/communication/socket-events";
+import {ComponentNavigationError} from "../../../../common/errors/component.errors";
 import {SocketService} from "../socket.service";
 import {GameDeletionNotifComponent} from "./game-deletion-notif/game-deletion-notif.component";
 
@@ -35,9 +36,9 @@ export class AwaitViewComponent implements OnInit {
       dialogConfig.autoFocus = true;
       dialogConfig.data = {gameName: this.gameName, isSimpleGame: this.isSimpleGame};
       this.dialog.open(GameDeletionNotifComponent, dialogConfig);
-      this.route.navigate(["/game-list/"]) // tslint:disable-next-line:no-any Generic error response
-      .catch((reason: any) => {
-        throw new Error(reason);
+      this.route.navigate(["/game-list/"])
+        .catch(() => {
+          throw new ComponentNavigationError();
       });
     }
   }
