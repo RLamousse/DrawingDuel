@@ -86,11 +86,11 @@ export class GameService {
         const img: string = "";
         const extendedFreeGame: IExtendedFreeGame = {
           thumbnail: img,
-            scenes: game.scenes,
-            gameName: game.gameName,
-            bestSoloTimes: game.bestSoloTimes,
-            bestMultiTimes: game.bestMultiTimes,
-            toBeDeleted: game.toBeDeleted,
+          scenes: game.scenes,
+          gameName: game.gameName,
+          bestSoloTimes: game.bestSoloTimes,
+          bestMultiTimes: game.bestMultiTimes,
+          toBeDeleted: game.toBeDeleted,
         };
         this.extendedFreeGames.push(extendedFreeGame);
       }

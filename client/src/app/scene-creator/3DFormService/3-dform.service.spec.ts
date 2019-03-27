@@ -127,5 +127,5 @@ describe("3DFormService", () => {
     expect(pyramid.position.z).toEqual(2);
   });
 
-  it("should return")
+  it("should return");
 });
