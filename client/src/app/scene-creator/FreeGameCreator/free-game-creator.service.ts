@@ -16,8 +16,13 @@ export class FreeGameCreatorService {
   private modifiedScene: THREE.Scene;
   private formService: Form3DService;
 
+  private objects: THREE.Mesh[];
+  private modifiedObjects: THREE.Mesh[];
+
   public constructor() {
     this.formService = new Form3DService();
+    this.objects = [];
+    this.modifiedObjects = [];
   }
 
   public createScenes(primitiveScenes: IObject.IScenesJSON): IScene {
@@ -108,6 +113,7 @@ export class FreeGameCreatorService {
     for (const i of primitiveScenes.originalObjects) {
       object = this.generate3DObject(i);
       this.scene.add(object);
+      this.objects.push(object);
     }
   }
 
@@ -116,6 +122,7 @@ export class FreeGameCreatorService {
     for (const i of primitiveScenes.modifiedObjects) {
       object = this.generate3DObject(i);
       this.modifiedScene.add(object);
+      this.modifiedObjects.push(object);
     }
   }
 

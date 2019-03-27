@@ -1,6 +1,7 @@
 // tslint:disable:typedef
 import {expect} from "chai";
 import {
+    Coordinate,
     ModificationType,
     ObjectGeometry,
     Themes
@@ -56,11 +57,12 @@ describe("FreeGameCreatorService", () => {
     });
 
     // Test generateIScenes
-    it("should create 200 elements", () => {
+    it("should create 10 elements", () => {
         const modTypes: ModificationType[] = [];
-        const objNumber: number = 200;
+        const objNumber: number = 10;
         expect(freeGameCreatorService.generateIScenes(objNumber, modTypes, Themes.Geometry).originalObjects.length).to.eql(objNumber);
     });
+
     // Test handleCollision
     it("should only have objects with a distance grater than 43", () => {
         const modTypes: ModificationType[] = [];
@@ -117,5 +119,15 @@ describe("FreeGameCreatorService", () => {
             }
         }
         expect(colDiffCounter).to.eql(DIFF);
+    });
+
+    // test render earth
+    it("should return a valid earth 3D object", () => {
+        const earth: IObject.IJson3DObject = freeGameCreatorService["renderEarth"]();
+        for (let i = 0; i <= Coordinate.Z; i++) {
+            expect(earth.position[i]).to.be.eql(0);
+        }
+
+        return expect(earth.type).to.be.eql(ObjectGeometry.earth);
     });
 });
