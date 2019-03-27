@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import {Injectable} from "@angular/core";
 import * as THREE from "three";
 import {sleep} from "../../../../../common/util/util";
 
@@ -12,6 +12,7 @@ export class FreeGamePhotoService {
   private readonly backGroundColor: number = 0x0B7B90;
   private readonly renderSize: number = 400;
   private readonly cameraZ: number = 200;
+  private readonly WAIT_TIME = 1500;
 
   public async takePhoto(scene: THREE.Scene): Promise<string> {
     const divElem: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
@@ -29,7 +30,7 @@ export class FreeGamePhotoService {
     renderer.setSize(this.renderSize, this.renderSize);
     divElem.appendChild(renderer.domElement);
     renderer.render(scene, camera);
-    await sleep(1500);
+    await sleep(this.WAIT_TIME);
     renderer.render(scene, camera);
     return (divElem.children[0] as HTMLCanvasElement).toDataURL();
   }
