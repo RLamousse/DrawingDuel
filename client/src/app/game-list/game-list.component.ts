@@ -27,8 +27,8 @@ export class GameListComponent implements OnInit {
     });
 
     this.gameService.getFreeGames().subscribe((freeGamesToPush: IFreeGame[]) => {
-      this.gameService.pushFreeGames(freeGamesToPush);
-      this.gameService.updateFreeGameImages();
+      this.gameService.pushFreeGames(freeGamesToPush).catch((value: Error) => {throw value; });
+      this.gameService.updateFreeGameImages().catch((value: Error) => {throw value; });
     });
     this.socket.onEvent(SocketEvent.DELETE).subscribe(this.reloadList);
   }
