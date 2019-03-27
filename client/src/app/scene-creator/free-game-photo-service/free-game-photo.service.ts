@@ -12,7 +12,7 @@ export class FreeGamePhotoService {
   private readonly backGroundColor: number = 0x0B7B90;
   private readonly renderSize: number = 400;
   private readonly cameraZ: number = 200;
-  private readonly WAIT_TIME = 1500;
+  private readonly WAIT_TIME: number = 1500;
 
   public async takePhoto(scene: THREE.Scene): Promise<string> {
     const divElem: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
