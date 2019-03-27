@@ -56,7 +56,6 @@ export class SceneRendererService {
 
   private readonly BLINK_INTERVAL_MS: number = 250;
   private readonly INVISIBLE_INTERVAL_MS: number = this.BLINK_INTERVAL_MS / X_FACTOR;
-  // et la mettre dans utile si necessaire
   private readonly WATCH_THREAD_FINISH_INTERVAL: number = 30;
   public gameState: IFreeGameState;
 
@@ -64,7 +63,7 @@ export class SceneRendererService {
   private readonly SCENE_TYPE_STRING = "Scene";
 
   public constructor(private renderUpdateService: RenderUpdateService) {
-    this.gameState = {isCheatModeActive: false, isWaitingInThread: false, foundDifference: []}
+    this.gameState = {isCheatModeActive: false, isWaitingInThread: false, foundDifference: []};
   }
 
   private setRenderer(): void {
@@ -163,7 +162,8 @@ export class SceneRendererService {
     this.gameState.cheatDiffData = new Set<THREE.Object3D>();
     (await callBackFunction()).forEach((jsonValue: IJson3DObject) => {
       this.scene.children.concat(this.modifiedScene.children).forEach((objectValue: THREE.Object3D) => {
-        if (this.isObjectAtSamePlace(jsonValue.position, objectValue.position) && (objectValue instanceof THREE.Mesh || objectValue instanceof THREE.Scene)) {
+        if (this.isObjectAtSamePlace(jsonValue.position, objectValue.position) &&
+          (objectValue instanceof THREE.Mesh || objectValue instanceof THREE.Scene)) {
           (this.gameState.cheatDiffData as Set<THREE.Object3D>).add(objectValue);
         }
       });
