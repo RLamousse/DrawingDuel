@@ -144,28 +144,36 @@ export class FreeGameCreatorService {
                     modifiedObjects.splice(index, 1);
                     break;
                 case ModificationType.add:
-                    let object: IObject.IJson3DObject;
-                    (modifiedObjects[0].gameType === Themes.Geometry) ?
-                        object = this.generate3DObject() :
-                        object = this.object3DCreatorService.createThematicObject();
-                    object = this.handleCollision(object, modifiedObjects);
-                    modifiedObjects.push(object);
-                    modObjects.push(JSON.parse(JSON.stringify(object)));
+                    this.addObject(modifiedObjects, modObjects);
                     break;
                 case ModificationType.changeColor:
-                    const MASK: number = 0xFFFFFF;
-                    const TEXTURE_SIZE: number = 4;
-                    (modifiedObjects[0].gameType === Themes.Geometry) ?
-                        modifiedObjects[index].color = (Math.random() * MASK) :
-                        modifiedObjects[index].texture = ObjectTexture[ObjectTexture[this.getRandomValue(0, TEXTURE_SIZE)]];
+                    this.changeColor(modifiedObjects, index);
                     modObjects.push(JSON.parse(JSON.stringify(modifiedObjects[index])));
                     break;
-                default:
-                    break;
+                default: {
+                    break; }
             }
         }
 
         return modObjects;
+    }
+
+    private addObject(modifiedObjects: IObject.IJson3DObject[], modObjects: IObject.IJson3DObject[]): void {
+        let object: IObject.IJson3DObject;
+        (modifiedObjects[0].gameType === Themes.Geometry) ?
+            object = this.generate3DObject() :
+            object = this.object3DCreatorService.createThematicObject();
+        object = this.handleCollision(object, modifiedObjects);
+        modifiedObjects.push(object);
+        modObjects.push(JSON.parse(JSON.stringify(object)));
+    }
+
+    private changeColor(modifiedObjects: IObject.IJson3DObject[], index: number): void {
+        const MASK: number = 0xFFFFFF;
+        const TEXTURE_SIZE: number = 4;
+        (modifiedObjects[0].gameType === Themes.Geometry) ?
+            modifiedObjects[index].color = (Math.random() * MASK) :
+            modifiedObjects[index].texture = ObjectTexture[ObjectTexture[this.getRandomValue(0, TEXTURE_SIZE)]];
     }
 
     private generateRandomPosition(): number[] {

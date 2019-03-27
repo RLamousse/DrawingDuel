@@ -117,7 +117,7 @@ export class RenderUpdateService {
     }
   }
 
-  private isSameCenter (center1: THREE.Vector3, center2: THREE.Vector3): boolean {
+  private isSameCenter(center1: THREE.Vector3, center2: THREE.Vector3): boolean {
     return (center1.x === center2.x &&
       center1.y === center2.y &&
       center1.z === center2.z);
