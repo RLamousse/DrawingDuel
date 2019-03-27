@@ -47,6 +47,10 @@ export class SimpleGameService {
     return this._differenceCountSubject;
   }
 
+  public resetDifferenceCount(): void {
+    this._differenceCountSubject = new Subject();
+  }
+
   public async validateDifferenceAtPoint(point: IPoint): Promise<DifferenceCluster> {
     this.assertAlreadyFoundDifference(point);
 

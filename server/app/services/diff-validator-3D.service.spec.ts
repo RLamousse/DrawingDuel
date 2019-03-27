@@ -25,6 +25,7 @@ describe("A service validating if there is a difference at a coord for a free ga
         },
         bestSoloTimes: [],
         bestMultiTimes: [],
+        toBeDeleted: false,
     };
     beforeEach(() => {
         axiosMock = new AxiosAdapter(Axios);

@@ -31,7 +31,8 @@ export class SimpleGamesCollectionService extends CollectionService<ISimpleGame>
             !!(game || ({} as Partial<ISimpleGame>)).bestMultiTimes ||
             !!(game || ({} as Partial<ISimpleGame>)).originalImage ||
             !!(game || ({} as Partial<ISimpleGame>)).modifiedImage ||
-            !!(game || ({} as Partial<ISimpleGame>)).diffData;
+            !!(game || ({} as Partial<ISimpleGame>)).diffData ||
+            typeof (game || ({} as Partial<ISimpleGame>)).toBeDeleted !== "undefined";
     }
 
     public async create(data: ISimpleGame): Promise<Message> {

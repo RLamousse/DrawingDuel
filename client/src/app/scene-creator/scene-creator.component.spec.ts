@@ -1,11 +1,15 @@
 import {ComponentFixture, TestBed} from "@angular/core/testing";
-import {ActivatedRoute} from "@angular/router";
+import {MatDialogModule, MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
+import { ActivatedRoute, Router } from "@angular/router";
 import {of, Observable, Subject} from "rxjs";
 import * as THREE from "three";
 import {IFreeGame} from "../../../../common/model/game/free-game";
-import {DiffCounterComponent} from "../diff-counter/diff-counter.component";
+import { DiffCounterComponent } from "../diff-counter/diff-counter.component";
+import { EndGameNotifComponent } from "../diff-counter/end-game-notif/end-game-notif.component";
 import {GameService} from "../game.service";
+import { MessageBoxComponent } from "../message-box/message-box.component";
 import {IScene} from "../scene-interface";
+import {SocketService} from "../socket.service";
 import {TimerComponent} from "../timer/timer.component";
 import {FreeGameCreatorService} from "./FreeGameCreator/free-game-creator.service";
 import {SceneCreatorComponent} from "./scene-creator.component";
@@ -67,6 +71,7 @@ describe("SceneCreatorComponent", () => {
       bestSoloTimes: [],
       gameName: "TEST",
       scenes: {modifiedObjects: [], originalObjects: [], differentObjects: []},
+      toBeDeleted: false,
     };
 
     public getFreeGameByName(): Observable<IFreeGame> {
@@ -78,6 +83,7 @@ describe("SceneCreatorComponent", () => {
 
   let mockedGameService: MockGameService;
 
+  // tslint:disable-next-line:max-func-body-length
   beforeEach(() => {
     mockSceneCreatorService = new MockSceneCreatorService();
     mockFreeGameCreatorService = new MockFreeGameCreatorService();
@@ -85,6 +91,8 @@ describe("SceneCreatorComponent", () => {
     TestBed.configureTestingModule(
       {
         providers: [
+          // tslint:disable-next-line:max-classes-per-file
+          { provide: Router, useClass: class { public navigate: jasmine.Spy = jasmine.createSpy("navigate"); } },
           {provide: SceneRendererService, useValue: mockSceneCreatorService},
           {
             provide: ActivatedRoute,
@@ -98,9 +106,15 @@ describe("SceneCreatorComponent", () => {
           },
           {provide: GameService, useValue: mockedGameService},
           {provide: FreeGameCreatorService, useValue: mockFreeGameCreatorService},
+          // tslint:disable-next-line:max-classes-per-file
+          { provide: Router, useClass: class { public navigate: jasmine.Spy = jasmine.createSpy("navigate"); } },
+          {provide: MatDialogRef, useValue: {}},
+          {provide: MAT_DIALOG_DATA, useValue: {}, },
+          SocketService,
 
         ],
-        declarations: [SceneCreatorComponent, TimerComponent, DiffCounterComponent],
+        imports: [MatDialogModule],
+        declarations: [SceneCreatorComponent, TimerComponent, DiffCounterComponent, EndGameNotifComponent, MessageBoxComponent],
 
       });
 
