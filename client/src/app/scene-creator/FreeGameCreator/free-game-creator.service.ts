@@ -156,13 +156,4 @@ export class FreeGameCreatorService {
 
     return createdObject;
   }
-
-  // private generateThematicObject(object: thematicObject): void {
-  //   const loader: GLTFLoader = new GLTFLoader();
-  //   loader.load(object.name, (gltf: THREE.GLTF) => {
-  //     gltf.scene.scale.set(object.scale, object.scale, object.scale);
-  //     // gltf.scene.rotateY(10);
-  //     this.scene.add(gltf.scene);
-  //   });
-  // }
 }
