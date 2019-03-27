@@ -14,9 +14,6 @@ export const AVAILABLE_THEMES: SelectType<Themes>[] = [
   {
     viewValue: "Thème - Space", value: Themes.Space,
   },
-  {
-    viewValue: "Thème - Sanic the Hedgedog", value: Themes.Sanic,
-  },
 ];
 
 export const AVAILABLE_OBJECT_TYPES: SelectType<ObjectGeometry>[] = [

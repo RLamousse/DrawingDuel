@@ -105,17 +105,6 @@ describe("FreeGameCreatorService", () => {
     expect(service).toBeDefined();
   });
 
-  // Test createScenes
-  // it("should create empty scenes => objects array empty and defined scenes", () => {
-  //   const emptyScenes: IObject.IScenesJSON = {originalObjects: [], modifiedObjects: []};
-  //   const service: FreeGameCreatorService = TestBed.get(FreeGameCreatorService);
-  //   const scenes: IScene = service.createScenes(emptyScenes);
-  //   expect(service["objects"].length).toEqual(0);
-  //   expect(service["modifiedObjects"].length).toEqual(0);
-  //   expect(scenes.scene).toBeDefined();
-  //   expect(scenes.modifiedScene).toBeDefined();
-  // });
-
   it("should create scenes with the 5 different types of objects in the original, only 3 in the modified", () => {
     const service: FreeGameCreatorService = TestBed.get(FreeGameCreatorService);
     service.createScenes(dummyScenes);
