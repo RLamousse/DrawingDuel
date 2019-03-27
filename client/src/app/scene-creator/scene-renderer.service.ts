@@ -161,10 +161,9 @@ export class SceneRendererService {
 
   private async loadCheatData(callBackFunction: () => Promise<IJson3DObject[]>): Promise<void> {
     this.gameState.cheatDiffData = new Set<THREE.Object3D>();
-    console.log((await callBackFunction()));
     (await callBackFunction()).forEach((jsonValue: IJson3DObject) => {
       this.scene.children.concat(this.modifiedScene.children).forEach((objectValue: THREE.Object3D) => {
-        if (this.isObjectAtSamePlace(jsonValue.position, objectValue.position) && objectValue instanceof THREE.Mesh) {
+        if (this.isObjectAtSamePlace(jsonValue.position, objectValue.position) && (objectValue instanceof THREE.Mesh || objectValue instanceof THREE.Scene)) {
           (this.gameState.cheatDiffData as Set<THREE.Object3D>).add(objectValue);
         }
       });
@@ -285,8 +284,14 @@ export class SceneRendererService {
     playRandomSound(FOUND_DIFFERENCE_SOUNDS);
   }
 
-  private changeVisibility(value: THREE.Mesh): void {
-    Array.isArray(value.material) ? value.material.forEach((material) => {material.visible = !material.visible; } ) :
-      value.material.visible = !value.material.visible;
+  private changeVisibility(value: THREE.Mesh|THREE.Scene): void {
+    if (value instanceof  THREE.Mesh) {
+      Array.isArray(value.material) ? value.material.forEach((material) => {material.visible = !material.visible; } ) :
+        value.material.visible = !value.material.visible;
+    } else {
+      value.children.forEach((valueChild: THREE.Object3D) => {
+        this.changeVisibility(valueChild as THREE.Scene);
+      });
+    }
   }
 }
