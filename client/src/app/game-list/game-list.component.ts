@@ -1,10 +1,7 @@
 import { Component, Input, OnInit } from "@angular/core";
-import {WebsocketMessage} from "../../../../common/communication/messages/message";
-import {SocketEvent} from "../../../../common/communication/socket-events";
 import { IFreeGame } from "../../../../common/model/game/free-game";
 import { ISimpleGame } from "../../../../common/model/game/simple-game";
 import { GameService } from "../game.service";
-import {SocketService} from "../socket.service";
 
 @Component({
   selector: "app-game-list",
@@ -17,7 +14,7 @@ export class GameListComponent implements OnInit {
   @Input() protected readonly rightButton: string = "joindre";
   @Input() protected readonly leftButton: string = "jouer";
 
-  public constructor(private gameService: GameService, private socket: SocketService, ) {
+  public constructor(private gameService: GameService) {
   }
 
   public ngOnInit(): void {

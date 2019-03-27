@@ -10,7 +10,6 @@ import {GameService} from "../game.service";
 import {FreeGameCreatorService} from "../scene-creator/FreeGameCreator/free-game-creator.service";
 import {FreeGamePhotoService} from "../scene-creator/free-game-photo-service/free-game-photo.service";
 import {IScene} from "../scene-interface";
-import {SocketService} from "../socket.service";
 import {GameListComponent} from "./game-list.component";
 
 describe("GameListComponent", () => {
@@ -54,7 +53,6 @@ describe("GameListComponent", () => {
           {provide: GameService, useValue: mockedGameService},
           FreeGamePhotoService,
           {provide: FreeGameCreatorService, useValue: mockedFreeGameCreator},
-          SocketService,
         ],
       });
     fixture = TestBed.createComponent(GameListComponent);
