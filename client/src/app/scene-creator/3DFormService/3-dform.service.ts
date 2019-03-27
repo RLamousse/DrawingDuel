@@ -67,4 +67,13 @@ export class Form3DService {
     mesh.rotateY(obj.rotation[Coordinate.Y]);
     mesh.rotateZ(obj.rotation[Coordinate.Z]);
   }
+
+  public setUpThematicParameters(object: IObject.IJson3DObject, gltf: THREE.GLTF): void {
+    const scaleFactor: number = object.scale;
+    gltf.scene.scale.set(scaleFactor, scaleFactor, scaleFactor);
+    gltf.scene.rotateX(object.rotation[Coordinate.X]);
+    gltf.scene.rotateY(object.rotation[Coordinate.Y]);
+    gltf.scene.rotateZ(object.rotation[Coordinate.Z]);
+    gltf.scene.position.set(object.position[Coordinate.X], object.position[Coordinate.Y], object.position[Coordinate.Z]);
+  }
 }

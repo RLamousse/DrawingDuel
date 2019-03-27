@@ -27,6 +27,8 @@ export class DiffValidator3DController {
                             color: diffObj.color,
                             type: diffObj.type,
                             rotation: diffObj.rotation,
+                            scale: diffObj.scale,
+                            gameType: diffObj.gameType,
                         };
 
                         return res.json(response);

@@ -7,6 +7,7 @@ import * as HttpStatus from "http-status-codes";
 import {DB_FREE_GAME, SERVER_BASE_URL} from "../../../common/communication/routes";
 import {NonExistentGameError} from "../../../common/errors/database.errors";
 import {Object3DIsNotADifference} from "../../../common/errors/services.errors";
+import {Themes} from "../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
 import {IJson3DObject} from "../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
 import {IFreeGame} from "../../../common/model/game/free-game";
 import {DiffValidator3DService} from "./diff-validator-3D.service";
@@ -21,7 +22,14 @@ describe("A service validating if there is a difference at a coord for a free ga
         scenes : {
             originalObjects: [],
             modifiedObjects: [],
-            differentObjects: [{position: [0, 0, 0], type: 0, rotation: [0, 0, 0], color: 0xFFFFFF}],
+            differentObjects: [{
+                position: [0, 0, 0],
+                type: 0,
+                rotation: [0, 0, 0],
+                color: 0xFFFFFF,
+                gameType: Themes.Geometry,
+                scale: 1,
+            }],
         },
         bestSoloTimes: [],
         bestMultiTimes: [],

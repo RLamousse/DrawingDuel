@@ -72,7 +72,7 @@ export class GameService {
     }
   }
 
-  public pushFreeGames(freeGamesToModify: IFreeGame[]): void {
+  public async pushFreeGames(freeGamesToModify: IFreeGame[]): Promise<void> {
     this.freeGames = [];
     this.extendedFreeGames = [];
     this.convertScoresObject(freeGamesToModify);
@@ -83,33 +83,33 @@ export class GameService {
     }
     for (const game of this.freeGames) {
       if (!game.toBeDeleted) {
-        const scenes: IScene = this.freeGameCreatorService.createScenes(game.scenes);
+        const img: string = "";
         const extendedFreeGame: IExtendedFreeGame = {
-        thumbnail: this.photoService.takePhoto(scenes.scene),
-        scenes: game.scenes,
-        gameName: game.gameName,
-        bestSoloTimes: game.bestSoloTimes,
-        bestMultiTimes: game.bestMultiTimes,
-        toBeDeleted: game.toBeDeleted,
+          thumbnail: img,
+          scenes: game.scenes,
+          gameName: game.gameName,
+          bestSoloTimes: game.bestSoloTimes,
+          bestMultiTimes: game.bestMultiTimes,
+          toBeDeleted: game.toBeDeleted,
         };
         this.extendedFreeGames.push(extendedFreeGame);
       }
     }
   }
 
-  public getSimpleGames(): Observable < ISimpleGame[] > {
+  public getSimpleGames(): Observable<ISimpleGame[]> {
     return this.http.get<ISimpleGame[]>(this.SIMPLE_GAME_BASE_URL).pipe(
       catchError(this.handleError<ISimpleGame[]>(this.GET_SIMPLEGAME_ERROR)),
     );
   }
 
-  public getFreeGames(): Observable < IFreeGame[] > {
+  public getFreeGames(): Observable<IFreeGame[]> {
     return this.http.get<IFreeGame[]>(this.FREE_GAME_BASE_URL).pipe(
       catchError(this.handleError<IFreeGame[]>(this.GET_FREEGAME_ERROR)),
     );
   }
 
-  public getFreeGameByName(gameName: string): Observable < IFreeGame > {
+  public getFreeGameByName(gameName: string): Observable<IFreeGame> {
     return this.http.get<IFreeGame>(this.FREE_GAME_BASE_URL + gameName + "/").pipe(
       catchError(this.handleError<IFreeGame>(this.GET_FREEGAME_BY_NAME_ERROR)),
     );
@@ -157,10 +157,18 @@ export class GameService {
     });
   }
 
-  private handleError<T>(request: string, result ?: T): (error: Error) => Observable < T > {
+  private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {
 
     return (error: Error): Observable<T> => {
       return of(result as T);
     };
+  }
+
+  public async updateFreeGameImages(): Promise<void> {
+
+    for (const freeGame of this.extendedFreeGames) {
+      const scenes: IScene = this.freeGameCreatorService.createScenes(freeGame.scenes);
+      await this.photoService.takePhoto(scenes.scene).then((value) => {freeGame.thumbnail = value; });
+    }
   }
 }

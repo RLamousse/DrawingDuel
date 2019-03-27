@@ -192,7 +192,10 @@ export class GameCreatorService {
     private generateScene(numberOfObjects: number, theme: Themes, modTypes: ModificationType[]): IScenesDB {
         if (theme === Themes.Geometry) {
 
-            return this.freeGameCreatorService.generateIScenes(numberOfObjects, modTypes);
+            return this.freeGameCreatorService.generateIScenes(numberOfObjects, modTypes, Themes.Geometry);
+        } else if (theme === Themes.Space) {
+
+            return this.freeGameCreatorService.generateIScenes(numberOfObjects, modTypes, Themes.Space);
         }
         throw new NonExistentThemeError();
     }

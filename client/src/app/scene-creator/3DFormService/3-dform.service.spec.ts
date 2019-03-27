@@ -1,7 +1,10 @@
-import { TestBed } from "@angular/core/testing";
-import { ObjectGeometry } from "../../../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
+import {TestBed} from "@angular/core/testing";
+import {
+  ObjectGeometry,
+  Themes
+} from "../../../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
 import * as IObject from "../../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
-import { Form3DService } from "./3-dform.service";
+import {Form3DService} from "./3-dform.service";
 
 /* tslint:disable:no-magic-numbers */
 describe("3DFormService", () => {
@@ -21,6 +24,8 @@ describe("3DFormService", () => {
       type: ObjectGeometry.cube,
       color: 0xF4F4F4, position: [25, 12, 2],
       rotation: [0, 0, 0], sideLenght: 10,
+      scale: 1,
+      gameType: Themes.Geometry,
     };
     const cube: THREE.Mesh = service.createCube(dummyCube);
 
@@ -41,6 +46,8 @@ describe("3DFormService", () => {
       heightSegments: 32,
       radius: 10,
       widthSegments: 32,
+      scale: 1,
+      gameType: Themes.Geometry,
     };
     const sphere: THREE.Mesh = service.createSphere(dummySphere);
 
@@ -61,6 +68,8 @@ describe("3DFormService", () => {
       height: 10,
       radialSegment: 32,
       radius: 10,
+      scale: 1,
+      gameType: Themes.Geometry,
     };
     const cone: THREE.Mesh = service.createCone(dummyCone);
 
@@ -82,6 +91,8 @@ describe("3DFormService", () => {
       height: 10,
       radiusSegment: 32,
       topRadius: 10,
+      scale: 1,
+      gameType: Themes.Geometry,
     };
     const cylinder: THREE.Mesh = service.createCylinder(dummyCylinder);
 
@@ -104,6 +115,8 @@ describe("3DFormService", () => {
       radiusSegment: 3,
       botRadius: 10,
       height: 10,
+      scale: 1,
+      gameType: Themes.Geometry,
     };
     const pyramid: THREE.Mesh = service.createPyramid(dummyPyramid);
 
