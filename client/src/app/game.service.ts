@@ -2,8 +2,8 @@ import {HttpClient} from "@angular/common/http";
 import {Injectable} from "@angular/core";
 import {of, Observable} from "rxjs";
 import {catchError} from "rxjs/operators";
-import {IJson3DObject} from "../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
 import {DB_FREE_GAME, DB_SIMPLE_GAME, RESET_SCORES, SERVER_BASE_URL} from "../../../common/communication/routes";
+import {IJson3DObject} from "../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
 import {IExtendedFreeGame} from "../../../common/model/game/extended-free-game";
 import {IFreeGame} from "../../../common/model/game/free-game";
 import {IGame} from "../../../common/model/game/game";
@@ -156,7 +156,6 @@ export class GameService {
       });
     });
   }
-
 
   private handleError<T>(request: string, result ?: T): (error: Error) => Observable < T > {
 
