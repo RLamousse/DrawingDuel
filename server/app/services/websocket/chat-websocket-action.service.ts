@@ -1,6 +1,6 @@
 import {format} from "date-and-time";
 import {injectable} from "inversify";
-import * as io from "socket.io";
+import {Socket} from "socket.io";
 import {
     ChatMessage,
     ChatMessagePlayerCount,
@@ -18,7 +18,7 @@ export class ChatWebsocketActionService extends WebsocketActionService {
     private readonly _DIFF_ERROR_BASE_MESSAGE: string = " – Erreur";
     private readonly _WRONG_INPUT_FORMAT: string = " – Voici pourquoi les default existent dans les switchs.";
 
-    public execute(data: WebsocketMessage<ChatMessage>, socket: io.Socket): void {
+    public execute(data: WebsocketMessage<ChatMessage>, socket: Socket): void {
         const message: WebsocketMessage<string> = this.generateMessage(data.body);
         socket.emit(this._EVENT_TYPE, message);
         switch (data.body.type) {
