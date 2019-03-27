@@ -22,6 +22,26 @@ const mockedBaseObject: IObject.IJson3DObject = {
     gameType: Themes.Geometry,
 };
 
+const mockedAstroObject: IObject.IJson3DObject = {
+    type: ObjectGeometry.astronaut,
+    position: [0, 0, 0],
+    rotation: [0, 0, 0],
+    color: Math.random() * MASK,
+    scale: 1,
+    gameType: Themes.Space,
+};
+
+const mockedAstroObject2: IObject.IJson3DObject = {
+    type: ObjectGeometry.astronaut,
+    position: [0, 0, 0],
+    rotation: [0, 0, 0],
+    color: Math.random() * MASK,
+    scale: 1,
+    gameType: Themes.Space,
+};
+
+const objects: IObject.IJson3DObject[] = [];
+
 const mockedObject3DCreator = {
     createCube: () => {
         mockedBaseObject.type = ObjectGeometry.cube;
@@ -129,5 +149,27 @@ describe("FreeGameCreatorService", () => {
         }
 
         return expect(earth.type).to.be.eql(ObjectGeometry.earth);
+    });
+
+    // test setAstronautCloseFromEarth
+    it("should go threw the collision and set a new position and scale", () => {
+        const object: IObject.IJson3DObject = mockedAstroObject;
+        objects.push(mockedAstroObject2);
+        freeGameCreatorService["setAstronautCloseFromEarth"](object, objects);
+        const TEST: number = 4;
+        expect(object.scale).to.be.eql(TEST);
+        const MAXINDEX: number = 3;
+        const FURTHER_FROM_EARTH: number = 70;
+        for (let i = 0; i < MAXINDEX; i++) {
+            expect(object.position[i]).to.be.lessThan(FURTHER_FROM_EARTH);
+            expect(object.position[i]).to.be.greaterThan(- FURTHER_FROM_EARTH);
+        }
+    });
+
+    // test randomNegative
+    it("should return 1 or -1", () => {
+
+        return expect(Math.abs(freeGameCreatorService["randomNegative"]()))
+            .to.be.eql(1);
     });
 });
