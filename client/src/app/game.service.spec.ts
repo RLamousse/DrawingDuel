@@ -125,7 +125,7 @@ describe("GameService", () => {
   });
 
   it ("pushFreeGames should push in extendedFreeGames", () => {
-    serviceGame.pushFreeGames(mockExtendedFreeGameList);
+    serviceGame.pushFreeGames(mockExtendedFreeGameList).catch((valeur: Error) => {throw valeur; });
 
     return expect(serviceGame.extendedFreeGames).not.toBeNull;
   });
