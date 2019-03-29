@@ -22,10 +22,17 @@ export class ObjectCollisionService {
     this.modifiedObjects = modified;
   }
 
-  public computeCollision(velocity: THREE.Vector3): boolean {
-    return !!(this.camera && this.originalObjects && this.modifiedObjects);
-    const direction = this.computeDirection(velocity);
+  public computeCollision(velocity: THREE.Vector3): void {
+    const direction: THREE.Vector3 = this.computeDirection(velocity);
+    const raycast: THREE.Raycaster = new THREE.Raycaster(this.camera.position, direction);
+    const originSceneIntersect: THREE.Intersection[] = raycast.intersectObjects(this.originalObjects, true);
+    const modSceneIntersect: THREE.Intersection[] = raycast.intersectObjects(this.modifiedObjects, true);
 
+    if (originSceneIntersect.length !== 0 || modSceneIntersect.length !== 0) {
+      if (originSceneIntersect[0].distanceToRay as number < 2 || modSceneIntersect[0].distanceToRay as number < 2) {
+        velocity.set(0, 0, 0);
+      }
+    }
   }
 
   private computeDirection(velocity: THREE.Vector3): THREE.Vector3 {
