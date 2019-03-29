@@ -21,4 +21,8 @@ export class ObjectCollisionService {
     this.originalObjects = original;
     this.modifiedObjects = modified;
   }
+
+  public computeCollision(): boolean {
+    return !!(this.camera && this.originalObjects && this.modifiedObjects);
+  }
 }
