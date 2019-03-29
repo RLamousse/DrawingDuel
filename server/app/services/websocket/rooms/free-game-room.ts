@@ -1,11 +1,7 @@
 import {IFreeGame} from "../../../../../common/model/game/free-game";
 import IFreeGameState from "../../../../../common/model/game/free-game-state";
-import {IInteractionData} from "../../../model/room/game-room";
+import {ISimpleGameInteractionData} from "../../../../../common/model/rooms/interaction";
 import {AbstractGameRoom} from "./abstract-game-room";
-
-export interface ISimpleGameInteractionData extends IInteractionData {
-    coord: number[];
-}
 
 export class FreeGameRoom extends AbstractGameRoom<IFreeGame> {
 

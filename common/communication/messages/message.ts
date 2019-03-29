@@ -1,3 +1,4 @@
+import {IInteractionData} from "../../model/rooms/interaction";
 import { SocketEvent } from "../socket-events";
 import {IRecordTime} from "../../model/game/record-time";
 
@@ -48,6 +49,14 @@ export interface UpdateScoreMessage {
 
 export interface RoomMessage {
     gameName: string;
+}
+
+export interface RoomCreationMessage extends RoomMessage {
+    playerCount: number;
+}
+
+export interface RoomInteractionMessage extends RoomMessage {
+    interactionData: IInteractionData;
 }
 
 export function isAWebsocketMessage (object: any) {

@@ -1,7 +1,7 @@
 import {NextFunction, Request, Response, Router} from "express";
 import * as HttpStatus from "http-status-codes";
 import {inject, injectable} from "inversify";
-import multer = require("multer");
+import * as multer from "multer";
 import {InvalidSizeBitmapError} from "../../../common/errors/bitmap.errors";
 import {Bitmap} from "../../../common/image/bitmap/bitmap";
 import {BITMAP_MEME_TYPE} from "../../../common/image/bitmap/bitmap-utils";

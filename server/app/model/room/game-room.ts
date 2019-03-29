@@ -1,6 +1,4 @@
-export interface IInteractionData {
-    clientId: string;
-}
+import {IInteractionData} from "../../../../common/model/rooms/interaction";
 
 export interface IGameRoom {
     gameName: string;

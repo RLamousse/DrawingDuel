@@ -2,7 +2,7 @@ import {format} from "date-and-time";
 import {inject, injectable} from "inversify";
 import {Socket} from "socket.io";
 import {
-    ChatMessage,
+    ChatMessage, RoomCreationMessage,
     RoomMessage,
     UpdateScoreMessage,
     WebsocketMessage
@@ -68,8 +68,12 @@ export class WebsocketController {
     }
 
     private configureRoomService(socket: Socket): void {
-        socket.on(SocketEvent.CHECK_IN, (message: WebsocketMessage<RoomMessage>) => {
-            this.hotelRoomService.checkInGameRoom(socket, message.body.gameName);
+        socket.on(SocketEvent.CHECK_IN, (message: WebsocketMessage<RoomCreationMessage>) => {
+            this.hotelRoomService.checkInGameRoom(
+                socket,
+                message.body.gameName,
+                message.body.playerCount
+            );
         });
 
         socket.on(SocketEvent.FETCH, () => {

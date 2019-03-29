@@ -1,18 +1,19 @@
 import {IGame} from "../../../../../common/model/game/game";
-import {IGameRoom, IInteractionData} from "../../../model/room/game-room";
+import {IInteractionData} from "../../../../../common/model/rooms/interaction";
+import {IGameRoom} from "../../../model/room/game-room";
 
 export abstract class AbstractGameRoom<T extends IGame> implements IGameRoom {
 
     protected readonly _id: string;
     protected readonly _game: T;
-    protected readonly _nbPlayers: number;
+    protected readonly _playerCount: number;
 
     protected _connectedPlayers: string[];
 
-    public constructor(id: string, game: T, nbPlayers: number = 1) {
+    protected constructor(id: string, game: T, nbPlayers: number = 1) {
         this._id = id;
         this._game = game;
-        this._nbPlayers = nbPlayers;
+        this._playerCount = nbPlayers;
     }
 
     public abstract interact(interactionData: IInteractionData): void;
@@ -32,7 +33,7 @@ export abstract class AbstractGameRoom<T extends IGame> implements IGameRoom {
     }
 
     public get vacant(): boolean {
-        return this._connectedPlayers.length < this._nbPlayers;
+        return this._connectedPlayers.length < this._playerCount;
     }
 
 }

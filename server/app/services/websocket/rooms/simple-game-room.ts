@@ -1,12 +1,7 @@
 import {ISimpleGame} from "../../../../../common/model/game/simple-game";
 import ISimpleGameState from "../../../../../common/model/game/simple-game-state";
-import {IPoint} from "../../../../../common/model/point";
-import {IInteractionData} from "../../../model/room/game-room";
+import {ISimpleGameInteractionData} from "../../../../../common/model/rooms/interaction";
 import {AbstractGameRoom} from "./abstract-game-room";
-
-export interface ISimpleGameInteractionData extends IInteractionData {
-    coord: IPoint;
-}
 
 export class SimpleGameRoom extends AbstractGameRoom<ISimpleGame> {
 

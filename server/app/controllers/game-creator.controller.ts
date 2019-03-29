@@ -1,5 +1,4 @@
-import {NextFunction, Request, Response, Router} from "express";
-import e = require("express");
+import {NextFunction, Request, RequestHandler, Response, Router} from "express";
 import {inject, injectable} from "inversify";
 import * as multer from "multer";
 import {GAME_NAME_FIELD} from "../../../common/communication/requests/game-creator.controller.request";
@@ -19,7 +18,7 @@ import {
 @injectable()
 export class GameCreatorController {
     private readonly _multer: multer.Instance;
-    private readonly _cpUpload: e.RequestHandler;
+    private readonly _cpUpload: RequestHandler;
 
     public constructor(@inject(Types.GameCreatorService) private gameCreatorService: GameCreatorService) {
         this._multer = multer({
