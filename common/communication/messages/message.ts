@@ -46,6 +46,10 @@ export interface UpdateScoreMessage {
     isSolo: boolean;
 }
 
+export interface RoomMessage {
+    gameName: string;
+}
+
 export function isAWebsocketMessage (object: any) {
     return (object.title !== undefined && object.body !== undefined);
 }

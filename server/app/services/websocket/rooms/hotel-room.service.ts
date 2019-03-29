@@ -1,11 +1,8 @@
 import {injectable} from "inversify";
 import "reflect-metadata";
+import {Socket} from "socket.io";
+import {IRoomInfo} from "../../../../../common/model/rooms/room-info";
 import {IGameRoom} from "../../../model/room/game-room";
-
-export interface IRoomInfo {
-    gameName: string;
-    vacant: boolean;
-}
 
 @injectable()
 export class HotelRoomService {
@@ -16,8 +13,11 @@ export class HotelRoomService {
         this._rooms = new Map<string, IGameRoom>();
     }
 
-    public checkInGameRoom(): void {
+    public checkInGameRoom(socket: Socket, gameName: string): void {
         // TODO Create a room
+
+        // TODO Register handlers:
+        this.registerGameRoomHandlers(socket);
     }
 
     public fetchGameRooms(): IRoomInfo[] {
@@ -30,11 +30,20 @@ export class HotelRoomService {
             });
     }
 
-    public joinGameRoom(): void {
+    public joinGameRoom(socket: Socket, gameName: string): void {
         // TODO Add player to room
     }
 
-    public handleGameRoomRequests(): void {
+    private registerGameRoomHandlers(socket: Socket): void {
         // TODO forward calls to rooms
+        // socket.on(SocketEvent.INTERACT, (message: WebsocketMessage) => {
+        //     this.hotelRoomService.registerGameRoomHandlers(socket);
+        // });
+        // socket.on(SocketEvent.CHECK_OUT, (message: WebsocketMessage) => {
+        //     this.deleteAction.execute(message, socket);
+        // });
+        // socket.on(SocketEvent.READY, (message: WebsocketMessage) => {
+        //     this.deleteAction.execute(message, socket);
+        // });
     }
 }
