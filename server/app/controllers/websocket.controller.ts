@@ -1,12 +1,12 @@
-import { format } from "date-and-time";
-import { inject, injectable } from "inversify";
+import {format} from "date-and-time";
+import {inject, injectable} from "inversify";
 import * as io from "socket.io";
 import {ChatMessage, UpdateScoreMessage, WebsocketMessage} from "../../../common/communication/messages/message";
-import { SocketEvent } from "../../../common/communication/socket-events";
-import { ChatWebsocketActionService } from "../services/websocket/chat-websocket-action.service";
-import { CheckUserWebsocketActionService } from "../services/websocket/check-user-websocket-action.service";
-import { DeleteWebsocketActionService } from "../services/websocket/delete-websocket-action.service";
-import { DummyWebsocketActionService } from "../services/websocket/dummy-websocket-action.service";
+import {SocketEvent} from "../../../common/communication/socket-events";
+import {ChatWebsocketActionService} from "../services/websocket/chat-websocket-action.service";
+import {CheckUserWebsocketActionService} from "../services/websocket/check-user-websocket-action.service";
+import {DeleteWebsocketActionService} from "../services/websocket/delete-websocket-action.service";
+import {DummyWebsocketActionService} from "../services/websocket/dummy-websocket-action.service";
 import {UpdateGameScoresWebsocketActionService} from "../services/websocket/update-game-scores-websocket-action.service";
 import types from "../types";
 

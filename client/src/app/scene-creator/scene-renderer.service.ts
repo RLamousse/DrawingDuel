@@ -14,6 +14,7 @@ import {SocketEvent} from "../../../../common/communication/socket-events";
 import { ComponentNotLoadedError } from "../../../../common/errors/component.errors";
 import {AbstractServiceError, AlreadyFoundDifferenceError, NoDifferenceAtPointError} from "../../../../common/errors/services.errors";
 import { IJson3DObject } from "../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
+import IFreeGameState from "../../../../common/model/game/free-game-state";
 import { deepCompare, sleep, X_FACTOR } from "../../../../common/util/util";
 import {
   playRandomSound,
@@ -25,15 +26,13 @@ import {SocketService} from "../socket.service";
 import {UNListService} from "../username.service";
 import { RenderUpdateService } from "./render-update.service";
 
-interface IFreeGameState {
+interface IFreeGameRendererState extends IFreeGameState {
   isCheatModeActive: boolean;
   isWaitingInThread: boolean;
-  foundDifference: IJson3DObject[];
   cheatDiffData?: Set<THREE.Object3D>;
   blinkThread?: NodeJS.Timeout;
 }
 export const SCENE_TYPE: string = "Scene";
-@Injectable()
 @Injectable({
     providedIn: "root",
   })
@@ -61,7 +60,7 @@ export class SceneRendererService {
   private readonly INVISIBLE_INTERVAL_MS: number = this.BLINK_INTERVAL_MS / X_FACTOR;
   private readonly WATCH_THREAD_FINISH_INTERVAL: number = 30;
   private differenceCountSubject: Subject<number> = new Subject();
-  public gameState: IFreeGameState;
+  public gameState: IFreeGameRendererState;
 
   public constructor(private renderUpdateService: RenderUpdateService,
                      private socket: SocketService) {
