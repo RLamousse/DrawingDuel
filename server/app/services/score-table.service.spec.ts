@@ -46,7 +46,6 @@ describe("ScoreTableService", () => {
         mockedDataBaseService = mock(DataBaseService);
         mockedSimpleGames = mock(SimpleGamesCollectionService);
         mockedFreeGames = mock(FreeGamesCollectionService);
-        mockedDataBaseService = mock(DataBaseService);
         when(mockedFreeGames.getFromId(anything())).thenReject(new NonExistentGameError());
         when(mockedSimpleGames.getFromId(anything()))
             .thenResolve({bestSoloTimes: JSON.parse(JSON.stringify(INITIAL_SCORE_TABLE)),
