@@ -84,12 +84,16 @@ export class ScoreTableService {
 
     public async resetScores(gameName: string): Promise<void> {
         const isSimple: boolean = await this.tryGetTableFromDB(gameName) as boolean;
-        await Axios.put<void>(SERVER_BASE_URL + (isSimple ? DB_SIMPLE_GAME : DB_FREE_GAME) + gameName,
-                              {bestSoloTimes: createRandomScores(), bestMultiTimes: createRandomScores()})
-        // any is the default type of the required callback function
-        // tslint:disable-next-line:no-any Generic error response
-            .catch((reason: any) => {
-                throw new AbstractDataBaseError("Unable to modify game: " + reason.response.data.message);
-            });
+        try {
+            if (isSimple) {
+                await this.databaseService.simpleGames.update(gameName, {bestSoloTimes: createRandomScores(),
+                                                                         bestMultiTimes: createRandomScores()});
+            } else {
+                await this.databaseService.freeGames.update(gameName, {bestSoloTimes: createRandomScores(),
+                                                                       bestMultiTimes: createRandomScores()});
+            }
+        } catch (error) {
+            throw new AbstractDataBaseError("Unable to modify game: " + error.message);
+        }
     }
 }
