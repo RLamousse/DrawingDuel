@@ -1,16 +1,11 @@
-import Axios from "axios";
-import * as Httpstatus from "http-status-codes";
 import {inject, injectable} from "inversify";
-import {DB_FREE_GAME, DB_SIMPLE_GAME, SERVER_BASE_URL} from "../../../common/communication/routes";
 import {AbstractDataBaseError, NonExistentGameError} from "../../../common/errors/database.errors";
 import {ScoreNotGoodEnough} from "../../../common/errors/services.errors";
-import {IFreeGame} from "../../../common/model/game/free-game";
 import {IGame} from "../../../common/model/game/game";
 import {IRecordTime} from "../../../common/model/game/record-time";
-import {ISimpleGame} from "../../../common/model/game/simple-game";
-import {createRandomScores} from "./service-utils";
 import Types from "../types";
 import {DataBaseService} from "./data-base.service";
+import {createRandomScores} from "./service-utils";
 
 interface IScoreResponse {
     table: IRecordTime[];
@@ -20,11 +15,13 @@ interface IScoreResponse {
 @injectable()
 export class ScoreTableService {
 
-    constructor(@inject(Types.DataBaseService) private databaseService: DataBaseService){}
+    private static readonly LAST_POSITION_INDEX: number = 2;
+
+    public constructor(@inject(Types.DataBaseService) private databaseService: DataBaseService) {}
 
     private static insertTime(tableToInsert: IRecordTime[], newTime: IRecordTime): number {
-        if (newTime.time < tableToInsert[2].time) {
-            tableToInsert[2] = newTime;
+        if (newTime.time < tableToInsert[this.LAST_POSITION_INDEX].time) {
+            tableToInsert[this.LAST_POSITION_INDEX] = newTime;
             this.sortTable(tableToInsert);
 
             return tableToInsert.indexOf(newTime) + 1;
