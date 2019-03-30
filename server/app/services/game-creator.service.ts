@@ -29,6 +29,7 @@ import {
 } from "../controllers/controller-utils";
 import {BitmapFactory} from "../images/bitmap/bitmap-factory";
 import Types from "../types";
+import {DataBaseService} from "./data-base.service";
 import {DifferenceEvaluatorService} from "./difference-evaluator.service";
 import {FreeGameCreatorService} from "./free-game-creator.service";
 import {ImageUploadService} from "./image-upload.service";
@@ -41,28 +42,23 @@ export class GameCreatorService {
 
     public constructor(
         @inject(Types.DifferenceEvaluatorService) private differenceEvaluatorService: DifferenceEvaluatorService,
+        @inject(Types.DataBaseService) private dataBaseService: DataBaseService,
         @inject(Types.ImageUploadService) private imageUploadService: ImageUploadService,
         @inject(Types.FreeGameCreatorService) private freeGameCreatorService: FreeGameCreatorService) {
     }
 
-    private static async testNameExistence(gameName: string): Promise<void> {
+    private async testNameExistence(gameName: string): Promise<void> {
+        let containsGame: boolean;
         try {
-            await Axios.get<ISimpleGame>(SERVER_BASE_URL + DB_SIMPLE_GAME + gameName);
+            containsGame = await this.dataBaseService.simpleGames.contains(gameName) ||
+            await this.dataBaseService.simpleGames.contains(gameName);
         } catch (error) {
-            if (error.response.status !== Httpstatus.NOT_FOUND) {
-                throw new AbstractDataBaseError(error.response.data.message);
-            }
-            try {
-                await Axios.get<IFreeGame>(SERVER_BASE_URL + DB_FREE_GAME + gameName);
-            } catch (error) {
-                if (error.response.status !== Httpstatus.NOT_FOUND) {
-                    throw new AbstractDataBaseError(error.response.data.message);
-                }
-
-                return;
-            }
+            throw new AbstractDataBaseError(error.message);
         }
-        throw new AlreadyExistentGameError();
+
+        if (containsGame) {
+            throw new AlreadyExistentGameError();
+        }
     }
 
     private static async getDiffImage(originalImageFile: Buffer, modifiedImageFile: Buffer): Promise<Buffer> {
@@ -88,7 +84,7 @@ export class GameCreatorService {
 
     public async createFreeGame(gameName: string, numberOfObjects: number, theme: Themes, modTypes: ModificationType[]): Promise<Message> {
 
-        await GameCreatorService.testNameExistence(gameName);
+        await this.testNameExistence(gameName);
 
         const scenes: IScenesDB = this.generateScene(numberOfObjects, theme, modTypes);
 
@@ -98,7 +94,7 @@ export class GameCreatorService {
     public async createSimpleGame(gameName: string, originalImageFile: Buffer, modifiedImageFile: Buffer): Promise<Message> {
 
         try {
-            await GameCreatorService.testNameExistence(gameName);
+            await this.testNameExistence(gameName);
 
             const bitmapDiffImageBuffer: Buffer = await GameCreatorService.getDiffImage(originalImageFile, modifiedImageFile);
             const differenceData: ISimpleDifferenceData = this.testSimpleGameNumberOfDifference(bitmapDiffImageBuffer);
