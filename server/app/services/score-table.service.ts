@@ -74,12 +74,15 @@ export class ScoreTableService {
 
     private async putTableInDB(gameName: string, tableToPost: IScoreResponse, isSolo: boolean): Promise<void> {
         const dataToSend: Partial<IGame> = isSolo ? {bestSoloTimes: tableToPost.table} : {bestMultiTimes: tableToPost.table};
-        await Axios.put<void>(SERVER_BASE_URL + (tableToPost.isSimple ? DB_SIMPLE_GAME : DB_FREE_GAME) + gameName, dataToSend)
-            // any is the default type of the required callback function
-            // tslint:disable-next-line:no-any Generic error response
-            .catch((reason: any) => {
-            throw new AbstractDataBaseError("Unable to modify game: " + reason.response.data.message);
-        });
+        try {
+            if (tableToPost.isSimple) {
+                await this.databaseService.simpleGames.update(gameName, dataToSend);
+            } else {
+                await this.databaseService.freeGames.update(gameName, dataToSend);
+            }
+        } catch (error) {
+            throw new AbstractDataBaseError("Unable to modify game: " + error.message);
+        }
     }
 
     public async resetScores(gameName: string): Promise<void> {
