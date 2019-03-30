@@ -1,6 +1,5 @@
 // We want to use some magic numbers in the tests
 /* tslint:disable:no-magic-numbers */
-// tslint:disable-next-line:no-duplicate-imports Weird interaction between singletons and interface (olivier st-o approved)
 import {expect} from "chai";
 import {anything, instance, mock, when} from "ts-mockito";
 import {
