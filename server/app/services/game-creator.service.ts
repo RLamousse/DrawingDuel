@@ -71,7 +71,7 @@ export class GameCreatorService {
         let containsGame: boolean;
         try {
             containsGame = await this.dataBaseService.simpleGames.contains(gameName) ||
-                await this.dataBaseService.simpleGames.contains(gameName);
+                await this.dataBaseService.freeGames.contains(gameName);
         } catch (error) {
             throw new AbstractDataBaseError(error.message);
         }
