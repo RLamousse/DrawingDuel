@@ -130,11 +130,11 @@ export class GameCreatorService {
             diffData: differenceData,
             toBeDeleted: false,
         };
-        await Axios.post<Message>(SERVER_BASE_URL + DB_SIMPLE_GAME, game)
-        // tslint:disable-next-line:no-any Generic error response
-            .catch((reason: any) => {
-                throw new AbstractServiceError("Unable to create game: " + reason.response.data.message);
-            });
+        try {
+            await this.dataBaseService.simpleGames.create(game);
+        } catch (error) {
+            throw new AbstractServiceError("Unable to create game: " + error.message);
+        }
     }
 
     private async uploadFreeGame(gameName: string, scenes: IScenesDB): Promise<void> {
