@@ -3,7 +3,7 @@ import * as FormData from "form-data";
 import {inject, injectable} from "inversify";
 import "reflect-metadata";
 import {Message} from "../../../common/communication/messages/message";
-import {DB_FREE_GAME, DB_SIMPLE_GAME, DIFF_CREATOR_BASE, SERVER_BASE_URL} from "../../../common/communication/routes";
+import {DIFF_CREATOR_BASE, SERVER_BASE_URL} from "../../../common/communication/routes";
 import {
     AbstractDataBaseError,
     AlreadyExistentGameError,
