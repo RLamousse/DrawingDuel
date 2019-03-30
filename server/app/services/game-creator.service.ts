@@ -7,7 +7,6 @@ import {DIFF_CREATOR_BASE, SERVER_BASE_URL} from "../../../common/communication/
 import {
     AbstractDataBaseError,
     AlreadyExistentGameError,
-    NonExistentGameError,
     NonExistentThemeError
 } from "../../../common/errors/database.errors";
 import {AbstractServiceError, DifferenceCountError} from "../../../common/errors/services.errors";
@@ -108,14 +107,13 @@ export class GameCreatorService {
                                      originalImage: Buffer,
                                      modifiedImage: Buffer,
                                      differenceData: ISimpleDifferenceData): Promise<Message> {
+        let imagesUrls: string[];
         try {
-            const imagesUrls: string[] = await this.uploadImages(originalImage, modifiedImage);
-            await this.uploadSimpleGame(gameName, imagesUrls, differenceData);
+            imagesUrls = await this.uploadImages(originalImage, modifiedImage);
         } catch (error) {
-            if (error.message !== NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE) {
-                throw new AbstractDataBaseError(error.message);
-            }
+            throw new AbstractServiceError(error.message);
         }
+        await this.uploadSimpleGame(gameName, imagesUrls, differenceData);
 
         return GAME_CREATION_SUCCESS_MESSAGE;
     }
