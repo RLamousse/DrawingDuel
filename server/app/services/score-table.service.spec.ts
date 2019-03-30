@@ -4,9 +4,12 @@
 import {expect} from "chai";
 import {anything, instance, mock, when} from "ts-mockito";
 import {
+    AbstractDataBaseError,
+    InvalidGameInfoError,
     NonExistentGameError
 } from "../../../common/errors/database.errors";
 import {ScoreNotGoodEnough} from "../../../common/errors/services.errors";
+import {IFreeGame} from "../../../common/model/game/free-game";
 import {IRecordTime} from "../../../common/model/game/record-time";
 import {ISimpleGame} from "../../../common/model/game/simple-game";
 import {DataBaseService} from "./data-base.service";
@@ -65,7 +68,17 @@ describe("ScoreTableService", () => {
             });
         });
 
-        it("should return 3 if the score deserves the third place", async () => {
+        it("should throw if the data-base throws unpredicted error(update simple game)", async () => {
+
+            when(mockedSimpleGames.update(anything(), anything())).thenReject(new InvalidGameInfoError());
+
+            return initScoreTableService().updateTableScore("tom", HIGHT_TIME_SCORE_BOY, true)
+                .catch((reason: AbstractDataBaseError) => {
+                expect(reason.message).to.eql(new AbstractDataBaseError(InvalidGameInfoError.GAME_INFO_FORMAT_ERROR_MESSAGE).message);
+            });
+        });
+
+        it("should return 3 if the score deserves the third place(simple games)", async () => {
 
             when(mockedSimpleGames.update(anything(), anything())).thenResolve();
 
@@ -74,7 +87,7 @@ describe("ScoreTableService", () => {
             });
         });
 
-        it("should return 2 if the score deserves the second place", async () => {
+        it("should return 2 if the score deserves the second place(simple games)", async () => {
 
             when(mockedSimpleGames.update(anything(), anything())).thenResolve();
 
@@ -83,9 +96,21 @@ describe("ScoreTableService", () => {
             });
         });
 
-        it("should return 1 if the score deserves the first place", async () => {
+        it("should return 1 if the score deserves the first place(simple games)", async () => {
 
             when(mockedSimpleGames.update(anything(), anything())).thenResolve();
+
+            return initScoreTableService().updateTableScore("tom", LOW_TIME_SCORE_BOY, true).then((value: number) => {
+                expect(value).to.eql(1);
+            });
+        });
+
+        it("should return 1 if the score deserves the first place(free games)", async () => {
+
+            when(mockedFreeGames.getFromId(anything()))
+                .thenResolve({bestSoloTimes: JSON.parse(JSON.stringify(INITIAL_SCORE_TABLE)),
+                              bestMultiTimes: JSON.parse(JSON.stringify(INITIAL_SCORE_TABLE))} as IFreeGame);
+            when(mockedFreeGames.update(anything(), anything())).thenResolve();
 
             return initScoreTableService().updateTableScore("tom", LOW_TIME_SCORE_BOY, true).then((value: number) => {
                 expect(value).to.eql(1);
@@ -101,7 +126,7 @@ describe("ScoreTableService", () => {
             });
         });
 
-        it("should return 3 if the score is the same as the one in second place", async () => {
+        it("should return 3 if the score is the same as the one in second place(simple games)", async () => {
 
             when(mockedSimpleGames.update(anything(), anything())).thenResolve();
 
@@ -110,7 +135,7 @@ describe("ScoreTableService", () => {
             });
         });
 
-        it("should return 2 if the score is the same as the one in first place", async () => {
+        it("should return 2 if the score is the same as the one in first place(simple games)", async () => {
 
             when(mockedSimpleGames.update(anything(), anything())).thenResolve();
 
@@ -129,11 +154,48 @@ describe("ScoreTableService", () => {
             });
         });
 
-        it("should not throw if the name is an existing name", async () => {
+        it("should throw if the data-base throws unpredicted error(get simple game)", async () => {
 
-            when(mockedSimpleGames.update(anything(), anything())).thenResolve();
+            when(mockedSimpleGames.getFromId(anything())).thenReject(new InvalidGameInfoError());
+
+            return initScoreTableService().resetScores("tom").catch((reason: AbstractDataBaseError) => {
+                expect(reason.message).to.eql((new AbstractDataBaseError(InvalidGameInfoError.GAME_INFO_FORMAT_ERROR_MESSAGE).message));
+            });
+        });
+
+        it("should throw if the data-base throws unpredicted error(get free game)", async () => {
+
+            when(mockedFreeGames.getFromId(anything())).thenReject(new InvalidGameInfoError());
+
+            return initScoreTableService().resetScores("tom").catch((reason: AbstractDataBaseError) => {
+                expect(reason.message).to.eql((new AbstractDataBaseError(InvalidGameInfoError.GAME_INFO_FORMAT_ERROR_MESSAGE).message));
+            });
+        });
+
+        it("should not throw if the name is an existing name(simple)", async () => {
+
+            when(mockedFreeGames.update(anything(), anything())).thenResolve();
 
             return initScoreTableService().resetScores("tom");
+        });
+
+        it("should not throw if the name is an existing name(free)", async () => {
+
+            when(mockedFreeGames.getFromId(anything()))
+                .thenResolve({bestSoloTimes: JSON.parse(JSON.stringify(INITIAL_SCORE_TABLE)),
+                              bestMultiTimes: JSON.parse(JSON.stringify(INITIAL_SCORE_TABLE))} as IFreeGame);
+            when(mockedFreeGames.update(anything(), anything())).thenResolve();
+
+            return initScoreTableService().resetScores("tom");
+        });
+
+        it("should throw if the data-base throws unpredicted error(update simple game)", async () => {
+
+            when(mockedSimpleGames.update(anything(), anything())).thenReject(new InvalidGameInfoError());
+
+            return initScoreTableService().resetScores("tom").catch((reason: AbstractDataBaseError) => {
+                expect(reason.message).to.eql((new AbstractDataBaseError(InvalidGameInfoError.GAME_INFO_FORMAT_ERROR_MESSAGE).message));
+            });
         });
     });
 });
