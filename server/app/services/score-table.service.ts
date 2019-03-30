@@ -78,7 +78,7 @@ export class ScoreTableService {
                 await this.databaseService.freeGames.update(gameName, dataToSend);
             }
         } catch (error) {
-            throw new AbstractDataBaseError("Unable to modify game: " + error.message);
+            throw new AbstractDataBaseError(error.message);
         }
     }
 
@@ -93,7 +93,7 @@ export class ScoreTableService {
                                                                        bestMultiTimes: createRandomScores()});
             }
         } catch (error) {
-            throw new AbstractDataBaseError("Unable to modify game: " + error.message);
+            throw new AbstractDataBaseError(error.message);
         }
     }
 }
