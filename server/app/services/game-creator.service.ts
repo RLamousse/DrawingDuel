@@ -133,7 +133,7 @@ export class GameCreatorService {
         try {
             await this.dataBaseService.simpleGames.create(game);
         } catch (error) {
-            throw new AbstractServiceError("Unable to create game: " + error.message);
+            throw new AbstractDataBaseError(error.message);
         }
     }
 
@@ -148,7 +148,7 @@ export class GameCreatorService {
         try {
             await this.dataBaseService.freeGames.create(game);
         } catch (error) {
-            throw new AbstractServiceError("Unable to create game: " + error.message);
+            throw new AbstractDataBaseError(error.message);
         }
     }
 
