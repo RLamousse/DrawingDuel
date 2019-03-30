@@ -145,12 +145,11 @@ export class GameCreatorService {
             scenes: scenes,
             toBeDeleted: false,
         };
-        await Axios.post<Message>(SERVER_BASE_URL + DB_FREE_GAME, game)
-            // any is the default type of the required callback function
-            // tslint:disable-next-line:no-any Generic error response
-            .catch((reason: any) => {
-                throw new AbstractDataBaseError("Unable to create game: " + reason.response.data.message);
-            });
+        try {
+            await this.dataBaseService.freeGames.create(game);
+        } catch (error) {
+            throw new AbstractServiceError("Unable to create game: " + error.message);
+        }
     }
 
     private async uploadImages(...imageBuffers: Buffer[]): Promise<string[]> {
