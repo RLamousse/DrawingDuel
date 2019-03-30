@@ -1,6 +1,5 @@
 import Axios, {AxiosResponse} from "axios";
 import * as FormData from "form-data";
-import * as Httpstatus from "http-status-codes";
 import {inject, injectable} from "inversify";
 import "reflect-metadata";
 import {Message} from "../../../common/communication/messages/message";
@@ -47,20 +46,6 @@ export class GameCreatorService {
         @inject(Types.FreeGameCreatorService) private freeGameCreatorService: FreeGameCreatorService) {
     }
 
-    private async testNameExistence(gameName: string): Promise<void> {
-        let containsGame: boolean;
-        try {
-            containsGame = await this.dataBaseService.simpleGames.contains(gameName) ||
-            await this.dataBaseService.simpleGames.contains(gameName);
-        } catch (error) {
-            throw new AbstractDataBaseError(error.message);
-        }
-
-        if (containsGame) {
-            throw new AlreadyExistentGameError();
-        }
-    }
-
     private static async getDiffImage(originalImageFile: Buffer, modifiedImageFile: Buffer): Promise<Buffer> {
         try {
             const requestFormData: FormData = new FormData();
@@ -79,6 +64,20 @@ export class GameCreatorService {
             return Buffer.from(response.data);
         } catch (error) {
             throw new AbstractServiceError("game diff: " + error.response.data.message);
+        }
+    }
+
+    private async testNameExistence(gameName: string): Promise<void> {
+        let containsGame: boolean;
+        try {
+            containsGame = await this.dataBaseService.simpleGames.contains(gameName) ||
+                await this.dataBaseService.simpleGames.contains(gameName);
+        } catch (error) {
+            throw new AbstractDataBaseError(error.message);
+        }
+
+        if (containsGame) {
+            throw new AlreadyExistentGameError();
         }
     }
 
