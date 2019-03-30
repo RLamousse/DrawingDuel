@@ -5,7 +5,7 @@ import * as uuid from "uuid/v4";
 import {RoomInteractionMessage, WebsocketMessage} from "../../../../../common/communication/messages/message";
 import {SocketEvent} from "../../../../../common/communication/socket-events";
 import {NonExistentGameError} from "../../../../../common/errors/database.errors";
-import {GameRoomCreationError} from "../../../../../common/errors/services.errors";
+import {GameRoomCreationError, NonExistentRoomError} from "../../../../../common/errors/services.errors";
 import {IInteractionResponse} from "../../../../../common/model/rooms/interaction";
 import {IRoomInfo} from "../../../../../common/model/rooms/room-info";
 import {IGameRoom} from "../../../model/room/game-room";
@@ -55,7 +55,16 @@ export class HotelRoomService {
     }
 
     public joinGameRoom(socket: Socket, gameName: string): void {
-        // TODO Add player to room
+        const roomCandidate: IGameRoom | undefined = Array.from(this._rooms.values())
+            .find((room: IGameRoom) => {
+                return room.gameName === gameName && room.vacant;
+            });
+
+        if (roomCandidate === undefined) {
+            throw new NonExistentRoomError();
+        }
+
+        roomCandidate.join(socket.id);
     }
 
     private registerGameRoomHandlers(socket: Socket, room: IGameRoom): void {
@@ -69,15 +78,22 @@ export class HotelRoomService {
                 });
         });
         socket.on(SocketEvent.CHECK_OUT, () => {
-            if (room.leave(socket.id)) {
-                this.deleteRoom(room);
-            } else if (room.vacant) { // TODO verify that the game was initiated
-                // TODO notify connected clients
-            }
+            this.handleCheckout(room, socket);
         });
         socket.on(SocketEvent.READY, (message: WebsocketMessage) => {
             // TODO
         });
+        socket.on(SocketEvent.DISCONNECT, () => {
+            this.handleCheckout(room, socket);
+        });
+    }
+
+    private handleCheckout(room: IGameRoom, socket: Socket): void {
+        if (room.leave(socket.id)) {
+            this.deleteRoom(room);
+        } else if (room.vacant) { // TODO verify that the game was initiated
+            // TODO notify connected clients
+        }
     }
 
     private deleteRoom(room: IGameRoom): void {

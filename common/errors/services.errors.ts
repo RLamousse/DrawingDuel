@@ -109,3 +109,11 @@ export class GameRoomError extends Error {
         super(GameRoomError.GAME_ROOM_ERROR_MESSAGE);
     }
 }
+
+export class NonExistentRoomError extends Error {
+    public static readonly NON_EXISTENT_GAME_ROOM_ERROR_MESSAGE: string = "There are no rooms available for this game!";
+
+    constructor() {
+        super(NonExistentRoomError.NON_EXISTENT_GAME_ROOM_ERROR_MESSAGE);
+    }
+}
