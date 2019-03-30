@@ -1,6 +1,6 @@
 import Axios from "axios";
 import * as Httpstatus from "http-status-codes";
-import {injectable} from "inversify";
+import {inject, injectable} from "inversify";
 import {DB_FREE_GAME, DB_SIMPLE_GAME, SERVER_BASE_URL} from "../../../common/communication/routes";
 import {AbstractDataBaseError, NonExistentGameError} from "../../../common/errors/database.errors";
 import {ScoreNotGoodEnough} from "../../../common/errors/services.errors";
@@ -9,6 +9,8 @@ import {IGame} from "../../../common/model/game/game";
 import {IRecordTime} from "../../../common/model/game/record-time";
 import {ISimpleGame} from "../../../common/model/game/simple-game";
 import {createRandomScores} from "./service-utils";
+import Types from "../types";
+import {DataBaseService} from "./data-base.service";
 
 interface IScoreResponse {
     table: IRecordTime[];
@@ -17,6 +19,8 @@ interface IScoreResponse {
 
 @injectable()
 export class ScoreTableService {
+
+    constructor(@inject(Types.DataBaseService) private databaseService: DataBaseService){}
 
     private static insertTime(tableToInsert: IRecordTime[], newTime: IRecordTime): number {
         if (newTime.time < tableToInsert[2].time) {
@@ -45,19 +49,19 @@ export class ScoreTableService {
         let gameToModify: IGame;
         let isSimple: boolean = false;
         try {
-            gameToModify = (await Axios.get<IFreeGame>(SERVER_BASE_URL + DB_FREE_GAME + gameName)).data;
+            gameToModify = await this.databaseService.freeGames.getFromId(gameName);
         } catch (error) {
+            if (error.message !== NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE) {
+                throw new AbstractDataBaseError(error.message);
+            }
             try {
-                if (error.response.status !== Httpstatus.NOT_FOUND) {
-                    throw new AbstractDataBaseError(error.response.data.message);
-                }
-                gameToModify = (await Axios.get<ISimpleGame>(SERVER_BASE_URL + DB_SIMPLE_GAME + gameName)).data;
+                gameToModify = await this.databaseService.simpleGames.getFromId(gameName);
                 isSimple = true;
             } catch (error2) {
-                if (error.response.status !== Httpstatus.NOT_FOUND) {
-                    throw new AbstractDataBaseError(error.response.data.message);
+                if (error2.message !== NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE) {
+                    throw new AbstractDataBaseError(error2.message);
                 }
-                throw new NonExistentGameError();
+                throw new error2;
             }
         }
 
