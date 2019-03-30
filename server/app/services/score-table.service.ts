@@ -58,7 +58,7 @@ export class ScoreTableService {
                 if (error2.message !== NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE) {
                     throw new AbstractDataBaseError(error2.message);
                 }
-                throw new error2;
+                throw error2;
             }
         }
 
