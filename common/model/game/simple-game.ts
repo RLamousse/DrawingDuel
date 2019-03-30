@@ -1,3 +1,4 @@
+import {NoDifferenceAtPointError} from "../../errors/services.errors";
 import {IPoint} from "../point";
 import {IGame, instanceOfGame} from "./game";
 
@@ -17,3 +18,17 @@ export const instanceOfSimpleGame = (object: any): object is ISimpleGame =>
     'originalImage' in object &&
     'modifiedImage' in object &&
     'diffData' in object;
+
+export const getClusterFromPoint: (point: IPoint, clusters: DifferenceCluster[]) => DifferenceCluster =
+    (point: IPoint, clusters: DifferenceCluster[]): DifferenceCluster => {
+        const cluster = clusters
+            .find((cluster: DifferenceCluster) =>
+                      cluster[DIFFERENCE_CLUSTER_POINTS_INDEX]
+                          .some((point: IPoint) => point.x === point.x && point.y === point.y));
+
+        if (cluster === undefined) {
+            throw new NoDifferenceAtPointError();
+        }
+
+        return cluster;
+    };

@@ -87,9 +87,25 @@ export class AbstractServiceError extends Error {
 }
 
 export class GameRoomCreationError extends Error {
-    public static readonly GAME_ROOM_ERROR_MESSAGE: string = "There was a problem with the creation of the room!";
+    public static readonly GAME_ROOM_CREATION_ERROR_MESSAGE: string = "There was a problem with the creation of the room!";
 
     constructor() {
-        super(GameRoomCreationError.GAME_ROOM_ERROR_MESSAGE);
+        super(GameRoomCreationError.GAME_ROOM_CREATION_ERROR_MESSAGE);
+    }
+}
+
+export class NoVacancyGameRoomError extends Error {
+    public static readonly NO_VACANCY_GAME_ROOM_ERROR_MESSAGE: string = "The room is full!";
+
+    constructor() {
+        super(NoVacancyGameRoomError.NO_VACANCY_GAME_ROOM_ERROR_MESSAGE);
+    }
+}
+
+export class GameRoomError extends Error {
+    public static readonly GAME_ROOM_ERROR_MESSAGE: string = "There was a problem with the room!";
+
+    constructor() {
+        super(GameRoomError.GAME_ROOM_ERROR_MESSAGE);
     }
 }

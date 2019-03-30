@@ -6,6 +6,7 @@ import {RoomInteractionMessage, WebsocketMessage} from "../../../../../common/co
 import {SocketEvent} from "../../../../../common/communication/socket-events";
 import {NonExistentGameError} from "../../../../../common/errors/database.errors";
 import {GameRoomCreationError} from "../../../../../common/errors/services.errors";
+import {IInteractionResponse} from "../../../../../common/model/rooms/interaction";
 import {IRoomInfo} from "../../../../../common/model/rooms/room-info";
 import {IGameRoom} from "../../../model/room/game-room";
 import types from "../../../types";
@@ -59,13 +60,28 @@ export class HotelRoomService {
 
     private registerGameRoomHandlers(socket: Socket, room: IGameRoom): void {
         socket.on(SocketEvent.INTERACT, (message: WebsocketMessage<RoomInteractionMessage>) => {
-            room.interact(message.body.interactionData);
+            room.interact(socket.id, message.body.interactionData)
+                .then((interactionResponse: IInteractionResponse) => {
+                    // TODO Notify
+                })
+                .catch((error: Error) => {
+                    // TODO Notify
+                });
         });
         socket.on(SocketEvent.CHECK_OUT, () => {
-            room.leave(socket.id);
+            if (room.leave(socket.id)) {
+                this.deleteRoom(room);
+            } else if (room.vacant) { // TODO verify that the game was initiated
+                // TODO notify connected clients
+            }
         });
         socket.on(SocketEvent.READY, (message: WebsocketMessage) => {
             // TODO
         });
+    }
+
+    private deleteRoom(room: IGameRoom): void {
+        this._rooms.delete(room.id);
+        // TODO notify?
     }
 }

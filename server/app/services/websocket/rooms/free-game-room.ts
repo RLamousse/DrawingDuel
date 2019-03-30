@@ -1,15 +1,12 @@
 import {IFreeGame} from "../../../../../common/model/game/free-game";
-import IFreeGameState from "../../../../../common/model/game/free-game-state";
-import {ISimpleGameInteractionData} from "../../../../../common/model/rooms/interaction";
+import {IFreeGameState} from "../../../../../common/model/game/game-state";
+import {IFreeGameInteractionData, IFreeGameInteractionResponse} from "../../../../../common/model/rooms/interaction";
 import {AbstractGameRoom} from "./abstract-game-room";
 
-export class FreeGameRoom extends AbstractGameRoom<IFreeGame> {
-
-    private readonly _gameStates: Map<string, IFreeGameState>;
+export class FreeGameRoom extends AbstractGameRoom<IFreeGame, IFreeGameState> {
 
     public constructor(id: string, game: IFreeGame, nbPlayers: number = 1) {
         super(id, game, nbPlayers);
-        this._gameStates = new Map();
     }
 
     public join(clientId: string): void {
@@ -21,8 +18,9 @@ export class FreeGameRoom extends AbstractGameRoom<IFreeGame> {
             });
     }
 
-    public interact(interactionData: ISimpleGameInteractionData): void {
+    public async interact(clientId: string, interactionData: IFreeGameInteractionData): Promise<IFreeGameInteractionResponse> {
         // TODO handle interaction
+        return Promise.reject("FreeGameRoom#interact not implemented");
     }
 
 }

@@ -68,11 +68,11 @@ export class WebsocketController {
     }
 
     private configureRoomService(socket: Socket): void {
-        socket.on(SocketEvent.CHECK_IN, (message: WebsocketMessage<RoomCreationMessage>) => {
-            this.hotelRoomService.checkInGameRoom(
+        socket.on(SocketEvent.CHECK_IN, async (message: WebsocketMessage<RoomCreationMessage>) => {
+            await this.hotelRoomService.checkInGameRoom(
                 socket,
                 message.body.gameName,
-                message.body.playerCount
+                message.body.playerCount,
             );
         });
 

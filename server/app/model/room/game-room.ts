@@ -1,12 +1,13 @@
-import {IInteractionData} from "../../../../common/model/rooms/interaction";
+import {IInteractionData, IInteractionResponse} from "../../../../common/model/rooms/interaction";
 
 export interface IGameRoom {
+    id: string;
     gameName: string;
     vacant: boolean;
 
     join(clientId: string): void;
 
-    interact(interactionData: IInteractionData): void;
+    interact(clientId: string, interactionData: IInteractionData): Promise<IInteractionResponse>;
 
-    leave(clientId: string): void;
+    leave(clientId: string): boolean;
 }
