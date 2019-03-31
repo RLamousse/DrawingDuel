@@ -58,9 +58,7 @@ export class SimpleGameRoom extends AbstractGameRoom<ISimpleGame, ISimpleGameSta
                     gameName: this._game.gameName,
                 } as IDiffValidatorControllerRequest,
             })
-            .then(() => {
-                return this.updateGameState(clientId, point);
-            })
+            .then(() => this.updateGameState(clientId, point))
             // tslint:disable-next-line:no-any Generic error response
             .catch((reason: any) => {
                 if (reason.response && reason.response.status === Httpstatus.NOT_FOUND) {

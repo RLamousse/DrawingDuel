@@ -1,26 +1,43 @@
 import * as assert from "assert";
+import Axios from "axios";
+import MockAdapter from "axios-mock-adapter";
+// tslint:disable-next-line:no-duplicate-imports Weird interaction between singletons and interface (olivier st-o approved)
+import AxiosAdapter from "axios-mock-adapter";
 import {expect} from "chai";
+import * as HttpStatus from "http-status-codes";
+import {anything, spy, when} from "ts-mockito";
 import {IMock} from "typemoq";
 // tslint:disable-next-line:no-duplicate-imports Weird interaction between singletons and interface (olivier st-o approved)
 import * as TypeMoq from "typemoq";
-import {NoVacancyGameRoomError} from "../../../../../common/errors/services.errors";
-import {ISimpleGame} from "../../../../../common/model/game/simple-game";
+import {DIFF_VALIDATOR_BASE, SERVER_BASE_URL} from "../../../../../common/communication/routes";
+import {NoDifferenceAtPointError, NoVacancyGameRoomError} from "../../../../../common/errors/services.errors";
+import {DIFFERENCE_CLUSTER_POINTS_INDEX, ISimpleGame} from "../../../../../common/model/game/simple-game";
+import {ORIGIN} from "../../../../../common/model/point";
+import {ISimpleGameInteractionResponse} from "../../../../../common/model/rooms/interaction";
 import {SimpleGameRoom} from "./simple-game-room";
 
 describe("A simple game room", () => {
 
-    let mockedSimpleGame: IMock<ISimpleGame>;
+    let axiosMock: MockAdapter;
+    const DIFF_VALIDATOR_URL: string = SERVER_BASE_URL + DIFF_VALIDATOR_BASE;
+    const DIFF_VALIDATOR_GET_CALLS_REGEX: RegExp = new RegExp(`${DIFF_VALIDATOR_URL}/*`);
 
     beforeEach(() => {
+        axiosMock = new AxiosAdapter(Axios);
     });
 
-    const initSimpleGameRoom = (roomId: string = "room", playerCount: number = 1, mockConfigurator?: () => void) => {
-        mockedSimpleGame = TypeMoq.Mock.ofType<ISimpleGame>();
-        if (mockConfigurator !== undefined) {
-            mockConfigurator();
+    const initSimpleGameRoom = (simpleGameMockConfigurator?: (mockedSimpleGame: IMock<ISimpleGame>) => void, roomSpyConfigurator?: (roomSpy: SimpleGameRoom) => void, playerCount: number = 1, roomId: string = "room") => {
+        const mockedSimpleGame: IMock<ISimpleGame> = TypeMoq.Mock.ofType<ISimpleGame>();
+        if (simpleGameMockConfigurator !== undefined) {
+            simpleGameMockConfigurator(mockedSimpleGame);
         }
 
-        const simpleGameRoom = new SimpleGameRoom(roomId, mockedSimpleGame.object, playerCount);
+        const simpleGameRoom: SimpleGameRoom = new SimpleGameRoom(roomId, mockedSimpleGame.object, playerCount);
+        const roomSpy: SimpleGameRoom = spy(simpleGameRoom);
+
+        if (roomSpyConfigurator !== undefined) {
+            roomSpyConfigurator(roomSpy);
+        }
 
         return simpleGameRoom;
     };
@@ -52,7 +69,7 @@ describe("A simple game room", () => {
         it("should contain a state for every player connected", () => {
             // tslint:disable-next-line:no-magic-numbers Random room size
             const roomSize: number = Math.floor(Math.random() * 10) + 2;
-            const simpleGameRoom: SimpleGameRoom = initSimpleGameRoom("multiRoom", roomSize);
+            const simpleGameRoom: SimpleGameRoom = initSimpleGameRoom(undefined, undefined, roomSize);
 
             for (let i: number = 0; i < roomSize; i++) {
                 simpleGameRoom.checkIn(i.toString());
@@ -109,5 +126,77 @@ describe("A simple game room", () => {
 
             return expect(simpleGameRoom["_connectedPlayers"]).not.to.be.empty;
         });
+    });
+
+    describe("Interact", () => {
+        it("should throw when there's no difference at point", async () => {
+            const simpleGameRoom: SimpleGameRoom = initSimpleGameRoom();
+
+            axiosMock.onGet(DIFF_VALIDATOR_GET_CALLS_REGEX)
+                .reply(HttpStatus.NOT_FOUND);
+
+            return simpleGameRoom.interact("client", {clientId: "client", coord: ORIGIN})
+                .catch((reason: Error) => {
+                    expect(reason.message).to.eql(NoDifferenceAtPointError.NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE);
+                });
+        });
+
+        it("should throw on unexpected server response", async () => {
+            const simpleGameRoom: SimpleGameRoom = initSimpleGameRoom(undefined, (roomSpy: SimpleGameRoom) => {
+                when(roomSpy["getGameStateForClient"](anything()))
+                    .thenReturn({foundDifferenceClusters: []});
+            });
+            axiosMock.onGet(DIFF_VALIDATOR_GET_CALLS_REGEX)
+                .reply(HttpStatus.INTERNAL_SERVER_ERROR);
+
+            return simpleGameRoom.interact("client", {clientId: "client", coord: ORIGIN})
+                .catch((reason: Error) => {
+                    expect(reason.message).not.to.eql(NoDifferenceAtPointError.NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE);
+                });
+        });
+
+        it("should return a difference cluster with successful call to server", async () => {
+            const simpleGameRoom: SimpleGameRoom = initSimpleGameRoom(
+                (mockedSimpleGame: IMock<ISimpleGame>) => {
+                    mockedSimpleGame.setup((game: ISimpleGame) => game.diffData)
+                        .returns(() => [[0, [ORIGIN]]]);
+                },
+                (roomSpy: SimpleGameRoom) => {
+                    when(roomSpy["getGameStateForClient"](anything()))
+                        .thenReturn({foundDifferenceClusters: []});
+                });
+
+            axiosMock.onGet(DIFF_VALIDATOR_GET_CALLS_REGEX)
+                .reply(HttpStatus.OK);
+
+            return simpleGameRoom.interact("client", {clientId: "client", coord: ORIGIN})
+                .then((response: ISimpleGameInteractionResponse) => {
+                    expect(response.differenceCluster[DIFFERENCE_CLUSTER_POINTS_INDEX]).to.contain(ORIGIN);
+                });
+        });
+
+        // it("should throw if a difference cluster was already found", async () => {
+        //     axiosMock.onGet(DIFF_VALIDATOR_GET_CALLS_REGEX)
+        //         .reply(HttpStatus.OK);
+        //
+        //     await service.validateDifferenceAtPoint(ORIGIN);
+        //
+        //     return service.validateDifferenceAtPoint(ORIGIN)
+        //         .catch((reason: Error) => {
+        //             expect(reason.message).toEqual(AlreadyFoundDifferenceError.ALREADY_FOUND_DIFFERENCE_ERROR_MESSAGE);
+        //         });
+        // });
+        //
+        // it("should update the difference count", async (done) => {
+        //     axiosMock.onGet(DIFF_VALIDATOR_GET_CALLS_REGEX)
+        //         .reply(HttpStatus.OK);
+        //
+        //     service.foundDifferencesCount.subscribe((diffCount: number) => {
+        //         expect(diffCount).toEqual(1);
+        //         done();
+        //     });
+        //
+        //     await service.validateDifferenceAtPoint(ORIGIN);
+        // });
     });
 });
