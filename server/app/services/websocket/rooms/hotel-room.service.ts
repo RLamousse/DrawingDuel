@@ -29,6 +29,7 @@ export class HotelRoomService {
             const roomId: string = uuid();
 
             if (await this.databaseService.simpleGames.contains(gameName)) {
+                // TODO fetch la game dans le constructeur? 
                 room = new SimpleGameRoom(roomId, await this.databaseService.simpleGames.getFromId(gameName), playerCount);
             } else if (await this.databaseService.freeGames.contains(gameName)) {
                 room = new FreeGameRoom(roomId, await this.databaseService.freeGames.getFromId(gameName), playerCount);
@@ -84,6 +85,7 @@ export class HotelRoomService {
             // TODO
         });
         socket.on(SocketEvent.DISCONNECT, () => {
+            // TODO verify if this doesn't override the onDisconnect already set uo
             this.handleCheckout(room, socket);
         });
     }
