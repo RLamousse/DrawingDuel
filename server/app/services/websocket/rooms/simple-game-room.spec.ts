@@ -20,7 +20,7 @@ import {ORIGIN} from "../../../../../common/model/point";
 import {ISimpleGameInteractionResponse} from "../../../../../common/model/rooms/interaction";
 import {SimpleGameRoom} from "./simple-game-room";
 
-describe.only("A simple game room", () => {
+describe("A simple game room", () => {
 
     let axiosMock: MockAdapter;
     const DIFF_VALIDATOR_URL: string = SERVER_BASE_URL + DIFF_VALIDATOR_BASE;
