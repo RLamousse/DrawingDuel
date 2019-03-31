@@ -9,8 +9,8 @@ export class FreeGameRoom extends AbstractGameRoom<IFreeGame, IFreeGameState> {
         super(id, game, nbPlayers);
     }
 
-    public join(clientId: string): void {
-        super.join(clientId);
+    public checkIn(clientId: string): void {
+        super.checkIn(clientId);
         this._gameStates.set(
             clientId,
             {

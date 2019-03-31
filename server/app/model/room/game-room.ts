@@ -5,9 +5,9 @@ export interface IGameRoom {
     gameName: string;
     vacant: boolean;
 
-    join(clientId: string): void;
+    checkIn(clientId: string): void;
 
     interact(clientId: string, interactionData: IInteractionData): Promise<IInteractionResponse>;
 
-    leave(clientId: string): boolean;
+    checkOut(clientId: string): boolean;
 }

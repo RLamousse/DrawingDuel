@@ -23,7 +23,7 @@ export abstract class AbstractGameRoom<T extends IGame, U extends IGameState> im
 
     public async abstract interact(clientId: string, interactionData: IInteractionData): Promise<IInteractionResponse>;
 
-    public join(clientId: string): void {
+    public checkIn(clientId: string): void {
         if (!this.vacant) {
             throw new NoVacancyGameRoomError();
         }
@@ -31,7 +31,7 @@ export abstract class AbstractGameRoom<T extends IGame, U extends IGameState> im
         this._connectedPlayers.push(clientId);
     }
 
-    public leave(clientId: string): boolean {
+    public checkOut(clientId: string): boolean {
         this._connectedPlayers = this._connectedPlayers.filter((id: string) => id !== clientId);
 
         return this._connectedPlayers === [];

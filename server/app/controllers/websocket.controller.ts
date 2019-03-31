@@ -68,8 +68,8 @@ export class WebsocketController {
     }
 
     private configureRoomService(socket: Socket): void {
-        socket.on(SocketEvent.CHECK_IN, async (message: WebsocketMessage<RoomCreationMessage>) => {
-            await this.hotelRoomService.checkInGameRoom(
+        socket.on(SocketEvent.CREATE, async (message: WebsocketMessage<RoomCreationMessage>) => {
+            await this.hotelRoomService.createGameRoom(
                 socket,
                 message.body.gameName,
                 message.body.playerCount,
@@ -84,8 +84,8 @@ export class WebsocketController {
             socket.emit(SocketEvent.FETCH, response);
         });
 
-        socket.on(SocketEvent.JOIN, (message: WebsocketMessage<RoomMessage>) => {
-            this.hotelRoomService.joinGameRoom(socket, message.body.gameName);
+        socket.on(SocketEvent.CHECK_IN, (message: WebsocketMessage<RoomMessage>) => {
+            this.hotelRoomService.checkInGameRoom(socket, message.body.gameName);
         });
     }
 
