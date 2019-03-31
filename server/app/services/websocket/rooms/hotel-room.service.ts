@@ -23,7 +23,7 @@ export class HotelRoomService {
         this._rooms = new Map<string, IGameRoom>();
     }
 
-    public async checkInGameRoom(socket: Socket, gameName: string, playerCount: number): Promise<void> {
+    public async createGameRoom(socket: Socket, gameName: string, playerCount: number): Promise<void> {
         try {
             let room: IGameRoom;
             const roomId: string = uuid();
@@ -39,7 +39,7 @@ export class HotelRoomService {
             this._rooms.set(roomId, room);
 
             this.registerGameRoomHandlers(socket, room);
-            this.joinGameRoom(socket, gameName);
+            this.checkInGameRoom(socket, gameName);
         } catch (error) {
             throw new GameRoomCreationError();
         }
@@ -55,7 +55,7 @@ export class HotelRoomService {
             });
     }
 
-    public joinGameRoom(socket: Socket, gameName: string): void {
+    public checkInGameRoom(socket: Socket, gameName: string): void {
         const roomCandidate: IGameRoom | undefined = Array.from(this._rooms.values())
             .find((room: IGameRoom) => {
                 return room.gameName === gameName && room.vacant;
@@ -65,7 +65,7 @@ export class HotelRoomService {
             throw new NonExistentRoomError();
         }
 
-        roomCandidate.join(socket.id);
+        roomCandidate.checkIn(socket.id);
     }
 
     private registerGameRoomHandlers(socket: Socket, room: IGameRoom): void {
@@ -91,7 +91,7 @@ export class HotelRoomService {
     }
 
     private handleCheckout(room: IGameRoom, socket: Socket): void {
-        if (room.leave(socket.id)) {
+        if (room.checkOut(socket.id)) {
             this.deleteRoom(room);
         } else if (room.vacant) { // TODO verify that the game was initiated
             // TODO notify connected clients

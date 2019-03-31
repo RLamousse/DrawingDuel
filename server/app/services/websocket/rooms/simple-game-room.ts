@@ -22,12 +22,12 @@ import {AbstractGameRoom} from "./abstract-game-room";
 
 export class SimpleGameRoom extends AbstractGameRoom<ISimpleGame, ISimpleGameState> {
 
-    public constructor(id: string, game: ISimpleGame, nbPlayers: number = 1) {
-        super(id, game, nbPlayers);
+    public constructor(id: string, game: ISimpleGame, playerCount: number = 1) {
+        super(id, game, playerCount);
     }
 
-    public join(clientId: string): void {
-        super.join(clientId);
+    public checkIn(clientId: string): void {
+        super.checkIn(clientId);
         this._gameStates.set(
             clientId,
             {
@@ -58,9 +58,7 @@ export class SimpleGameRoom extends AbstractGameRoom<ISimpleGame, ISimpleGameSta
                     gameName: this._game.gameName,
                 } as IDiffValidatorControllerRequest,
             })
-            .then(() => {
-                return this.updateGameState(clientId, point);
-            })
+            .then(() => this.updateGameState(clientId, point))
             // tslint:disable-next-line:no-any Generic error response
             .catch((reason: any) => {
                 if (reason.response && reason.response.status === Httpstatus.NOT_FOUND) {

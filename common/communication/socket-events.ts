@@ -11,9 +11,9 @@ export enum SocketEvent {
     USERNAME_CHECK = "username-check",
 
     // Rooms
-    CHECK_IN = "room-check-in",
+    CREATE = "room-create",
     FETCH = "room-fetch",
-    JOIN = "room-join",
+    CHECK_IN = "room-check-in",
     INTERACT = "room-interact",
     CHECK_OUT = "room-check-out",
     READY = "room-ready",
