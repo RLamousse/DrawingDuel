@@ -22,8 +22,8 @@ import {AbstractGameRoom} from "./abstract-game-room";
 
 export class SimpleGameRoom extends AbstractGameRoom<ISimpleGame, ISimpleGameState> {
 
-    public constructor(id: string, game: ISimpleGame, nbPlayers: number = 1) {
-        super(id, game, nbPlayers);
+    public constructor(id: string, game: ISimpleGame, playerCount: number = 1) {
+        super(id, game, playerCount);
     }
 
     public checkIn(clientId: string): void {

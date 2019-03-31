@@ -5,8 +5,8 @@ import {AbstractGameRoom} from "./abstract-game-room";
 
 export class FreeGameRoom extends AbstractGameRoom<IFreeGame, IFreeGameState> {
 
-    public constructor(id: string, game: IFreeGame, nbPlayers: number = 1) {
-        super(id, game, nbPlayers);
+    public constructor(id: string, game: IFreeGame, playerCount: number = 1) {
+        super(id, game, playerCount);
     }
 
     public checkIn(clientId: string): void {

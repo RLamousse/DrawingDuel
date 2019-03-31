@@ -13,10 +13,10 @@ export abstract class AbstractGameRoom<T extends IGame, U extends IGameState> im
     protected _connectedPlayers: string[];
     protected readonly _gameStates: Map<string, U>;
 
-    protected constructor(id: string, game: T, nbPlayers: number = 1) {
+    protected constructor(id: string, game: T, playerCount: number = 1) {
         this._id = id;
         this._game = game;
-        this._playerCount = nbPlayers;
+        this._playerCount = playerCount;
         this._connectedPlayers = [];
         this._gameStates = new Map();
     }
@@ -33,8 +33,9 @@ export abstract class AbstractGameRoom<T extends IGame, U extends IGameState> im
 
     public checkOut(clientId: string): boolean {
         this._connectedPlayers = this._connectedPlayers.filter((id: string) => id !== clientId);
+        this._gameStates.delete(clientId);
 
-        return this._connectedPlayers === [];
+        return this._connectedPlayers.length === 0;
     }
 
     public get gameName(): string {
