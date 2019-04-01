@@ -86,7 +86,7 @@ describe("FreeGameCreatorService", () => {
     // Test handleCollision
     it("should only have objects with a distance greater than 43", () => {
         const modTypes: ModificationType[] = [];
-        const objNumber: number = 100;
+        const objNumber: number = 10;
         const MAX_DIST: number = 43;
         const POWER: number = 2;
         const response: IObject.IScenesJSON = freeGameCreatorService.generateIScenes(objNumber, modTypes, Themes.Geometry);

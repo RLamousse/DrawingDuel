@@ -31,11 +31,9 @@ export abstract class AbstractGameRoom<T extends IGame, U extends IGameState> im
         this._connectedPlayers.push(clientId);
     }
 
-    public checkOut(clientId: string): boolean {
+    public checkOut(clientId: string): void {
         this._connectedPlayers = this._connectedPlayers.filter((id: string) => id !== clientId);
         this._gameStates.delete(clientId);
-
-        return this._connectedPlayers.length === 0;
     }
 
     public get gameName(): string {
@@ -44,6 +42,10 @@ export abstract class AbstractGameRoom<T extends IGame, U extends IGameState> im
 
     public get vacant(): boolean {
         return this._connectedPlayers.length < this._playerCount;
+    }
+
+    public get empty(): boolean {
+        return this._connectedPlayers.length === 0;
     }
 
     public get id(): string {

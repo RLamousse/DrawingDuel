@@ -85,16 +85,18 @@ describe("A simple game room", () => {
     });
 
     describe("Check out", () => {
-        it("should return true if a room is empty", () => {
+        it("should empty a room on leave", () => {
             const youCan: SimpleGameRoom = initSimpleGameRoom();
             const clientId: string = "any time you like but you can never leave... [Guitar solo]";
             youCan.checkIn(clientId);
 
             // Yes... I didn't extract the string only for the pun
-            assert(youCan.checkOut("any time you like but you can never leave... [Guitar solo]"));
+            youCan.checkOut("any time you like but you can never leave... [Guitar solo]");
 
             expect(Array.from(youCan["_gameStates"].keys()))
                 .not.to.contain(clientId);
+
+            assert(youCan.empty);
 
             return expect(youCan["_connectedPlayers"]).to.be.empty;
         });
@@ -116,10 +118,11 @@ describe("A simple game room", () => {
             const simpleGameRoom: SimpleGameRoom = initSimpleGameRoom();
             simpleGameRoom.checkIn("client");
 
-            assert(!simpleGameRoom.checkOut("stranger"));
+            simpleGameRoom.checkOut("stranger");
 
             expect(Array.from(simpleGameRoom["_gameStates"].keys()))
                 .to.contain("client");
+            assert(!simpleGameRoom.empty);
 
             return expect(simpleGameRoom["_connectedPlayers"]).not.to.be.empty;
         });
