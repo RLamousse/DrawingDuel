@@ -93,6 +93,7 @@ export class WebsocketController {
         const username: string | undefined = this.sockets.get(socket.id);
         if (this.sockets.has(socket.id)) {
             this.userNameService.removeUsername(username as string);
+            this.sockets.delete(socket.id);
             const message: WebsocketMessage<string> = {
                 title: SocketEvent.USER_CONNECTION,
                 body: format(new Date(), "HH:mm:ss") + this.chatAction.getDisconnectionMessage(username as string),
