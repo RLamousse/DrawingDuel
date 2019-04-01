@@ -41,7 +41,6 @@ export class SimpleGameRoom extends AbstractGameRoom<ISimpleGame, ISimpleGameSta
                 return {differenceCluster: foundDifferenceCluster};
             })
             .catch((error: Error) => {
-                // TODO: Notify room
                 throw error;
             });
     }

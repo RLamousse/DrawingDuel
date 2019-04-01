@@ -23,15 +23,6 @@ export class HotelRoomService {
 
     private readonly _rooms: Map<string, IGameRoom>;
 
-    private static checkInClient(socket: Socket, roomCandidate: IGameRoom): void {
-        try {
-            roomCandidate.checkIn(socket.id);
-            socket.join(roomCandidate.id);
-        } catch (e) {
-            socket.emit(SocketEvent.ROOM_ERROR, e);
-        }
-    }
-
     public async createGameRoom(socket: Socket, gameName: string, playerCount: number): Promise<void> {
         try {
             let room: IGameRoom;
@@ -46,8 +37,7 @@ export class HotelRoomService {
             }
             this._rooms.set(roomId, room);
 
-            this.registerGameRoomHandlers(socket, room);
-            HotelRoomService.checkInClient(socket, room);
+            this.checkInClient(socket, room);
         } catch (error) {
             throw new GameRoomCreationError();
         }
@@ -73,26 +63,27 @@ export class HotelRoomService {
             throw new NonExistentRoomError();
         }
 
-        HotelRoomService.checkInClient(socket, roomCandidate);
+        this.checkInClient(socket, roomCandidate);
     }
 
     private registerGameRoomHandlers(socket: Socket, room: IGameRoom): void {
-        socket.on(SocketEvent.INTERACT, (message: WebsocketMessage<RoomInteractionMessage>) => {
+        // TODO test .in().on()
+        socket.in(room.id).on(SocketEvent.INTERACT, (message: WebsocketMessage<RoomInteractionMessage>) => {
             room.interact(socket.id, message.body.interactionData)
                 .then((interactionResponse: IInteractionResponse) => {
-                    socket.to(room.id).emit(SocketEvent.INTERACT, interactionResponse);
+                    socket.in(room.id).emit(SocketEvent.INTERACT, interactionResponse);
                 })
                 .catch((error: Error) => {
-                    socket.to(room.id).emit(SocketEvent.INTERACT, error);
+                    socket.in(room.id).emit(SocketEvent.INTERACT, error);
                 });
         });
-        socket.on(SocketEvent.CHECK_OUT, () => {
+        socket.in(room.id).on(SocketEvent.CHECK_OUT, () => {
             this.handleCheckout(room, socket);
         });
-        socket.on(SocketEvent.READY, (message: WebsocketMessage) => {
+        socket.in(room.id).on(SocketEvent.READY, (message: WebsocketMessage) => {
             // TODO Notify the room to start the game
         });
-        socket.on(SocketEvent.DISCONNECT, () => {
+        socket.in(room.id).on(SocketEvent.DISCONNECT, () => {
             // TODO verify if this doesn't override the onDisconnect already set uo
             this.handleCheckout(room, socket);
         });
@@ -104,9 +95,18 @@ export class HotelRoomService {
         if (room.empty) {
             this.deleteRoom(room);
             // TODO notify?
-        } else if (room.vacant) {
-            // TODO verify that the game was initiated
-            // TODO notify connected clients
+        } else if (room.vacant && room.ongoing) {
+            // TODO kick and notify connected clients
+        }
+    }
+
+    private checkInClient(socket: Socket, room: IGameRoom): void {
+        try {
+            room.checkIn(socket.id);
+            socket.join(room.id);
+            this.registerGameRoomHandlers(socket, room);
+        } catch (e) {
+            socket.emit(SocketEvent.ROOM_ERROR, e);
         }
     }
 

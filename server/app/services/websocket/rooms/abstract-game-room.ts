@@ -9,16 +9,18 @@ export abstract class AbstractGameRoom<T extends IGame, U extends IGameState> im
     private readonly _id: string;
     protected readonly _game: T;
     protected readonly _playerCount: number;
+    protected readonly _gameStates: Map<string, U>;
 
     protected _connectedPlayers: string[];
-    protected readonly _gameStates: Map<string, U>;
+    protected _ongoing: boolean;
 
     protected constructor(id: string, game: T, playerCount: number = 1) {
         this._id = id;
         this._game = game;
         this._playerCount = playerCount;
-        this._connectedPlayers = [];
         this._gameStates = new Map();
+        this._connectedPlayers = [];
+        this._ongoing = false;
     }
 
     public async abstract interact(clientId: string, interactionData: IInteractionData): Promise<IInteractionResponse>;
@@ -50,6 +52,10 @@ export abstract class AbstractGameRoom<T extends IGame, U extends IGameState> im
 
     public get id(): string {
         return this._id;
+    }
+
+    public get ongoing(): boolean {
+        return this._ongoing;
     }
 
     protected getGameStateForClient(clientId: string): U {

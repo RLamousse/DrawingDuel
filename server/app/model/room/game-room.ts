@@ -5,6 +5,7 @@ export interface IGameRoom {
     gameName: string;
     vacant: boolean;
     empty: boolean;
+    ongoing: boolean;
 
     checkIn(clientId: string): void;
 
