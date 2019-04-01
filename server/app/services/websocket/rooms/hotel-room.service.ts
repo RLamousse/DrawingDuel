@@ -65,7 +65,12 @@ export class HotelRoomService {
             throw new NonExistentRoomError();
         }
 
-        roomCandidate.checkIn(socket.id);
+        try {
+            roomCandidate.checkIn(socket.id);
+            socket.join(roomCandidate.id);
+        } catch (e) {
+            socket.emit(SocketEvent.ROOM_ERROR, e);
+        }
     }
 
     private registerGameRoomHandlers(socket: Socket, room: IGameRoom): void {
@@ -82,7 +87,7 @@ export class HotelRoomService {
             this.handleCheckout(room, socket);
         });
         socket.on(SocketEvent.READY, (message: WebsocketMessage) => {
-            // TODO
+            // TODO Notify the room to start the game
         });
         socket.on(SocketEvent.DISCONNECT, () => {
             // TODO verify if this doesn't override the onDisconnect already set uo
@@ -91,15 +96,18 @@ export class HotelRoomService {
     }
 
     private handleCheckout(room: IGameRoom, socket: Socket): void {
-        if (room.checkOut(socket.id)) {
+        socket.leave(room.id);
+        room.checkOut(socket.id);
+        if (room.empty) {
             this.deleteRoom(room);
-        } else if (room.vacant) { // TODO verify that the game was initiated
+            // TODO notify?
+        } else if (room.vacant) {
+            // TODO verify that the game was initiated
             // TODO notify connected clients
         }
     }
 
     private deleteRoom(room: IGameRoom): void {
         this._rooms.delete(room.id);
-        // TODO notify?
     }
 }
