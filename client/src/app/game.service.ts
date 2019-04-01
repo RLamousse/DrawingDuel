@@ -133,20 +133,20 @@ export class GameService {
    this.http.delete(this.SIMPLE_GAME_BASE_URL + gameName).pipe(
       catchError(this.handleError<IFreeGame>(this.DELETE_GAME_BY_NAME)),
     ).subscribe();
-
   }
 
   public deleteFreeGameByName(gameName: string): void {
     this.http.delete(this.FREE_GAME_BASE_URL + gameName).pipe(
        catchError(this.handleError<IFreeGame>(this.DELETE_GAME_BY_NAME)),
       ).subscribe();
-   }
+  }
 
   public resetGameTime(gameName: string): void {
     this.http.put(this.RESET_SCORES_URL + gameName, null).pipe(
     catchError(this.handleError<IFreeGame>(this.RESET_SCORES_ERROR)),
     ).subscribe();
   }
+
   public async loadCheatData(gameName: string): Promise<IJson3DObject[]> {
     return new Promise<IJson3DObject[]>((resolve) => {
 

@@ -19,10 +19,12 @@ h1{
     flex-direction: row;
 }
 
-.image{
+img{
     border: 5px solid darkblue;
-    width: 250px;
-    height: 170px;
+    width: 350px;
+    height: 263px;
+    margin: auto;
+    margin-top: 15px;
 }
 
 .scoreTable{
@@ -45,5 +47,14 @@ td{
 .button{
     display: inline-block;
     margin-right: 35px;
-    border:1.3px darkblue solid;
+    border: 1px darkblue solid;
+}
+
+.example-card {
+  max-width: 600px;
+}
+
+.example-header-image {
+  background-image: url('https://material.angular.io/assets/img/examples/shiba1.jpg');
+  background-size: cover;
 }
