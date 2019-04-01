@@ -10,6 +10,7 @@ import {
     DIFF_VALIDATOR_3D_BASE,
     DIFF_VALIDATOR_BASE,
     GAME_CREATOR_BASE,
+    GAME_MANAGER_BASE,
     SCORE_TABLE_UPDATE,
     USERNAME_BASE
 } from "../../common/communication/routes";
@@ -18,6 +19,7 @@ import {DataBaseController} from "./controllers/data-base.controller";
 import {DiffValidator3DController} from "./controllers/diff-validator-3D.controller";
 import {DiffValidatorController} from "./controllers/diff-validator.controller";
 import {GameCreatorController} from "./controllers/game-creator.controller";
+import {GameManagerController} from "./controllers/game-manager.controller";
 import {ScoreTableController} from "./controllers/score-table.controller";
 import {UserController} from "./controllers/username.controller";
 import Types from "./types";
@@ -30,6 +32,7 @@ export class Application {
 
     public constructor(@inject(Types.GameCreatorController) private gameCreatorController: GameCreatorController,
                        @inject(Types.DataBaseController) private dataBaseController: DataBaseController,
+                       @inject(Types.GameManagerController) private gameManagerController: GameManagerController,
                        @inject(Types.UserNameController) private userController: UserController,
                        @inject(Types.ScoreTableController) private scoreTableController: ScoreTableController,
                        @inject(Types.BitmapDiffController) private bitmapDiffController: BitmapDiffController,
@@ -59,6 +62,7 @@ export class Application {
         this.app.use(DIFF_CREATOR_BASE, this.bitmapDiffController.router);
         this.app.use(GAME_CREATOR_BASE, this.gameCreatorController.router);
         this.app.use(DB_BASE, this.dataBaseController.router);
+        this.app.use(GAME_MANAGER_BASE, this.gameManagerController.router);
         this.app.use(DIFF_VALIDATOR_BASE, this.diffValidatorController.router);
         this.app.use(DIFF_VALIDATOR_3D_BASE, this.diffValidator3DController.router);
         this.errorHandeling();

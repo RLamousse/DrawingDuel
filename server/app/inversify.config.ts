@@ -5,6 +5,7 @@ import { DataBaseController } from "./controllers/data-base.controller";
 import { DiffValidator3DController } from "./controllers/diff-validator-3D.controller";
 import { DiffValidatorController } from "./controllers/diff-validator.controller";
 import { GameCreatorController } from "./controllers/game-creator.controller";
+import {GameManagerController} from "./controllers/game-manager.controller";
 import { ScoreTableController } from "./controllers/score-table.controller";
 import { UserController } from "./controllers/username.controller";
 import { WebsocketController } from "./controllers/websocket.controller";
@@ -38,6 +39,7 @@ container.bind(Types.GameCreatorService).to(GameCreatorService);
 container.bind(Types.ImageUploadService).to(ImageUploadService);
 
 container.bind(Types.DataBaseController).to(DataBaseController);
+container.bind(Types.GameManagerController).to(GameManagerController);
 container.bind(Types.DataBaseService).to(DataBaseService);
 
 container.bind(Types.DifferenceEvaluatorService).to(DifferenceEvaluatorService);
