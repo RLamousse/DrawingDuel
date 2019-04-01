@@ -24,7 +24,7 @@ export const getClusterFromPoint: (point: IPoint, clusters: DifferenceCluster[])
         const cluster = clusters
             .find((cluster: DifferenceCluster) =>
                       cluster[DIFFERENCE_CLUSTER_POINTS_INDEX]
-                          .some((point: IPoint) => point.x === point.x && point.y === point.y));
+                          .some((p: IPoint) => point.x === p.x && point.y === p.y));
 
         if (cluster === undefined) {
             throw new NoDifferenceAtPointError();

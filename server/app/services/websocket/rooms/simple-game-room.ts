@@ -76,9 +76,10 @@ export class SimpleGameRoom extends AbstractGameRoom<ISimpleGame, ISimpleGameSta
             getClusterFromPoint(point, clientGameState.foundDifferenceClusters);
         } catch (e) {
             if (e.message === NoDifferenceAtPointError.NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE) {
-                // TODO Si on return on notifie jamais de l'erreur
                 return;
             }
+
+            throw e;
         }
 
         throw new AlreadyFoundDifferenceError();

@@ -17,10 +17,19 @@ import {SimpleGameRoom} from "./simple-game-room";
 @injectable()
 export class HotelRoomService {
 
-    private readonly _rooms: Map<string, IGameRoom>;
-
     public constructor(@inject(types.DataBaseService) private databaseService: DataBaseService) {
         this._rooms = new Map<string, IGameRoom>();
+    }
+
+    private readonly _rooms: Map<string, IGameRoom>;
+
+    private static checkInClient(socket: Socket, roomCandidate: IGameRoom): void {
+        try {
+            roomCandidate.checkIn(socket.id);
+            socket.join(roomCandidate.id);
+        } catch (e) {
+            socket.emit(SocketEvent.ROOM_ERROR, e);
+        }
     }
 
     public async createGameRoom(socket: Socket, gameName: string, playerCount: number): Promise<void> {
@@ -29,7 +38,6 @@ export class HotelRoomService {
             const roomId: string = uuid();
 
             if (await this.databaseService.simpleGames.contains(gameName)) {
-                // TODO fetch la game dans le constructeur? 
                 room = new SimpleGameRoom(roomId, await this.databaseService.simpleGames.getFromId(gameName), playerCount);
             } else if (await this.databaseService.freeGames.contains(gameName)) {
                 room = new FreeGameRoom(roomId, await this.databaseService.freeGames.getFromId(gameName), playerCount);
@@ -39,7 +47,7 @@ export class HotelRoomService {
             this._rooms.set(roomId, room);
 
             this.registerGameRoomHandlers(socket, room);
-            this.checkInGameRoom(socket, gameName);
+            HotelRoomService.checkInClient(socket, room);
         } catch (error) {
             throw new GameRoomCreationError();
         }
@@ -65,22 +73,17 @@ export class HotelRoomService {
             throw new NonExistentRoomError();
         }
 
-        try {
-            roomCandidate.checkIn(socket.id);
-            socket.join(roomCandidate.id);
-        } catch (e) {
-            socket.emit(SocketEvent.ROOM_ERROR, e);
-        }
+        HotelRoomService.checkInClient(socket, roomCandidate);
     }
 
     private registerGameRoomHandlers(socket: Socket, room: IGameRoom): void {
         socket.on(SocketEvent.INTERACT, (message: WebsocketMessage<RoomInteractionMessage>) => {
             room.interact(socket.id, message.body.interactionData)
                 .then((interactionResponse: IInteractionResponse) => {
-                    // TODO Notify
+                    socket.to(room.id).emit(SocketEvent.INTERACT, interactionResponse);
                 })
                 .catch((error: Error) => {
-                    // TODO Notify
+                    socket.to(room.id).emit(SocketEvent.INTERACT, error);
                 });
         });
         socket.on(SocketEvent.CHECK_OUT, () => {
