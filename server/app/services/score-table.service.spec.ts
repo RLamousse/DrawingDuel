@@ -45,7 +45,8 @@ describe("ScoreTableService", () => {
         mockedDataBaseService = mock(DataBaseService);
         mockedSimpleGames = mock(SimpleGamesCollectionService);
         mockedFreeGames = mock(FreeGamesCollectionService);
-        when(mockedFreeGames.getFromId(anything())).thenReject(new NonExistentGameError());
+        when(mockedFreeGames.contains(anything())).thenResolve(false);
+        when(mockedSimpleGames.contains(anything())).thenResolve(true);
         when(mockedSimpleGames.getFromId(anything()))
             .thenResolve({bestSoloTimes: JSON.parse(JSON.stringify(INITIAL_SCORE_TABLE)),
                           bestMultiTimes: JSON.parse(JSON.stringify(INITIAL_SCORE_TABLE))} as ISimpleGame);
@@ -105,6 +106,7 @@ describe("ScoreTableService", () => {
 
         it("should return 1 if the score deserves the first place(free games)", async () => {
 
+            when(mockedFreeGames.contains(anything())).thenResolve(true);
             when(mockedFreeGames.getFromId(anything()))
                 .thenResolve({bestSoloTimes: JSON.parse(JSON.stringify(INITIAL_SCORE_TABLE)),
                               bestMultiTimes: JSON.parse(JSON.stringify(INITIAL_SCORE_TABLE))} as IFreeGame);
@@ -145,7 +147,7 @@ describe("ScoreTableService", () => {
     describe("Reset scores", () => {
         it("should throw if the name is not an existing name", async () => {
 
-            when(mockedSimpleGames.getFromId(anything())).thenReject(new NonExistentGameError());
+            when(mockedSimpleGames.contains(anything())).thenResolve(false);
 
             return initScoreTableService().resetScores("tom").catch((reason: NonExistentGameError) => {
                 expect(reason.message).to.eql(NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE);
@@ -179,6 +181,7 @@ describe("ScoreTableService", () => {
 
         it("should not throw if the name is an existing name(free)", async () => {
 
+            when(mockedFreeGames.contains(anything())).thenResolve(true);
             when(mockedFreeGames.getFromId(anything()))
                 .thenResolve({bestSoloTimes: JSON.parse(JSON.stringify(INITIAL_SCORE_TABLE)),
                               bestMultiTimes: JSON.parse(JSON.stringify(INITIAL_SCORE_TABLE))} as IFreeGame);
