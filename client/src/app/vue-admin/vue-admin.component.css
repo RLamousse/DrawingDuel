@@ -24,11 +24,10 @@
     position: fixed;
     width: 100%;
     background-color: grey;
-    
+    z-index: 10;
 }
 .lineSkip{
     padding-top: 5%;
-    background-color: lightgrey;
 }
 
 

@@ -38,11 +38,14 @@ td{
 }
 
 .buttonRow{
-    padding-left: 40px;
+  display: flex;
+  flex-direction: row;
+  margin-left: 28%;
 }
 
 button{
-  margin-left: 50px;
+  width: 30%;
+  text-align: center;
 }
 
 .card {
