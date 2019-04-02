@@ -1,10 +1,15 @@
-import {Component, Input} from "@angular/core";
+import {Component, Input, OnInit} from "@angular/core";
 import {MatDialog, MatDialogConfig} from "@angular/material";
 import {Router} from "@angular/router";
 import {ComponentNavigationError} from "../../../../../common/errors/component.errors";
 import {IRecordTime} from "../../../../../common/model/game/record-time";
 import {DeleteGameFormComponent} from "./delete-game-form/delete-game-form.component";
 import {ResetGameFormComponent} from "./reset-game-form/reset-game-form.component";
+import {SocketService} from "../../socket.service";
+import {WebsocketMessage} from "../../../../../common/communication/messages/message";
+import {IRoomInfo} from "../../../../../common/model/rooms/room-info";
+import {SocketEvent} from "../../../../../common/communication/socket-events";
+import {GameButtonOptions} from "./game-button-enum";
 
 @Component({
   selector: "app-game",
@@ -12,9 +17,14 @@ import {ResetGameFormComponent} from "./reset-game-form/reset-game-form.componen
   styleUrls: ["./game.component.css"],
 })
 
-export class GameComponent {
+export class GameComponent implements OnInit {
 
-  public constructor(private router: Router, private dialog: MatDialog) {}
+  public constructor(private router: Router,
+                     private dialog: MatDialog,
+                     private socket: SocketService) {
+    this.handleRoomAvailability = this.handleRoomAvailability.bind(this);
+  }
+
   @Input() public gameName: string = "test";
   @Input() public bestSoloTimes: IRecordTime[];
   @Input() public bestMultiTimes: IRecordTime[];
@@ -25,10 +35,15 @@ export class GameComponent {
   @Input() public leftButton: string;
   @Input() public isSimpleGame: boolean;
 
+  public ngOnInit(): void {
+    this.socket.onEvent<IRoomInfo[]>(SocketEvent.FETCH).subscribe(this.handleRoomAvailability);
+    this.socket.send(SocketEvent.FETCH, {title: SocketEvent.FETCH, body: ""});
+  }
+
   protected leftButtonClick(): void {
-    if (this.leftButton === "jouer") {
+    if (this.leftButton === GameButtonOptions.PLAY) {
       this.isSimpleGame ? this.navigatePlayView() : this.navigateFreeView();
-    } else if (this.leftButton === "supprimer") {
+    } else if (this.leftButton === GameButtonOptions.DELETE) {
       const dialogConfig: MatDialogConfig = new MatDialogConfig();
       dialogConfig.autoFocus = true;
       dialogConfig.data = {gameName: this.gameName, isSimpleGame: this.isSimpleGame};
@@ -36,10 +51,15 @@ export class GameComponent {
     }
   }
 
+  private handleRoomAvailability(value: WebsocketMessage<IRoomInfo[]>) {
+    const availableRoom: IRoomInfo | undefined = value.body.find((value) => value.gameName === this.gameName && value.vacant);
+    this.rightButton = availableRoom ? GameButtonOptions.JOIN : GameButtonOptions.CREATE;
+  }
+
   protected rightButtonClick(): void {
-    if (this.rightButton === "joindre") {
+    if (this.rightButton === GameButtonOptions.JOIN) {
       this.navigateAwait();
-    } else if (this.rightButton === "reinitialiser") {
+    } else if (this.rightButton === GameButtonOptions.REINITIALIZE) {
       const dialogConfig: MatDialogConfig = new MatDialogConfig();
       dialogConfig.autoFocus = true;
       dialogConfig.data = {gameName: this.gameName, isSimpleGame: this.isSimpleGame};
@@ -52,7 +72,7 @@ export class GameComponent {
       gameName: this.gameName, originalImage: this.originalImage, modifiedImage: this.modifiedImage, isSimpleGame: this.isSimpleGame },
     })
       // tslint:disable-next-line:no-any Generic error response
-     .catch((reason: any) => {
+     .catch(() => {
        throw new ComponentNavigationError();
      });
   }
@@ -65,7 +85,7 @@ export class GameComponent {
       },
     })
       // tslint:disable-next-line:no-any Generic error response
-      .catch((reason: any) => {
+      .catch(() => {
         throw new ComponentNavigationError();
       });
   }
@@ -75,7 +95,7 @@ export class GameComponent {
       gameName: this.gameName, gameType: this.isSimpleGame},
     })
       // tslint:disable-next-line:no-any Generic error response
-     .catch((reason: any) => {
+      .catch(() => {
        throw new ComponentNavigationError();
      });
   }
