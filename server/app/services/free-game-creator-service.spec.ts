@@ -152,14 +152,14 @@ describe("FreeGameCreatorService", () => {
     });
 
     // test setAstronautCloseFromEarth
-    it("should go threw the collision and set a new position and scale", () => {
+    it("should go through the collision and set a new position and scale", () => {
         const object: IObject.IJson3DObject = mockedAstroObject;
         objects.push(mockedAstroObject2);
         freeGameCreatorService["setAstronautCloseFromEarth"](object, objects);
         const TEST: number = 4;
         expect(object.scale).to.be.eql(TEST);
         const MAXINDEX: number = 3;
-        const FURTHER_FROM_EARTH: number = 70;
+        const FURTHER_FROM_EARTH: number = 71;
         for (let i = 0; i < MAXINDEX; i++) {
             expect(object.position[i]).to.be.lessThan(FURTHER_FROM_EARTH);
             expect(object.position[i]).to.be.greaterThan(- FURTHER_FROM_EARTH);
