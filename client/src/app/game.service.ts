@@ -2,7 +2,12 @@ import {HttpClient} from "@angular/common/http";
 import {Injectable} from "@angular/core";
 import {of, Observable} from "rxjs";
 import {catchError} from "rxjs/operators";
-import {DB_FREE_GAME, DB_SIMPLE_GAME, RESET_SCORES, SERVER_BASE_URL} from "../../../common/communication/routes";
+import {
+  GAME_MANAGER_FREE,
+  GAME_MANAGER_SIMPLE,
+  RESET_SCORES,
+  SERVER_BASE_URL
+} from "../../../common/communication/routes";
 import {IJson3DObject} from "../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
 import {IExtendedFreeGame} from "../../../common/model/game/extended-free-game";
 import {IFreeGame} from "../../../common/model/game/free-game";
@@ -26,8 +31,8 @@ export class GameService {
   public simpleGames: ISimpleGame[] = [];
   public freeGames: IFreeGame[] = [];
   public extendedFreeGames: IExtendedFreeGame[] = [];
-  public readonly SIMPLE_GAME_BASE_URL: string = SERVER_BASE_URL + DB_SIMPLE_GAME;
-  public readonly FREE_GAME_BASE_URL: string = SERVER_BASE_URL + DB_FREE_GAME;
+  public readonly SIMPLE_GAME_BASE_URL: string = SERVER_BASE_URL + GAME_MANAGER_SIMPLE;
+  public readonly FREE_GAME_BASE_URL: string = SERVER_BASE_URL + GAME_MANAGER_FREE;
   public readonly RESET_SCORES_URL: string = SERVER_BASE_URL + RESET_SCORES;
 
   private readonly GET_SIMPLEGAME_ERROR: string = "get simple game from server error";
@@ -151,7 +156,7 @@ export class GameService {
     return new Promise<IJson3DObject[]>((resolve) => {
 
       this.http.get<IFreeGame>(
-        SERVER_BASE_URL + DB_FREE_GAME + gameName).subscribe((value: IFreeGame) => {
+        this.FREE_GAME_BASE_URL + gameName).subscribe((value: IFreeGame) => {
         resolve(value.scenes.differentObjects);
       });
     });
