@@ -2,11 +2,11 @@ import {NextFunction, Request, Response, Router} from "express";
 import * as Httpstatus from "http-status-codes";
 import {inject, injectable} from "inversify";
 import {NonExistentGameError} from "../../../common/errors/database.errors";
+import {IFreeGame} from "../../../common/model/game/free-game";
 import {ISimpleGame} from "../../../common/model/game/simple-game";
 import {DataBaseService} from "../services/data-base.service";
 import Types from "../types";
 import {executePromiseSafely} from "./controller-utils";
-import {IFreeGame} from "../../../common/model/game/free-game";
 
 @injectable()
 export class GameManagerController {
