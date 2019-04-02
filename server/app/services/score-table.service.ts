@@ -45,21 +45,21 @@ export class ScoreTableService {
     private async tryGetTableFromDB (gameName: string, isSolo?: boolean): Promise<IScoreResponse|boolean> {
         let gameToModify: IGame;
         let isSimple: boolean = false;
-        try {
-            gameToModify = await this.databaseService.freeGames.getFromId(gameName);
-        } catch (error) {
-            if (error.message !== NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE) {
+        if (await this.databaseService.freeGames.contains(gameName)) {
+            try {
+                gameToModify = await this.databaseService.freeGames.getFromId(gameName);
+            } catch (error) {
                 throw new AbstractDataBaseError(error.message);
             }
+        } else if (await this.databaseService.simpleGames.contains(gameName)) {
             try {
                 gameToModify = await this.databaseService.simpleGames.getFromId(gameName);
-                isSimple = true;
-            } catch (error2) {
-                if (error2.message !== NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE) {
-                    throw new AbstractDataBaseError(error2.message);
-                }
-                throw error2;
+            } catch (error) {
+                throw new AbstractDataBaseError(error.message);
             }
+            isSimple = true;
+        } else {
+            throw new NonExistentGameError();
         }
 
         if (isSolo === undefined) {
