@@ -1,29 +1,8 @@
-.window{
-    width:700px;
-    background-color: lightblue;
-    padding: 20px;
-    min-height: 365px;
-    max-height: 365px;
-    margin: auto;
-    margin-top: 20px;
-    border: 2px solid darkblue;
-    border-radius: 25px;
-}
-
-h1{
-    text-align: center;
-}
-
-.horizontalWindow{
-    display: flex;
-    flex-direction: row;
-}
-
 img{
-    border: 5px solid darkblue;
-    width: 350px;
-    height: 263px;
-    margin: auto;
+    border: 1px solid grey;
+    border-radius: 5px;
+    width: 500px;
+    height: 376px;
     margin-top: 15px;
 }
 
@@ -35,6 +14,11 @@ img{
 td{
     padding-left: 20px;
     padding-top: 12px;
+}
+
+mat-card-title{
+  font-weight: bold;
+  font-size: x-large;
 }
 
 .buttonRow{
@@ -50,16 +34,21 @@ td{
     border: 1px darkblue solid;
 }
 
-.example-card {
-  max-width: 600px;
+.card {
+  max-width: 500px;
+  margin: 30px;
 }
 
 .twoD {
   background-image: url("../../../assets/images/2d.PNG");
   background-size: cover;
+  width: 90px;
+  height: 90px;
   }
 
 .threeD {
     background-image: url("../../../assets/images/3d.PNG");
     background-size: cover;
+    width: 90px;
+    height: 90px;
   }

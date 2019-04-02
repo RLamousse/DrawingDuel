@@ -6,11 +6,15 @@
 
 .window {
     width: 800px;
-    border: 1px black solid;
     top: 0;
     min-height: 600px;
 }
 
 h1 {
+    color: white;
     margin-left: 40px;
+}
+
+.appGame {
+  margin-top: 20px;
 }
