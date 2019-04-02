@@ -24,6 +24,7 @@ import {
 import {SocketService} from "../socket.service";
 import {UNListService} from "../username.service";
 import { RenderUpdateService } from "./render-update.service";
+import {ObjectCollisionService} from "./objectCollisionService/object-collision.service";
 
 interface IFreeGameState {
   isCheatModeActive: boolean;
@@ -64,7 +65,9 @@ export class SceneRendererService {
   public gameState: IFreeGameState;
 
   public constructor(private renderUpdateService: RenderUpdateService,
-                     private socket: SocketService) {
+                     private socket: SocketService,
+                     private objectCollisionService: ObjectCollisionService,
+                     ) {
     this.gameState = {isCheatModeActive: false, isWaitingInThread: false, foundDifference: []};
   }
   private setRenderer(): void {
@@ -86,6 +89,7 @@ export class SceneRendererService {
     this.time = performance.now();
     const delta: number = (this.time - this.prevTime) / this.timeFactor;
     this.renderUpdateService.updateVelocity(this.velocity, delta);
+    this.objectCollisionService.computeCollision(this.velocity, this.camera, delta);
     this.renderUpdateService.updateCamera(this.camera, delta, this.velocity);
     this.prevTime = this.time;
   }
@@ -122,6 +126,7 @@ export class SceneRendererService {
     this.velocity = new THREE.Vector3();
     this.gameName = gameName;
     this.gameState.foundDifference = [];
+    this.objectCollisionService.setCollision(this.scene.children, this.modifiedScene.children);
     this.renderLoop();
   }
   private async blink(): Promise<void> {
