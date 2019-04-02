@@ -6,8 +6,8 @@ import * as THREE from "three";
 })
 export class ObjectCollisionService {
 
-  private originalObjects: THREE.Object3D[];
-  private modifiedObjects: THREE.Object3D[];
+  private originalCollisionBoxes: THREE.Box3[];
+  private modifiedCollisionBoxes: THREE.Box3[];
   private inCollision: boolean;
   private distance: THREE.Vector3;
   private resetDistX: number;
@@ -17,8 +17,8 @@ export class ObjectCollisionService {
   private readonly distAmplifiyer: number = 2;
 
   public constructor() {
-    this.originalObjects = [];
-    this.modifiedObjects = [];
+    this.originalCollisionBoxes = [];
+    this.modifiedCollisionBoxes = [];
     this.inCollision  = false;
     this.distance = new THREE.Vector3;
     this.resetDistX = 0;
@@ -26,27 +26,39 @@ export class ObjectCollisionService {
   }
 
   public setCollisionBox(original: THREE.Object3D[], modified: THREE.Object3D[]): void {
-    this.originalObjects = original;
-    this.modifiedObjects = modified;
+    for (const obj of original) {
+      let box: THREE.Box3 = new THREE.Box3();
+      box = box.setFromObject(obj);
+      this.originalCollisionBoxes.push(box);
+    }
+    for (const obj of modified) {
+      let box: THREE.Box3 = new THREE.Box3();
+      box = box.setFromObject(obj);
+      this.modifiedCollisionBoxes.push(box);
+    }
   }
 
   public computeCollision(velocity: THREE.Vector3, camera: THREE.Camera, delta: number): void {
       if (!this.inCollision) {
-        for (const obj of this.originalObjects) {
-          let box: THREE.Box3 = new THREE.Box3();
-          box = box.setFromObject(obj);
-          if (box.containsPoint(camera.position)) {
-            const pos: THREE.Vector3 = obj.position.clone();
-            this.inCollision = true;
-            this.distance = new THREE.Vector3(
-              this.amplifyDist(pos.x, velocity.x),
-              this.amplifyDist(pos.y, velocity.y),
-              this.amplifyDist(pos.z, velocity.z),
-            ).sub(camera.position);
-          }
-        }
+        this.checkCollision(this.originalCollisionBoxes, camera, velocity);
+        this.checkCollision(this.modifiedCollisionBoxes, camera, velocity);
       }
       this.computeDirection(velocity, this.distance, delta);
+  }
+
+  private checkCollision (collBoxes: THREE.Box3[], camera: THREE.Camera, velocity: THREE.Vector3): void {
+    for (const obj of collBoxes) {
+      if (obj.containsPoint(camera.position)) {
+        const pos: THREE.Vector3 = new THREE.Vector3();
+        obj.getCenter(pos);
+        this.inCollision = true;
+        this.distance = new THREE.Vector3(
+          this.amplifyDist(pos.x, velocity.x),
+          this.amplifyDist(pos.y, velocity.y),
+          this.amplifyDist(pos.z, velocity.z),
+        ).sub(camera.position);
+      }
+    }
   }
 
   private computeDirection(vel: THREE.Vector3, relDist: THREE.Vector3, delta: number): void {
