@@ -54,7 +54,12 @@ td{
   max-width: 600px;
 }
 
-.example-header-image {
-  background-image: url('https://material.angular.io/assets/img/examples/shiba1.jpg');
+.twoD {
+  background-image: url("../../../assets/images/2d.PNG");
   background-size: cover;
-}
+  }
+
+.threeD {
+    background-image: url("../../../assets/images/3d.PNG");
+    background-size: cover;
+  }

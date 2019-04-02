@@ -40,15 +40,20 @@
 <!--</div>-->
 
 <mat-card class="example-card">
-  <mat-card-header>
-    <div mat-card-avatar class="example-header-image"></div>
-    <mat-card-title>{{gameName}}</mat-card-title>
-  </mat-card-header>
+
   <div *ngIf="isSimpleGame;  then thenBlock else elseBlock"></div>
   <ng-template #thenBlock>
+    <mat-card-header>
+      <div mat-card-avatar class="twoD"></div>
+      <mat-card-title>{{gameName}}</mat-card-title>
+    </mat-card-header>
     <img src={{originalImage}} alt="Photo of the game">
   </ng-template>
   <ng-template #elseBlock>
+    <mat-card-header>
+      <div mat-card-avatar class="threeD"></div>
+      <mat-card-title>{{gameName}}</mat-card-title>
+    </mat-card-header>
     <img src={{thumbnail}} alt="Photo of the game">
   </ng-template>
   <mat-card-content>
