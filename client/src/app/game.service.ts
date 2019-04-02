@@ -40,7 +40,6 @@ export class GameService {
   private readonly GET_FREEGAME_BY_NAME_ERROR: string = "get free game by name from server error";
   private readonly HIDE_SIMPLE_GAME_BY_NAME: string = "hide simple game from server error";
   private readonly HIDE_FREE_GAME_BY_NAME: string = "hide free game from server error";
-  private readonly DELETE_GAME_BY_NAME: string = "delete game by name server error";
   private readonly RESET_SCORES_ERROR: string = "reset scores error";
 
   private convertTimeScores(seconds: number): number {
