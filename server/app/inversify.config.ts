@@ -1,7 +1,6 @@
 import { Container } from "inversify";
 import { Application } from "./app";
 import { BitmapDiffController } from "./controllers/bitmap-diff.controller";
-import { DataBaseController } from "./controllers/data-base.controller";
 import { DiffValidator3DController } from "./controllers/diff-validator-3D.controller";
 import { DiffValidatorController } from "./controllers/diff-validator.controller";
 import { GameCreatorController } from "./controllers/game-creator.controller";
@@ -38,7 +37,6 @@ container.bind(Types.GameCreatorController).to(GameCreatorController);
 container.bind(Types.GameCreatorService).to(GameCreatorService);
 container.bind(Types.ImageUploadService).to(ImageUploadService);
 
-container.bind(Types.DataBaseController).to(DataBaseController);
 container.bind(Types.GameManagerController).to(GameManagerController);
 container.bind(Types.DataBaseService).to(DataBaseService);
 
