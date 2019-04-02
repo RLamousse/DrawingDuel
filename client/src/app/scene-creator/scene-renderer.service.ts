@@ -14,7 +14,7 @@ import {SocketEvent} from "../../../../common/communication/socket-events";
 import { ComponentNotLoadedError } from "../../../../common/errors/component.errors";
 import {AbstractServiceError, AlreadyFoundDifferenceError, NoDifferenceAtPointError} from "../../../../common/errors/services.errors";
 import { IJson3DObject } from "../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
-import IFreeGameState from "../../../../common/model/game/free-game-state";
+import {IFreeGameState} from "../../../../common/model/game/game-state";
 import { deepCompare, sleep, X_FACTOR } from "../../../../common/util/util";
 import {
   playRandomSound,
@@ -148,7 +148,7 @@ export class SceneRendererService {
 
       newData.forEach((jsonValue: IJson3DObject) => {
         (this.gameState.cheatDiffData as Set<THREE.Object3D>).forEach((objectValue: THREE.Object3D) => {
-          if (this.isObjectAtSamePlace(jsonValue.position, objectValue.position)) {
+          if (SceneRendererService.isObjectAtSamePlace(jsonValue.position, objectValue.position)) {
             (this.gameState.cheatDiffData as Set<THREE.Object3D>).delete(objectValue);
           }
         });
@@ -159,7 +159,7 @@ export class SceneRendererService {
     this.gameState.cheatDiffData = new Set<THREE.Object3D>();
     (await callBackFunction()).forEach((jsonValue: IJson3DObject) => {
       this.scene.children.concat(this.modifiedScene.children).forEach((objectValue: THREE.Object3D) => {
-        if (this.isObjectAtSamePlace(jsonValue.position, objectValue.position) &&
+        if (SceneRendererService.isObjectAtSamePlace(jsonValue.position, objectValue.position) &&
           (objectValue instanceof THREE.Mesh || objectValue instanceof THREE.Scene)) {
           (this.gameState.cheatDiffData as Set<THREE.Object3D>).add(objectValue);
         }
@@ -175,7 +175,8 @@ export class SceneRendererService {
     this.gameState.isCheatModeActive = false;
     this.gameState.cheatDiffData = undefined;
   }
-  private isObjectAtSamePlace(jsonPosition: number[], objectPosition: THREE.Vector3): boolean {
+
+  private static isObjectAtSamePlace(jsonPosition: number[], objectPosition: THREE.Vector3): boolean {
     return deepCompare(jsonPosition, [objectPosition.x, objectPosition.y, objectPosition.z]);
   }
   private async threadFinish(): Promise<void> {
