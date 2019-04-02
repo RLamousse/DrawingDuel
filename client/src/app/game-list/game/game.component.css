@@ -7,18 +7,34 @@ img{
 }
 
 .scoreTable{
-    margin: 25px;
-    font-weight: bold;
+    padding-top: 10px;
 }
 
 td{
     padding-left: 20px;
-    padding-top: 12px;
+    color: white;
+    height: 37px;
+    width: 150px;
+    border: 1px #272731 solid;
 }
 
-mat-card-title{
+.grey{
+    background-color: #373745;
+}
+
+.black{
+    background-color: #272731;
+}
+
+.bold{
+  font-size: 18px;
+}
+
+.title{
   font-weight: bold;
-  font-size: x-large;
+  font-size: 45px;
+  color: #272731;
+  margin-top: 15px;
 }
 
 .buttonRow{
@@ -29,7 +45,6 @@ button{
   margin-left: 50px;
 }
 
-
 .card {
   max-width: 500px;
   margin: 30px;
@@ -37,14 +52,20 @@ button{
 }
 
 .twoD {
-  background-image: url("../../../assets/images/2d.PNG");
+  background-color: #3F51B5;
   background-size: cover;
   width: 90px;
   height: 90px;
-  }
+}
+
+.icon{
+  font-size: 50px;
+  color: white;
+  padding: 15px;
+}
 
 .threeD {
-    background-image: url("../../../assets/images/3d.PNG");
+    background-color: #FF3C82;
     background-size: cover;
     width: 90px;
     height: 90px;
