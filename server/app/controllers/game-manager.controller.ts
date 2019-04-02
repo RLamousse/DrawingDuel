@@ -21,12 +21,6 @@ export class GameManagerController {
         // │  │ SIMPLE │  │
         // └──┴────────┴──┘
 
-        router.delete("/simple/:id", async (req: Request, res: Response, next: NextFunction) => {
-            executePromiseSafely(res, next, async () => {
-                res.json(await this.dataBaseService.simpleGames.delete(req.params["id"]));
-            });
-        });
-
         router.get("/simple/", async (req: Request, res: Response, next: NextFunction) => {
             executePromiseSafely(res, next, async () => {
                 res.json(await this.dataBaseService.simpleGames.getAll());
@@ -53,11 +47,6 @@ export class GameManagerController {
         // ┌──┬──────┬──┐
         // │  │ FREE │  │
         // └──┴──────┴──┘
-        router.delete("/free/:id", async (req: Request, res: Response, next: NextFunction) => {
-            executePromiseSafely(res, next, async () => {
-                res.json(await this.dataBaseService.freeGames.delete(req.params["id"]));
-            });
-        });
 
         router.get("/free/", async (req: Request, res: Response, next: NextFunction) => {
             executePromiseSafely(res, next, async () => {
