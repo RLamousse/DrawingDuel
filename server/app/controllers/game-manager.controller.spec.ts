@@ -47,14 +47,6 @@ describe("Data-base controller", () => {
     });
 
     describe("Simple Games", () => {
-        it("should send a success message on delete", async () => {
-            return request(app)
-                .delete(GAME_MANAGER_SIMPLE + "someGameTest")
-                .expect(HttpStatus.OK)
-                .then((response) => {
-                    expect(response.body).to.eql(SUCCESS_MESSAGE);
-                });
-        });
         it("should send a success message on get all", async () => {
             return request(app)
                 .get(GAME_MANAGER_SIMPLE)
@@ -85,14 +77,6 @@ describe("Data-base controller", () => {
     });
 
     describe("Free Games", () => {
-        it("should send a success message on delete", async () => {
-            return request(app)
-                .delete(GAME_MANAGER_FREE + "someGameTest")
-                .expect(HttpStatus.OK)
-                .then((response) => {
-                    expect(response.body).to.eql(SUCCESS_MESSAGE);
-                });
-        });
         it("should send a success message on get all", async () => {
             return request(app)
                 .get(GAME_MANAGER_FREE)
