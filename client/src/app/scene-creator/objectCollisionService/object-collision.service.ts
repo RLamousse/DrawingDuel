@@ -13,6 +13,9 @@ export class ObjectCollisionService {
   private resetDistX: number;
   private resetDistZ: number;
 
+  private readonly maxDist: number = 5;
+  private readonly distAmplifiyer: number = 2;
+
   public constructor() {
     this.originalObjects = [];
     this.modifiedObjects = [];
@@ -22,7 +25,7 @@ export class ObjectCollisionService {
     this.resetDistZ = 0;
   }
 
-  public setCollision(original: THREE.Object3D[], modified: THREE.Object3D[]): void {
+  public setCollisionBox(original: THREE.Object3D[], modified: THREE.Object3D[]): void {
     this.originalObjects = original;
     this.modifiedObjects = modified;
   }
@@ -53,7 +56,7 @@ export class ObjectCollisionService {
         vel.x = 0;
     }
     this.resetDistX += delta * vel.x;
-    if (this.resetDistX < -5 || this.resetDistX > 5) {
+    if (this.resetDistX < -this.maxDist || this.resetDistX > this.maxDist) {
       this.inCollision = false;
       this.resetDistX = 0;
       this.distance.set(0, 0, 0);
@@ -64,7 +67,7 @@ export class ObjectCollisionService {
       vel.z = 0;
     }
     this.resetDistZ += delta * vel.z;
-    if (this.resetDistZ < -5 || this.resetDistZ > 5) {
+    if (this.resetDistZ < -this.maxDist || this.resetDistZ > this.maxDist) {
       this.inCollision = false;
       this.resetDistZ = 0;
       this.distance.set(0, 0, 0);
@@ -72,13 +75,13 @@ export class ObjectCollisionService {
   }
   private amplifyDist(dist: number, vel: number): number {
     if (vel < 0 && dist < 0) {
-      dist = dist * 2;
+      dist = dist * this.distAmplifiyer;
     } else if (vel < 0 && dist > 0) {
-      dist *= -2;
+      dist *= -this.distAmplifiyer;
     } else if (vel > 0 && dist < 0) {
-      dist *= -2;
+      dist *= -this.distAmplifiyer;
     } else {
-      dist *= 2;
+      dist *= this.distAmplifiyer;
     }
 
     return dist;
