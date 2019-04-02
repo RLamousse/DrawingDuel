@@ -82,7 +82,9 @@
     </div>
   </mat-card-content>
   <mat-card-actions>
-    <button mat-raised-button color="primary" class="button" (click)="leftButtonClick()">{{leftButton}}</button>
-    <button mat-raised-button color="primary" class="button" (click)="rightButtonClick()">{{rightButton}}</button>
+    <div class="buttonRow">
+      <button mat-raised-button color="primary" class="button" (click)="leftButtonClick()">{{leftButton}}</button>
+      <button mat-raised-button color="primary" class="button" (click)="rightButtonClick()">{{rightButton}}</button>
+    </div>
   </mat-card-actions>
 </mat-card>

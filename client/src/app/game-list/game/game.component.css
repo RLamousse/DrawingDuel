@@ -22,17 +22,9 @@ mat-card-title{
 }
 
 .buttonRow{
-    margin-left: 40%;   
-    margin-right:35px;
-    display: flex;
-    flex-direction: row;
+    margin-left: 40%;
 }
 
-.button{
-    display: inline-block;
-    margin-right: 35px;
-    border: 1px darkblue solid;
-}
 
 .card {
   max-width: 500px;
