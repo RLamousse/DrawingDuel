@@ -1,6 +1,9 @@
+<div class="popup">
+  <button mat-raised-button class="game">Parties Simples</button>
+  <button mat-raised-button class="game">Parties Libres</button>
+</div>
 <div class= "gameList">
     <div class= "window">
-        <h1>Parties Simples</h1>
         <app-game *ngFor="let instance of gameService.simpleGames" 
             [gameName]= "instance.gameName"
             [originalImage]= "instance.originalImage"
@@ -13,7 +16,6 @@
         </app-game>
     </div>
     <div class="window">
-        <h1>Parties Libres</h1>
         <app-game *ngFor= "let instance of gameService.extendedFreeGames" 
             [gameName]= "instance.gameName"
             [bestSoloTimes]= "instance.bestSoloTimes"

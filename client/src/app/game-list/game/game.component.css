@@ -1,9 +1,9 @@
 img{
-    border: 1px solid grey;
     border-radius: 5px;
     width: 500px;
     height: 376px;
     margin-top: 15px;
+    border: 1px grey solid;
 }
 
 .scoreTable{
@@ -22,13 +22,18 @@ mat-card-title{
 }
 
 .buttonRow{
-    margin-left: 40%;
+    padding-left: 40px;
+}
+
+button{
+  margin-left: 50px;
 }
 
 
 .card {
   max-width: 500px;
   margin: 30px;
+  border: 1px #DDDF92;
 }
 
 .twoD {

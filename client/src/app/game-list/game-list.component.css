@@ -2,6 +2,7 @@
     display: flex;
     flex-direction: row;
     margin-left: 10%;
+    padding-top: 72px;
 }
 
 .window {
@@ -15,6 +16,26 @@ h1 {
     margin-left: 40px;
 }
 
-.appGame {
-  margin-top: 20px;
+.game{
+  background-color: #373745;
+  width: 50%;
+  height: 75px;
+  color: white;
+  display: inline-block;
+  font-size: 25px;
+  border: 3px #272731 solid;
+  border-radius: 7px;
 }
+
+.game:hover{
+  cursor: default;
+}
+
+.popup{
+  margin-top: 10px;
+  position: fixed;
+  width: 100%;
+  background-color: grey;
+  z-index: 10;
+}
+
