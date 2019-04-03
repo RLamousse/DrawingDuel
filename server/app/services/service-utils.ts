@@ -3,16 +3,12 @@ import {IRecordTime} from "../../../common/model/game/record-time";
 
 const MIN_GENERATED_SCORE: number = 120;
 const MAX_GENERATED_SCORE: number = 360;
-const GENERATED_NAMES: string[] = ["normie",
-                                   "hardTryer4269",
-                                   "xXx_D4B0W5_xXx",
-                                   "spongebob",
-                                   "pikatchu",
-                                   "sanic",
-                                   "Donald J. Trump",
-                                   "some aliens",
-                                   "ur mom",
-                                   "Som Ting Wong"];
+const GENERATED_NAMES: string[] = ["BotAnthony",
+                                   "BotMilen",
+                                   "BotPhilB",
+                                   "BotWenBo",
+                                   "BotPhilR",
+                                   "BotRobin"];
 
 const generateRandomNames: () => string[] = (): string[]  =>  {
     const randomNamesIndex: number[] = [];

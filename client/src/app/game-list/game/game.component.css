@@ -1,21 +1,29 @@
 img{
     border-radius: 5px;
-    width: 500px;
-    height: 376px;
-    margin-top: 15px;
+    width: 400px;
+    height: 300px;
+    margin-top: 12px;
     border: 1px grey solid;
 }
 
 .scoreTable{
-    padding-top: 10px;
+  padding-top: 8px;
 }
 
-td{
-    padding-left: 20px;
-    color: white;
-    height: 37px;
-    width: 150px;
-    border: 1px #272731 solid;
+.row{
+  padding-left: 16px;
+  color: white;
+  height: 30px;
+  border: 1px #272731 solid;
+}
+
+.smallRow{
+  width: 100px;
+  padding-left: 5px;
+}
+
+.bigRow{
+  width: 130px;
 }
 
 .grey{
@@ -32,15 +40,19 @@ td{
 
 .title{
   font-weight: bold;
-  font-size: 45px;
+  font-size: 36px;
   color: #272731;
-  margin-top: 15px;
+  margin-top: 12px;
+}
+
+mat-card-content{
+  margin-bottom: 0px;
 }
 
 .buttonRow{
   display: flex;
   flex-direction: row;
-  margin-left: 28%;
+  margin-left: 27%;
 }
 
 button{
@@ -49,27 +61,28 @@ button{
 }
 
 .card {
-  max-width: 500px;
-  margin: 30px;
+  max-width: 400px;
+  height: 568px;
+  margin: 24px;
   border: 1px #DDDF92;
 }
 
 .twoD {
   background-color: #3F51B5;
   background-size: cover;
-  width: 90px;
-  height: 90px;
+  width: 72px;
+  height: 72px;
 }
 
 .icon{
-  font-size: 50px;
+  font-size: 40px;
   color: white;
-  padding: 15px;
+  padding: 12px;
 }
 
 .threeD {
     background-color: #FF3C82;
     background-size: cover;
-    width: 90px;
-    height: 90px;
-  }
+    width: 72px;
+    height: 72px;
+}
