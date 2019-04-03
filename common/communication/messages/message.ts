@@ -1,6 +1,6 @@
 import { SocketEvent } from "../socket-events";
 import {IRecordTime} from "../../model/game/record-time";
-import {GameType} from "../../model/game/game";
+import {OnlineType} from "../../model/game/game";
 
 export interface Message {
     title: string;
@@ -33,13 +33,13 @@ export interface ChatMessage {
     playerName: string;
     gameName: string;
     position: ChatMessagePosition;
-    playerCount: GameType;
+    playerCount: OnlineType;
 }
 
 export interface UpdateScoreMessage {
     newTime: IRecordTime;
     gameName: string;
-    gameType: GameType;
+    gameType: OnlineType;
 }
 
 export function isAWebsocketMessage (object: any) {

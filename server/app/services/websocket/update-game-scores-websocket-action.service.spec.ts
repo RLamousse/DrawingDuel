@@ -18,7 +18,7 @@ import {
 import {MODIFY_SCORES, SERVER_BASE_URL} from "../../../../common/communication/routes";
 import {SocketEvent} from "../../../../common/communication/socket-events";
 import {IllegalArgumentError, ScoreNotGoodEnough} from "../../../../common/errors/services.errors";
-import {GameType} from "../../../../common/model/game/game";
+import {OnlineType} from "../../../../common/model/game/game";
 import {ChatWebsocketActionService} from "./chat-websocket-action.service";
 import {UpdateGameScoresWebsocketActionService} from "./update-game-scores-websocket-action.service";
 
@@ -46,7 +46,7 @@ describe("Update Game Scores Websocket Action Service", () => {
             .reply(HttpStatus.INTERNAL_SERVER_ERROR, new ScoreNotGoodEnough());
         when(mockedChatWebsocketActionService.execute(anything(), anything())).thenThrow();
         const message: WebsocketMessage<UpdateScoreMessage> = {title: SocketEvent.UPDATE_SCORE,
-                                                               body: {gameType: GameType.SOLO,
+                                                               body: {gameType: OnlineType.SOLO,
                                                                       gameName: "someGame",
                                                                       newTime: {name: "someGuy", time: 123}}};
 
@@ -61,7 +61,7 @@ describe("Update Game Scores Websocket Action Service", () => {
             .reply(HttpStatus.INTERNAL_SERVER_ERROR, new IllegalArgumentError());
         when(mockedChatWebsocketActionService.execute(anything(), anything())).thenReturn();
         const message: WebsocketMessage<UpdateScoreMessage> = {title: SocketEvent.UPDATE_SCORE,
-                                                               body: {gameType: GameType.SOLO,
+                                                               body: {gameType: OnlineType.SOLO,
                                                                       gameName: "someGame",
                                                                       newTime: {name: "someGuy", time: 123}}};
 
@@ -79,12 +79,12 @@ describe("Update Game Scores Websocket Action Service", () => {
                 expect(data.body).to.contain({type: ChatMessageType.BEST_TIME,
                                               gameName: "someGame",
                                               playerName: "someGuy",
-                                              playerCount: GameType.SOLO,
+                                              playerCount: OnlineType.SOLO,
                                               position: ChatMessagePosition.FIRST,
                 });
             });
         const message: WebsocketMessage<UpdateScoreMessage> = {title: SocketEvent.UPDATE_SCORE,
-                                                               body: {gameType: GameType.SOLO,
+                                                               body: {gameType: OnlineType.SOLO,
                                                                       gameName: "someGame",
                                                                       newTime: {name: "someGuy", time: 123}}};
         await getMockedService().execute(message, {} as Socket);
