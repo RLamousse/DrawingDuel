@@ -30,7 +30,11 @@ describe("A simple game room", () => {
         axiosMock = new AxiosAdapter(Axios);
     });
 
-    const initSimpleGameRoom = (simpleGameMockConfigurator?: (mockedSimpleGame: IMock<ISimpleGame>) => void, playerCount: number = 1, roomId: string = "room") => {
+    // I hate tslint sometimes
+    const initSimpleGameRoom:
+        (simpleGameMockConfigurator?: (mockedSimpleGame: IMock<ISimpleGame>) => void, playerCount?: number, roomId?: string)
+            => SimpleGameRoom =
+        (simpleGameMockConfigurator?: (mockedSimpleGame: IMock<ISimpleGame>) => void, playerCount: number = 1, roomId: string = "room") => {
         const mockedSimpleGame: IMock<ISimpleGame> = TypeMoq.Mock.ofType<ISimpleGame>();
         if (simpleGameMockConfigurator !== undefined) {
             simpleGameMockConfigurator(mockedSimpleGame);
@@ -183,7 +187,7 @@ describe("A simple game room", () => {
                 });
         });
 
-        it("should throw a room error if the state for a given client is not defined", () => {
+        it("should throw a room error if the state for a given client is not defined", async () => {
             const simpleGameRoom: SimpleGameRoom = initSimpleGameRoom();
 
             axiosMock.onGet(DIFF_VALIDATOR_GET_CALLS_REGEX)

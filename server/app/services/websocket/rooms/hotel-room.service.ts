@@ -74,7 +74,7 @@ export class HotelRoomService {
                     socket.in(room.id).emit(SocketEvent.INTERACT, interactionResponse);
                 })
                 .catch((error: Error) => {
-                    socket.in(room.id).emit(SocketEvent.INTERACT, error);
+                    // TODO notify of error (only message)
                 });
         });
         socket.in(room.id).on(SocketEvent.CHECK_OUT, () => {
@@ -105,6 +105,7 @@ export class HotelRoomService {
             room.checkIn(socket.id);
             socket.join(room.id);
             this.registerGameRoomHandlers(socket, room);
+            this.pushRooms(socket);
         } catch (e) {
             socket.emit(SocketEvent.ROOM_ERROR, e);
         }
@@ -112,5 +113,9 @@ export class HotelRoomService {
 
     private deleteRoom(room: IGameRoom): void {
         this._rooms.delete(room.id);
+    }
+
+    private pushRooms(socket: Socket): void {
+        socket.broadcast.emit(SocketEvent.PUSH_ROOMS, this.fetchGameRooms());
     }
 }
