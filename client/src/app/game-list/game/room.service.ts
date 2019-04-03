@@ -19,8 +19,20 @@ export class RoomService {
     this.socket.send(SocketEvent.FETCH, createWebsocketMessage());
   }
 
-  private handleRoomAvailability = (value: WebsocketMessage<IRoomInfo[]>, gameName: string, callback: (value: boolean) => void) => {
+  private handleRoomAvailability(value: WebsocketMessage<IRoomInfo[]>, gameName: string, callback: (value: boolean) => void): void {
     const availableRoom: IRoomInfo | undefined = value.body.find((x) => x.gameName === gameName && x.vacant);
     callback(!!availableRoom);
+  }
+
+  public createRoom(gameName: string): void {
+    this.socket.send(SocketEvent.CREATE, createWebsocketMessage());
+  }
+
+  public checkInRoom(roomInfo: IRoomInfo): void {
+    this.socket.send(SocketEvent.CHECK_IN, createWebsocketMessage());
+  }
+
+  public checkOutRoom(): void {
+    this.socket.send(SocketEvent.CHECK_OUT, createWebsocketMessage());
   }
 }
