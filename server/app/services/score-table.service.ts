@@ -33,22 +33,22 @@ export class ScoreTableService {
         tableToSort.sort((a: IRecordTime, b: IRecordTime) => a.time - b.time);
     }
 
-    public async updateTableScore(gameName: string, newScore: IRecordTime, gameType: OnlineType): Promise<number> {
+    public async updateTableScore(gameName: string, newScore: IRecordTime, onlineType: OnlineType): Promise<number> {
 
-        const responseFromDB: IScoreResponse = await this.getGameScores(gameName, gameType);
+        const responseFromDB: IScoreResponse = await this.getGameScores(gameName, onlineType);
         const position: number = ScoreTableService.insertTime(responseFromDB.table, newScore);
-        await this.putTableInDB(gameName, responseFromDB, gameType);
+        await this.putTableInDB(gameName, responseFromDB, onlineType);
 
         return position;
     }
 
-    private async getGameScores (gameName: string, gameType: OnlineType): Promise<IScoreResponse> {
+    private async getGameScores (gameName: string, onlineType: OnlineType): Promise<IScoreResponse> {
         const isSimple: boolean = await this.isSimpleGame(gameName);
         try {
             const gameToModify: IGame =  isSimple ? await this.databaseService.simpleGames.getFromId(gameName) :
                 await this.databaseService.simpleGames.getFromId(gameName);
 
-            return {table: gameType === OnlineType.SOLO ? gameToModify.bestSoloTimes : gameToModify.bestMultiTimes, isSimple: isSimple};
+            return {table: onlineType === OnlineType.SOLO ? gameToModify.bestSoloTimes : gameToModify.bestMultiTimes, isSimple: isSimple};
         } catch (error) {
             throw new AbstractDataBaseError(error.message);
         }
@@ -68,8 +68,8 @@ export class ScoreTableService {
         }
     }
 
-    private async putTableInDB(gameName: string, tableToPost: IScoreResponse, gameType: OnlineType): Promise<void> {
-        const dataToSend: Partial<IGame> = gameType === OnlineType.SOLO ? {bestSoloTimes: tableToPost.table} :
+    private async putTableInDB(gameName: string, tableToPost: IScoreResponse, onlineType: OnlineType): Promise<void> {
+        const dataToSend: Partial<IGame> = onlineType === OnlineType.SOLO ? {bestSoloTimes: tableToPost.table} :
             {bestMultiTimes: tableToPost.table};
         try {
             if (tableToPost.isSimple) {

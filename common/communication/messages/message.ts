@@ -39,7 +39,7 @@ export interface ChatMessage {
 export interface UpdateScoreMessage {
     newTime: IRecordTime;
     gameName: string;
-    gameType: OnlineType;
+    onlineType: OnlineType;
 }
 
 export function isAWebsocketMessage (object: any) {

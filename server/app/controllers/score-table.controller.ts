@@ -20,7 +20,7 @@ export class ScoreTableController {
         router.put("/modify-scores", async (req: Request, res: Response, next: NextFunction) => {
             executePromiseSafely(res, next, async () => {
                 assertUpdateScoreTable(req);
-                res.json(await this.scoreTableService.updateTableScore(req.body.gameName, req.body.newTime, req.body.gameType));
+                res.json(await this.scoreTableService.updateTableScore(req.body.gameName, req.body.newTime, req.body.onlineType));
             });
         });
 

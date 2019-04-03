@@ -46,7 +46,7 @@ describe("Update Game Scores Websocket Action Service", () => {
             .reply(HttpStatus.INTERNAL_SERVER_ERROR, new ScoreNotGoodEnough());
         when(mockedChatWebsocketActionService.execute(anything(), anything())).thenThrow();
         const message: WebsocketMessage<UpdateScoreMessage> = {title: SocketEvent.UPDATE_SCORE,
-                                                               body: {gameType: OnlineType.SOLO,
+                                                               body: {onlineType: OnlineType.SOLO,
                                                                       gameName: "someGame",
                                                                       newTime: {name: "someGuy", time: 123}}};
 
@@ -61,7 +61,7 @@ describe("Update Game Scores Websocket Action Service", () => {
             .reply(HttpStatus.INTERNAL_SERVER_ERROR, new IllegalArgumentError());
         when(mockedChatWebsocketActionService.execute(anything(), anything())).thenReturn();
         const message: WebsocketMessage<UpdateScoreMessage> = {title: SocketEvent.UPDATE_SCORE,
-                                                               body: {gameType: OnlineType.SOLO,
+                                                               body: {onlineType: OnlineType.SOLO,
                                                                       gameName: "someGame",
                                                                       newTime: {name: "someGuy", time: 123}}};
 
@@ -84,7 +84,7 @@ describe("Update Game Scores Websocket Action Service", () => {
                 });
             });
         const message: WebsocketMessage<UpdateScoreMessage> = {title: SocketEvent.UPDATE_SCORE,
-                                                               body: {gameType: OnlineType.SOLO,
+                                                               body: {onlineType: OnlineType.SOLO,
                                                                       gameName: "someGame",
                                                                       newTime: {name: "someGuy", time: 123}}};
         await getMockedService().execute(message, {} as Socket);

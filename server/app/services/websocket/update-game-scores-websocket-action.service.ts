@@ -44,7 +44,7 @@ export class UpdateGameScoresWebsocketActionService implements WebsocketActionSe
         const resBody: ChatMessage = {type: ChatMessageType.BEST_TIME,
                                       gameName: data.body.gameName,
                                       playerName: data.body.newTime.name,
-                                      playerCount: data.body.gameType,
+                                      playerCount: data.body.onlineType,
                                       position: this.POSITION_TRANSLATE_TABLE[position],
                                       timestamp: new Date(),
         };

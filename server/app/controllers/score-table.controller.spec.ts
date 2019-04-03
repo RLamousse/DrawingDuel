@@ -35,7 +35,7 @@ describe("Score Table controller", () => {
         it("should send an error when newTime is missing", async () => {
             return request(app)
                 .put(MODIFY_SCORES)
-                .send({gameName: "testName", gameType: OnlineType.SOLO})
+                .send({gameName: "testName", onlineType: OnlineType.SOLO})
                 .expect(HttpStatus.INTERNAL_SERVER_ERROR)
                 .then((response) => {
                     expect(response.body).to.eql(errorResponse(RequestFormatError.FORMAT_ERROR_MESSAGE));
@@ -45,7 +45,7 @@ describe("Score Table controller", () => {
         it("should send an error when the new time name is missing", async () => {
             return request(app)
                 .put(MODIFY_SCORES)
-                .send({gameName: "testName", newTime: {time: 123}, gameType: OnlineType.SOLO})
+                .send({gameName: "testName", newTime: {time: 123}, onlineType: OnlineType.SOLO})
                 .expect(HttpStatus.INTERNAL_SERVER_ERROR)
                 .then((response) => {
                     expect(response.body).to.eql(errorResponse(RequestFormatError.FORMAT_ERROR_MESSAGE));
@@ -55,14 +55,14 @@ describe("Score Table controller", () => {
         it("should send an error when the new time time is missing", async () => {
             return request(app)
                 .put(MODIFY_SCORES)
-                .send({gameName: "testName", newTime: {name: "testBoy"}, gameType: OnlineType.SOLO})
+                .send({gameName: "testName", newTime: {name: "testBoy"}, onlineType: OnlineType.SOLO})
                 .expect(HttpStatus.INTERNAL_SERVER_ERROR)
                 .then((response) => {
                     expect(response.body).to.eql(errorResponse(RequestFormatError.FORMAT_ERROR_MESSAGE));
                 });
         });
 
-        it("should send an error when gameType is missing", async () => {
+        it("should send an error when onlineType is missing", async () => {
             return request(app)
                 .put(MODIFY_SCORES)
                 .send({gameName: "testName", newTime: {name: "testBoy", time: 123}})
@@ -75,7 +75,7 @@ describe("Score Table controller", () => {
         it("should send an error when no name specified", async () => {
             return request(app)
                 .put(MODIFY_SCORES)
-                .send({newTime: {name: "testBoy", time: 123},  gameType: OnlineType.SOLO})
+                .send({newTime: {name: "testBoy", time: 123},  onlineType: OnlineType.SOLO})
                 .expect(HttpStatus.INTERNAL_SERVER_ERROR)
                 .then((response) => {
                     expect(response.body).to.eql(errorResponse(RequestFormatError.FORMAT_ERROR_MESSAGE));
@@ -85,7 +85,7 @@ describe("Score Table controller", () => {
         it("should send a success response for valid data", async () => {
             return request(app)
                 .put(MODIFY_SCORES)
-                .send({gameName: "testName", newTime: {name: "testBoy", time: 123}, gameType: OnlineType.SOLO})
+                .send({gameName: "testName", newTime: {name: "testBoy", time: 123}, onlineType: OnlineType.SOLO})
                 .expect(HttpStatus.OK)
                 .then((response) => {
                     expect(response.body).to.eql(0);
