@@ -2,8 +2,8 @@ import {Component, Input, ViewChild} from "@angular/core";
 import {
   createWebsocketMessage,
   ChatMessage,
-  ChatMessagePlayerCount,
-  ChatMessagePosition, ChatMessageType, WebsocketMessage
+  ChatMessagePosition,
+  ChatMessageType, PlayerCountMessage, WebsocketMessage
 } from "../../../../../common/communication/messages/message";
 import {SocketEvent} from "../../../../../common/communication/socket-events";
 import {AlreadyFoundDifferenceError, NoDifferenceAtPointError} from "../../../../../common/errors/services.errors";
@@ -74,7 +74,7 @@ export class SimpleGameContainerComponent {
     const message: WebsocketMessage<ChatMessage> = createWebsocketMessage(
       {
         gameName: "",
-        playerCount: ChatMessagePlayerCount.SOLO,
+        playerCount: PlayerCountMessage.SOLO,
         playerName: UNListService.username,
         position: ChatMessagePosition.NA,
         timestamp: new Date(),

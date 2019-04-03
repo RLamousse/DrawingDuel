@@ -4,8 +4,8 @@ import {Socket} from "socket.io";
 import {
     createWebsocketMessage,
     ChatMessage,
-    ChatMessagePlayerCount,
     ChatMessageType,
+    PlayerCountMessage,
     WebsocketMessage
 } from "../../../../common/communication/messages/message";
 import {SocketEvent} from "../../../../common/communication/socket-events";
@@ -67,7 +67,7 @@ export class ChatWebsocketActionService extends WebsocketActionService {
 
     private getDiffErrorMessage(data: ChatMessage): string {
         let message: string = this._DIFF_ERROR_BASE_MESSAGE;
-        if (data.playerCount === ChatMessagePlayerCount.MULTI) {
+        if (data.playerCount === PlayerCountMessage.MULTI) {
             message += (` par ${data.playerName}`);
         }
 
@@ -76,7 +76,7 @@ export class ChatWebsocketActionService extends WebsocketActionService {
 
     private getDiffFoundMessage(data: ChatMessage): string {
         let message: string = this._DIFF_FOUND_BASE_MESSAGE;
-        if (data.playerCount === ChatMessagePlayerCount.MULTI) {
+        if (data.playerCount === PlayerCountMessage.MULTI) {
             message += (` par ${data.playerName}`);
         }
 

@@ -17,7 +17,7 @@ export enum ChatMessagePosition {
     NA = "NA",
 }
 
-export enum ChatMessagePlayerCount {
+export enum PlayerCountMessage {
     SOLO = "solo",
     MULTI = "un contre un"
 }
@@ -36,7 +36,7 @@ export interface ChatMessage {
     playerName: string;
     gameName: string;
     position: ChatMessagePosition;
-    playerCount: ChatMessagePlayerCount;
+    playerCount: PlayerCountMessage;
 }
 
 export interface UpdateScoreMessage {
@@ -50,7 +50,12 @@ export interface RoomMessage {
 }
 
 export interface RoomCreationMessage extends RoomMessage {
-    playerCount: number;
+    playerCount: PlayerCountMessage;
+    username: string;
+}
+
+export interface RoomCheckInMessage extends RoomMessage {
+    username: string;
 }
 
 export interface RoomInteractionMessage extends RoomMessage {

@@ -7,6 +7,7 @@ import {DeleteGameFormComponent} from "./delete-game-form/delete-game-form.compo
 import {GameButtonOptions} from "./game-button-enum";
 import {ResetGameFormComponent} from "./reset-game-form/reset-game-form.component";
 import {RoomService} from "./room.service";
+import {PlayerCountMessage} from "../../../../../common/communication/messages/message";
 
 @Component({
   selector: "app-game",
@@ -38,6 +39,7 @@ export class GameComponent implements OnInit {
 
   protected leftButtonClick(): void {
     if (this.leftButton === GameButtonOptions.PLAY) {
+      this.roomService.createRoom(this.gameName, PlayerCountMessage.SOLO);
       this.isSimpleGame ? this.navigatePlayView() : this.navigateFreeView();
     } else if (this.leftButton === GameButtonOptions.DELETE) {
       const dialogConfig: MatDialogConfig = new MatDialogConfig();
@@ -53,6 +55,7 @@ export class GameComponent implements OnInit {
 
   protected rightButtonClick(): void {
     if (this.rightButton === GameButtonOptions.JOIN) {
+      this.roomService.checkInRoom(this.gameName);
       this.navigateAwait();
     } else if (this.rightButton === GameButtonOptions.REINITIALIZE) {
       const dialogConfig: MatDialogConfig = new MatDialogConfig();

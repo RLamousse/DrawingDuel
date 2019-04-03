@@ -10,7 +10,7 @@ import {Socket} from "socket.io";
 import {anything, instance, mock, when} from "ts-mockito";
 import {
     createWebsocketMessage,
-    ChatMessage, ChatMessagePlayerCount,
+    ChatMessage, PlayerCountMessage,
     ChatMessagePosition, ChatMessageType,
     UpdateScoreMessage,
     WebsocketMessage
@@ -81,7 +81,7 @@ describe("Update Game Scores Websocket Action Service", () => {
                 expect(data.body).to.contain({type: ChatMessageType.BEST_TIME,
                                               gameName: "someGame",
                                               playerName: "someGuy",
-                                              playerCount: ChatMessagePlayerCount.SOLO,
+                    playerCount: PlayerCountMessage.SOLO,
                                               position: ChatMessagePosition.FIRST,
                 });
             });

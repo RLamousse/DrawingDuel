@@ -6,7 +6,7 @@ import * as THREE from "three";
 import {
   createWebsocketMessage,
   ChatMessage,
-  ChatMessagePlayerCount, ChatMessagePosition, ChatMessageType,
+  PlayerCountMessage, ChatMessagePosition, ChatMessageType,
   WebsocketMessage
 } from "../../../../common/communication/messages/message";
 import {DIFF_VALIDATOR_3D_BASE, SERVER_BASE_URL} from "../../../../common/communication/routes";
@@ -263,7 +263,7 @@ export class SceneRendererService {
   private notifyClickToWebsocket(good: boolean): void {
     const message: WebsocketMessage<ChatMessage> = createWebsocketMessage(
       {
-        gameName: "", playerCount: ChatMessagePlayerCount.SOLO,
+        gameName: "", playerCount: PlayerCountMessage.SOLO,
         playerName: UNListService.username, position: ChatMessagePosition.NA,
         timestamp: new Date(), type: good ? ChatMessageType.DIFF_FOUND : ChatMessageType.DIFF_ERROR,
       });

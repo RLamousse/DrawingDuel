@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import {
     createWebsocketMessage, ChatMessage,
-    ChatMessagePlayerCount, ChatMessagePosition, ChatMessageType,
+    PlayerCountMessage, ChatMessagePosition, ChatMessageType,
     WebsocketMessage
 } from "../../../../common/communication/messages/message";
 import { SocketEvent } from "../../../../common/communication/socket-events";
@@ -38,7 +38,7 @@ describe("ChatWebsocketActionService", () => {
         const message: WebsocketMessage<ChatMessage> = createWebsocketMessage(
             {
                 gameName: "",
-                playerCount: ChatMessagePlayerCount.SOLO,
+                playerCount: PlayerCountMessage.SOLO,
                 playerName: "Maxime",
                 position: ChatMessagePosition.NA,
                 timestamp: new Date("Sat Mar 23 2019 13:51:46 GMT-0400 (Eastern Daylight Time)"),
@@ -54,7 +54,7 @@ describe("ChatWebsocketActionService", () => {
         const message: WebsocketMessage<ChatMessage> = createWebsocketMessage(
             {
                 gameName: "",
-                playerCount: ChatMessagePlayerCount.SOLO,
+                playerCount: PlayerCountMessage.SOLO,
                 playerName: "Maxime",
                 position: ChatMessagePosition.NA,
                 timestamp: new Date("Sat Mar 23 2019 13:51:46 GMT-0400 (Eastern Daylight Time)"),
@@ -69,7 +69,7 @@ describe("ChatWebsocketActionService", () => {
         const message: WebsocketMessage<ChatMessage> = createWebsocketMessage(
             {
                 gameName: "",
-                playerCount: ChatMessagePlayerCount.SOLO,
+                playerCount: PlayerCountMessage.SOLO,
                 playerName: "Maxime",
                 position: ChatMessagePosition.NA,
                 timestamp: new Date("Sat Mar 23 2019 13:51:46 GMT-0400 (Eastern Daylight Time)"),
@@ -78,7 +78,7 @@ describe("ChatWebsocketActionService", () => {
         service.execute(message, socket as unknown as SocketIO.Socket);
         expect(socket.eventValue).to.equal(SocketEvent.CHAT);
         expect(socket.emitValue).to.equal("12:51:46 – Différence trouvée.");
-        message.body.playerCount = ChatMessagePlayerCount.MULTI;
+        message.body.playerCount = PlayerCountMessage.MULTI;
         service.execute(message, socket as unknown as SocketIO.Socket);
         expect(socket.eventValue).to.equal(SocketEvent.CHAT);
         expect(socket.emitValue).to.equal("12:51:46 – Différence trouvée par Maxime.");
@@ -87,7 +87,7 @@ describe("ChatWebsocketActionService", () => {
     it("should emit an appropriate difference error message", () => {
         const message: WebsocketMessage<ChatMessage> = createWebsocketMessage({
                 gameName: "",
-                playerCount: ChatMessagePlayerCount.SOLO,
+            playerCount: PlayerCountMessage.SOLO,
                 playerName: "Maxime",
                 position: ChatMessagePosition.NA,
                 timestamp: new Date("Sat Mar 23 2019 13:51:46 GMT-0400 (Eastern Daylight Time)"),
@@ -96,7 +96,7 @@ describe("ChatWebsocketActionService", () => {
         service.execute(message, socket as unknown as SocketIO.Socket);
         expect(socket.eventValue).to.equal(SocketEvent.CHAT);
         expect(socket.emitValue).to.equal("12:51:46 – Erreur.");
-        message.body.playerCount = ChatMessagePlayerCount.MULTI;
+        message.body.playerCount = PlayerCountMessage.MULTI;
         service.execute(message, socket as unknown as SocketIO.Socket);
         expect(socket.eventValue).to.equal(SocketEvent.CHAT);
         expect(socket.emitValue).to.equal("12:51:46 – Erreur par Maxime.");
@@ -105,7 +105,7 @@ describe("ChatWebsocketActionService", () => {
     it("should emit an appropriate new time record message", () => {
         const message: WebsocketMessage<ChatMessage> = createWebsocketMessage({
                 gameName: "MicheDePain",
-                playerCount: ChatMessagePlayerCount.SOLO,
+            playerCount: PlayerCountMessage.SOLO,
                 playerName: "Maxime",
                 position: ChatMessagePosition.FIRST,
                 timestamp: new Date("Sat Mar 23 2019 13:51:46 GMT-0400 (Eastern Daylight Time)"),
@@ -122,7 +122,7 @@ describe("ChatWebsocketActionService", () => {
         // tslint:disable-next-line: no-any
         const message: WebsocketMessage<any> = createWebsocketMessage({
                 gameName: "MicheDePain",
-                playerCount: ChatMessagePlayerCount.SOLO,
+            playerCount: PlayerCountMessage.SOLO,
                 playerName: "Maxime",
                 position: ChatMessagePosition.FIRST,
                 timestamp: new Date("Sat Mar 23 2019 13:51:46 GMT-0400 (Eastern Daylight Time)"),

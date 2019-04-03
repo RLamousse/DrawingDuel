@@ -4,8 +4,8 @@ import * as io from "socket.io";
 import {
     createWebsocketMessage,
     ChatMessage,
-    ChatMessagePlayerCount,
-    ChatMessagePosition, ChatMessageType,
+    ChatMessagePosition,
+    ChatMessageType, PlayerCountMessage,
     UpdateScoreMessage,
     WebsocketMessage
 } from "../../../../common/communication/messages/message";
@@ -44,7 +44,7 @@ export class UpdateGameScoresWebsocketActionService implements WebsocketActionSe
         const resBody: ChatMessage = {type: ChatMessageType.BEST_TIME,
                                       gameName: data.body.gameName,
                                       playerName: data.body.newTime.name,
-                                      playerCount: data.body.isSolo ? ChatMessagePlayerCount.SOLO : ChatMessagePlayerCount.MULTI,
+            playerCount: data.body.isSolo ? PlayerCountMessage.SOLO : PlayerCountMessage.MULTI,
                                       position: this.POSITION_TRANSLATE_TABLE[position],
                                       timestamp: new Date(),
         };
