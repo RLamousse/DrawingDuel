@@ -49,8 +49,7 @@ describe("A simple game room", () => {
             const clientId: string = "Mr. Worldwide";
             simpleGameRoom.checkIn(clientId);
 
-            expect(simpleGameRoom["_connectedPlayers"])
-                .to.contain(clientId);
+            assert(simpleGameRoom["_connectedPlayers"].has(clientId));
             expect(simpleGameRoom["_gameStates"].size)
                 .to.equal(1);
             expect(Array.from(simpleGameRoom["_gameStates"].keys()))
@@ -80,8 +79,7 @@ describe("A simple game room", () => {
                 .to.equal(roomSize);
 
             for (let i: number = 0; i < roomSize; i++) {
-                expect(simpleGameRoom["_connectedPlayers"])
-                    .to.contain(i.toString());
+                assert(simpleGameRoom["_connectedPlayers"].has(i.toString()));
                 expect(Array.from(simpleGameRoom["_gameStates"].keys()))
                     .to.contain(i.toString());
             }
