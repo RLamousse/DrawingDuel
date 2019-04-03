@@ -4,6 +4,7 @@ import {Router} from "@angular/router";
 import {UpdateScoreMessage, WebsocketMessage} from "../../../../common/communication/messages/message";
 import {SocketEvent} from "../../../../common/communication/socket-events";
 import {ComponentNavigationError} from "../../../../common/errors/component.errors";
+import {GameType} from "../../../../common/model/game/game";
 import {SceneRendererService} from "../scene-creator/scene-renderer.service";
 import {SimpleGameService} from "../simple-game/simple-game.service";
 import {SocketService} from "../socket.service";
@@ -79,7 +80,7 @@ export class DiffCounterComponent implements OnInit {
     this.socketMessage = {
       title: SocketEvent.DELETE,
       body: {gameName: this.gameName,
-             isSolo: true, newTime: {name: UNListService.username, time: this.minutes * this.MINUTES_FACTOR + this.seconds}},
+             gameType: GameType.SOLO, newTime: {name: UNListService.username, time: this.minutes * this.MINUTES_FACTOR + this.seconds}},
     };
     this.socket.send(SocketEvent.UPDATE_SCORE, this.socketMessage);
   }

@@ -3,7 +3,6 @@ import {inject, injectable} from "inversify";
 import * as io from "socket.io";
 import {
     ChatMessage,
-    ChatMessagePlayerCount,
     ChatMessagePosition,
     ChatMessageType,
     UpdateScoreMessage,
@@ -45,7 +44,7 @@ export class UpdateGameScoresWebsocketActionService implements WebsocketActionSe
         const resBody: ChatMessage = {type: ChatMessageType.BEST_TIME,
                                       gameName: data.body.gameName,
                                       playerName: data.body.newTime.name,
-                                      playerCount: data.body.isSolo ? ChatMessagePlayerCount.SOLO : ChatMessagePlayerCount.MULTI,
+                                      playerCount: data.body.gameType,
                                       position: this.POSITION_TRANSLATE_TABLE[position],
                                       timestamp: new Date(),
         };

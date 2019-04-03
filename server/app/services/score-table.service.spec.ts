@@ -9,6 +9,7 @@ import {
 } from "../../../common/errors/database.errors";
 import {ScoreNotGoodEnough} from "../../../common/errors/services.errors";
 import {IFreeGame} from "../../../common/model/game/free-game";
+import {GameType} from "../../../common/model/game/game";
 import {IRecordTime} from "../../../common/model/game/record-time";
 import {ISimpleGame} from "../../../common/model/game/simple-game";
 import {DataBaseService} from "./data-base.service";
@@ -55,14 +56,15 @@ describe("ScoreTableService", () => {
     describe("Modify scores", () => {
         it("should throw score error if null time inserted", async () => {
 
-            return initScoreTableService().updateTableScore("tom", EMPTY_TIME, true).catch((reason: ScoreNotGoodEnough) => {
+            return initScoreTableService().updateTableScore("tom", EMPTY_TIME, GameType.SOLO).catch((reason: ScoreNotGoodEnough) => {
                 expect(reason.message).to.contain("null");
             });
         });
 
         it("should throw ScoreNotGoodEnough error if the score has a too high value", async () => {
 
-            return initScoreTableService().updateTableScore("tom", VERY_HIGHT_TIME_SCORE_BOY, true).catch((reason: ScoreNotGoodEnough) => {
+            return initScoreTableService().updateTableScore("tom", VERY_HIGHT_TIME_SCORE_BOY, GameType.SOLO)
+                .catch((reason: ScoreNotGoodEnough) => {
                 expect(reason.message).to.eql(ScoreNotGoodEnough.SCORE_NOT_GOOD_ENOUGH);
             });
         });
@@ -71,7 +73,7 @@ describe("ScoreTableService", () => {
 
             when(mockedSimpleGames.update(anything(), anything())).thenReject(new InvalidGameInfoError());
 
-            return initScoreTableService().updateTableScore("tom", HIGHT_TIME_SCORE_BOY, true)
+            return initScoreTableService().updateTableScore("tom", HIGHT_TIME_SCORE_BOY, GameType.SOLO)
                 .catch((reason: AbstractDataBaseError) => {
                 expect(reason.message).to.eql(new AbstractDataBaseError(InvalidGameInfoError.GAME_INFO_FORMAT_ERROR_MESSAGE).message);
             });
@@ -81,7 +83,7 @@ describe("ScoreTableService", () => {
 
             when(mockedSimpleGames.update(anything(), anything())).thenResolve();
 
-            return initScoreTableService().updateTableScore("tom", HIGHT_TIME_SCORE_BOY, true).then((value: number) => {
+            return initScoreTableService().updateTableScore("tom", HIGHT_TIME_SCORE_BOY, GameType.SOLO).then((value: number) => {
                 expect(value).to.eql(3);
             });
         });
@@ -90,7 +92,7 @@ describe("ScoreTableService", () => {
 
             when(mockedSimpleGames.update(anything(), anything())).thenResolve();
 
-            return initScoreTableService().updateTableScore("tom", MIDDLE_TIME_SCORE_BOY, true).then((value: number) => {
+            return initScoreTableService().updateTableScore("tom", MIDDLE_TIME_SCORE_BOY, GameType.SOLO).then((value: number) => {
                 expect(value).to.eql(2);
             });
         });
@@ -99,7 +101,7 @@ describe("ScoreTableService", () => {
 
             when(mockedSimpleGames.update(anything(), anything())).thenResolve();
 
-            return initScoreTableService().updateTableScore("tom", LOW_TIME_SCORE_BOY, true).then((value: number) => {
+            return initScoreTableService().updateTableScore("tom", LOW_TIME_SCORE_BOY, GameType.SOLO).then((value: number) => {
                 expect(value).to.eql(1);
             });
         });
@@ -112,7 +114,7 @@ describe("ScoreTableService", () => {
                               bestMultiTimes: JSON.parse(JSON.stringify(INITIAL_SCORE_TABLE))} as IFreeGame);
             when(mockedFreeGames.update(anything(), anything())).thenResolve();
 
-            return initScoreTableService().updateTableScore("tom", LOW_TIME_SCORE_BOY, true).then((value: number) => {
+            return initScoreTableService().updateTableScore("tom", LOW_TIME_SCORE_BOY, GameType.SOLO).then((value: number) => {
                 expect(value).to.eql(1);
             });
         });
@@ -121,7 +123,8 @@ describe("ScoreTableService", () => {
 
             when(mockedSimpleGames.update(anything(), anything())).thenResolve();
 
-            return initScoreTableService().updateTableScore("tom", SAME_THAN_THIRD_SCORE, true).catch((reason: ScoreNotGoodEnough) => {
+            return initScoreTableService().updateTableScore("tom", SAME_THAN_THIRD_SCORE, GameType.SOLO)
+                .catch((reason: ScoreNotGoodEnough) => {
                 expect(reason.message).to.eql(ScoreNotGoodEnough.SCORE_NOT_GOOD_ENOUGH);
             });
         });
@@ -130,7 +133,7 @@ describe("ScoreTableService", () => {
 
             when(mockedSimpleGames.update(anything(), anything())).thenResolve();
 
-            return initScoreTableService().updateTableScore("tom", SAME_THAN_SECOND_SCORE, true).then((value: number) => {
+            return initScoreTableService().updateTableScore("tom", SAME_THAN_SECOND_SCORE, GameType.SOLO).then((value: number) => {
                 expect(value).to.eql(3);
             });
         });
@@ -139,7 +142,7 @@ describe("ScoreTableService", () => {
 
             when(mockedSimpleGames.update(anything(), anything())).thenResolve();
 
-            return initScoreTableService().updateTableScore("tom", SAME_THAN_FIRST_SCORE, true).then((value: number) => {
+            return initScoreTableService().updateTableScore("tom", SAME_THAN_FIRST_SCORE, GameType.SOLO).then((value: number) => {
                 expect(value).to.eql(2);
             });
         });

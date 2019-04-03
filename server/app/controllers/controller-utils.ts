@@ -9,6 +9,7 @@ import {
     ModificationType,
     Themes
 } from "../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
+import {GameType} from "../../../common/model/game/game";
 import {EXPECTED_DIFF_NUMBER} from "../services/game-creator.service";
 
 export const REQUIRED_IMAGE_HEIGHT: number = 480;
@@ -50,7 +51,8 @@ export const assertUpdateScoreTable: (req: Express.Request) => void = (req: Requ
     typeof req.body.newTime.name !== "string" ||
     typeof req.body.newTime.time !== "number" ||
     req.body.newTime.name === "" ||
-    typeof  req.body.isSolo !== "boolean") {
+    !(req.body.gameType === GameType.SOLO ||
+    req.body.gameType === GameType.MULTIPLAYER)) {
         throw new RequestFormatError();
     }
 };

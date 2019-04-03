@@ -1,7 +1,7 @@
 import {inject, injectable} from "inversify";
 import {AbstractDataBaseError, NonExistentGameError} from "../../../common/errors/database.errors";
 import {ScoreNotGoodEnough} from "../../../common/errors/services.errors";
-import {IGame} from "../../../common/model/game/game";
+import {GameType, IGame} from "../../../common/model/game/game";
 import {IRecordTime} from "../../../common/model/game/record-time";
 import Types from "../types";
 import {DataBaseService} from "./data-base.service";
@@ -33,16 +33,16 @@ export class ScoreTableService {
         tableToSort.sort((a: IRecordTime, b: IRecordTime) => a.time - b.time);
     }
 
-    public async updateTableScore(gameName: string, newScore: IRecordTime, isSolo: boolean): Promise<number> {
+    public async updateTableScore(gameName: string, newScore: IRecordTime, gameType: GameType): Promise<number> {
 
-        const responseFromDB: IScoreResponse = await this.tryGetTableFromDB(gameName, isSolo) as IScoreResponse;
+        const responseFromDB: IScoreResponse = await this.tryGetTableFromDB(gameName, gameType) as IScoreResponse;
         const position: number = ScoreTableService.insertTime(responseFromDB.table, newScore);
-        await this.putTableInDB(gameName, responseFromDB, isSolo);
+        await this.putTableInDB(gameName, responseFromDB, gameType);
 
         return position;
     }
 
-    private async tryGetTableFromDB (gameName: string, isSolo?: boolean): Promise<IScoreResponse|boolean> {
+    private async tryGetTableFromDB (gameName: string, gameType?: GameType): Promise<IScoreResponse|boolean> {
         let gameToModify: IGame;
         let isSimple: boolean = false;
         if (await this.databaseService.freeGames.contains(gameName)) {
@@ -62,15 +62,16 @@ export class ScoreTableService {
             throw new NonExistentGameError();
         }
 
-        if (isSolo === undefined) {
+        if (gameType === undefined) {
             return isSimple;
         }
 
-        return {table: isSolo ? gameToModify.bestSoloTimes : gameToModify.bestMultiTimes, isSimple: isSimple};
+        return {table: gameType === GameType.SOLO ? gameToModify.bestSoloTimes : gameToModify.bestMultiTimes, isSimple: isSimple};
     }
 
-    private async putTableInDB(gameName: string, tableToPost: IScoreResponse, isSolo: boolean): Promise<void> {
-        const dataToSend: Partial<IGame> = isSolo ? {bestSoloTimes: tableToPost.table} : {bestMultiTimes: tableToPost.table};
+    private async putTableInDB(gameName: string, tableToPost: IScoreResponse, gameType: GameType): Promise<void> {
+        const dataToSend: Partial<IGame> = gameType === GameType.SOLO ? {bestSoloTimes: tableToPost.table} :
+            {bestMultiTimes: tableToPost.table};
         try {
             if (tableToPost.isSimple) {
                 await this.databaseService.simpleGames.update(gameName, dataToSend);
