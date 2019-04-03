@@ -10,12 +10,17 @@ export enum SocketEvent {
     CHAT = "chat",
     USERNAME_CHECK = "username-check",
 
-    // Rooms
+    // ╔═══════╗
+    // ║ Rooms ║
+    // ╚═══════╝
+    // Client events
     CREATE = "room-create",
     FETCH = "room-fetch",
     CHECK_IN = "room-check-in",
     INTERACT = "room-interact",
     CHECK_OUT = "room-check-out",
+    // Server events
     READY = "room-ready",
     ROOM_ERROR = "room-error",
+    PUSH_ROOMS = "room-push",
 }
