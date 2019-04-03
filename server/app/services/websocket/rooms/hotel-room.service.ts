@@ -23,6 +23,7 @@ export class HotelRoomService {
     }
 
     private readonly _rooms: Map<string, IGameRoom>;
+    private readonly _sockets: Map<Socket, string>;
 
     public async createGameRoom(socket: Socket, gameName: string, playerCount: number): Promise<void> {
         try {
@@ -97,21 +98,21 @@ export class HotelRoomService {
     private handleCheckout(room: IGameRoom, socket: Socket): void {
         socket.leave(room.id);
         room.checkOut(socket.id);
-        if (room.empty) {
-            this.deleteRoom(room);
-            this.pushRooms(socket);
-        } else if (room.vacant && room.ongoing) {
-            // TODO kick and notify connected clients
+        if (room.vacant && room.ongoing) {
             sendToRoom(SocketEvent.KICK, undefined, room.id, socket);
+            this.kickClients(room.id);
         }
+        this.deleteRoom(room);
+        this.pushRoomsToClients(socket);
     }
 
     private checkInClient(socket: Socket, room: IGameRoom): void {
         try {
             room.checkIn(socket.id);
             socket.join(room.id);
+            this._sockets.set(socket, room.id);
             this.registerGameRoomHandlers(socket, room);
-            this.pushRooms(socket);
+            this.pushRoomsToClients(socket);
         } catch (e) {
             socket.emit(SocketEvent.ROOM_ERROR, e);
         }
@@ -121,7 +122,14 @@ export class HotelRoomService {
         this._rooms.delete(room.id);
     }
 
-    private pushRooms(socket: Socket): void {
+    private pushRoomsToClients(socket: Socket): void {
         broadcast(SocketEvent.PUSH_ROOMS, this.fetchGameRooms(), socket);
+    }
+
+    private kickClients(roomId: string): void {
+        Array.from(this._sockets.entries())
+            .filter((entry: [Socket, string]) => entry[1] === roomId)
+            .map((entry: [Socket, string]) => entry[0])
+            .forEach((socket: Socket) => socket.leave(roomId));
     }
 }
