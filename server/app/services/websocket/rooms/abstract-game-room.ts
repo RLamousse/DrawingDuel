@@ -11,7 +11,8 @@ export abstract class AbstractGameRoom<T extends IGame, U extends IGameState> im
     protected readonly _playerCount: number;
     protected readonly _gameStates: Map<string, U>;
 
-    protected _connectedPlayers: string[];
+    private _onReady: () => void;
+    protected _connectedPlayers: Map<string, boolean>;
     protected _ongoing: boolean;
 
     protected constructor(id: string, game: T, playerCount: number = 1) {
@@ -19,7 +20,7 @@ export abstract class AbstractGameRoom<T extends IGame, U extends IGameState> im
         this._game = game;
         this._playerCount = playerCount;
         this._gameStates = new Map();
-        this._connectedPlayers = [];
+        this._connectedPlayers = new Map();
         this._ongoing = false;
     }
 
@@ -30,12 +31,24 @@ export abstract class AbstractGameRoom<T extends IGame, U extends IGameState> im
             throw new NoVacancyGameRoomError();
         }
 
-        this._connectedPlayers.push(clientId);
+        this._connectedPlayers.set(clientId, true);
     }
 
     public checkOut(clientId: string): void {
-        this._connectedPlayers = this._connectedPlayers.filter((id: string) => id !== clientId);
+        this._ongoing = false;
+        this._connectedPlayers.delete(clientId);
         this._gameStates.delete(clientId);
+    }
+
+    public handleReady(clientId: string): void {
+        if (this._connectedPlayers.has(clientId)) {
+            this._connectedPlayers.set(clientId, true);
+        }
+
+        if (this._connectedPlayers.size === this._playerCount && this.isEveryClientReady()) {
+            this._ongoing = true;
+            this._onReady();
+        }
     }
 
     public get gameName(): string {
@@ -43,11 +56,11 @@ export abstract class AbstractGameRoom<T extends IGame, U extends IGameState> im
     }
 
     public get vacant(): boolean {
-        return this._connectedPlayers.length < this._playerCount;
+        return this._connectedPlayers.size < this._playerCount;
     }
 
     public get empty(): boolean {
-        return this._connectedPlayers.length === 0;
+        return this._connectedPlayers.size === 0;
     }
 
     public get id(): string {
@@ -58,6 +71,10 @@ export abstract class AbstractGameRoom<T extends IGame, U extends IGameState> im
         return this._ongoing;
     }
 
+    public setOnReadyCallBack(callback: () => void): void {
+        this._onReady = callback;
+    }
+
     protected getGameStateForClient(clientId: string): U {
         const clientGameState: U | undefined = this._gameStates.get(clientId);
 
@@ -66,5 +83,10 @@ export abstract class AbstractGameRoom<T extends IGame, U extends IGameState> im
         }
 
         return clientGameState;
+    }
+
+    private isEveryClientReady(): boolean {
+        return Array.from(this._connectedPlayers.values())
+            .every((isClientReady: boolean) => isClientReady);
     }
 }

@@ -23,4 +23,5 @@ export enum SocketEvent {
     READY = "room-ready",
     ROOM_ERROR = "room-error",
     PUSH_ROOMS = "room-push",
+    KICK = "room-kick"
 }

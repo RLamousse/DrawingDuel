@@ -10,6 +10,7 @@ import {IInteractionResponse} from "../../../../../common/model/rooms/interactio
 import {IRoomInfo} from "../../../../../common/model/rooms/room-info";
 import {IGameRoom} from "../../../model/room/game-room";
 import types from "../../../types";
+import {broadcast, sendToRoom} from "../../../util/socket.util";
 import {DataBaseService} from "../../data-base.service";
 import {FreeGameRoom} from "./free-game-room";
 import {SimpleGameRoom} from "./simple-game-room";
@@ -71,21 +72,25 @@ export class HotelRoomService {
         socket.in(room.id).on(SocketEvent.INTERACT, (message: WebsocketMessage<RoomInteractionMessage>) => {
             room.interact(socket.id, message.body.interactionData)
                 .then((interactionResponse: IInteractionResponse) => {
-                    socket.in(room.id).emit(SocketEvent.INTERACT, interactionResponse);
+                    sendToRoom(SocketEvent.INTERACT, interactionResponse, room.id, socket);
                 })
                 .catch((error: Error) => {
-                    // TODO notify of error (only message)
+                    socket.emit(SocketEvent.INTERACT, error);
+                    // TODO Send error to chat
                 });
         });
         socket.in(room.id).on(SocketEvent.CHECK_OUT, () => {
             this.handleCheckout(room, socket);
         });
         socket.in(room.id).on(SocketEvent.READY, (message: WebsocketMessage) => {
-            // TODO Notify the room to start the game
+            room.handleReady(socket.id);
         });
         socket.in(room.id).on(SocketEvent.DISCONNECT, () => {
-            // TODO verify if this doesn't override the onDisconnect already set uo
             this.handleCheckout(room, socket);
+        });
+
+        room.setOnReadyCallBack(() => {
+            sendToRoom(SocketEvent.READY, undefined, room.id, socket);
         });
     }
 
@@ -94,9 +99,10 @@ export class HotelRoomService {
         room.checkOut(socket.id);
         if (room.empty) {
             this.deleteRoom(room);
-            // TODO notify?
+            this.pushRooms(socket);
         } else if (room.vacant && room.ongoing) {
             // TODO kick and notify connected clients
+            sendToRoom(SocketEvent.KICK, undefined, room.id, socket);
         }
     }
 
@@ -116,6 +122,6 @@ export class HotelRoomService {
     }
 
     private pushRooms(socket: Socket): void {
-        socket.broadcast.emit(SocketEvent.PUSH_ROOMS, this.fetchGameRooms());
+        broadcast(SocketEvent.PUSH_ROOMS, this.fetchGameRooms(), socket);
     }
 }
