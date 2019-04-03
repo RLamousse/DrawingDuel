@@ -35,38 +35,37 @@ export class ScoreTableService {
 
     public async updateTableScore(gameName: string, newScore: IRecordTime, gameType: GameType): Promise<number> {
 
-        const responseFromDB: IScoreResponse = await this.tryGetTableFromDB(gameName, gameType) as IScoreResponse;
+        const responseFromDB: IScoreResponse = await this.getGameScores(gameName, gameType);
         const position: number = ScoreTableService.insertTime(responseFromDB.table, newScore);
         await this.putTableInDB(gameName, responseFromDB, gameType);
 
         return position;
     }
 
-    private async tryGetTableFromDB (gameName: string, gameType?: GameType): Promise<IScoreResponse|boolean> {
-        let gameToModify: IGame;
-        let isSimple: boolean = false;
-        if (await this.databaseService.freeGames.contains(gameName)) {
-            try {
-                gameToModify = await this.databaseService.freeGames.getFromId(gameName);
-            } catch (error) {
-                throw new AbstractDataBaseError(error.message);
-            }
-        } else if (await this.databaseService.simpleGames.contains(gameName)) {
-            try {
-                gameToModify = await this.databaseService.simpleGames.getFromId(gameName);
-            } catch (error) {
-                throw new AbstractDataBaseError(error.message);
-            }
-            isSimple = true;
-        } else {
-            throw new NonExistentGameError();
-        }
+    private async getGameScores (gameName: string, gameType: GameType): Promise<IScoreResponse> {
+        const isSimple: boolean = await this.isSimpleGame(gameName);
+        try {
+            const gameToModify: IGame =  isSimple ? await this.databaseService.simpleGames.getFromId(gameName) :
+                await this.databaseService.simpleGames.getFromId(gameName);
 
-        if (gameType === undefined) {
+            return {table: gameType === GameType.SOLO ? gameToModify.bestSoloTimes : gameToModify.bestMultiTimes, isSimple: isSimple};
+        } catch (error) {
+            throw new AbstractDataBaseError(error.message);
+        }
+    }
+
+    private async isSimpleGame (gameName: string): Promise<boolean> {
+
+        try {
+            const isSimple: boolean = await this.databaseService.simpleGames.contains(gameName);
+            if (!isSimple && !await this.databaseService.freeGames.contains(gameName)) {
+                throw new NonExistentGameError();
+            }
+
             return isSimple;
+        } catch (error) {
+            throw error.message === NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE ? error : new AbstractDataBaseError(error.message);
         }
-
-        return {table: gameType === GameType.SOLO ? gameToModify.bestSoloTimes : gameToModify.bestMultiTimes, isSimple: isSimple};
     }
 
     private async putTableInDB(gameName: string, tableToPost: IScoreResponse, gameType: GameType): Promise<void> {
@@ -84,7 +83,7 @@ export class ScoreTableService {
     }
 
     public async resetScores(gameName: string): Promise<void> {
-        const isSimple: boolean = await this.tryGetTableFromDB(gameName) as boolean;
+        const isSimple: boolean = await this.isSimpleGame(gameName);
         try {
             if (isSimple) {
                 await this.databaseService.simpleGames.update(gameName, {bestSoloTimes: createRandomScores(),
