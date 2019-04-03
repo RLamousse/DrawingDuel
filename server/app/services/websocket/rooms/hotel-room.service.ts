@@ -83,11 +83,14 @@ export class HotelRoomService {
             this.handleCheckout(room, socket);
         });
         socket.in(room.id).on(SocketEvent.READY, (message: WebsocketMessage) => {
-            // TODO Notify the room to start the game
+            room.handleReady(socket.id);
         });
         socket.in(room.id).on(SocketEvent.DISCONNECT, () => {
-            // TODO verify if this doesn't override the onDisconnect already set uo
             this.handleCheckout(room, socket);
+        });
+
+        room.setOnReadyCallBack(() => {
+            sendToRoom(SocketEvent.READY, undefined, room.id, socket);
         });
     }
 
