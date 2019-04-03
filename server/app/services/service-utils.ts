@@ -1,8 +1,8 @@
 import {TIMES_ARRAY_SIZE} from "../../../common/model/game/game";
 import {IRecordTime} from "../../../common/model/game/record-time";
 
-const MIN_GENERATED_SCORE: number = 120;
-const MAX_GENERATED_SCORE: number = 360;
+const MIN_GENERATED_SCORE: number = 360;
+const MAX_GENERATED_SCORE: number = 480;
 const GENERATED_NAMES: string[] = ["BotAnthony",
                                    "BotMilen",
                                    "BotPhilB",

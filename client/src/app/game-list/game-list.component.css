@@ -1,7 +1,7 @@
 .gameList {
    display: flex;
    flex-direction: row;
-   padding-top: 72px;
+   padding-top: 79px;
 }
 
 .window {
@@ -14,7 +14,7 @@
 .title{
   background-color: #373745;
   width: 50%;
-  height: 75px;
+  height: 80px;
   color: white;
   display: inline-block;
   font-size: 25px;
