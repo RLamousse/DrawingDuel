@@ -1,7 +1,13 @@
 import {format} from "date-and-time";
 import {injectable} from "inversify";
 import {Socket} from "socket.io";
-import {ChatMessage, ChatMessagePlayerCount, ChatMessageType, WebsocketMessage} from "../../../../common/communication/messages/message";
+import {
+    createWebsocketMessage,
+    ChatMessage,
+    ChatMessagePlayerCount,
+    ChatMessageType,
+    WebsocketMessage
+} from "../../../../common/communication/messages/message";
 import {SocketEvent} from "../../../../common/communication/socket-events";
 import {WebsocketActionService} from "./websocket-action.service";
 
@@ -41,10 +47,7 @@ export class ChatWebsocketActionService extends WebsocketActionService {
                 break;
         }
 
-        return {
-            title: SocketEvent.CHAT,
-            body: message,
-        };
+        return createWebsocketMessage(message);
     }
 
     public getDisconnectionMessage(user: string): string {

@@ -2,7 +2,7 @@ import {format} from "date-and-time";
 import {inject, injectable} from "inversify";
 import {Socket} from "socket.io";
 import {
-    ChatMessage, RoomCreationMessage,
+    createWebsocketMessage, ChatMessage, RoomCreationMessage,
     RoomMessage,
     UpdateScoreMessage,
     WebsocketMessage
@@ -77,10 +77,7 @@ export class WebsocketController {
         });
 
         socket.on(SocketEvent.FETCH, () => {
-            const response: WebsocketMessage<IRoomInfo[]> = {
-                title: SocketEvent.FETCH,
-                body: this.hotelRoomService.fetchGameRooms(),
-            };
+            const response: WebsocketMessage<IRoomInfo[]> = createWebsocketMessage(this.hotelRoomService.fetchGameRooms());
             socket.emit(SocketEvent.FETCH, response);
         });
 
@@ -94,10 +91,9 @@ export class WebsocketController {
         if (this.sockets.has(socket.id)) {
             this.userNameService.removeUsername(username as string);
             this.sockets.delete(socket.id);
-            const message: WebsocketMessage<string> = {
-                title: SocketEvent.USER_CONNECTION,
-                body: format(new Date(), "HH:mm:ss") + this.chatAction.getDisconnectionMessage(username as string),
-            };
+            const message: WebsocketMessage<string> = createWebsocketMessage(
+                format(new Date(), "HH:mm:ss") + this.chatAction.getDisconnectionMessage(username as string),
+            );
             socket.broadcast.emit(SocketEvent.USER_DISCONNECTION, message);
         }
     }
@@ -105,10 +101,9 @@ export class WebsocketController {
     private userConnectionRoutine(username: string, socket: Socket): void {
         if (username) {
             this.sockets.set(socket.id, username);
-            const message: WebsocketMessage<string> = {
-                title: SocketEvent.USER_CONNECTION,
-                body: format(new Date(), "HH:mm:ss") + this.chatAction.getConnectionMessage(username),
-            };
+            const message: WebsocketMessage<string> = createWebsocketMessage(
+                format(new Date(), "HH:mm:ss") + this.chatAction.getConnectionMessage(username),
+            );
             socket.broadcast.emit(SocketEvent.USER_CONNECTION, message);
         }
     }

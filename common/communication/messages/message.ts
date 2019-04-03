@@ -1,5 +1,4 @@
 import {IInteractionData} from "../../model/rooms/interaction";
-import { SocketEvent } from "../socket-events";
 import {IRecordTime} from "../../model/game/record-time";
 
 export interface Message {
@@ -8,7 +7,6 @@ export interface Message {
 }
 
 export interface WebsocketMessage<type = Object> {
-    title: SocketEvent;
     body: type;
 }
 
@@ -59,6 +57,11 @@ export interface RoomInteractionMessage extends RoomMessage {
     interactionData: IInteractionData;
 }
 
-export function isAWebsocketMessage (object: any) {
-    return (object.title !== undefined && object.body !== undefined);
-}
+export const isAWebsocketMessage: (object: any) => boolean =
+    (object: any) => (object.title !== undefined && object.body !== undefined);
+
+export const createWebsocketMessage: <T>(data?: T) => WebsocketMessage<T> = <T>(data?: T) => {
+    return {
+        body: data,
+    } as WebsocketMessage<T>;
+};

@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Subscription } from "rxjs";
-import { WebsocketMessage } from "../../../common/communication/messages/message";
+import {createWebsocketMessage, WebsocketMessage} from "../../../common/communication/messages/message";
 import { UserValidationMessage } from "../../../common/communication/messages/user-validation-message";
 import { SocketEvent } from "../../../common/communication/socket-events";
 import { SocketService } from "./socket.service";
@@ -57,10 +57,7 @@ export class UNListService {
       return false;
     }
 
-    const message: WebsocketMessage<string> = {
-      title: SocketEvent.USERNAME_CHECK,
-      body: username,
-    };
+    const message: WebsocketMessage<string> = createWebsocketMessage(username);
     this.websocket.send(SocketEvent.USERNAME_CHECK, message);
     const sub: Subscription = this.websocket.onEvent<boolean>(SocketEvent.USERNAME_CHECK).subscribe((answer: WebsocketMessage<boolean>) => {
       this.handleUserNameCheck(answer, callback);

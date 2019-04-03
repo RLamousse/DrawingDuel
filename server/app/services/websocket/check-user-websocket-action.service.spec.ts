@@ -1,6 +1,5 @@
 import { expect } from "chai";
-import { WebsocketMessage } from "../../../../common/communication/messages/message";
-import { SocketEvent } from "../../../../common/communication/socket-events";
+import {createWebsocketMessage, WebsocketMessage} from "../../../../common/communication/messages/message";
 import { UsernameService } from "../username.service";
 import { CheckUserWebsocketActionService } from "./check-user-websocket-action.service";
 
@@ -29,19 +28,13 @@ describe("CheckUserWebsocketService", () => {
     });
 
     it("should return true if user is free", () => {
-        const message: WebsocketMessage<string> = {
-            title: SocketEvent.USERNAME_CHECK,
-            body: "Maxime",
-        };
+        const message: WebsocketMessage<string> = createWebsocketMessage("Maxime");
 
         return expect(service.execute(message, socket as unknown as SocketIO.Socket)).to.be.equal("Maxime");
     });
 
     it("should return false if user is taken", () => {
-        const message: WebsocketMessage<string> = {
-            title: SocketEvent.USERNAME_CHECK,
-            body: "Maxime",
-        };
+        const message: WebsocketMessage<string> = createWebsocketMessage("Maxime");
         service.execute(message, socket as unknown as SocketIO.Socket);
         // We are testing another condition after
         // tslint:disable-next-line: no-unused-expression
@@ -51,10 +44,7 @@ describe("CheckUserWebsocketService", () => {
     });
 
     it("should free username successfully", () => {
-        const message: WebsocketMessage<string> = {
-            title: SocketEvent.USERNAME_CHECK,
-            body: "Maxime",
-        };
+        const message: WebsocketMessage<string> = createWebsocketMessage("Maxime");
         service.execute(message, socket as unknown as SocketIO.Socket);
         service.removeUsername("Maxime");
 

@@ -4,8 +4,8 @@ import {Router} from "@angular/router";
 import {ComponentNavigationError} from "../../../../../common/errors/component.errors";
 import {IRecordTime} from "../../../../../common/model/game/record-time";
 import {DeleteGameFormComponent} from "./delete-game-form/delete-game-form.component";
-import {ResetGameFormComponent} from "./reset-game-form/reset-game-form.component";
 import {GameButtonOptions} from "./game-button-enum";
+import {ResetGameFormComponent} from "./reset-game-form/reset-game-form.component";
 import {RoomService} from "./room.service";
 
 @Component({
@@ -32,7 +32,6 @@ export class GameComponent implements OnInit {
   @Input() public leftButton: string;
   @Input() public isSimpleGame: boolean;
 
-
   public ngOnInit(): void {
     this.roomService.fetchRooms(this.gameName, this.handleRoomAvailability);
   }
@@ -48,7 +47,7 @@ export class GameComponent implements OnInit {
     }
   }
 
-  private handleRoomAvailability(value: boolean) {
+  private handleRoomAvailability(value: boolean): void {
     this.rightButton = value ? GameButtonOptions.JOIN : GameButtonOptions.CREATE;
   }
 

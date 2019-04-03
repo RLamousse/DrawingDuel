@@ -4,9 +4,9 @@ import * as Httpstatus from "http-status-codes";
 import { Observable, Subject } from "rxjs";
 import * as THREE from "three";
 import {
+  createWebsocketMessage,
   ChatMessage,
-  ChatMessagePlayerCount,
-  ChatMessagePosition, ChatMessageType,
+  ChatMessagePlayerCount, ChatMessagePosition, ChatMessageType,
   WebsocketMessage
 } from "../../../../common/communication/messages/message";
 import {DIFF_VALIDATOR_3D_BASE, SERVER_BASE_URL} from "../../../../common/communication/routes";
@@ -37,6 +37,14 @@ export const SCENE_TYPE: string = "Scene";
     providedIn: "root",
   })
 export class SceneRendererService {
+
+  public constructor(private renderUpdateService: RenderUpdateService,
+                     private socket: SocketService) {
+    this.gameState = {isCheatModeActive: false, isWaitingInThread: false, foundDifference: []};
+  }
+  public get foundDifferenceCount(): Observable<number> {
+    return this.differenceCountSubject;
+  }
   public originalContainer: HTMLDivElement;
   public modifiedContainer: HTMLDivElement;
   public scene: THREE.Scene;
@@ -62,9 +70,8 @@ export class SceneRendererService {
   private differenceCountSubject: Subject<number> = new Subject();
   public gameState: IFreeGameRendererState;
 
-  public constructor(private renderUpdateService: RenderUpdateService,
-                     private socket: SocketService) {
-    this.gameState = {isCheatModeActive: false, isWaitingInThread: false, foundDifference: []};
+  private static isObjectAtSamePlace(jsonPosition: number[], objectPosition: THREE.Vector3): boolean {
+    return deepCompare(jsonPosition, [objectPosition.x, objectPosition.y, objectPosition.z]);
   }
   private setRenderer(): void {
     this.rendererOri = new THREE.WebGLRenderer({preserveDrawingBuffer: true});
@@ -175,10 +182,6 @@ export class SceneRendererService {
     this.gameState.isCheatModeActive = false;
     this.gameState.cheatDiffData = undefined;
   }
-
-  private static isObjectAtSamePlace(jsonPosition: number[], objectPosition: THREE.Vector3): boolean {
-    return deepCompare(jsonPosition, [objectPosition.x, objectPosition.y, objectPosition.z]);
-  }
   private async threadFinish(): Promise<void> {
     while (this.gameState.isWaitingInThread) {
       await sleep(this.WATCH_THREAD_FINISH_INTERVAL);
@@ -258,14 +261,12 @@ export class SceneRendererService {
       });
   }
   private notifyClickToWebsocket(good: boolean): void {
-    const message: WebsocketMessage<ChatMessage> = {
-      title: SocketEvent.CHAT,
-      body: {
+    const message: WebsocketMessage<ChatMessage> = createWebsocketMessage(
+      {
         gameName: "", playerCount: ChatMessagePlayerCount.SOLO,
         playerName: UNListService.username, position: ChatMessagePosition.NA,
         timestamp: new Date(), type: good ? ChatMessageType.DIFF_FOUND : ChatMessageType.DIFF_ERROR,
-      },
-    };
+      });
     this.socket.send(SocketEvent.CHAT, message);
   }
   private checkIfAlreadyFound(object: IJson3DObject): void {
@@ -275,9 +276,6 @@ export class SceneRendererService {
         throw new AlreadyFoundDifferenceError();
       }
     }
-  }
-  public get foundDifferenceCount(): Observable<number> {
-    return this.differenceCountSubject;
   }
   private updateRoutine(jsonObj: IJson3DObject, obj: THREE.Object3D): void {
     this.gameState.foundDifference.push(jsonObj);

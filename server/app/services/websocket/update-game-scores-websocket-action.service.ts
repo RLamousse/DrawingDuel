@@ -2,15 +2,14 @@ import Axios from "axios";
 import {inject, injectable} from "inversify";
 import * as io from "socket.io";
 import {
+    createWebsocketMessage,
     ChatMessage,
     ChatMessagePlayerCount,
-    ChatMessagePosition,
-    ChatMessageType,
+    ChatMessagePosition, ChatMessageType,
     UpdateScoreMessage,
     WebsocketMessage
 } from "../../../../common/communication/messages/message";
 import {MODIFY_SCORES, SERVER_BASE_URL} from "../../../../common/communication/routes";
-import {SocketEvent} from "../../../../common/communication/socket-events";
 import {ScoreNotGoodEnough} from "../../../../common/errors/services.errors";
 import types from "../../types";
 import {ChatWebsocketActionService} from "./chat-websocket-action.service";
@@ -49,6 +48,6 @@ export class UpdateGameScoresWebsocketActionService implements WebsocketActionSe
                                       position: this.POSITION_TRANSLATE_TABLE[position],
                                       timestamp: new Date(),
         };
-        this.chatAction.execute({title: SocketEvent.CHAT, body: resBody}, socket);
+        this.chatAction.execute(createWebsocketMessage(resBody), socket);
     }
 }

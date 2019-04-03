@@ -1,7 +1,6 @@
 // tslint:disable: no-floating-promises
 import {async, TestBed} from "@angular/core/testing";
-import {WebsocketMessage} from "../../../common/communication/messages/message";
-import {SocketEvent} from "../../../common/communication/socket-events";
+import {createWebsocketMessage, WebsocketMessage} from "../../../common/communication/messages/message";
 import {SocketService} from "./socket.service";
 import {UNListService} from "./username.service";
 
@@ -97,10 +96,7 @@ describe("UNListService", () => {
 
   it("should return false and callback if username used", async () => {
     service = TestBed.get(UNListService);
-    const message: WebsocketMessage<boolean> = {
-      title: SocketEvent.DUMMY,
-      body: false,
-    };
+    const message: WebsocketMessage<boolean> = createWebsocketMessage(false);
     let called: boolean = false;
     // Accessing private members
     // tslint:disable-next-line: no-any
@@ -113,10 +109,7 @@ describe("UNListService", () => {
 
   it("should return true and callback if username used", async () => {
     service = TestBed.get(UNListService);
-    const message: WebsocketMessage<boolean> = {
-      title: SocketEvent.DUMMY,
-      body: true,
-    };
+    const message: WebsocketMessage<boolean> = createWebsocketMessage(true);
     let called: boolean = false;
     // Accessing private members
     // tslint:disable-next-line: no-any

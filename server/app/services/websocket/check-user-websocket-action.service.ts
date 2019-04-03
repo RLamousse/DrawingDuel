@@ -1,6 +1,6 @@
 import { inject, injectable } from "inversify";
 import * as io from "socket.io";
-import { WebsocketMessage } from "../../../../common/communication/messages/message";
+import {createWebsocketMessage, WebsocketMessage} from "../../../../common/communication/messages/message";
 import { UserValidationMessage } from "../../../../common/communication/messages/user-validation-message";
 import { SocketEvent } from "../../../../common/communication/socket-events";
 import types from "../../types";
@@ -22,10 +22,7 @@ export class CheckUserWebsocketActionService extends WebsocketActionService {
             available: false,
         };
         const value: UserValidationMessage = this.usernameService.checkAvailability(userValid);
-        const message: WebsocketMessage<boolean> = {
-            title: SocketEvent.USERNAME_CHECK,
-            body: value.available,
-        };
+        const message: WebsocketMessage<boolean> = createWebsocketMessage(value.available);
         socket.emit(this._EVENT_TYPE, message);
 
         return value.available ? value.username : "";

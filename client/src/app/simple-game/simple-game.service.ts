@@ -6,8 +6,8 @@ import {IDiffValidatorControllerRequest} from "../../../../common/communication/
 import {DB_SIMPLE_GAME, DIFF_VALIDATOR_BASE, SERVER_BASE_URL} from "../../../../common/communication/routes";
 import {NonExistentGameError} from "../../../../common/errors/database.errors";
 import {AbstractServiceError, AlreadyFoundDifferenceError, NoDifferenceAtPointError} from "../../../../common/errors/services.errors";
-import {DifferenceCluster, DIFFERENCE_CLUSTER_POINTS_INDEX, ISimpleGame} from "../../../../common/model/game/simple-game";
 import {ISimpleGameState} from "../../../../common/model/game/game-state";
+import {DifferenceCluster, DIFFERENCE_CLUSTER_POINTS_INDEX, ISimpleGame} from "../../../../common/model/game/simple-game";
 import {IPoint} from "../../../../common/model/point";
 import {playRandomSound, FOUND_DIFFERENCE_SOUNDS} from "./game-sounds";
 

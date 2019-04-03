@@ -1,7 +1,7 @@
 import { Component, Inject } from "@angular/core";
 import {MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
 import {Router} from "@angular/router";
-import {WebsocketMessage} from "../../../../../../common/communication/messages/message";
+import {createWebsocketMessage, WebsocketMessage} from "../../../../../../common/communication/messages/message";
 import {SocketEvent} from "../../../../../../common/communication/socket-events";
 import {IDialogData} from "../../../../../../common/dialog-data-interface/IDialogData";
 import {ComponentNavigationError} from "../../../../../../common/errors/component.errors";
@@ -39,10 +39,7 @@ export class DeleteGameFormComponent  {
   }
 
   private sendDeleteMessage(): void {
-    this.socketMessage = {
-      title: SocketEvent.DELETE,
-      body: [this.data.gameName, this.data.isSimpleGame],
-    };
+    this.socketMessage = createWebsocketMessage<[string, boolean]>([this.data.gameName, this.data.isSimpleGame]);
     this.socket.send(SocketEvent.DELETE, this.socketMessage);
   }
 
