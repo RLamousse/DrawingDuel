@@ -5,11 +5,8 @@ import {ComponentNavigationError} from "../../../../../common/errors/component.e
 import {IRecordTime} from "../../../../../common/model/game/record-time";
 import {DeleteGameFormComponent} from "./delete-game-form/delete-game-form.component";
 import {ResetGameFormComponent} from "./reset-game-form/reset-game-form.component";
-import {SocketService} from "../../socket.service";
-import {WebsocketMessage} from "../../../../../common/communication/messages/message";
-import {IRoomInfo} from "../../../../../common/model/rooms/room-info";
-import {SocketEvent} from "../../../../../common/communication/socket-events";
 import {GameButtonOptions} from "./game-button-enum";
+import {RoomService} from "./room.service";
 
 @Component({
   selector: "app-game",
@@ -21,7 +18,7 @@ export class GameComponent implements OnInit {
 
   public constructor(private router: Router,
                      private dialog: MatDialog,
-                     private socket: SocketService) {
+                     private roomService: RoomService) {
     this.handleRoomAvailability = this.handleRoomAvailability.bind(this);
   }
 
@@ -35,9 +32,9 @@ export class GameComponent implements OnInit {
   @Input() public leftButton: string;
   @Input() public isSimpleGame: boolean;
 
+
   public ngOnInit(): void {
-    this.socket.onEvent<IRoomInfo[]>(SocketEvent.FETCH).subscribe(this.handleRoomAvailability);
-    this.socket.send(SocketEvent.FETCH, {title: SocketEvent.FETCH, body: ""});
+    this.roomService.fetchRooms(this.gameName, this.handleRoomAvailability);
   }
 
   protected leftButtonClick(): void {
@@ -51,9 +48,8 @@ export class GameComponent implements OnInit {
     }
   }
 
-  private handleRoomAvailability(value: WebsocketMessage<IRoomInfo[]>) {
-    const availableRoom: IRoomInfo | undefined = value.body.find((value) => value.gameName === this.gameName && value.vacant);
-    this.rightButton = availableRoom ? GameButtonOptions.JOIN : GameButtonOptions.CREATE;
+  private handleRoomAvailability(value: boolean) {
+    this.rightButton = value ? GameButtonOptions.JOIN : GameButtonOptions.CREATE;
   }
 
   protected rightButtonClick(): void {
@@ -71,7 +67,6 @@ export class GameComponent implements OnInit {
    this.router.navigate(["/play-view/"], {queryParams: {
       gameName: this.gameName, originalImage: this.originalImage, modifiedImage: this.modifiedImage, isSimpleGame: this.isSimpleGame },
     })
-      // tslint:disable-next-line:no-any Generic error response
      .catch(() => {
        throw new ComponentNavigationError();
      });
@@ -84,7 +79,6 @@ export class GameComponent implements OnInit {
         isSimpleGame: this.isSimpleGame,
       },
     })
-      // tslint:disable-next-line:no-any Generic error response
       .catch(() => {
         throw new ComponentNavigationError();
       });
@@ -94,10 +88,8 @@ export class GameComponent implements OnInit {
     this.router.navigate(["/await-view/"], {queryParams: {
       gameName: this.gameName, gameType: this.isSimpleGame},
     })
-      // tslint:disable-next-line:no-any Generic error response
       .catch(() => {
        throw new ComponentNavigationError();
      });
   }
-
 }
