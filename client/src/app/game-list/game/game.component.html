@@ -1,7 +1,7 @@
 <div class="window">
     <h1>{{gameName}}</h1>
     <div class="horizontalWindow">
-      <div *ngIf="isSimpleGame;  then thenBlock else elseBlock"></div>
+      <div *ngIf="gameType === simpleGameTag;  then thenBlock else elseBlock"></div>
       <ng-template #thenBlock>
         <img class="image" src={{originalImage}}>
       </ng-template>

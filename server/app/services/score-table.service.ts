@@ -1,7 +1,7 @@
 import {inject, injectable} from "inversify";
 import {AbstractDataBaseError, NonExistentGameError} from "../../../common/errors/database.errors";
 import {ScoreNotGoodEnough} from "../../../common/errors/services.errors";
-import {OnlineType, IGame} from "../../../common/model/game/game";
+import {GameType, IGame, OnlineType} from "../../../common/model/game/game";
 import {IRecordTime} from "../../../common/model/game/record-time";
 import Types from "../types";
 import {DataBaseService} from "./data-base.service";
@@ -9,7 +9,7 @@ import {createRandomScores} from "./service-utils";
 
 interface IScoreResponse {
     table: IRecordTime[];
-    isSimple: boolean;
+    gameType: GameType;
 }
 
 @injectable()
@@ -43,26 +43,26 @@ export class ScoreTableService {
     }
 
     private async getGameScores (gameName: string, onlineType: OnlineType): Promise<IScoreResponse> {
-        const isSimple: boolean = await this.isSimpleGame(gameName);
+        const gameType: GameType = await this.getGameType(gameName);
         try {
-            const gameToModify: IGame =  isSimple ? await this.databaseService.simpleGames.getFromId(gameName) :
+            const gameToModify: IGame =  gameType === GameType.SIMPLE ? await this.databaseService.simpleGames.getFromId(gameName) :
                 await this.databaseService.simpleGames.getFromId(gameName);
 
-            return {table: onlineType === OnlineType.SOLO ? gameToModify.bestSoloTimes : gameToModify.bestMultiTimes, isSimple: isSimple};
+            return {table: onlineType === OnlineType.SOLO ? gameToModify.bestSoloTimes : gameToModify.bestMultiTimes, gameType: gameType};
         } catch (error) {
             throw new AbstractDataBaseError(error.message);
         }
     }
 
-    private async isSimpleGame (gameName: string): Promise<boolean> {
+    private async getGameType (gameName: string): Promise<GameType> {
 
         try {
-            const isSimple: boolean = await this.databaseService.simpleGames.contains(gameName);
-            if (!isSimple && !await this.databaseService.freeGames.contains(gameName)) {
+            const gameType: GameType = await this.databaseService.simpleGames.contains(gameName) ? GameType.SIMPLE : GameType.FREE;
+            if (gameType === GameType.FREE && !await this.databaseService.freeGames.contains(gameName)) {
                 throw new NonExistentGameError();
             }
 
-            return isSimple;
+            return gameType;
         } catch (error) {
             throw error.message === NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE ? error : new AbstractDataBaseError(error.message);
         }
@@ -72,10 +72,14 @@ export class ScoreTableService {
         const dataToSend: Partial<IGame> = onlineType === OnlineType.SOLO ? {bestSoloTimes: tableToPost.table} :
             {bestMultiTimes: tableToPost.table};
         try {
-            if (tableToPost.isSimple) {
-                await this.databaseService.simpleGames.update(gameName, dataToSend);
-            } else {
-                await this.databaseService.freeGames.update(gameName, dataToSend);
+            // default case is not possible with enums
+            // tslint:disable-next-line:switch-default
+            switch (tableToPost.gameType) {
+                case GameType.FREE:
+                    await this.databaseService.freeGames.update(gameName, dataToSend);
+                    break;
+                case GameType.SIMPLE:
+                    await this.databaseService.simpleGames.update(gameName, dataToSend);
             }
         } catch (error) {
             throw new AbstractDataBaseError(error.message);
@@ -83,14 +87,18 @@ export class ScoreTableService {
     }
 
     public async resetScores(gameName: string): Promise<void> {
-        const isSimple: boolean = await this.isSimpleGame(gameName);
+        const gameType: GameType = await this.getGameType(gameName);
         try {
-            if (isSimple) {
-                await this.databaseService.simpleGames.update(gameName, {bestSoloTimes: createRandomScores(),
-                                                                         bestMultiTimes: createRandomScores()});
-            } else {
-                await this.databaseService.freeGames.update(gameName, {bestSoloTimes: createRandomScores(),
-                                                                       bestMultiTimes: createRandomScores()});
+            // default case is not possible with enums
+            // tslint:disable-next-line:switch-default
+            switch (gameType) {
+                case GameType.SIMPLE:
+                    await this.databaseService.simpleGames.update(gameName, {bestSoloTimes: createRandomScores(),
+                                                                             bestMultiTimes: createRandomScores()});
+                    break;
+                case GameType.FREE:
+                    await this.databaseService.freeGames.update(gameName, {bestSoloTimes: createRandomScores(),
+                                                                           bestMultiTimes: createRandomScores()});
             }
         } catch (error) {
             throw new AbstractDataBaseError(error.message);

@@ -14,6 +14,8 @@ describe("PlayViewComponent", () => {
   let component: PlayViewComponent;
   let fixture: ComponentFixture<PlayViewComponent>;
 
+  // TestBed takes lot of space
+  // tslint:disable-next-line:max-func-body-length
   beforeEach((done) => {
     TestBed.configureTestingModule(
       {
@@ -32,9 +34,12 @@ describe("PlayViewComponent", () => {
                     { provide: Router, useClass: class { public navigate: jasmine.Spy = jasmine.createSpy("navigate"); },   },
                     { provide: ActivatedRoute,
                       useValue: {queryParams: {
-                          subscribe: (fn: (queryParams: string ) => void) => fn(
-                          // tslint:disable-next-line:max-line-length
-                          "play-view?gameName=numbers&originalImage=https:%2F%2Fi.imgur.com%2Fvc0cKmB.png&modifiedImage=https:%2F%2Fi.imgur.com%2F5lei5Nb.png", ),
+                          subscribe: (fn: (queryParams: object) => void) => fn(
+                          {
+                            gameName: "numbers",
+                            originalImage: "https:%2F%2Fi.imgur.com%2Fvc0cKmB.png",
+                            modifiedImage: "https:%2F%2Fi.imgur.com%2F5lei5Nb.png",
+                            gameType: "0"} ),
                         },
                       },
                     },

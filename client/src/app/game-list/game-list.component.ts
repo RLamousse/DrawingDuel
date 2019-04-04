@@ -1,7 +1,8 @@
-import { Component, Input, OnInit } from "@angular/core";
-import { IFreeGame } from "../../../../common/model/game/free-game";
-import { ISimpleGame } from "../../../../common/model/game/simple-game";
-import { GameService } from "../game.service";
+import {Component, Input, OnInit} from "@angular/core";
+import {IFreeGame} from "../../../../common/model/game/free-game";
+import {GameType} from "../../../../common/model/game/game";
+import {ISimpleGame} from "../../../../common/model/game/simple-game";
+import {GameService} from "../game.service";
 
 @Component({
   selector: "app-game-list",
@@ -11,6 +12,8 @@ import { GameService } from "../game.service";
 
 export class GameListComponent implements OnInit {
 
+  @Input() protected  readonly simpleGameTag: GameType = GameType.SIMPLE;
+  @Input() protected  readonly freeGameTag: GameType = GameType.FREE;
   @Input() protected readonly rightButton: string = "joindre";
   @Input() protected readonly leftButton: string = "jouer";
 
