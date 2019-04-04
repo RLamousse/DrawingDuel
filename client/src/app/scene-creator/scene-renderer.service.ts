@@ -128,7 +128,7 @@ export class SceneRendererService {
     this.velocity = new THREE.Vector3();
     this.gameName = gameName;
     this.gameState.foundDifference = [];
-    this.objectCollisionService.setCollisionBox(this.scene.children, this.modifiedScene.children);
+    //this.objectCollisionService.setCollisionBox(this.scene.children, this.modifiedScene.children);
     this.renderLoop();
   }
   private async blink(): Promise<void> {
