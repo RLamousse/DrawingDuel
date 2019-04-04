@@ -5,9 +5,7 @@ import MockAdapter from "axios-mock-adapter";
 import AxiosAdapter from "axios-mock-adapter";
 import {expect} from "chai";
 import * as HttpStatus from "http-status-codes";
-import {IMock} from "typemoq";
-// tslint:disable-next-line:no-duplicate-imports Weird interaction between singletons and interface (olivier st-o approved)
-import * as TypeMoq from "typemoq";
+import {IMock, Mock} from "typemoq";
 import {DIFF_VALIDATOR_BASE, SERVER_BASE_URL} from "../../../../../common/communication/routes";
 import {
     AlreadyFoundDifferenceError,
@@ -35,7 +33,7 @@ describe("A simple game room", () => {
         (simpleGameMockConfigurator?: (mockedSimpleGame: IMock<ISimpleGame>) => void, playerCount?: number, roomId?: string)
             => SimpleGameRoom =
         (simpleGameMockConfigurator?: (mockedSimpleGame: IMock<ISimpleGame>) => void, playerCount: number = 1, roomId: string = "room") => {
-        const mockedSimpleGame: IMock<ISimpleGame> = TypeMoq.Mock.ofType<ISimpleGame>();
+            const mockedSimpleGame: IMock<ISimpleGame> = Mock.ofType<ISimpleGame>();
         if (simpleGameMockConfigurator !== undefined) {
             simpleGameMockConfigurator(mockedSimpleGame);
         }
