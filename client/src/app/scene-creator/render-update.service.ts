@@ -8,7 +8,7 @@ import {Coordinate} from "../../../../common/free-game-json-interface/FreeGameCr
 export class RenderUpdateService {
   private readonly decelerationFactor: number = 10;
   private readonly accelerationFactor: number = 600;
-  private readonly camRotationSpeedFactor: number = 40000;
+  private readonly camRotationSpeedFactor: number = 800;
   private readonly ORIGINAL_NAME: string = "original";
   private readonly MODIFIED_NAME: string = "modified";
 
