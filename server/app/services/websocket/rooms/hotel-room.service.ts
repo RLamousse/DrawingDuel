@@ -27,6 +27,7 @@ export class HotelRoomService {
 
     public constructor(@inject(types.DataBaseService) private databaseService: DataBaseService) {
         this._rooms = new Map<string, IGameRoom>();
+        this._sockets = new Map<Socket, string>();
     }
 
     private static playerCountFromMessage(playerCountMessage: PlayerCountMessage): number {
