@@ -25,7 +25,6 @@ import {SocketService} from "../socket.service";
 import {UNListService} from "../username.service";
 import {ObjectCollisionService} from "./objectCollisionService/object-collision.service";
 import { RenderUpdateService } from "./render-update.service";
-
 interface IFreeGameState {
   isCheatModeActive: boolean;
   isWaitingInThread: boolean;
@@ -88,16 +87,12 @@ export class SceneRendererService {
     const delta: number = (this.time - this.prevTime) / this.timeFactor;
     this.renderUpdateService.updateVelocity(this.velocity, delta);
     this.objectCollisionService.raycastCollision(this.camera, this.scene.children, this.modifiedScene.children, this.velocity);
-    /*if (this.objectCollisionService.computeCollision(this.velocity, this.camera, delta)) {
-      this.renderUpdateService.rightClick = false;
-    }*/
     this.renderUpdateService.updateCamera(this.camera, delta, this.velocity);
     this.prevTime = this.time;
     requestAnimationFrame(() => this.renderLoop());
   }
   private setCamera(): void {
     const aspectRatio: number = this.getAspectRatio();
-
     this.camera = new THREE.PerspectiveCamera(
       this.fieldOfView,
       aspectRatio,
@@ -128,7 +123,6 @@ export class SceneRendererService {
     this.velocity = new THREE.Vector3();
     this.gameName = gameName;
     this.gameState.foundDifference = [];
-    //this.objectCollisionService.setCollisionBox(this.scene.children, this.modifiedScene.children);
     this.renderLoop();
   }
   private async blink(): Promise<void> {
@@ -212,7 +206,6 @@ export class SceneRendererService {
 
         return this.differenceValidationAtPoint(undefined);
       }
-      // Only take the first intersected object by the ray, hence the 0's
       if (intersectOri.length === 0 && intersectMod.length !== 0) {
         return this.differenceValidationAtPoint(this.get3DObject(intersectMod[0]));
       } else {
