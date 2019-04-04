@@ -44,6 +44,12 @@ export class GameManagerController {
             });
         });
 
+        router.put("/simple/:id", async (req: Request, res: Response, next: NextFunction) => {
+            executePromiseSafely(res, next, async () => {
+                res.json(await this.dataBaseService.simpleGames.update(req.params["id"], req.body));
+            });
+        });
+
         // ┌──┬──────┬──┐
         // │  │ FREE │  │
         // └──┴──────┴──┘
@@ -68,6 +74,12 @@ export class GameManagerController {
                     }
                     res.json(reason);
                 });
+            });
+        });
+
+        router.put("/free/:id", async (req: Request, res: Response, next: NextFunction) => {
+            executePromiseSafely(res, next, async () => {
+                res.json(await this.dataBaseService.freeGames.update(req.params["id"], req.body));
             });
         });
 
