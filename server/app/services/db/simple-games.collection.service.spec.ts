@@ -1,8 +1,6 @@
 import {expect} from "chai";
 import {Collection, FilterQuery, UpdateQuery} from "mongodb";
-import * as TypeMoq from "typemoq";
-// tslint:disable-next-line:no-duplicate-imports Weird interaction between singletons and interface (olivier st-o approved)
-import {IMock} from "typemoq";
+import {IMock, Mock} from "typemoq";
 import {Message} from "../../../../common/communication/messages/message";
 import {
     AlreadyExistentGameError,
@@ -37,7 +35,7 @@ describe("A db service for simple games", () => {
         (data: Partial<ISimpleGame>): UpdateQuery<ISimpleGame> => ({$set: data});
 
     beforeEach(() => {
-        mockedCollection = TypeMoq.Mock.ofType<Collection<ISimpleGame>>();
+        mockedCollection = Mock.ofType<Collection<ISimpleGame>>();
     });
 
     describe("Game creation", () => {
