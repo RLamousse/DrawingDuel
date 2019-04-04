@@ -1,11 +1,16 @@
-<link href="https://fonts.googleapis.com/css?family=Orbitron" rel="stylesheet">
 <body>
-<h1 class="centeredText">{{gameName}}</h1>
-<div class="centered">
-  <app-timer class="timer" [gameName] = "gameName"
-                           [isSimpleGame] = "isSimpleGame"></app-timer>
-</div>
-<app-simple-game-container [originalImage]="originalImage"
-                           [modifiedImage]="modifiedImage"></app-simple-game-container>
-<app-message-box></app-message-box>
+  <div class="separation">
+    <div class="leftWindow">
+      <h1 class="centeredText">{{gameName}}</h1>
+      <div class="centered">
+        <app-timer class="timer" [gameName] = "gameName"
+        [isSimpleGame] = "isSimpleGame"></app-timer>
+      </div>
+      <app-simple-game-container [originalImage]="originalImage"
+      [modifiedImage]="modifiedImage"></app-simple-game-container>
+    </div>
+    <div class="chat">
+      <app-message-box></app-message-box>
+    </div>
+  </div>
 </body>
