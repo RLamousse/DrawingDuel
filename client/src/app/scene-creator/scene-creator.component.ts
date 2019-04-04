@@ -59,7 +59,14 @@ export class SceneCreatorComponent implements AfterViewInit, OnInit, OnDestroy {
     this.route.queryParams.subscribe((params) => {
       this.gameName = params["gameName"];
     });
-
+    const errMsg: string = "An error occured when trying to render the free view games";
+    this.renderService.init(this.originalContainer, this.modifiedContainer);
+    this.verifyGame().then((scene: IScene) =>
+      this.renderService.loadScenes(scene.scene, scene.modifiedScene, this.gameName),
+    ).catch((e: Error) => {
+      e.message = errMsg;
+      throw e;
+    });
   }
 
   private async verifyGame(): Promise<IScene> {
@@ -72,14 +79,7 @@ export class SceneCreatorComponent implements AfterViewInit, OnInit, OnDestroy {
   }
 
   public ngAfterViewInit(): void {
-    const errMsg: string = "An error occured when trying to render the free view games";
-    this.renderService.init(this.originalContainer, this.modifiedContainer);
-    this.verifyGame().then((scene: IScene) =>
-                             this.renderService.loadScenes(scene.scene, scene.modifiedScene, this.gameName),
-    ).catch((e: Error) => {
-      e.message = errMsg;
-      throw e;
-    });
+
   }
 
   @HostListener("document:keyup", ["$event"])
