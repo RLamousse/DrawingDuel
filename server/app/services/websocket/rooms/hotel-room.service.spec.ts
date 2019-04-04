@@ -3,9 +3,9 @@ import {assert, expect} from "chai";
 import * as io from "socket.io";
 import {Server, Socket} from "socket.io";
 import {connect} from "socket.io-client";
-import {anyString, instance, mock, when} from "ts-mockito";
+import {anyString, capture, instance, mock, spy, when} from "ts-mockito";
 import {IMock, Mock} from "typemoq";
-import {PlayerCountMessage, WebsocketMessage} from "../../../../../common/communication/messages/message";
+import {createWebsocketMessage, PlayerCountMessage, WebsocketMessage} from "../../../../../common/communication/messages/message";
 import {SocketEvent} from "../../../../../common/communication/socket-events";
 import {NonExistentGameError} from "../../../../../common/errors/database.errors";
 import {IRoomInfo} from "../../../../../common/model/rooms/room-info";
@@ -30,7 +30,8 @@ describe("A service to manage game rooms", () => {
     let mockedDatabaseService: DataBaseService;
     let freeGamesCollectionService: FreeGamesCollectionService;
 
-    const initHotelRoomService =
+    const initHotelRoomService:
+        (mockConfigurator?: Callback) => HotelRoomService =
         (mockConfigurator?: Callback) => {
             mockedDatabaseService = mock(DataBaseService);
             simpleGamesCollectionService = mock(SimpleGamesCollectionService);
@@ -48,26 +49,55 @@ describe("A service to manage game rooms", () => {
             return new HotelRoomService(instance(mockedDatabaseService));
         };
 
-    const createRandomRooms = (roomCount: number, vacantRation: number) => {
-        const rooms: IGameRoom[] = [];
-
-        for (let i: number = 0; i < roomCount; i++) {
-            const mockedRoom: IMock<IGameRoom> = Mock.ofType<IGameRoom>();
-
-            mockedRoom.setup((room: IGameRoom) => room.gameName)
-                .returns(() => `Mr. ${PITBULL_NUMBER + i} Dale!`);
-
-            const isVacant: boolean = Math.random() <= vacantRation;
-            mockedRoom.setup((room: IGameRoom) => room.vacant)
-                .returns(() => isVacant);
-
-            rooms.push(mockedRoom.object);
-        }
-
-        return rooms;
+    const createSimpleGameMock = (gameName: string) => {
+        return {
+            diffData: [],
+            gameName: gameName,
+            bestMultiTimes: [],
+            bestSoloTimes: [],
+            modifiedImage: "",
+            originalImage: "",
+            toBeDeleted: false,
+        };
     };
 
-    const getFromMapSafe: <T, U>(map: Map<T, U>, key: T) => U =
+    const createFreeGameMock = (gameName: string) => {
+        return {
+            gameName: gameName,
+            bestMultiTimes: [],
+            bestSoloTimes: [],
+            toBeDeleted: false,
+            scenes: {
+                differentObjects: [],
+                modifiedObjects: [],
+                originalObjects: [],
+            },
+        };
+    };
+
+    const createRandomRooms:
+        (roomCount: number, vacantRatio: number) => IGameRoom[] =
+        (roomCount: number, vacantRatio: number) => {
+            const rooms: IGameRoom[] = [];
+
+            for (let i: number = 0; i < roomCount; i++) {
+                const mockedRoom: IMock<IGameRoom> = Mock.ofType<IGameRoom>();
+
+                mockedRoom.setup((room: IGameRoom) => room.gameName)
+                    .returns(() => `Mr. ${PITBULL_NUMBER + i} Dale!`);
+
+                const isVacant: boolean = Math.random() <= vacantRatio;
+                mockedRoom.setup((room: IGameRoom) => room.vacant)
+                    .returns(() => isVacant);
+
+                rooms.push(mockedRoom.object);
+            }
+
+            return rooms;
+    };
+
+    const getFromMapSafe:
+        <T, U>(map: Map<T, U>, key: T) => U =
         <T, U>(map: Map<T, U>, key: T) => {
             const value: U | undefined = map.get(key);
             assert(value !== undefined);
@@ -75,8 +105,9 @@ describe("A service to manage game rooms", () => {
             return value as U;
         };
 
-    const testSocketCall =
-        <T>(socketEvent: SocketEvent, testSuite: (socket: Socket) => void, message?: WebsocketMessage<T>) => {
+    const testSocketCall:
+        <T>(socketEvent: SocketEvent, testSuite: () => void, message?: WebsocketMessage<T>) => void =
+        <T>(socketEvent: SocketEvent, testSuite: () => void, message?: WebsocketMessage<T>) => {
             serverSocket.on(socketEvent, testSuite);
             socketClient.emit(socketEvent, message);
         };
@@ -87,10 +118,7 @@ describe("A service to manage game rooms", () => {
     });
 
     beforeEach((done: Callback) => {
-        socketClient = connect(SOCKET_URL, {
-            reconnectionDelay: 0,
-            forceNew: true,
-        });
+        socketClient = connect(SOCKET_URL);
         socketClient.on("connect", () => done());
     });
 
@@ -129,8 +157,8 @@ describe("A service to manage game rooms", () => {
                     .thenResolve(false);
             });
 
-            testSocketCall(SocketEvent.CREATE, (socket: Socket) => {
-                hotelRoomService.createGameRoom(socket, "You can't catch meh boy", PlayerCountMessage.SOLO)
+            testSocketCall(SocketEvent.CREATE, () => {
+                hotelRoomService.createGameRoom(serverSocket, "You can't catch meh boy", PlayerCountMessage.SOLO)
                     .then(() => fail())
                     .catch((error: NonExistentGameError) => {
                         expect(error.message)
@@ -138,6 +166,68 @@ describe("A service to manage game rooms", () => {
                         done();
                     });
             });
+        });
+
+        it("should create a simpleGameRoom and check in the client", (done: Callback) => {
+            const gameName: string = "Motel";
+            const hotelRoomService: HotelRoomService = initHotelRoomService(() => {
+                when(simpleGamesCollectionService.contains(gameName))
+                    .thenResolve(true);
+                when(simpleGamesCollectionService.getFromId(anyString()))
+                    .thenResolve(createSimpleGameMock(gameName));
+                when(freeGamesCollectionService.contains(anyString()))
+                    .thenResolve(false);
+            });
+
+            const hotelRoomServiceSpy: HotelRoomService = spy(hotelRoomService);
+
+            testSocketCall(
+                SocketEvent.CREATE,
+                () => {
+                    hotelRoomService.createGameRoom(serverSocket, gameName, PlayerCountMessage.SOLO)
+                        .then(() => {
+                            const createdRoom: IGameRoom | undefined = Array.from(hotelRoomService["_rooms"].values())
+                                .find((room: IGameRoom) => room.gameName === gameName);
+                            assert.exists(createdRoom);
+                            // TODO check room assert.isNotEmpty(serverSocket.rooms);
+                            expect(Array.from(hotelRoomService["_sockets"].keys()))
+                                .to.contain(serverSocket);
+                            assert.isNotEmpty(capture(hotelRoomServiceSpy["registerGameRoomHandlers"]).first());
+                            done();
+                        });
+                },
+                createWebsocketMessage(PlayerCountMessage.SOLO));
+        });
+
+        it("should create a freeGameRoom and check in the client", (done: Callback) => {
+            const gameName: string = "Holiday Inn";
+            const hotelRoomService: HotelRoomService = initHotelRoomService(() => {
+                when(simpleGamesCollectionService.contains(gameName))
+                    .thenResolve(false);
+                when(freeGamesCollectionService.contains(anyString()))
+                    .thenResolve(true);
+                when(freeGamesCollectionService.getFromId(anyString()))
+                    .thenResolve(createFreeGameMock(gameName));
+            });
+
+            const hotelRoomServiceSpy: HotelRoomService = spy(hotelRoomService);
+
+            testSocketCall(
+                SocketEvent.CREATE,
+                () => {
+                    hotelRoomService.createGameRoom(serverSocket, gameName, PlayerCountMessage.SOLO)
+                        .then(() => {
+                            const createdRoom: IGameRoom | undefined = Array.from(hotelRoomService["_rooms"].values())
+                                .find((room: IGameRoom) => room.gameName === gameName);
+                            assert.exists(createdRoom);
+                            // TODO check room assert.isNotEmpty(serverSocket.rooms);
+                            expect(Array.from(hotelRoomService["_sockets"].keys()))
+                                .to.contain(serverSocket);
+                            assert.isNotEmpty(capture(hotelRoomServiceSpy["registerGameRoomHandlers"]).first());
+                            done();
+                        });
+                },
+                createWebsocketMessage(PlayerCountMessage.SOLO));
         });
     });
 
