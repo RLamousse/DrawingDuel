@@ -8,7 +8,7 @@ import {Coordinate} from "../../../../common/free-game-json-interface/FreeGameCr
 export class RenderUpdateService {
   private readonly decelerationFactor: number = 10;
   private readonly accelerationFactor: number = 600;
-  private readonly camRotationSpeedFactor: number = 4000;
+  private readonly camRotationSpeedFactor: number = 40000;
   private readonly ORIGINAL_NAME: string = "original";
   private readonly MODIFIED_NAME: string = "modified";
 
@@ -55,8 +55,10 @@ export class RenderUpdateService {
     camera.translateZ( velocity.z * delta );
     camera.translateX( velocity.x * delta );
     if ( this.rightClick ) {
-      camera.rotateX(this.deltaX);
-      camera.rotateY(this.deltaY);
+      const eulerRotation: THREE.Euler = new THREE.Euler(0, 0, 0, "YXZ");
+      eulerRotation.x = this.deltaX;
+      eulerRotation.y = this.deltaY;
+      camera.quaternion.setFromEuler(eulerRotation);
     }
   }
   public moveForward(isMoving: boolean): void {
@@ -76,14 +78,12 @@ export class RenderUpdateService {
     if (this.rightClick) {
       this.oldX = xPos;
       this.oldY = yPos;
-      this.deltaX = 0;
-      this.deltaY = 0;
     }
   }
 
   public rotationCamera(xPos: number, yPos: number): void {
-    this.deltaY = (this.oldX - xPos) / this.camRotationSpeedFactor;
-    this.deltaX = (this.oldY - yPos) / this.camRotationSpeedFactor;
+    this.deltaY += (this.oldX - xPos) * Math.PI / this.camRotationSpeedFactor;
+    this.deltaX += (this.oldY - yPos) * Math.PI / this.camRotationSpeedFactor;
   }
 
   public updateDifference(object: THREE.Object3D, scene: THREE.Scene, modifiedScene: THREE.Scene): void {
