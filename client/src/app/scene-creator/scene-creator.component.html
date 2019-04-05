@@ -3,7 +3,7 @@
   <div class="separation">
     <div class="leftWindow">
       <canvas id="endGameMessage"></canvas>
-      <h1 class = "centered">{{gameName}}</h1>
+      <h1 class = "gameName">{{gameName}}</h1>
       <div class="timer"><app-timer [gameName] = "gameName"
                                     [isSimpleGame] = "isSimpleGame"></app-timer></div>
       <div class = "row" [class.disabled]="!cursorEnabled">
