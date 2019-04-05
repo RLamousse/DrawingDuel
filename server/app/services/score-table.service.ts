@@ -46,7 +46,7 @@ export class ScoreTableService {
         const gameType: GameType = await this.getGameType(gameName);
         try {
             const gameToModify: IGame =  gameType === GameType.SIMPLE ? await this.databaseService.simpleGames.getFromId(gameName) :
-                await this.databaseService.simpleGames.getFromId(gameName);
+                await this.databaseService.freeGames.getFromId(gameName);
 
             return {table: onlineType === OnlineType.SOLO ? gameToModify.bestSoloTimes : gameToModify.bestMultiTimes, gameType: gameType};
         } catch (error) {
@@ -59,6 +59,7 @@ export class ScoreTableService {
         try {
             const gameType: GameType = await this.databaseService.simpleGames.contains(gameName) ? GameType.SIMPLE : GameType.FREE;
             if (gameType === GameType.FREE && !await this.databaseService.freeGames.contains(gameName)) {
+            if (gameType === GameType.FREE && !(await this.databaseService.freeGames.contains(gameName))) {
                 throw new NonExistentGameError();
             }
 
