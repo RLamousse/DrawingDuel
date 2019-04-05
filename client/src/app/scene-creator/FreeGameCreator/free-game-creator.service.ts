@@ -65,6 +65,7 @@ export class FreeGameCreatorService {
     for (const j of primitiveScenes.modifiedObjects) {
       this.generateThematicObject(j, false);
     }
+    this.setSkyBox();
   }
 
   private generateThematicObject(object: IObject.IJson3DObject, isOriginalObject: boolean): void {
@@ -98,6 +99,30 @@ export class FreeGameCreatorService {
     (object as THREE.Mesh).material = new THREE.MeshPhongMaterial({
       map: texture,
     });
+  }
+
+  private setSkyBox (): void {
+    const textureLoader: THREE.TextureLoader = new THREE.TextureLoader();
+    const geometry: THREE.BoxGeometry = new THREE.BoxGeometry(2000, 2000, 2000);
+    const texture: THREE.Texture[] = [];
+    const materials: THREE.MeshBasicMaterial[] = [];
+    const skyBoxTextPath: string[] = [
+      "assets/images/lightblue/right.png",
+      "assets/images/lightblue/left.png",
+      "assets/images/lightblue/top.png",
+      "assets/images/lightblue/bot.png",
+      "assets/images/lightblue/front.png",
+      "assets/images/lightblue/back.png",
+    ];
+    for (let index: number = 0; index < 6; index++) {
+      texture.push(textureLoader.load(skyBoxTextPath[index]));
+    }
+    for (let index: number = 0; index < 6; index++) {
+      materials.push(new THREE.MeshBasicMaterial({map: texture[index], side: THREE.DoubleSide}));
+    }
+
+    const skyBox: THREE.Mesh = new THREE.Mesh(geometry, materials);
+    this.scene.add(skyBox);
   }
 
   private buildTexturePath(name: string): string {

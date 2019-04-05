@@ -50,7 +50,7 @@ export class SceneRendererService {
   protected velocity: THREE.Vector3;
   private readonly fieldOfView: number = 90;
   private readonly nearClippingPane: number = 1;
-  private readonly farClippingPane: number = 1000;
+  private readonly farClippingPane: number = 2900;
   private readonly backGroundColor: number = 0x001A33;
   private readonly cameraX: number = 0;
   private readonly cameraY: number = 0;
