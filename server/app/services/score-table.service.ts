@@ -58,7 +58,6 @@ export class ScoreTableService {
 
         try {
             const gameType: GameType = await this.databaseService.simpleGames.contains(gameName) ? GameType.SIMPLE : GameType.FREE;
-            if (gameType === GameType.FREE && !await this.databaseService.freeGames.contains(gameName)) {
             if (gameType === GameType.FREE && !(await this.databaseService.freeGames.contains(gameName))) {
                 throw new NonExistentGameError();
             }
