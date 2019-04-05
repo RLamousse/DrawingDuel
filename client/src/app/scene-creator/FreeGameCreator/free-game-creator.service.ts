@@ -103,10 +103,10 @@ export class FreeGameCreatorService {
 
   private setSkyBox (): void {
     const textureLoader: THREE.TextureLoader = new THREE.TextureLoader();
-    const geometry: THREE.BoxGeometry = new THREE.BoxGeometry(2000, 2000, 2000);
-    const texture: THREE.Texture[] = [];
+    const DIMENSION: number = 2000;
+    const geometry: THREE.BoxGeometry = new THREE.BoxGeometry(DIMENSION, DIMENSION, DIMENSION);
     const materials: THREE.MeshBasicMaterial[] = [];
-    const skyBoxTextPath: string[] = [
+    const SKY_BOX_TEXT: string[] = [
       "assets/images/lightblue/right.png",
       "assets/images/lightblue/left.png",
       "assets/images/lightblue/top.png",
@@ -114,15 +114,16 @@ export class FreeGameCreatorService {
       "assets/images/lightblue/front.png",
       "assets/images/lightblue/back.png",
     ];
-    for (let index: number = 0; index < 6; index++) {
-      texture.push(textureLoader.load(skyBoxTextPath[index]));
-    }
-    for (let index: number = 0; index < 6; index++) {
-      materials.push(new THREE.MeshBasicMaterial({map: texture[index], side: THREE.DoubleSide}));
+    for (let index: number = 0; index < geometry.faces.length; index++) {
+      materials.push(new THREE.MeshBasicMaterial({
+        map: textureLoader.load(SKY_BOX_TEXT[index]),
+        side: THREE.DoubleSide,
+      }));
     }
 
     const skyBox: THREE.Mesh = new THREE.Mesh(geometry, materials);
-    this.scene.add(skyBox);
+    this.scene.add(skyBox.clone());
+    this.modifiedScene.add(skyBox.clone());
   }
 
   private buildTexturePath(name: string): string {
