@@ -116,7 +116,7 @@ export class HotelRoomService {
             sendToRoom(SocketEvent.READY, undefined, room.id, socket);
         });
 
-        socket.in(room.id).on(SocketEvent.READY, (message: WebsocketMessage) => {
+        socket.in(room.id).on(SocketEvent.READY, () => {
             room.handleReady(socket.id);
         });
 
