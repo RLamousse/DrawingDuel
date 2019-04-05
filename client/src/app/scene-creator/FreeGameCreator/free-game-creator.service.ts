@@ -19,6 +19,8 @@ export class FreeGameCreatorService {
   private objects: THREE.Mesh[];
   private modifiedObjects: THREE.Mesh[];
 
+  private readonly SKY_BOX_NAME: string = "skyBox";
+
   public constructor() {
     this.formService = new Form3DService();
     this.objects = [];
@@ -122,8 +124,7 @@ export class FreeGameCreatorService {
     }
 
     const skyBox: THREE.Mesh = new THREE.Mesh(geometry, materials);
-    const SKY_BOX_NAME: string = "skyBox";
-    skyBox.name = SKY_BOX_NAME;
+    skyBox.name = this.SKY_BOX_NAME;
     this.scene.add(skyBox.clone());
     this.modifiedScene.add(skyBox.clone());
   }
@@ -134,8 +135,7 @@ export class FreeGameCreatorService {
     const material: THREE.MeshBasicMaterial = new THREE.MeshBasicMaterial({side: THREE.DoubleSide});
     material.visible = false;
     const skyBox: THREE.Mesh = new THREE.Mesh(geometry, material);
-    const SKY_BOX_NAME: string = "skyBox";
-    skyBox.name = SKY_BOX_NAME;
+    skyBox.name = this.SKY_BOX_NAME;
     this.scene.add(skyBox.clone());
     this.modifiedScene.add(skyBox.clone());
   }
