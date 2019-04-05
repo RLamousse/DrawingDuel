@@ -9,7 +9,7 @@ import {
 } from "../../../../../common/communication/messages/message";
 import {SocketEvent} from "../../../../../common/communication/socket-events";
 import {NonExistentGameError} from "../../../../../common/errors/database.errors";
-import {GameRoomCreationError, NonExistentRoomError} from "../../../../../common/errors/services.errors";
+import {GameRoomCreationError, GameRoomError, NonExistentRoomError} from "../../../../../common/errors/services.errors";
 import {IInteractionResponse} from "../../../../../common/model/rooms/interaction";
 import {IRoomInfo} from "../../../../../common/model/rooms/room-info";
 import {IGameRoom} from "../../../model/room/game-room";
@@ -61,7 +61,7 @@ export class HotelRoomService {
 
             this.checkInClient(socket, room);
         } catch (error) {
-            throw new GameRoomCreationError();
+            return Promise.reject(new GameRoomCreationError());
         }
     }
 
@@ -134,7 +134,7 @@ export class HotelRoomService {
             this.registerGameRoomHandlers(socket, room);
             this.pushRoomsToClients(socket);
         } catch (e) {
-            socket.emit(SocketEvent.ROOM_ERROR, e);
+            socket.emit(SocketEvent.ROOM_ERROR, new GameRoomError());
         }
     }
 

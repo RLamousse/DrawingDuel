@@ -7,7 +7,8 @@ import {anyString, capture, instance, mock, spy, when} from "ts-mockito";
 import {IMock, Mock} from "typemoq";
 import {createWebsocketMessage, PlayerCountMessage, WebsocketMessage} from "../../../../../common/communication/messages/message";
 import {SocketEvent} from "../../../../../common/communication/socket-events";
-import {NonExistentGameError} from "../../../../../common/errors/database.errors";
+import {DatabaseError, NonExistentGameError} from "../../../../../common/errors/database.errors";
+import {GameRoomCreationError} from "../../../../../common/errors/services.errors";
 import {IRoomInfo} from "../../../../../common/model/rooms/room-info";
 import {IGameRoom} from "../../../model/room/game-room";
 import {DataBaseService} from "../../data-base.service";
@@ -15,7 +16,7 @@ import {FreeGamesCollectionService} from "../../db/free-games.collection.service
 import {SimpleGamesCollectionService} from "../../db/simple-games.collection.service";
 import {HotelRoomService} from "./hotel-room.service";
 
-describe("A service to manage game rooms", () => {
+describe.only("A service to manage game rooms", () => {
 
     type Callback = () => void;
     const EQUAL_RATIO: number = 0.5;
@@ -112,6 +113,32 @@ describe("A service to manage game rooms", () => {
             socketClient.emit(socketEvent, message);
         };
 
+    const createGameRoom:
+        (hotelRoomService: HotelRoomService, gameName: string) => Promise<IGameRoom> =
+        (hotelRoomService: HotelRoomService, gameName: string) => {
+            return new Promise((resolve: (gameRoom: IGameRoom) => void) => {
+                const hotelRoomServiceSpy: HotelRoomService = spy(hotelRoomService);
+
+                testSocketCall(
+                    SocketEvent.CREATE,
+                    () => {
+                        hotelRoomService.createGameRoom(serverSocket, gameName, PlayerCountMessage.SOLO)
+                            .then(() => {
+                                const createdRoom: IGameRoom | undefined = Array.from(hotelRoomService["_rooms"].values())
+                                    .find((room: IGameRoom) => room.gameName === gameName);
+                                assert.exists(createdRoom);
+                                // TODO check room assert.isNotEmpty(serverSocket.rooms);
+                                expect(Array.from(hotelRoomService["_sockets"].keys()))
+                                    .to.contain(serverSocket);
+                                assert.isNotEmpty(capture(hotelRoomServiceSpy["registerGameRoomHandlers"]).first());
+                                resolve(createdRoom as IGameRoom);
+                            });
+                    },
+                    createWebsocketMessage(PlayerCountMessage.SOLO),
+                );
+            });
+        };
+
     beforeEach(() => {
         server = io(PITBULL_NUMBER);
         server.on("connect", (socket: Socket) => serverSocket = socket);
@@ -168,7 +195,7 @@ describe("A service to manage game rooms", () => {
             });
         });
 
-        it("should create a simpleGameRoom and check in the client", (done: Callback) => {
+        it("should create a simpleGameRoom and check in the client", async () => {
             const gameName: string = "Motel";
             const hotelRoomService: HotelRoomService = initHotelRoomService(() => {
                 when(simpleGamesCollectionService.contains(gameName))
@@ -179,27 +206,10 @@ describe("A service to manage game rooms", () => {
                     .thenResolve(false);
             });
 
-            const hotelRoomServiceSpy: HotelRoomService = spy(hotelRoomService);
-
-            testSocketCall(
-                SocketEvent.CREATE,
-                () => {
-                    hotelRoomService.createGameRoom(serverSocket, gameName, PlayerCountMessage.SOLO)
-                        .then(() => {
-                            const createdRoom: IGameRoom | undefined = Array.from(hotelRoomService["_rooms"].values())
-                                .find((room: IGameRoom) => room.gameName === gameName);
-                            assert.exists(createdRoom);
-                            // TODO check room assert.isNotEmpty(serverSocket.rooms);
-                            expect(Array.from(hotelRoomService["_sockets"].keys()))
-                                .to.contain(serverSocket);
-                            assert.isNotEmpty(capture(hotelRoomServiceSpy["registerGameRoomHandlers"]).first());
-                            done();
-                        });
-                },
-                createWebsocketMessage(PlayerCountMessage.SOLO));
+            return createGameRoom(hotelRoomService, gameName);
         });
 
-        it("should create a freeGameRoom and check in the client", (done: Callback) => {
+        it("should create a freeGameRoom and check in the client", async () => {
             const gameName: string = "Holiday Inn";
             const hotelRoomService: HotelRoomService = initHotelRoomService(() => {
                 when(simpleGamesCollectionService.contains(gameName))
@@ -210,24 +220,25 @@ describe("A service to manage game rooms", () => {
                     .thenResolve(createFreeGameMock(gameName));
             });
 
-            const hotelRoomServiceSpy: HotelRoomService = spy(hotelRoomService);
+            return createGameRoom(hotelRoomService, gameName);
+        });
 
-            testSocketCall(
-                SocketEvent.CREATE,
-                () => {
-                    hotelRoomService.createGameRoom(serverSocket, gameName, PlayerCountMessage.SOLO)
-                        .then(() => {
-                            const createdRoom: IGameRoom | undefined = Array.from(hotelRoomService["_rooms"].values())
-                                .find((room: IGameRoom) => room.gameName === gameName);
-                            assert.exists(createdRoom);
-                            // TODO check room assert.isNotEmpty(serverSocket.rooms);
-                            expect(Array.from(hotelRoomService["_sockets"].keys()))
-                                .to.contain(serverSocket);
-                            assert.isNotEmpty(capture(hotelRoomServiceSpy["registerGameRoomHandlers"]).first());
-                            done();
-                        });
-                },
-                createWebsocketMessage(PlayerCountMessage.SOLO));
+        it("should reject with a GameRoomCreationError on DB error", (done) => {
+            const gameName: string = "This DB is a... fireball🎺🎺🎺";
+            const hotelRoomService: HotelRoomService = initHotelRoomService(() => {
+                when(simpleGamesCollectionService.contains(gameName))
+                    .thenThrow(new DatabaseError());
+            });
+
+            testSocketCall(SocketEvent.CREATE, () => {
+                hotelRoomService.createGameRoom(serverSocket, gameName, PlayerCountMessage.SOLO)
+                    .then(() => fail())
+                    .catch((error: GameRoomCreationError) => {
+                        expect(error.message)
+                            .to.eq(GameRoomCreationError.GAME_ROOM_CREATION_ERROR_MESSAGE);
+                        done();
+                    });
+            });
         });
     });
 
