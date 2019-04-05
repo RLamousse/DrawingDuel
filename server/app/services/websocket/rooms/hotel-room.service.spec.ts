@@ -3,16 +3,12 @@ import {assert, expect} from "chai";
 import * as io from "socket.io";
 import {Server, Socket} from "socket.io";
 import {connect} from "socket.io-client";
-import {anything, anyString, instance, mock, reset, spy, verify, when} from "ts-mockito";
+import {anyString, anything, instance, mock, reset, spy, verify, when} from "ts-mockito";
 import {IMock, Mock} from "typemoq";
-import {
-    createWebsocketMessage,
-    PlayerCountMessage,
-    RoomInteractionMessage,
-} from "../../../../../common/communication/messages/message";
+import {createWebsocketMessage, PlayerCountMessage, RoomInteractionMessage,} from "../../../../../common/communication/messages/message";
 import {SocketEvent} from "../../../../../common/communication/socket-events";
 import {DatabaseError, NonExistentGameError} from "../../../../../common/errors/database.errors";
-import {GameRoomCreationError, NonExistentRoomError, NoDifferenceAtPointError} from "../../../../../common/errors/services.errors";
+import {GameRoomCreationError, NoDifferenceAtPointError, NonExistentRoomError} from "../../../../../common/errors/services.errors";
 import {IFreeGame} from "../../../../../common/model/game/free-game";
 import {ISimpleGame} from "../../../../../common/model/game/simple-game";
 import {ORIGIN} from "../../../../../common/model/point";
@@ -298,14 +294,16 @@ describe("A service to manage game rooms", () => {
                     .thenCall(() => done());
             });
 
-            it.skip("should notify the (socket) room on (game) room ready", (done: Callback) => {
+            it("should notify the (socket) room on (game) room ready", (done: Callback) => {
                 const gameName: string = "It's going down, I'm yelling timber!";
-                const hotelRoomService: HotelRoomService = initHotelRoomService();
                 const simpleGameRoom: SimpleGameRoom = new SimpleGameRoom("room", createSimpleGameMock(gameName));
+                const hotelRoomService: HotelRoomService = initHotelRoomService(() => {
+                    when(radioTowerService.sendToRoom(SocketEvent.READY, undefined, simpleGameRoom.id))
+                        .thenCall(() => done());
+                });
 
                 hotelRoomService["registerGameRoomHandlers"](serverSocket, simpleGameRoom);
                 simpleGameRoom["_onReady"]();
-                fail();
             });
         });
 
