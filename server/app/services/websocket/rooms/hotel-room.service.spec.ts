@@ -30,7 +30,7 @@ describe("A service to manage game rooms", () => {
 
     type Callback = () => void;
     const EQUAL_RATIO: number = 0.5;
-    const PITBULL_NUMBER: number = 305;
+    const PITBULL_NUMBER: number = 30569; // MR 305 😏
     const SOCKET_URL: string = `http://localhost:${PITBULL_NUMBER}`;
 
     let server: Server;
