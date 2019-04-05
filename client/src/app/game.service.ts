@@ -1,7 +1,6 @@
-import {HttpClient} from "@angular/common/http";
 import {Injectable} from "@angular/core";
-import {of, Observable} from "rxjs";
-import {catchError} from "rxjs/operators";
+import Axios, {AxiosResponse} from "axios";
+import {from, Observable} from "rxjs";
 import {
   GAME_MANAGER_FREE,
   GAME_MANAGER_SIMPLE,
@@ -23,7 +22,6 @@ import {IScene} from "./scene-interface";
 export class GameService {
 
   public constructor(
-    private http: HttpClient,
     private photoService: FreeGamePhotoService,
     private freeGameCreatorService: FreeGameCreatorService,
   ) {
@@ -34,13 +32,6 @@ export class GameService {
   public readonly SIMPLE_GAME_BASE_URL: string = SERVER_BASE_URL + GAME_MANAGER_SIMPLE;
   public readonly FREE_GAME_BASE_URL: string = SERVER_BASE_URL + GAME_MANAGER_FREE;
   public readonly RESET_SCORES_URL: string = SERVER_BASE_URL + RESET_SCORES;
-
-  private readonly GET_SIMPLEGAME_ERROR: string = "get simple game from server error";
-  private readonly GET_FREEGAME_ERROR: string = "get free game from server error";
-  private readonly GET_FREEGAME_BY_NAME_ERROR: string = "get free game by name from server error";
-  private readonly HIDE_SIMPLE_GAME_BY_NAME: string = "hide simple game from server error";
-  private readonly HIDE_FREE_GAME_BY_NAME: string = "hide free game from server error";
-  private readonly RESET_SCORES_ERROR: string = "reset scores error";
 
   private convertTimeScores(seconds: number): number {
     const COEFFICIENT: number = 0.6;
@@ -102,57 +93,32 @@ export class GameService {
   }
 
   public getSimpleGames(): Observable<ISimpleGame[]> {
-    return this.http.get<ISimpleGame[]>(this.SIMPLE_GAME_BASE_URL).pipe(
-      catchError(this.handleError<ISimpleGame[]>(this.GET_SIMPLEGAME_ERROR)),
-    );
+    return from(Axios.get<ISimpleGame[]>(this.SIMPLE_GAME_BASE_URL).then((value: AxiosResponse<ISimpleGame[]>) => value.data));
   }
 
   public getFreeGames(): Observable<IFreeGame[]> {
-    return this.http.get<IFreeGame[]>(this.FREE_GAME_BASE_URL).pipe(
-      catchError(this.handleError<IFreeGame[]>(this.GET_FREEGAME_ERROR)),
-    );
+    return from(Axios.get<IFreeGame[]>(this.FREE_GAME_BASE_URL).then((value: AxiosResponse<IFreeGame[]>) => value.data));
   }
 
   public getFreeGameByName(gameName: string): Observable<IFreeGame> {
-    return this.http.get<IFreeGame>(this.FREE_GAME_BASE_URL + gameName + "/").pipe(
-      catchError(this.handleError<IFreeGame>(this.GET_FREEGAME_BY_NAME_ERROR)),
-    );
+    return from(
+      Axios.get<IFreeGame>(this.FREE_GAME_BASE_URL + gameName).then((value: AxiosResponse<IFreeGame>) => value.data));
   }
 
   public hideSimpleByName(gameName: string): void {
-    this.http.put(this.SIMPLE_GAME_BASE_URL + gameName, {toBeDeleted: true }).pipe(
-      catchError(this.handleError<IFreeGame>(this.HIDE_SIMPLE_GAME_BY_NAME)),
-    ).subscribe();
-
+    Axios.put(this.SIMPLE_GAME_BASE_URL + gameName, {toBeDeleted: true }).catch((e) => { throw e; });
   }
 
   public hideFreeByName(gameName: string): void {
-    this.http.put(this.FREE_GAME_BASE_URL + gameName, {toBeDeleted: true }).pipe(
-      catchError(this.handleError<IFreeGame>(this.HIDE_FREE_GAME_BY_NAME)),
-    ).subscribe();
+    Axios.put(this.FREE_GAME_BASE_URL + gameName, {toBeDeleted: true }).catch((e) => { throw e; });
 
   }
 
   public resetGameTime(gameName: string): void {
-    this.http.put(this.RESET_SCORES_URL + gameName, null).pipe(
-    catchError(this.handleError<IFreeGame>(this.RESET_SCORES_ERROR)),
-    ).subscribe();
+    Axios.put(this.RESET_SCORES_URL + gameName, null).catch((e) => { throw e; });
   }
   public async loadCheatData(gameName: string): Promise<IJson3DObject[]> {
-    return new Promise<IJson3DObject[]>((resolve) => {
-
-      this.http.get<IFreeGame>(
-        this.FREE_GAME_BASE_URL + gameName).subscribe((value: IFreeGame) => {
-        resolve(value.scenes.differentObjects);
-      });
-    });
-  }
-
-  private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {
-
-    return (error: Error): Observable<T> => {
-      return of(result as T);
-    };
+    return Axios.get<IFreeGame>(this.FREE_GAME_BASE_URL + gameName).then((value) => value.data.scenes.differentObjects);
   }
 
   public async updateFreeGameImages(): Promise<void> {

@@ -2,6 +2,7 @@ import {AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit, V
 import {ActivatedRoute} from "@angular/router";
 import {SceneGenerationError} from "../../../../common/errors/services.errors";
 import {IFreeGame} from "../../../../common/model/game/free-game";
+import {GameType} from "../../../../common/model/game/game";
 import {IPoint} from "../../../../common/model/point";
 import {X_FACTOR, Y_FACTOR} from "../../../../common/util/util";
 import {GameService} from "../game.service";
@@ -34,6 +35,7 @@ export class SceneCreatorComponent implements AfterViewInit, OnInit, OnDestroy {
   }
 
   protected gameName: string;
+  protected FREE_GAME_TYPE: GameType = GameType.FREE;
   protected cursorEnabled: boolean = true;
 
   private get originalContainer(): HTMLDivElement {

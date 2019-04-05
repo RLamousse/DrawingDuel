@@ -1,25 +1,25 @@
-import { HttpClientTestingModule, HttpTestingController, TestRequest } from "@angular/common/http/testing";
-import { getTestBed, TestBed } from "@angular/core/testing";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { TestBed } from "@angular/core/testing";
 import { BrowserModule } from "@angular/platform-browser";
+import Axios from "axios";
+import AxiosAdapter from "axios-mock-adapter";
+// tslint:disable-next-line:no-duplicate-imports Weird interaction between singletons and interface (olivier st-o approved)
+import MockAdapter from "axios-mock-adapter";
+import * as HttpStatus from "http-status-codes";
+import {SERVER_BASE_URL} from "../../../common/communication/routes";
 import { FormPostService } from "./form-post.service";
 
 describe("FormPostService", () => {
-  let injector: TestBed;
-  let httpMock: HttpTestingController;
+  let axiosMock: MockAdapter;
 
   beforeEach(() => {
+    axiosMock = new AxiosAdapter(Axios);
     TestBed.configureTestingModule({
       imports: [
         BrowserModule,
         HttpClientTestingModule,
       ],
     });
-    injector = getTestBed();
-    httpMock = injector.get(HttpTestingController);
-  });
-
-  afterEach(() => {
-    httpMock.verify();
   });
 
   it("should be created", () => {
@@ -39,9 +39,13 @@ describe("FormPostService", () => {
       },
 
     };
+
+    axiosMock.onPost(SERVER_BASE_URL)
+      .reply(HttpStatus.INTERNAL_SERVER_ERROR, errorSent);
+
     service.submitForm("", {}).subscribe(
       (data) => {
-        //
+        done.fail();
       },
       (error: Error) => {
         expect(error.name).toEqual("Backend Error");
@@ -49,19 +53,17 @@ describe("FormPostService", () => {
         done();
       },
     );
-    const req: TestRequest = httpMock.expectOne("http://localhost:3000");
-    req.error(errorSent as ErrorEvent);
-    expect(req.request.method).toBe("POST");
   });
 
   it("should send a not undefined error message with Network Error", async (done) => {
     const service: FormPostService = TestBed.get(FormPostService);
     // tslint:disable-next-line:typedef
-    const errorSent = new ErrorEvent("Maxime");
+    axiosMock.onPost(SERVER_BASE_URL)
+      .networkError();
 
     service.submitForm("", {}).subscribe(
       (data) => {
-        //
+        done.fail();
       },
       (error: Error) => {
         expect(error.name).toEqual("Network Error");
@@ -69,8 +71,5 @@ describe("FormPostService", () => {
         done();
       },
     );
-    const req: TestRequest = httpMock.expectOne("http://localhost:3000");
-    req.error(errorSent as ErrorEvent);
-    expect(req.request.method).toBe("POST");
   });
 });

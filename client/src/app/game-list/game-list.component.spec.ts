@@ -1,4 +1,3 @@
-import {HttpClientModule} from "@angular/common/http";
 import {CUSTOM_ELEMENTS_SCHEMA} from "@angular/core";
 import {ComponentFixture, TestBed} from "@angular/core/testing";
 import {FormsModule} from "@angular/forms";
@@ -47,7 +46,7 @@ describe("GameListComponent", () => {
     TestBed.configureTestingModule(
       {
         declarations: [GameListComponent],
-        imports: [HttpClientModule, FormsModule],
+        imports: [FormsModule],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
           {provide: GameService, useValue: mockedGameService},
