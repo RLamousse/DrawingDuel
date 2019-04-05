@@ -1,7 +1,10 @@
 import {Injectable} from "@angular/core";
 import {
-  createWebsocketMessage, PlayerCountMessage, RoomCheckInMessage,
-  RoomCreationMessage, RoomMessage,
+  createWebsocketMessage,
+  PlayerCountMessage,
+  RoomCheckInMessage,
+  RoomCreationMessage,
+  RoomMessage,
   WebsocketMessage
 } from "../../../../../common/communication/messages/message";
 import {SocketEvent} from "../../../../../common/communication/socket-events";
@@ -14,19 +17,38 @@ import {UNListService} from "../../username.service";
 })
 export class RoomService {
 
+  private roomWatchers: ((value: IRoomInfo[]) => void)[];
+  private _rooms: IRoomInfo[];
+
   public constructor(private socket: SocketService) {
+    this.roomWatchers = [];
+    this._rooms = [];
+    this.handleFetchRooms = this.handleFetchRooms.bind(this);
+    this.triggerFetchRooms();
+    this.listenToRoomPush();
   }
 
-  public fetchRooms (gameName: string, callback: (value: boolean) => void): void {
-    this.socket.onEvent<IRoomInfo[]>(SocketEvent.FETCH).subscribe((message: WebsocketMessage<IRoomInfo[]>) => {
-      this.handleRoomAvailability(message, gameName, callback);
-    });
+  private handleFetchRooms (message: WebsocketMessage<IRoomInfo[]>): void {
+    this._rooms = message.body;
+    this.notifyWatchers();
+  }
+
+  private notifyWatchers (): void {
+    this.roomWatchers.forEach((fn) => fn(this._rooms));
+  }
+
+  public subscribeToFetchRooms (callback: (value: IRoomInfo[]) => void): void {
+    this.roomWatchers.push(callback);
+    callback(this._rooms);
+  }
+
+  private triggerFetchRooms (): void {
+    this.socket.onEvent<IRoomInfo[]>(SocketEvent.FETCH).subscribe(this.handleFetchRooms);
     this.socket.send(SocketEvent.FETCH, createWebsocketMessage());
   }
 
-  private handleRoomAvailability(value: WebsocketMessage<IRoomInfo[]>, gameName: string, callback: (value: boolean) => void): void {
-    const availableRoom: IRoomInfo | undefined = value.body.find((x) => x.gameName === gameName && x.vacant);
-    callback(!!availableRoom);
+  private listenToRoomPush (): void {
+    this.socket.onEvent<IRoomInfo[]>(SocketEvent.PUSH_ROOMS).subscribe(this.handleFetchRooms);
   }
 
   public createRoom(gameName: string, playerCount: PlayerCountMessage): void {

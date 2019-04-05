@@ -1,13 +1,14 @@
-import {Component, Input, OnInit} from "@angular/core";
+import {Component, Input, OnDestroy, OnInit} from "@angular/core";
 import {MatDialog, MatDialogConfig} from "@angular/material";
 import {Router} from "@angular/router";
+import {PlayerCountMessage} from "../../../../../common/communication/messages/message";
 import {ComponentNavigationError} from "../../../../../common/errors/component.errors";
 import {IRecordTime} from "../../../../../common/model/game/record-time";
+import {IRoomInfo} from "../../../../../common/model/rooms/room-info";
 import {DeleteGameFormComponent} from "./delete-game-form/delete-game-form.component";
 import {GameButtonOptions} from "./game-button-enum";
 import {ResetGameFormComponent} from "./reset-game-form/reset-game-form.component";
 import {RoomService} from "./room.service";
-import {PlayerCountMessage} from "../../../../../common/communication/messages/message";
 
 @Component({
   selector: "app-game",
@@ -15,7 +16,7 @@ import {PlayerCountMessage} from "../../../../../common/communication/messages/m
   styleUrls: ["./game.component.css"],
 })
 
-export class GameComponent implements OnInit {
+export class GameComponent implements OnInit, OnDestroy {
 
   public constructor(private router: Router,
                      private dialog: MatDialog,
@@ -34,7 +35,12 @@ export class GameComponent implements OnInit {
   @Input() public isSimpleGame: boolean;
 
   public ngOnInit(): void {
-    this.roomService.fetchRooms(this.gameName, this.handleRoomAvailability);
+    this.roomService.subscribeToFetchRooms(this.handleRoomAvailability);
+    this.handleRoomAvailability = this.handleRoomAvailability.bind(this);
+  }
+
+  public ngOnDestroy(): void {
+    //
   }
 
   protected leftButtonClick(): void {
@@ -49,20 +55,21 @@ export class GameComponent implements OnInit {
     }
   }
 
-  private handleRoomAvailability(value: boolean): void {
-    this.rightButton = value ? GameButtonOptions.JOIN : GameButtonOptions.CREATE;
-  }
-
   protected rightButtonClick(): void {
-    if (this.rightButton === GameButtonOptions.JOIN) {
-      this.roomService.checkInRoom(this.gameName);
-      this.navigateAwait();
+    if (this.rightButton === GameButtonOptions.CREATE) {
+      this.roomService.createRoom(this.gameName, PlayerCountMessage.MULTI);
+      // this.navigateAwait();
     } else if (this.rightButton === GameButtonOptions.REINITIALIZE) {
       const dialogConfig: MatDialogConfig = new MatDialogConfig();
       dialogConfig.autoFocus = true;
       dialogConfig.data = {gameName: this.gameName, isSimpleGame: this.isSimpleGame};
       this.dialog.open(ResetGameFormComponent, dialogConfig).afterClosed().subscribe(() => window.location.reload());
     }
+  }
+
+  private handleRoomAvailability(rooms: IRoomInfo[]): void {
+    const availableRoom: IRoomInfo | undefined = rooms.find((x) => x.gameName === this.gameName && x.vacant);
+    this.rightButton = availableRoom ? GameButtonOptions.JOIN : GameButtonOptions.CREATE;
   }
 
   private navigatePlayView(): void {
@@ -86,12 +93,12 @@ export class GameComponent implements OnInit {
       });
   }
 
-  private navigateAwait(): void {
-    this.router.navigate(["/await-view/"], {queryParams: {
-      gameName: this.gameName, gameType: this.isSimpleGame},
-    })
-      .catch(() => {
-       throw new ComponentNavigationError();
-     });
-  }
+  // private navigateAwait(): void {
+  //   this.router.navigate(["/await-view/"], {queryParams: {
+  //     gameName: this.gameName, gameType: this.isSimpleGame},
+  //   })
+  //     .catch(() => {
+  //      throw new ComponentNavigationError();
+  //    });
+  // }
 }
