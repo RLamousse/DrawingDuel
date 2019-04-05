@@ -13,6 +13,7 @@ import {ChatWebsocketActionService} from "../services/websocket/chat-websocket-a
 import {CheckUserWebsocketActionService} from "../services/websocket/check-user-websocket-action.service";
 import {DeleteWebsocketActionService} from "../services/websocket/delete-websocket-action.service";
 import {DummyWebsocketActionService} from "../services/websocket/dummy-websocket-action.service";
+import {RadioTowerService} from "../services/websocket/radio-tower.service";
 import {HotelRoomService} from "../services/websocket/rooms/hotel-room.service";
 import {UpdateGameScoresWebsocketActionService} from "../services/websocket/update-game-scores-websocket-action.service";
 import types from "../types";
@@ -29,6 +30,7 @@ export class WebsocketController {
                         @inject(types.CheckUserWebsocketActionService) private userNameService: CheckUserWebsocketActionService,
                         @inject(types.DeleteWebsocketActionService) private deleteAction: DeleteWebsocketActionService,
                         @inject(types.HotelRoomService) private hotelRoomService: HotelRoomService,
+                        @inject(types.RadioTowerService) private radioTower: RadioTowerService,
     ) {
         this.sockets = new Map();
         this.registerSocket = this.registerSocket.bind(this);
@@ -94,7 +96,7 @@ export class WebsocketController {
             const message: WebsocketMessage<string> = createWebsocketMessage(
                 format(new Date(), "HH:mm:ss") + this.chatAction.getDisconnectionMessage(username as string),
             );
-            socket.broadcast.emit(SocketEvent.USER_DISCONNECTION, message);
+            this.radioTower.broadcast(SocketEvent.USER_DISCONNECTION, message);
         }
     }
 
@@ -104,7 +106,7 @@ export class WebsocketController {
             const message: WebsocketMessage<string> = createWebsocketMessage(
                 format(new Date(), "HH:mm:ss") + this.chatAction.getConnectionMessage(username),
             );
-            socket.broadcast.emit(SocketEvent.USER_CONNECTION, message);
+            this.radioTower.broadcast(SocketEvent.USER_CONNECTION, message);
         }
     }
 }

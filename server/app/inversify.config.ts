@@ -25,6 +25,7 @@ import {ChatWebsocketActionService} from "./services/websocket/chat-websocket-ac
 import {CheckUserWebsocketActionService} from "./services/websocket/check-user-websocket-action.service";
 import {DeleteWebsocketActionService} from "./services/websocket/delete-websocket-action.service";
 import {DummyWebsocketActionService} from "./services/websocket/dummy-websocket-action.service";
+import {RadioTowerService} from "./services/websocket/radio-tower.service";
 import {HotelRoomService} from "./services/websocket/rooms/hotel-room.service";
 import {UpdateGameScoresWebsocketActionService} from "./services/websocket/update-game-scores-websocket-action.service";
 import Types from "./types";
@@ -65,6 +66,7 @@ container.bind(Types.CheckUserWebsocketActionService).to(CheckUserWebsocketActio
 container.bind(Types.UpdateGameScoresWebsocketActionService).to(UpdateGameScoresWebsocketActionService);
 container.bind(Types.DeleteWebsocketActionService).to(DeleteWebsocketActionService);
 container.bind(Types.HotelRoomService).to(HotelRoomService);
+container.bind(Types.RadioTowerService).to(RadioTowerService).inSingletonScope();
 
 container.bind(Types.DiffValidator3DController).to(DiffValidator3DController);
 container.bind(Types.DiffValidator3DService).to(DiffValidator3DService);

@@ -2,6 +2,7 @@ import {Component} from "@angular/core";
 import {MatDialog, MatDialogConfig} from "@angular/material";
 import {Create3DGameComponent} from "../create3-dgame/create3-dgame.component";
 import {SimpleGameCreatorFormComponent} from "../simple-game-creator-form/simple-game-creator-form.component";
+import {GameButtonOptions} from "../game-list/game/game-button-enum";
 
 @Component({
   selector: "app-vue-admin",
@@ -12,8 +13,8 @@ export class VueAdminComponent {
 
   public constructor(private dialog: MatDialog) { }
 
-  protected readonly rightButton: string = "reinitialiser";
-  protected readonly leftButton: string = "supprimer";
+  protected readonly rightButton: string = GameButtonOptions.REINITIALIZE;
+  protected readonly leftButton: string = GameButtonOptions.DELETE;
 
   protected createSimpleGame(): void {
     const dialogConfig: MatDialogConfig = new MatDialogConfig();

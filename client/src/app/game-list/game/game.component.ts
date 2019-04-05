@@ -56,29 +56,44 @@ export class GameComponent implements OnInit, OnDestroy {
   }
 
   protected rightButtonClick(): void {
-    if (this.rightButton === GameButtonOptions.CREATE) {
-      this.roomService.createRoom(this.gameName, PlayerCountMessage.MULTI);
-      // this.navigateAwait();
-    } else if (this.rightButton === GameButtonOptions.REINITIALIZE) {
+    if (this.rightButton === GameButtonOptions.REINITIALIZE) {
       const dialogConfig: MatDialogConfig = new MatDialogConfig();
       dialogConfig.autoFocus = true;
       dialogConfig.data = {gameName: this.gameName, isSimpleGame: this.isSimpleGame};
       this.dialog.open(ResetGameFormComponent, dialogConfig).afterClosed().subscribe(() => window.location.reload());
+    } else {
+      this.handleGameJoin();
     }
+  }
+
+  private handleGameJoin(): void {
+    if (this.rightButton === GameButtonOptions.CREATE) {
+      this.roomService.createRoom(this.gameName, PlayerCountMessage.MULTI);
+    } else if (this.rightButton === GameButtonOptions.JOIN) {
+      this.roomService.checkInRoom(this.gameName);
+    }
+    this.navigateAwait();
   }
 
   private handleRoomAvailability(rooms: IRoomInfo[]): void {
     const availableRoom: IRoomInfo | undefined = rooms.find((x) => x.gameName === this.gameName && x.vacant);
-    this.rightButton = availableRoom ? GameButtonOptions.JOIN : GameButtonOptions.CREATE;
+    if (this.rightButton !== GameButtonOptions.REINITIALIZE) {
+      this.rightButton = availableRoom ? GameButtonOptions.JOIN : GameButtonOptions.CREATE;
+    }
   }
 
   private navigatePlayView(): void {
-   this.router.navigate(["/play-view/"], {queryParams: {
-      gameName: this.gameName, originalImage: this.originalImage, modifiedImage: this.modifiedImage, isSimpleGame: this.isSimpleGame },
+    this.router.navigate(["/play-view/"], {
+      queryParams: {
+        gameName: this.gameName,
+        originalImage: this.originalImage,
+        modifiedImage: this.modifiedImage,
+        isSimpleGame: this.isSimpleGame
+      },
     })
-     .catch(() => {
-       throw new ComponentNavigationError();
-     });
+      .catch(() => {
+        throw new ComponentNavigationError();
+      });
   }
 
   private navigateFreeView(): void {
@@ -93,12 +108,14 @@ export class GameComponent implements OnInit, OnDestroy {
       });
   }
 
-  // private navigateAwait(): void {
-  //   this.router.navigate(["/await-view/"], {queryParams: {
-  //     gameName: this.gameName, gameType: this.isSimpleGame},
-  //   })
-  //     .catch(() => {
-  //      throw new ComponentNavigationError();
-  //    });
-  // }
+  private navigateAwait(): void {
+    this.router.navigate(["/await-view/"], {
+      queryParams: {
+        gameName: this.gameName, gameType: this.isSimpleGame
+      },
+    })
+      .catch(() => {
+        throw new ComponentNavigationError();
+      });
+  }
 }

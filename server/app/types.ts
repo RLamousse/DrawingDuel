@@ -27,4 +27,5 @@ export default  {
         DeleteWebsocketActionService: Symbol("DeleteWebsocketActionService"),
         UpdateGameScoresWebsocketActionService: Symbol("UpdateGameScoresWebsocketActionService"),
         HotelRoomService: Symbol("HotelRoomService"),
+        RadioTowerService: Symbol("RadioTowerService"),
 };
