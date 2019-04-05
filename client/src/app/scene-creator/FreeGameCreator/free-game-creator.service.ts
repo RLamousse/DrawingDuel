@@ -65,7 +65,7 @@ export class FreeGameCreatorService {
     for (const j of primitiveScenes.modifiedObjects) {
       this.generateThematicObject(j, false);
     }
-    this.setSkyBox();
+    this.setSkyBoxThematic();
   }
 
   private generateThematicObject(object: IObject.IJson3DObject, isOriginalObject: boolean): void {
@@ -101,7 +101,7 @@ export class FreeGameCreatorService {
     });
   }
 
-  private setSkyBox (): void {
+  private setSkyBoxThematic (): void {
     const textureLoader: THREE.TextureLoader = new THREE.TextureLoader();
     const DIMENSION: number = 2000;
     const geometry: THREE.BoxGeometry = new THREE.BoxGeometry(DIMENSION, DIMENSION, DIMENSION);
@@ -122,6 +122,20 @@ export class FreeGameCreatorService {
     }
 
     const skyBox: THREE.Mesh = new THREE.Mesh(geometry, materials);
+    const SKY_BOX_NAME: string = "skyBox";
+    skyBox.name = SKY_BOX_NAME;
+    this.scene.add(skyBox.clone());
+    this.modifiedScene.add(skyBox.clone());
+  }
+
+  private setSkyBoxGeometric(): void {
+    const DIMENSION: number = 2000;
+    const geometry: THREE.BoxGeometry = new THREE.BoxGeometry(DIMENSION, DIMENSION, DIMENSION);
+    const material: THREE.MeshBasicMaterial = new THREE.MeshBasicMaterial({side: THREE.DoubleSide});
+    material.visible = false;
+    const skyBox: THREE.Mesh = new THREE.Mesh(geometry, material);
+    const SKY_BOX_NAME: string = "skyBox";
+    skyBox.name = SKY_BOX_NAME;
     this.scene.add(skyBox.clone());
     this.modifiedScene.add(skyBox.clone());
   }
@@ -141,6 +155,7 @@ export class FreeGameCreatorService {
       this.scene.add(object);
       this.objects.push(object);
     }
+    this.setSkyBoxGeometric();
   }
 
   private generateModifiedScene(primitiveScenes: IObject.IScenesJSON): void {
