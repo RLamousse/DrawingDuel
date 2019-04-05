@@ -35,7 +35,6 @@ export abstract class AbstractGameRoom<T extends IGame, U extends IGameState> im
     }
 
     public checkOut(clientId: string): void {
-        this._ongoing = false;
         this._connectedPlayers.delete(clientId);
         this._gameStates.delete(clientId);
     }

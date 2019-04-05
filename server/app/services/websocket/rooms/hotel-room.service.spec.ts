@@ -3,7 +3,7 @@ import {assert, expect} from "chai";
 import * as io from "socket.io";
 import {Server, Socket} from "socket.io";
 import {connect} from "socket.io-client";
-import {anything, anyString, instance, mock, spy, verify, when} from "ts-mockito";
+import {anything, anyString, instance, mock, spy, verify, when, reset} from "ts-mockito";
 import {IMock, Mock} from "typemoq";
 import {createWebsocketMessage, PlayerCountMessage, WebsocketMessage} from "../../../../../common/communication/messages/message";
 import {SocketEvent} from "../../../../../common/communication/socket-events";
@@ -321,6 +321,82 @@ describe("A service to manage game rooms", () => {
                     fail();
                 });
             });
+        });
+
+        describe("Socket leave/disconnect handlers", () => {
+            it("should delete the game room on checkout", (done: Callback) => {
+                const gameName: string = "Let it rain over me";
+                const roomId: string = "room";
+                const hotelRoomService: HotelRoomService = initHotelRoomService();
+                const serviceSpy: HotelRoomService = spy(hotelRoomService);
+                const simpleGameRoom: SimpleGameRoom = new SimpleGameRoom(roomId, createSimpleGameMock(gameName));
+                const roomSpy: SimpleGameRoom = spy(simpleGameRoom);
+
+                testSocketCall(SocketEvent.DUMMY, () => {
+                    hotelRoomService["registerGameRoomHandlers"](serverSocket, simpleGameRoom);
+
+                    when(serviceSpy["pushRoomsToClients"](serverSocket))
+                        .thenCall(() => {
+                            verify(roomSpy.checkOut(serverSocket.id)).once();
+                            verify(serviceSpy["deleteRoom"](simpleGameRoom)).once();
+                            reset(serviceSpy);
+                            done();
+                        });
+
+                    socketClient.emit(SocketEvent.CHECK_OUT);
+                });
+            });
+
+            it("should delete the game room on disconnect", (done: Callback) => {
+                const gameName: string = "Let it rain over me";
+                const hotelRoomService: HotelRoomService = initHotelRoomService();
+                const serviceSpy: HotelRoomService = spy(hotelRoomService);
+                const simpleGameRoom: SimpleGameRoom = new SimpleGameRoom("room", createSimpleGameMock(gameName));
+                const roomSpy: SimpleGameRoom = spy(simpleGameRoom);
+
+                testSocketCall(SocketEvent.DUMMY, () => {
+                    hotelRoomService["registerGameRoomHandlers"](serverSocket, simpleGameRoom);
+
+                    when(serviceSpy["pushRoomsToClients"](serverSocket))
+                        .thenCall(() => {
+                            verify(roomSpy.checkOut(serverSocket.id)).once();
+                            verify(serviceSpy["deleteRoom"](simpleGameRoom)).once();
+                            done();
+                        });
+
+                    socketClient.close();
+                });
+            });
+
+            it("should delete and kick multi game room on disconnect", (done: Callback) => {
+                const gameName: string = "Let it rain over me";
+                const roomId: string = "room";
+                const hotelRoomService: HotelRoomService = initHotelRoomService();
+                const serviceSpy: HotelRoomService = spy(hotelRoomService);
+                const simpleGameRoom: SimpleGameRoom = new SimpleGameRoom(roomId, createSimpleGameMock(gameName), 2);
+                simpleGameRoom["_ongoing"] = true;
+                const roomSpy: SimpleGameRoom = spy(simpleGameRoom);
+
+                testSocketCall(SocketEvent.DUMMY, () => {
+                    hotelRoomService["checkInClient"](serverSocket, simpleGameRoom);
+                    hotelRoomService["registerGameRoomHandlers"](serverSocket, simpleGameRoom);
+
+                    when(serviceSpy["pushRoomsToClients"](serverSocket))
+                        .thenCall(() => {
+                            verify(roomSpy.checkOut(serverSocket.id)).once();
+                            verify(serviceSpy["kickClients"](simpleGameRoom.id)).once();
+                            verify(serviceSpy["deleteRoom"](simpleGameRoom)).once();
+                            reset(serviceSpy);
+                            done();
+                        });
+
+                    socketClient.close();
+                });
+            });
+        });
+
+        describe("Socket interact handler", () => {
+            // It's Mr. 305 checkin' in for the remix
         });
     });
 
