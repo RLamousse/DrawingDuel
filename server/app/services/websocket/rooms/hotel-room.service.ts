@@ -9,7 +9,7 @@ import {
 } from "../../../../../common/communication/messages/message";
 import {SocketEvent} from "../../../../../common/communication/socket-events";
 import {NonExistentGameError} from "../../../../../common/errors/database.errors";
-import {GameRoomCreationError, GameRoomError, NonExistentRoomError} from "../../../../../common/errors/services.errors";
+import {GameRoomCreationError, NonExistentRoomError} from "../../../../../common/errors/services.errors";
 import {IInteractionResponse} from "../../../../../common/model/rooms/interaction";
 import {IRoomInfo} from "../../../../../common/model/rooms/room-info";
 import {IGameRoom} from "../../../model/room/game-room";
@@ -38,10 +38,10 @@ export class HotelRoomService {
     }
 
     public async createGameRoom(socket: Socket, gameName: string, playerCount: PlayerCountMessage): Promise<void> {
-        try {
-            let room: IGameRoom;
-            const roomId: string = uuid();
+        let room: IGameRoom;
+        const roomId: string = uuid();
 
+        try {
             if (await this.databaseService.simpleGames.contains(gameName)) {
                 room = new SimpleGameRoom(
                     roomId,
@@ -57,12 +57,12 @@ export class HotelRoomService {
             } else {
                 return Promise.reject(new NonExistentGameError());
             }
-            this._rooms.set(roomId, room);
-
-            this.checkInClient(socket, room);
         } catch (error) {
             return Promise.reject(new GameRoomCreationError());
         }
+
+        this._rooms.set(roomId, room);
+        this.checkInClient(socket, room);
     }
 
     public fetchGameRooms(): IRoomInfo[] {
@@ -88,54 +88,12 @@ export class HotelRoomService {
         this.checkInClient(socket, roomCandidate);
     }
 
-    private registerGameRoomHandlers(socket: Socket, room: IGameRoom): void {
-        // TODO test .in().on()
-        socket.in(room.id).on(SocketEvent.INTERACT, (message: WebsocketMessage<RoomInteractionMessage>) => {
-            room.interact(socket.id, message.body.interactionData)
-                .then((interactionResponse: IInteractionResponse) => {
-                    sendToRoom(SocketEvent.INTERACT, interactionResponse, room.id, socket);
-                })
-                .catch((error: Error) => {
-                    socket.emit(SocketEvent.INTERACT, error);
-                    // TODO Send error to chat
-                });
-        });
-        socket.in(room.id).on(SocketEvent.CHECK_OUT, () => {
-            this.handleCheckout(room, socket);
-        });
-        socket.in(room.id).on(SocketEvent.READY, (message: WebsocketMessage) => {
-            room.handleReady(socket.id);
-        });
-        socket.in(room.id).on(SocketEvent.DISCONNECT, () => {
-            this.handleCheckout(room, socket);
-        });
-
-        room.setOnReadyCallBack(() => {
-            sendToRoom(SocketEvent.READY, undefined, room.id, socket);
-        });
-    }
-
-    private handleCheckout(room: IGameRoom, socket: Socket): void {
-        socket.leave(room.id);
-        room.checkOut(socket.id);
-        if (room.vacant && room.ongoing) {
-            sendToRoom(SocketEvent.KICK, undefined, room.id, socket);
-            this.kickClients(room.id);
-        }
-        this.deleteRoom(room);
-        this.pushRoomsToClients(socket);
-    }
-
     private checkInClient(socket: Socket, room: IGameRoom): void {
-        try {
-            room.checkIn(socket.id);
-            socket.join(room.id);
-            this._sockets.set(socket, room.id);
-            this.registerGameRoomHandlers(socket, room);
-            this.pushRoomsToClients(socket);
-        } catch (e) {
-            socket.emit(SocketEvent.ROOM_ERROR, new GameRoomError());
-        }
+        room.checkIn(socket.id);
+        socket.join(room.id);
+        this._sockets.set(socket, room.id);
+        this.registerGameRoomHandlers(socket, room);
+        this.pushRoomsToClients(socket);
     }
 
     private deleteRoom(room: IGameRoom): void {
@@ -151,5 +109,45 @@ export class HotelRoomService {
             .filter((entry: [Socket, string]) => entry[1] === roomId)
             .map((entry: [Socket, string]) => entry[0])
             .forEach((socket: Socket) => socket.leave(roomId));
+    }
+
+    private registerGameRoomHandlers(socket: Socket, room: IGameRoom): void {
+        room.setOnReadyCallBack(() => {
+            sendToRoom(SocketEvent.READY, undefined, room.id, socket);
+        });
+
+        socket.in(room.id).on(SocketEvent.READY, (message: WebsocketMessage) => {
+            room.handleReady(socket.id);
+        });
+
+        // TODO test .in().on()
+        socket.in(room.id).on(SocketEvent.INTERACT, (message: WebsocketMessage<RoomInteractionMessage>) => {
+            room.interact(socket.id, message.body.interactionData)
+                .then((interactionResponse: IInteractionResponse) => {
+                    sendToRoom(SocketEvent.INTERACT, interactionResponse, room.id, socket);
+                })
+                .catch((error: Error) => {
+                    socket.emit(SocketEvent.INTERACT, error);
+                    // TODO Send error to chat
+                });
+        });
+        socket.in(room.id).on(SocketEvent.CHECK_OUT, () => {
+            this.handleCheckout(room, socket);
+        });
+
+        socket.in(room.id).on(SocketEvent.DISCONNECT, () => {
+            this.handleCheckout(room, socket);
+        });
+    }
+
+    private handleCheckout(room: IGameRoom, socket: Socket): void {
+        socket.leave(room.id);
+        room.checkOut(socket.id);
+        if (room.vacant && room.ongoing) {
+            sendToRoom(SocketEvent.KICK, undefined, room.id, socket);
+            this.kickClients(room.id);
+        }
+        this.deleteRoom(room);
+        this.pushRoomsToClients(socket);
     }
 }
