@@ -2,7 +2,6 @@ import {DifferenceCluster} from "../game/simple-game";
 import {IPoint} from "../point";
 
 export interface IInteractionData {
-    clientId: string;
 }
 
 export interface ISimpleGameInteractionData extends IInteractionData {
