@@ -1,8 +1,10 @@
 import { expect } from "chai";
 import { EventEmitter } from "events";
 import * as io from "socket.io";
+import {anything, instance, mock, when} from "ts-mockito";
 import { WebsocketMessage } from "../../../common/communication/messages/message";
 import { container } from "../inversify.config";
+import {RadioTowerService} from "../services/websocket/radio-tower.service";
 import types from "../types";
 import { WebsocketController } from "./websocket.controller";
 
@@ -28,17 +30,15 @@ class Socket {
     }
 }
 
-const radioTower = {
-    broadcast: () => {
-    },
-};
-
 describe("Websocket controller", () => {
     let controller: WebsocketController;
 
     beforeEach(() => {
+        const radioTowerServiceMock: RadioTowerService = mock(RadioTowerService);
+        when(radioTowerServiceMock.broadcast(anything(), anything()))
+            .thenReturn(undefined);
         controller = container.get<WebsocketController>(types.WebsocketController);
-        container.rebind(types.RadioTowerService).toConstantValue(radioTower);
+        container.rebind(types.RadioTowerService).toConstantValue(instance(radioTowerServiceMock));
     });
 
     it("should initialize", () => {

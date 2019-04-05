@@ -34,11 +34,11 @@ describe("A simple game room", () => {
             => SimpleGameRoom =
         (simpleGameMockConfigurator?: (mockedSimpleGame: IMock<ISimpleGame>) => void, playerCount: number = 1, roomId: string = "room") => {
             const mockedSimpleGame: IMock<ISimpleGame> = Mock.ofType<ISimpleGame>();
-        if (simpleGameMockConfigurator !== undefined) {
+            if (simpleGameMockConfigurator !== undefined) {
             simpleGameMockConfigurator(mockedSimpleGame);
         }
 
-        return new SimpleGameRoom(roomId, mockedSimpleGame.object, playerCount);
+            return new SimpleGameRoom(roomId, mockedSimpleGame.object, playerCount);
     };
 
     describe("Check-in", () => {

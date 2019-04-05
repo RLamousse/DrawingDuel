@@ -1,14 +1,16 @@
+// tslint:disable:max-file-line-count This is a test file full of Pitbull references...
 import {fail} from "assert";
 import {assert, expect} from "chai";
 import * as io from "socket.io";
+// tslint:disable-next-line:no-duplicate-imports Weird interaction between singletons and interface (olivier st-o approved)
 import {Server, Socket} from "socket.io";
 import {connect} from "socket.io-client";
-import {anyString, anything, instance, mock, reset, spy, verify, when} from "ts-mockito";
+import {anything, anyString, instance, mock, reset, spy, verify, when} from "ts-mockito";
 import {IMock, Mock} from "typemoq";
-import {createWebsocketMessage, PlayerCountMessage, RoomInteractionMessage,} from "../../../../../common/communication/messages/message";
+import {createWebsocketMessage, PlayerCountMessage, RoomInteractionMessage} from "../../../../../common/communication/messages/message";
 import {SocketEvent} from "../../../../../common/communication/socket-events";
 import {DatabaseError, NonExistentGameError} from "../../../../../common/errors/database.errors";
-import {GameRoomCreationError, NoDifferenceAtPointError, NonExistentRoomError} from "../../../../../common/errors/services.errors";
+import {GameRoomCreationError, NonExistentRoomError, NoDifferenceAtPointError} from "../../../../../common/errors/services.errors";
 import {IFreeGame} from "../../../../../common/model/game/free-game";
 import {ISimpleGame} from "../../../../../common/model/game/simple-game";
 import {ORIGIN} from "../../../../../common/model/point";
@@ -61,32 +63,32 @@ describe("A service to manage game rooms", () => {
     const createSimpleGameMock:
         (gameName: string) => ISimpleGame =
         (gameName: string) => {
-        return {
-            diffData: [],
-            gameName: gameName,
-            bestMultiTimes: [],
-            bestSoloTimes: [],
-            modifiedImage: "",
-            originalImage: "",
-            toBeDeleted: false,
+            return {
+                diffData: [],
+                gameName: gameName,
+                bestMultiTimes: [],
+                bestSoloTimes: [],
+                modifiedImage: "",
+                originalImage: "",
+                toBeDeleted: false,
+            };
         };
-    };
 
     const createFreeGameMock:
         (gameName: string) => IFreeGame =
         (gameName: string) => {
-        return {
-            gameName: gameName,
-            bestMultiTimes: [],
-            bestSoloTimes: [],
-            toBeDeleted: false,
-            scenes: {
-                differentObjects: [],
-                modifiedObjects: [],
-                originalObjects: [],
-            },
+            return {
+                gameName: gameName,
+                bestMultiTimes: [],
+                bestSoloTimes: [],
+                toBeDeleted: false,
+                scenes: {
+                    differentObjects: [],
+                    modifiedObjects: [],
+                    originalObjects: [],
+                },
+            };
         };
-    };
 
     const createRoomMock:
         (gameName: string, vacant: boolean) => IMock<IGameRoom> =
@@ -120,7 +122,7 @@ describe("A service to manage game rooms", () => {
             }
 
             return rooms;
-    };
+        };
 
     const getFromMapSafe:
         <T, U>(map: Map<T, U>, key: T) => U =
@@ -131,9 +133,18 @@ describe("A service to manage game rooms", () => {
             return value as U;
         };
 
+    const assertCheckin:
+        (hotelRoomService: HotelRoomService, hotelRoomServiceSpy: HotelRoomService) => void =
+        (hotelRoomService: HotelRoomService, hotelRoomServiceSpy: HotelRoomService) => {
+            expect(Array.from(hotelRoomService["_sockets"].keys()))
+                .to.contain(serverSocket);
+            verify(hotelRoomServiceSpy["registerGameRoomHandlers"](serverSocket, anything())).once();
+            verify(hotelRoomServiceSpy["pushRoomsToClients"]()).once();
+        };
+
     const createGameRoom:
         (hotelRoomService: HotelRoomService, gameName: string, gameType?: PlayerCountMessage) => Promise<IGameRoom> =
-        (hotelRoomService: HotelRoomService, gameName: string, gameType: PlayerCountMessage = PlayerCountMessage.SOLO) => {
+        async (hotelRoomService: HotelRoomService, gameName: string, gameType: PlayerCountMessage = PlayerCountMessage.SOLO) => {
             const hotelRoomServiceSpy: HotelRoomService = spy(hotelRoomService);
 
             // TODO check room assert.isNotEmpty(serverSocket.rooms);
@@ -145,17 +156,9 @@ describe("A service to manage game rooms", () => {
                         assert.exists(createdRoom);
                         assertCheckin(hotelRoomService, hotelRoomServiceSpy);
                         resolve(createdRoom as IGameRoom);
-                    });
+                    })
+                    .catch(() => fail());
             });
-        };
-
-    const assertCheckin:
-        (hotelRoomService: HotelRoomService, hotelRoomServiceSpy: HotelRoomService) => void =
-        (hotelRoomService: HotelRoomService, hotelRoomServiceSpy: HotelRoomService) => {
-            expect(Array.from(hotelRoomService["_sockets"].keys()))
-                .to.contain(serverSocket);
-            verify(hotelRoomServiceSpy["registerGameRoomHandlers"](serverSocket, anything())).once();
-            verify(hotelRoomServiceSpy["pushRoomsToClients"]()).once();
         };
 
     beforeEach(() => {
@@ -177,6 +180,7 @@ describe("A service to manage game rooms", () => {
 
         it("should return every room on fetch", () => {
             const hotelRoomService: HotelRoomService = initHotelRoomService();
+            // tslint:disable-next-line:no-magic-numbers Create a random amount of rooms
             const roomCount: number = Math.floor(Math.random() * 10) + 1;
             const roomData: Map<string, IGameRoom> = new Map<string, IGameRoom>();
 
@@ -241,7 +245,7 @@ describe("A service to manage game rooms", () => {
             return createGameRoom(hotelRoomService, gameName);
         });
 
-        it("should reject with a GameRoomCreationError on DB error", (done) => {
+        it("should reject with a GameRoomCreationError on DB error", (done: Callback) => {
             const gameName: string = "This DB is a... fireball🎺🎺🎺";
             const hotelRoomService: HotelRoomService = initHotelRoomService(() => {
                 when(simpleGamesCollectionService.contains(gameName))
@@ -383,8 +387,8 @@ describe("A service to manage game rooms", () => {
                 };
                 const interactionResponse: ISimpleGameInteractionResponse = {differenceCluster: [0, [ORIGIN]]};
                 const roomMock: IMock<IGameRoom> = createRoomMock(gameName, true);
-                roomMock.setup((room: IGameRoom) => room.interact(serverSocket.id, interactionData))
-                    .returns(() => Promise.resolve(interactionResponse));
+                roomMock.setup(async (room: IGameRoom) => room.interact(serverSocket.id, interactionData))
+                    .returns(async () => Promise.resolve(interactionResponse));
                 const hotelRoomService: HotelRoomService = initHotelRoomService(() => {
                     when(radioTowerService.sendToRoom(SocketEvent.INTERACT, interactionResponse, roomMock.object.id))
                         .thenCall(() => done());
@@ -402,8 +406,8 @@ describe("A service to manage game rooms", () => {
                     interactionData: interactionData,
                 };
                 const roomMock: IMock<IGameRoom> = createRoomMock(gameName, true);
-                roomMock.setup((room: IGameRoom) => room.interact(serverSocket.id, interactionData))
-                    .returns(() => Promise.reject(new NoDifferenceAtPointError()));
+                roomMock.setup(async (room: IGameRoom) => room.interact(serverSocket.id, interactionData))
+                    .returns(async () => Promise.reject(new NoDifferenceAtPointError()));
                 const hotelRoomService: HotelRoomService = initHotelRoomService();
                 hotelRoomService["checkInClient"](serverSocket, roomMock.object);
                 socketClient.once(SocketEvent.INTERACT, () => {
