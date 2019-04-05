@@ -1,6 +1,5 @@
 import { Component, Input, OnInit } from "@angular/core";
-import { IFreeGame } from "../../../../common/model/game/free-game";
-import { ISimpleGame } from "../../../../common/model/game/simple-game";
+import {forkJoin} from "rxjs";
 import { GameService } from "../game.service";
 
 @Component({
@@ -18,12 +17,10 @@ export class GameListComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.gameService.getSimpleGames().subscribe((simpleGamesToPush: ISimpleGame[]) => {
-      this.gameService.pushSimpleGames(simpleGamesToPush);
-    });
+    forkJoin(this.gameService.getSimpleGames(), this.gameService.getFreeGames()).subscribe(([simpleGames, freeGames]) => {
 
-    this.gameService.getFreeGames().subscribe((freeGamesToPush: IFreeGame[]) => {
-      this.gameService.pushFreeGames(freeGamesToPush).catch((value: Error) => {throw value; });
+      this.gameService.pushSimpleGames(simpleGames);
+      this.gameService.pushFreeGames(freeGames).catch((value: Error) => {throw value; });
       this.gameService.updateFreeGameImages().catch((value: Error) => {throw value; });
     });
   }
