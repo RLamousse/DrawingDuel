@@ -75,4 +75,61 @@ describe("ObjectCollisionService", () => {
     service["cancelVelocity"](vel, dirColl, oriDir);
     expect(vel.x).toEqual(0);
   });
+  it("should put to 0 vel.x when vel.x > 0 && comparisonVec.x > 0", () => {
+    const service: ObjectCollisionService = TestBed.get(ObjectCollisionService);
+    const vel: THREE.Vector3 = new THREE.Vector3(1, 0, 0);
+    const oriDir: THREE.Vector3 = new THREE.Vector3(0, 0, 0);
+    const dirColl: THREE.Vector3 = new THREE.Vector3(0.8, 0, 0);
+    service["cancelVelocity"](vel, dirColl, oriDir);
+    expect(vel.x).toEqual(0);
+  });
+  it("should not put vel.x to 0 when vel.x < 0 && comparisonVec.x > 0", () => {
+    const service: ObjectCollisionService = TestBed.get(ObjectCollisionService);
+    const vel: THREE.Vector3 = new THREE.Vector3(-1, 0, 0);
+    const oriDir: THREE.Vector3 = new THREE.Vector3(0, 0, 0);
+    const dirColl: THREE.Vector3 = new THREE.Vector3(0.8, 0, 0);
+    service["cancelVelocity"](vel, dirColl, oriDir);
+    expect(vel.x).toEqual(-1);
+  });
+
+  it("should not put vel.x to 0 when vel.x < 0 && comparisonVec.x > 0", () => {
+    const service: ObjectCollisionService = TestBed.get(ObjectCollisionService);
+    const vel: THREE.Vector3 = new THREE.Vector3(1, 0, 0);
+    const oriDir: THREE.Vector3 = new THREE.Vector3(0, 0, 0);
+    const dirColl: THREE.Vector3 = new THREE.Vector3(-0.8, 0, 0);
+    service["cancelVelocity"](vel, dirColl, oriDir);
+    expect(vel.x).toEqual(1);
+  });
+  it("should put to 0 vel.z when vel.z < 0 && comparisonVec.z < 0", () => {
+    const service: ObjectCollisionService = TestBed.get(ObjectCollisionService);
+    const vel: THREE.Vector3 = new THREE.Vector3(0, 0, -1);
+    const oriDir: THREE.Vector3 = new THREE.Vector3(0, 0, 0);
+    const dirColl: THREE.Vector3 = new THREE.Vector3(0, 0, -0.8);
+    service["cancelVelocity"](vel, dirColl, oriDir);
+    expect(vel.z).toEqual(0);
+  });
+  it("should put to 0 vel.z when vel.z > 0 && comparisonVec.z > 0", () => {
+    const service: ObjectCollisionService = TestBed.get(ObjectCollisionService);
+    const vel: THREE.Vector3 = new THREE.Vector3(0, 0, 1);
+    const oriDir: THREE.Vector3 = new THREE.Vector3(0, 0, 0);
+    const dirColl: THREE.Vector3 = new THREE.Vector3(0, 0, 0.8);
+    service["cancelVelocity"](vel, dirColl, oriDir);
+    expect(vel.z).toEqual(0);
+  });
+  it("should not put vel.z to 0 when vel.z < 0 && comparisonVec.z > 0", () => {
+    const service: ObjectCollisionService = TestBed.get(ObjectCollisionService);
+    const vel: THREE.Vector3 = new THREE.Vector3(0, 0, -1);
+    const oriDir: THREE.Vector3 = new THREE.Vector3(0, 0, 0);
+    const dirColl: THREE.Vector3 = new THREE.Vector3(0, 0, 0.8);
+    service["cancelVelocity"](vel, dirColl, oriDir);
+    expect(vel.z).toEqual(-1);
+  });
+  it("should not put vel.z to 0 when vel.z < 0 && comparisonVec.z > 0", () => {
+    const service: ObjectCollisionService = TestBed.get(ObjectCollisionService);
+    const vel: THREE.Vector3 = new THREE.Vector3(0, 0, 1);
+    const oriDir: THREE.Vector3 = new THREE.Vector3(0, 0, 0);
+    const dirColl: THREE.Vector3 = new THREE.Vector3(0, 0, -0.8);
+    service["cancelVelocity"](vel, dirColl, oriDir);
+    expect(vel.z).toEqual(1);
+  });
 });
