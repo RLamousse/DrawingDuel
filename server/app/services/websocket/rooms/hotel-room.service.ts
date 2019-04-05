@@ -3,6 +3,7 @@ import "reflect-metadata";
 import {Socket} from "socket.io";
 import * as uuid from "uuid/v4";
 import {
+    createWebsocketMessage,
     PlayerCountMessage,
     RoomInteractionMessage,
     WebsocketMessage
@@ -14,8 +15,8 @@ import {IInteractionResponse} from "../../../../../common/model/rooms/interactio
 import {IRoomInfo} from "../../../../../common/model/rooms/room-info";
 import {IGameRoom} from "../../../model/room/game-room";
 import types from "../../../types";
-import {broadcast, sendToRoom} from "../../../util/socket.util";
 import {DataBaseService} from "../../data-base.service";
+import {RadioTowerService} from "../radio-tower.service";
 import {FreeGameRoom} from "./free-game-room";
 import {SimpleGameRoom} from "./simple-game-room";
 
@@ -25,7 +26,8 @@ export class HotelRoomService {
     private readonly _rooms: Map<string, IGameRoom>;
     private readonly _sockets: Map<Socket, string>;
 
-    public constructor(@inject(types.DataBaseService) private databaseService: DataBaseService) {
+    public constructor(@inject(types.DataBaseService) private databaseService: DataBaseService,
+                       @inject(types.RadioTowerService) private radioTower: RadioTowerService) {
         this._rooms = new Map<string, IGameRoom>();
         this._sockets = new Map<Socket, string>();
     }
@@ -93,15 +95,15 @@ export class HotelRoomService {
         socket.join(room.id);
         this._sockets.set(socket, room.id);
         this.registerGameRoomHandlers(socket, room);
-        this.pushRoomsToClients(socket);
+        this.pushRoomsToClients();
     }
 
     private deleteRoom(room: IGameRoom): void {
         this._rooms.delete(room.id);
     }
 
-    private pushRoomsToClients(socket: Socket): void {
-        broadcast(SocketEvent.PUSH_ROOMS, this.fetchGameRooms(), socket);
+    private pushRoomsToClients(): void {
+        this.radioTower.broadcast(SocketEvent.PUSH_ROOMS, createWebsocketMessage<IRoomInfo[]>(this.fetchGameRooms()));
     }
 
     private kickClients(roomId: string): void {
@@ -113,7 +115,7 @@ export class HotelRoomService {
 
     private registerGameRoomHandlers(socket: Socket, room: IGameRoom): void {
         room.setOnReadyCallBack(() => {
-            sendToRoom(SocketEvent.READY, undefined, room.id, socket);
+            this.radioTower.sendToRoom(SocketEvent.READY, undefined, room.id);
         });
 
         socket.in(room.id).on(SocketEvent.READY, () => {
@@ -124,7 +126,7 @@ export class HotelRoomService {
         socket.in(room.id).on(SocketEvent.INTERACT, (message: WebsocketMessage<RoomInteractionMessage>) => {
             room.interact(socket.id, message.body.interactionData)
                 .then((interactionResponse: IInteractionResponse) => {
-                    sendToRoom(SocketEvent.INTERACT, interactionResponse, room.id, socket);
+                    this.radioTower.sendToRoom(SocketEvent.INTERACT, interactionResponse, room.id);
                 })
                 .catch((error: Error) => {
                     socket.emit(SocketEvent.INTERACT, error);
@@ -144,10 +146,10 @@ export class HotelRoomService {
         socket.leave(room.id);
         room.checkOut(socket.id);
         if (room.vacant && room.ongoing) {
-            sendToRoom(SocketEvent.KICK, undefined, room.id, socket);
+            this.radioTower.sendToRoom(SocketEvent.KICK, undefined, room.id);
             this.kickClients(room.id);
         }
         this.deleteRoom(room);
-        this.pushRoomsToClients(socket);
+        this.pushRoomsToClients();
     }
 }

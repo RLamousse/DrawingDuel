@@ -17,6 +17,7 @@ import {DataBaseService} from "../../data-base.service";
 import {FreeGamesCollectionService} from "../../db/free-games.collection.service";
 import {SimpleGamesCollectionService} from "../../db/simple-games.collection.service";
 import {HotelRoomService} from "./hotel-room.service";
+import {RadioTowerService} from "../radio-tower.service";
 import {SimpleGameRoom} from "./simple-game-room";
 
 describe("A service to manage game rooms", () => {
@@ -33,6 +34,7 @@ describe("A service to manage game rooms", () => {
     let simpleGamesCollectionService: SimpleGamesCollectionService;
     let mockedDatabaseService: DataBaseService;
     let freeGamesCollectionService: FreeGamesCollectionService;
+    let radioTowerService: RadioTowerService;
 
     const initHotelRoomService:
         (mockConfigurator?: Callback) => HotelRoomService =
@@ -40,6 +42,7 @@ describe("A service to manage game rooms", () => {
             mockedDatabaseService = mock(DataBaseService);
             simpleGamesCollectionService = mock(SimpleGamesCollectionService);
             freeGamesCollectionService = mock(FreeGamesCollectionService);
+            radioTowerService = mock(RadioTowerService);
 
             if (mockConfigurator !== undefined) {
                 mockConfigurator();
@@ -50,7 +53,7 @@ describe("A service to manage game rooms", () => {
             when(mockedDatabaseService.freeGames)
                 .thenReturn(instance(freeGamesCollectionService));
 
-            return new HotelRoomService(instance(mockedDatabaseService));
+            return new HotelRoomService(instance(mockedDatabaseService), instance(radioTowerService));
         };
 
     const createSimpleGameMock:
@@ -160,7 +163,7 @@ describe("A service to manage game rooms", () => {
             expect(Array.from(hotelRoomService["_sockets"].keys()))
                 .to.contain(serverSocket);
             verify(hotelRoomServiceSpy["registerGameRoomHandlers"](serverSocket, anything())).once();
-            verify(hotelRoomServiceSpy["pushRoomsToClients"](serverSocket)).once();
+            verify(hotelRoomServiceSpy["pushRoomsToClients"]()).once();
         };
 
     beforeEach(() => {
