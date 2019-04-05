@@ -1,30 +1,40 @@
-<div class= "gameList">
-    <div class= "window">
-        <h1>Parties Simples</h1>
-        <app-game *ngFor="let instance of gameService.simpleGames" 
-            [gameName]= "instance.gameName"
-            [originalImage]= "instance.originalImage"
-            [modifiedImage]= "instance.modifiedImage"
-            [bestSoloTimes]= "instance.bestSoloTimes"
-            [bestMultiTimes]= "instance.bestMultiTimes"
-            [rightButton]= "rightButton"
-            [leftButton]= "leftButton"
-            [isSimpleGame]= true>
-        </app-game>
+<ng-container
+*ngIf="pushedSimpleGames && pushedFreeGames; then listView; else loading">
+</ng-container>
+<ng-template #loading>
+    <body class = "blackBackground">
+    <img class="bottomright" src="assets\images\loadingScreen.gif">
+    </body>
+</ng-template>
+<ng-template #listView>
+    <div class= "gameList">
+            <div class= "window">
+                <h1>Parties Simples</h1>
+                <app-game *ngFor="let instance of gameService.simpleGames" 
+                    [gameName]= "instance.gameName"
+                    [originalImage]= "instance.originalImage"
+                    [modifiedImage]= "instance.modifiedImage"
+                    [bestSoloTimes]= "instance.bestSoloTimes"
+                    [bestMultiTimes]= "instance.bestMultiTimes"
+                    [rightButton]= "rightButton"
+                    [leftButton]= "leftButton"
+                    [isSimpleGame]= true>
+                </app-game>
+            </div>
+            <div class="window">
+                <h1>Parties Libres</h1>
+                <app-game *ngFor= "let instance of gameService.extendedFreeGames" 
+                    [gameName]= "instance.gameName"
+                    [bestSoloTimes]= "instance.bestSoloTimes"
+                    [bestMultiTimes]= "instance.bestMultiTimes"
+                    [rightButton]= "rightButton"
+                    [leftButton]= "leftButton"
+                    [isSimpleGame]= false
+                    [thumbnail]= "instance.thumbnail">
+                </app-game>
+            </div>
     </div>
-    <div class="window">
-        <h1>Parties Libres</h1>
-        <app-game *ngFor= "let instance of gameService.extendedFreeGames" 
-            [gameName]= "instance.gameName"
-            [bestSoloTimes]= "instance.bestSoloTimes"
-            [bestMultiTimes]= "instance.bestMultiTimes"
-            [rightButton]= "rightButton"
-            [leftButton]= "leftButton"
-            [isSimpleGame]= false
-            [thumbnail]= "instance.thumbnail">
-        </app-game>
-    </div>
-</div>
+</ng-template>
 
 
 
