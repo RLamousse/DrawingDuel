@@ -105,6 +105,24 @@ describe("FreeGameCreatorService", () => {
     expect(service).toBeDefined();
   });
 
+  it("should call generateOriginal/modified scene when object type is gemotric", () => {
+    const service: FreeGameCreatorService = TestBed.get(FreeGameCreatorService);
+    spyOn(service as any, "generateOriginalScene").and.returnValue(true);
+    spyOn(service as any, "generateModifiedScene").and.returnValue(true);
+    service.createScenes(dummyScenes);
+    expect(service["generateOriginalScene"]).toHaveBeenCalled();
+    expect(service["generateModifiedScene"]).toHaveBeenCalled();
+  });
+
+  it("should call generateThematicScene when the first object is thematic Space", () => {
+    const service: FreeGameCreatorService = TestBed.get(FreeGameCreatorService);
+    spyOn(service as any, "generateThematicScenes").and.returnValue(true);
+    dummyScenes.originalObjects[0].gameType = Themes.Space;
+    service.createScenes(dummyScenes);
+    expect(service["generateThematicScenes"]).toHaveBeenCalled();
+    dummyScenes.originalObjects[0].gameType = Themes.Geometry;
+  });
+
   it("should create scenes with the 5 different types of objects in the original, only 3 in the modified", () => {
     const service: FreeGameCreatorService = TestBed.get(FreeGameCreatorService);
     service.createScenes(dummyScenes);
@@ -112,10 +130,10 @@ describe("FreeGameCreatorService", () => {
     expect(service["modifiedObjects"].length).toEqual(3);
   });
 
-  it("should create 2 scenes with (objectsArray.lenght + 2 light) children", () => {
+  it("should create 2 scenes with (objectsArray.lenght + 2 light + 1 skyBox) children", () => {
     const service: FreeGameCreatorService = TestBed.get(FreeGameCreatorService);
     const scenes: IScene = service.createScenes(dummyScenes);
-    expect(scenes.scene.children.length).toEqual(service["objects"].length + 2);
-    expect(scenes.modifiedScene.children.length).toEqual(service["modifiedObjects"].length + 2);
+    expect(scenes.scene.children.length).toEqual(service["objects"].length + 3);
+    expect(scenes.modifiedScene.children.length).toEqual(service["modifiedObjects"].length + 3);
   });
 });
