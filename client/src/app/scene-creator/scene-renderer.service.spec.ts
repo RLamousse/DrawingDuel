@@ -12,6 +12,7 @@ import { ComponentNotLoadedError } from "../../../../common/errors/component.err
 import {NoDifferenceAtPointError} from "../../../../common/errors/services.errors";
 import {IJson3DObject} from "../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
 import {SocketService} from "../socket.service";
+import {ObjectCollisionService} from "./objectCollisionService/object-collision.service";
 import {RenderUpdateService} from "./render-update.service";
 import { SceneRendererService } from "./scene-renderer.service";
 describe("SceneRendererService", () => {
@@ -30,6 +31,14 @@ describe("SceneRendererService", () => {
       this.messageVel = "updateVelocity was called";
     }
   }
+
+  class MockCollisionService {
+    public raycastCollision(): void {
+      return;
+    }
+  }
+  const mockCollisionService: MockCollisionService = new MockCollisionService();
+
   let mockUpdateRender: MockRenderUpdate;
   beforeEach(() => {
     axiosMock = new AxiosAdapter(Axios);
@@ -39,6 +48,7 @@ describe("SceneRendererService", () => {
       providers: [
         SceneRendererService,
         {provide: RenderUpdateService, useValue: mockUpdateRender},
+        {provide: ObjectCollisionService, useValue: mockCollisionService},
         SocketService,
       ],
     });
