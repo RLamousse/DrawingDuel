@@ -33,6 +33,14 @@ describe("GameListComponent", () => {
         subscriber.complete();
       });
     }
+
+    public pushSimpleGames(games: ISimpleGame[]): void {
+    }
+
+    public async pushFreeGames(games: IFreeGame[]): Promise<void> {
+    }
+
+    public async updateFreeGameImages(): Promise<void> {
     }
   }
 
