@@ -58,8 +58,8 @@ export interface RoomCheckInMessage extends RoomMessage {
     username: string;
 }
 
-export interface RoomInteractionMessage extends RoomMessage {
-    interactionData: IInteractionData;
+export interface RoomInteractionMessage<T extends IInteractionData> extends RoomMessage {
+    interactionData: T;
 }
 
 export const isAWebsocketMessage: (object: any) => boolean =

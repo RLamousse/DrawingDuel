@@ -34,11 +34,11 @@ describe("A simple game room", () => {
             => SimpleGameRoom =
         (simpleGameMockConfigurator?: (mockedSimpleGame: IMock<ISimpleGame>) => void, playerCount: number = 1, roomId: string = "room") => {
             const mockedSimpleGame: IMock<ISimpleGame> = Mock.ofType<ISimpleGame>();
-        if (simpleGameMockConfigurator !== undefined) {
+            if (simpleGameMockConfigurator !== undefined) {
             simpleGameMockConfigurator(mockedSimpleGame);
         }
 
-        return new SimpleGameRoom(roomId, mockedSimpleGame.object, playerCount);
+            return new SimpleGameRoom(roomId, mockedSimpleGame.object, playerCount);
     };
 
     describe("Check-in", () => {
@@ -135,7 +135,7 @@ describe("A simple game room", () => {
             axiosMock.onGet(DIFF_VALIDATOR_GET_CALLS_REGEX)
                 .reply(HttpStatus.NOT_FOUND);
 
-            return simpleGameRoom.interact("client", {clientId: "client", coord: ORIGIN})
+            return simpleGameRoom.interact("client", {coord: ORIGIN})
                 .catch((reason: Error) => {
                     expect(reason.message).to.eql(NoDifferenceAtPointError.NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE);
                 });
@@ -147,7 +147,7 @@ describe("A simple game room", () => {
             axiosMock.onGet(DIFF_VALIDATOR_GET_CALLS_REGEX)
                 .reply(HttpStatus.INTERNAL_SERVER_ERROR);
 
-            return simpleGameRoom.interact("client", {clientId: "client", coord: ORIGIN})
+            return simpleGameRoom.interact("client", {coord: ORIGIN})
                 .catch((reason: Error) => {
                     expect(reason.message).not.to.eql(NoDifferenceAtPointError.NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE);
                 });
@@ -164,7 +164,7 @@ describe("A simple game room", () => {
             axiosMock.onGet(DIFF_VALIDATOR_GET_CALLS_REGEX)
                 .reply(HttpStatus.OK);
 
-            return simpleGameRoom.interact("client", {clientId: "client", coord: ORIGIN})
+            return simpleGameRoom.interact("client", {coord: ORIGIN})
                 .then((response: ISimpleGameInteractionResponse) => {
                     expect(response.differenceCluster[DIFFERENCE_CLUSTER_POINTS_INDEX]).to.contain(ORIGIN);
                 });
@@ -177,7 +177,7 @@ describe("A simple game room", () => {
             axiosMock.onGet(DIFF_VALIDATOR_GET_CALLS_REGEX)
                 .reply(HttpStatus.OK);
 
-            return simpleGameRoom.interact("client", {clientId: "client", coord: ORIGIN})
+            return simpleGameRoom.interact("client", {coord: ORIGIN})
                 .catch((reason: Error) => {
                     expect(reason.message).to.eql(AlreadyFoundDifferenceError.ALREADY_FOUND_DIFFERENCE_ERROR_MESSAGE);
                 });
@@ -189,7 +189,7 @@ describe("A simple game room", () => {
             axiosMock.onGet(DIFF_VALIDATOR_GET_CALLS_REGEX)
                 .reply(HttpStatus.OK);
 
-            return simpleGameRoom.interact("client", {clientId: "client", coord: ORIGIN})
+            return simpleGameRoom.interact("client", {coord: ORIGIN})
                 .catch((reason: Error) => {
                     expect(reason.message).to.eql(GameRoomError.GAME_ROOM_ERROR_MESSAGE);
                 });

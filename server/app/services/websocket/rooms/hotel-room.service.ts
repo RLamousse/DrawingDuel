@@ -11,7 +11,6 @@ import {
 import {SocketEvent} from "../../../../../common/communication/socket-events";
 import {NonExistentGameError} from "../../../../../common/errors/database.errors";
 import {GameRoomCreationError, NonExistentRoomError} from "../../../../../common/errors/services.errors";
-import {IInteractionResponse} from "../../../../../common/model/rooms/interaction";
 import {IRoomInfo} from "../../../../../common/model/rooms/room-info";
 import {IGameRoom} from "../../../model/room/game-room";
 import types from "../../../types";
@@ -103,7 +102,7 @@ export class HotelRoomService {
     }
 
     private pushRoomsToClients(): void {
-        this.radioTower.broadcast(SocketEvent.PUSH_ROOMS, createWebsocketMessage<IRoomInfo[]>(this.fetchGameRooms()));
+        this.radioTower.broadcast(SocketEvent.PUSH_ROOMS, createWebsocketMessage(this.fetchGameRooms()));
     }
 
     private kickClients(roomId: string): void {
@@ -123,9 +122,9 @@ export class HotelRoomService {
         });
 
         // TODO test .in().on()
-        socket.in(room.id).on(SocketEvent.INTERACT, (message: WebsocketMessage<RoomInteractionMessage>) => {
+        socket.in(room.id).on(SocketEvent.INTERACT, <T>(message: WebsocketMessage<RoomInteractionMessage<T>>) => {
             room.interact(socket.id, message.body.interactionData)
-                .then((interactionResponse: IInteractionResponse) => {
+                .then((interactionResponse: T) => {
                     this.radioTower.sendToRoom(SocketEvent.INTERACT, interactionResponse, room.id);
                 })
                 .catch((error: Error) => {
