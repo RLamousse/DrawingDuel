@@ -2,7 +2,8 @@ import {Injectable} from "@angular/core";
 import {TestBed} from "@angular/core/testing";
 import * as THREE from "three";
 import {
-  ObjectGeometry, ObjectTexture,
+  ObjectGeometry,
+  ObjectTexture,
   Themes
 } from "../../../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
 import * as IObject from "../../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
@@ -32,6 +33,10 @@ class MockedForm3DService extends Form3DService {
 
   public createCylinder(): THREE.Mesh {
     return new THREE.Mesh(new THREE.BoxGeometry(10, 10, 10), new THREE.Material());
+  }
+
+  public setUpThematicParameters(object: IObject.IJson3DObject, gltf: THREE.GLTF): void {
+    return;
   }
 }
 
@@ -208,5 +213,61 @@ describe("FreeGameCreatorService", () => {
   it("should return the right format of a string", () => {
     const service: FreeGameCreatorService = TestBed.get(FreeGameCreatorService);
     expect(service["buildObjectPath"](ObjectGeometry[5])).toEqual("assets/Models/space/comet/scene.gltf");
+  });
+
+  // Test generate3DObject, default case
+  it("should return with the default case when invalid objType is pass to the function", () => {
+    const service: FreeGameCreatorService = TestBed.get(FreeGameCreatorService);
+    const obj: IObject.IJson3DObject = {
+      type: 100,
+      position: [],
+      rotation: [],
+      color: 0xFFFFFF,
+      scale: 1,
+      gameType: Themes.Geometry,
+      texture: ObjectTexture.rainbow,
+    };
+    const createdObj: THREE.Mesh = service["generate3DObject"](obj);
+    expect((createdObj.material as THREE.MeshBasicMaterial).type).toEqual("MeshBasicMaterial");
+    expect(createdObj.geometry.type).toEqual("BufferGeometry");
+  });
+
+  // Test generateThematicObject
+  it("should calls buildObjectPath and not call traverseChildren, originalObject", () => {
+    const service: FreeGameCreatorService = TestBed.get(FreeGameCreatorService);
+    const obj: IObject.IJson3DObject = {
+      position: [],
+      rotation: [],
+      color: 0xFFFFFF,
+      type: 5,
+      gameType: Themes.Space,
+      scale: 1,
+    };
+    spyOn(service as any, "buildObjectPath").and.callThrough();
+    spyOn(service as any, "traverseChildren").and.returnValue(false);
+    service["scene"] = new THREE.Scene;
+    service["generateThematicObject"](obj, true);
+    expect(service["buildObjectPath"]).toHaveBeenCalled();
+    expect(service["traverseChildren"]).not.toHaveBeenCalled();
+  });
+
+  // Test generateThematicObject
+  it("should calls buildObjectPath and call not traverseChildren, modifiedObject", () => {
+    const service: FreeGameCreatorService = TestBed.get(FreeGameCreatorService);
+    const obj: IObject.IJson3DObject = {
+      position: [],
+      rotation: [],
+      color: 0xFFFFFF,
+      type: 5,
+      gameType: Themes.Space,
+      scale: 1,
+      texture: ObjectTexture.rainbow,
+    };
+    spyOn(service as any, "buildObjectPath").and.callThrough();
+    spyOn(service as any, "traverseChildren").and.returnValue(true);
+    service["modifiedScene"] = new THREE.Scene;
+    service["generateThematicObject"](obj, false);
+    expect(service["buildObjectPath"]).toHaveBeenCalled();
+    expect(service["traverseChildren"]).not.toHaveBeenCalled();
   });
 });
