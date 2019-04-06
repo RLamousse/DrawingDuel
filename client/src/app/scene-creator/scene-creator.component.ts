@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild} from "@angular/core";
+import {Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild} from "@angular/core";
 import {ActivatedRoute} from "@angular/router";
 import {IFreeGame} from "../../../../common/model/game/free-game";
 import {IPoint} from "../../../../common/model/point";
