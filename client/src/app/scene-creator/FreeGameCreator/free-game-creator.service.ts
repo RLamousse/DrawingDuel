@@ -122,7 +122,6 @@ export class FreeGameCreatorService {
         side: THREE.DoubleSide,
       }));
     }
-
     const skyBox: THREE.Mesh = new THREE.Mesh(geometry, materials);
     skyBox.name = this.SKY_BOX_NAME;
     this.scene.add(skyBox.clone());

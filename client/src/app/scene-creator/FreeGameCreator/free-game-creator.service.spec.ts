@@ -183,4 +183,30 @@ describe("FreeGameCreatorService", () => {
     service["setTexture"](obj, ObjectTexture.rainbow);
     expect(mat.type).not.toEqual((obj.material as THREE.MeshBasicMaterial).type);
   });
+
+  // Test setSkyBoxThematic
+  it("should add a skyBox obj to the scene and modified scene", () => {
+    const service: FreeGameCreatorService = TestBed.get(FreeGameCreatorService);
+    service["scene"] = new THREE.Scene();
+    service["modifiedScene"] = new THREE.Scene();
+    service["setSkyBoxThematic"]();
+    expect(service["scene"].children[0].name).toEqual("skyBox");
+    expect(service["modifiedScene"].children[0].name).toEqual("skyBox");
+  });
+
+  // Test setSkyBoxGeometric
+  it("should add a skyBox obj to the scene and modified scene", () => {
+    const service: FreeGameCreatorService = TestBed.get(FreeGameCreatorService);
+    service["scene"] = new THREE.Scene();
+    service["modifiedScene"] = new THREE.Scene();
+    service["setSkyBoxGeometric"]();
+    expect(service["scene"].children[0].name).toEqual("skyBox");
+    expect(service["modifiedScene"].children[0].name).toEqual("skyBox");
+  });
+
+  // Test buildObjectPath
+  it("should return the right format of a string", () => {
+    const service: FreeGameCreatorService = TestBed.get(FreeGameCreatorService);
+    expect(service["buildObjectPath"](ObjectGeometry[5])).toEqual("assets/Models/space/comet/scene.gltf");
+  });
 });
