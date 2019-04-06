@@ -40,7 +40,7 @@ export class GameComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    //
+    this.roomService.unsubscribe();
   }
 
   protected leftButtonClick(): void {

@@ -71,4 +71,8 @@ export class RoomService {
       gameName,
     }));
   }
+
+  public unsubscribe(): void {
+    this._rooms.length = 0;
+  }
 }
