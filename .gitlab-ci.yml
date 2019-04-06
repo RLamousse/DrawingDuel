@@ -3,48 +3,16 @@
 # ╚══════════╝
 variables:
   CODECOV_TOKEN: "1edf15e3-19b5-420b-a54a-35fac689ef0c"
+image: node
+
 
 # ╔════════╗
 # ║ Stages ║
 # ╚════════╝
 
 stages:
-  - build
   - test
-  - post-test
-
-# ╔══════════════╗
-# ║ Stage: Build ║
-# ╚══════════════╝
-
-.build:
-  stage: build
-  image: node
-
-build client:
-  extends: .build
-  before_script:
-    - cd client
-    - npm ci
-  script:
-    - yarn build
-  only:
-    changes:
-      - .gitlab-ci.yml
-      - client/**/*
-
-build server:
-  extends: .build
-  before_script:
-    - cd server
-    - npm ci
-  script:
-    - yarn tsc
-  only:
-    changes:
-      - .gitlab-ci.yml
-      - server/**/*
-
+  - deep-test
 
 # ╔═════════════╗
 # ║ Stage: Test ║
@@ -53,7 +21,6 @@ build server:
 # Test job template
 .test:
   stage: test
-  image: node
   script: yarn test
   except:
     - merge_requests
@@ -62,8 +29,6 @@ build server:
 test client:
   extends: .test
   image: trion/ng-cli-karma
-  dependencies:
-    - build client
   before_script:
     - cd client
     - npm ci
@@ -75,8 +40,6 @@ test client:
 
 test server:
   extends: .test
-  dependencies:
-    - build server
   before_script:
     - cd server
     - npm ci
@@ -86,16 +49,15 @@ test server:
       - server/**/*
 
 # ╔══════════════════╗
-# ║ Stage: Post-Test ║
+# ║ Stage: deep-test ║
 # ╚══════════════════╝
 
-.post test:
-  stage: post-test
-  image: node
+.deep test:
+  stage: deep-test
 
 # Coverage job template
 .coverage:
-  extends: .post test
+  extends: .deep test
   script:
     - yarn coverage
     - yarn codecov
@@ -104,8 +66,6 @@ test server:
 client coverage:
   extends: .coverage
   image: trion/ng-cli-karma
-  dependencies:
-    - test client
   before_script:
     - cd client
     - npm ci
@@ -125,8 +85,6 @@ client coverage:
 
 server coverage:
   extends: .coverage
-  dependencies:
-    - test server
   before_script:
     - cd server
     - npm ci
@@ -146,13 +104,11 @@ server coverage:
 
 # Lint report job template
 .lint:
-  extends: .post test
+  extends: .deep test
   script: yarn lint
 
 client lint:
   extends: .lint
-  dependencies:
-    - test client
   before_script:
     - cd client
     - npm ci
@@ -166,8 +122,6 @@ client lint:
 
 server lint:
   extends: .lint
-  dependencies:
-    - test server
   before_script:
     - cd server
     - npm ci
