@@ -2,7 +2,7 @@ import {Injectable} from "@angular/core";
 import {TestBed} from "@angular/core/testing";
 import * as THREE from "three";
 import {
-  ObjectGeometry,
+  ObjectGeometry, ObjectTexture,
   Themes
 } from "../../../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
 import * as IObject from "../../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
@@ -10,7 +10,8 @@ import {IScene} from "../../scene-interface";
 import {Form3DService} from "../3DFormService/3-dform.service";
 import {FreeGameCreatorService} from "./free-game-creator.service";
 
-/* tslint:disable:no-magic-numbers */
+// tslint:disable:no-magic-numbers
+// tslint:disable:no-any  to be able to spyOn private method of a service
 @Injectable()
 class MockedForm3DService extends Form3DService {
   public createCube(): THREE.Mesh {
@@ -135,5 +136,51 @@ describe("FreeGameCreatorService", () => {
     const scenes: IScene = service.createScenes(dummyScenes);
     expect(scenes.scene.children.length).toEqual(service["objects"].length + 3);
     expect(scenes.modifiedScene.children.length).toEqual(service["modifiedObjects"].length + 3);
+  });
+
+  // Test generateThematicScenes
+  it ("should call generate thematicObject and setSkyBoxThematic", () => {
+    const service: FreeGameCreatorService = TestBed.get(FreeGameCreatorService);
+    spyOn(service as any, "generateThematicObject").and.returnValue(true);
+    spyOn(service as any, "setSkyBoxThematic").and.returnValue(true);
+    service["generateThematicScenes"](dummyScenes);
+    expect(service["generateThematicObject"]).toHaveBeenCalled();
+    expect(service["setSkyBoxThematic"]).toHaveBeenCalled();
+  });
+
+  // Test traverseChildren
+  it("should call setTexture if scene elem is a Mesh", () => {
+    const service: FreeGameCreatorService = TestBed.get(FreeGameCreatorService);
+    spyOn(service as any, "setTexture").and.returnValue(true);
+    const scene: THREE.Scene = new THREE.Scene();
+    scene.add(new THREE.Mesh(new THREE.BoxGeometry(),  new THREE.MeshBasicMaterial()));
+    service["traverseChildren"](scene, ObjectTexture.blue);
+    expect(service["setTexture"]).toHaveBeenCalled();
+  });
+
+  it("should not call setTexture if no object of type Mesh inside the scene", () => {
+    const service: FreeGameCreatorService = TestBed.get(FreeGameCreatorService);
+    spyOn(service as any, "setTexture").and.returnValue(true);
+    const scene: THREE.Scene = new THREE.Scene();
+    scene.add(new THREE.Object3D().add(new THREE.Camera()));
+    service["traverseChildren"](scene, ObjectTexture.blue);
+    expect(service["setTexture"]).not.toHaveBeenCalled();
+  });
+
+  it("should not call setTexture if no object inside the scene", () => {
+    const service: FreeGameCreatorService = TestBed.get(FreeGameCreatorService);
+    spyOn(service as any, "setTexture").and.returnValue(true);
+    const scene: THREE.Scene = new THREE.Scene();
+    service["traverseChildren"](scene, ObjectTexture.blue);
+    expect(service["setTexture"]).not.toHaveBeenCalled();
+  });
+
+  // Test setTexture
+  it("should replace the object material with a new one containing the texture", () => {
+    const service: FreeGameCreatorService = TestBed.get(FreeGameCreatorService);
+    const mat: THREE.MeshBasicMaterial = new THREE.MeshBasicMaterial();
+    const obj: THREE.Mesh = new THREE.Mesh(new THREE.BoxGeometry(), mat);
+    service["setTexture"](obj, ObjectTexture.rainbow);
+    expect(mat.type).not.toEqual((obj.material as THREE.MeshBasicMaterial).type);
   });
 });
