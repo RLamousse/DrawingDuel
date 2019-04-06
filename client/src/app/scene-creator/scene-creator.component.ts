@@ -25,7 +25,7 @@ export const VICTORY_TEXT: string = "VICTOIRE";
              templateUrl: "./scene-creator.component.html",
              styleUrls: ["./scene-creator.component.css"],
            })
-export class SceneCreatorComponent implements AfterViewInit, OnInit, OnDestroy {
+export class SceneCreatorComponent implements OnInit, OnDestroy {
   private clickEnabled: boolean;
   public constructor(private renderService: SceneRendererService, private route: ActivatedRoute,
                      private freeGameCreator: FreeGameCreatorService, private gameService: GameService) {
@@ -76,10 +76,6 @@ export class SceneCreatorComponent implements AfterViewInit, OnInit, OnDestroy {
         resolve(freeScenes);
       });
     });
-  }
-
-  public ngAfterViewInit(): void {
-
   }
 
   @HostListener("document:keyup", ["$event"])
