@@ -7,15 +7,11 @@
       <div class="timer"><app-timer [gameName] = "gameName"
                                     [isSimpleGame] = "isSimpleGame"></app-timer></div>
       <div class = "row" [class.disabled]="!cursorEnabled">
-        <div>
-          <div class= "scene" (click)="onDivContClick($event)" #originalView>
-            <canvas id="originalCanvasMessage"></canvas>
-          </div>
+        <div class= "scene" (click)="onDivContClick($event)" #originalView>
+          <canvas id="originalCanvasMessage"></canvas>
         </div>
-        <div>
-          <div class= "scene" (click)="onDivContClick($event)" #modifiedView>
-            <canvas id="modifiedCanvasMessage"></canvas>
-          </div>
+        <div class= "scene" (click)="onDivContClick($event)" #modifiedView>
+          <canvas id="modifiedCanvasMessage"></canvas>
         </div>
       </div>
     </div>

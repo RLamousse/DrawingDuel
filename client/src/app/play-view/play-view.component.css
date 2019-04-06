@@ -6,6 +6,8 @@ body {
 
 .chat{
   width: 10%;
+  font-family: Orbitron, serif;
+  padding: 10px;
   max-height: 100%;
 }
 

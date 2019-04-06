@@ -29,12 +29,13 @@ body {
 .row {
   display: flex;
   flex-direction: row;
+  padding:10px;
 }
 
 .scene {
   height: 480px;
   width: 640px;
-  border: 5px transparent solid;
+  border: 5px dashed transparent;
 }
 
 .middleText {
@@ -70,5 +71,5 @@ body {
   top: 25%;
   left: 25%;
   width: 600px;
-  height: 600px;
+  height: 400px;
 }
