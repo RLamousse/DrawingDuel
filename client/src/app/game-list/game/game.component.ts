@@ -5,10 +5,10 @@ import {PlayerCountMessage} from "../../../../../common/communication/messages/m
 import {ComponentNavigationError} from "../../../../../common/errors/component.errors";
 import {IRecordTime} from "../../../../../common/model/game/record-time";
 import {IRoomInfo} from "../../../../../common/model/rooms/room-info";
+import {RoomService} from "../../room.service";
 import {DeleteGameFormComponent} from "./delete-game-form/delete-game-form.component";
 import {GameButtonOptions} from "./game-button-enum";
 import {ResetGameFormComponent} from "./reset-game-form/reset-game-form.component";
-import {RoomService} from "./room.service";
 
 @Component({
   selector: "app-game",
@@ -88,7 +88,7 @@ export class GameComponent implements OnInit, OnDestroy {
         gameName: this.gameName,
         originalImage: this.originalImage,
         modifiedImage: this.modifiedImage,
-        isSimpleGame: this.isSimpleGame
+        isSimpleGame: this.isSimpleGame,
       },
     })
       .catch(() => {
@@ -111,7 +111,7 @@ export class GameComponent implements OnInit, OnDestroy {
   private navigateAwait(): void {
     this.router.navigate(["/await-view/"], {
       queryParams: {
-        gameName: this.gameName, gameType: this.isSimpleGame
+        gameName: this.gameName, gameType: this.isSimpleGame,
       },
     })
       .catch(() => {
