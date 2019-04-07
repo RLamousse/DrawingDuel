@@ -1,4 +1,3 @@
-import {HttpClientModule} from "@angular/common/http";
 import {NgModule, NO_ERRORS_SCHEMA} from "@angular/core";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {
@@ -65,7 +64,6 @@ import {VueAdminComponent} from "./vue-admin/vue-admin.component";
   ],
   imports: [
     BrowserModule,
-    HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
     MatButtonModule,
@@ -91,7 +89,6 @@ import {VueAdminComponent} from "./vue-admin/vue-admin.component";
     FreeGameCreatorService,
     FreeGamePhotoService,
     SimpleGameService,
-    HttpClientModule,
   ],
   bootstrap: [AppComponent],
   entryComponents: [SimpleGameCreatorFormComponent, Create3DGameComponent, DeleteGameFormComponent,

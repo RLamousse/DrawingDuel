@@ -1,4 +1,3 @@
-import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { BrowserModule } from "@angular/platform-browser";
 import Axios from "axios";
@@ -17,7 +16,6 @@ describe("FormPostService", () => {
     TestBed.configureTestingModule({
       imports: [
         BrowserModule,
-        HttpClientTestingModule,
       ],
     });
   });
