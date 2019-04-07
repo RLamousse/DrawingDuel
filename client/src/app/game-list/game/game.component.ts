@@ -83,8 +83,9 @@ export class GameComponent {
   protected formatTime(time: number): string {
     const DECIMALSTART: number = -2;
     const DECIMALTOINTEGER: number = 100;
+    const SEPARATOR: string = ":";
     let timeString: string = Math.floor(time).toString();
-    timeString += ":";
+    timeString += SEPARATOR;
     timeString += ("0" + Math.round(time % 1 * DECIMALTOINTEGER).toString()).slice(DECIMALSTART);
 
     return timeString;
