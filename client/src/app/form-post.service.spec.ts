@@ -72,4 +72,21 @@ describe("FormPostService", () => {
       },
     );
   });
+
+  it("should return success message on success", async (done) => {
+    const service: FormPostService = TestBed.get(FormPostService);
+    // tslint:disable-next-line:typedef
+    axiosMock.onPost(SERVER_BASE_URL)
+      .reply(HttpStatus.OK, {title: "success", body: "message"});
+
+    service.submitForm("", {}).subscribe(
+      (data) => {
+        expect(data).toEqual({title: "success", body: "message"});
+        done();
+      },
+      (error: Error) => {
+        done.fail();
+      },
+    );
+  });
 });
