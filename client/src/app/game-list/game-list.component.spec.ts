@@ -1,3 +1,5 @@
+// Empty blocks are present in mock functions that prevent real ones to be called
+/* tslint:disable:no-empty */
 import {HttpClientModule} from "@angular/common/http";
 import {CUSTOM_ELEMENTS_SCHEMA} from "@angular/core";
 import {ComponentFixture, TestBed} from "@angular/core/testing";
@@ -21,11 +23,26 @@ describe("GameListComponent", () => {
     private mockedFreeGames: IFreeGame[] = [];
 
     public getSimpleGames(): Observable<ISimpleGame[]> {
-      return Observable.create(this.mockedSimpleGames);
+      return new Observable((subscriber) => {
+        subscriber.next(this.mockedSimpleGames);
+        subscriber.complete();
+      });
     }
 
     public getFreeGames(): Observable<IFreeGame[]> {
-      return Observable.create(this.mockedFreeGames);
+      return new Observable((subscriber) => {
+        subscriber.next(this.mockedFreeGames);
+        subscriber.complete();
+      });
+    }
+
+    public pushSimpleGames(games: ISimpleGame[]): void {
+    }
+
+    public async pushFreeGames(games: IFreeGame[]): Promise<void> {
+    }
+
+    public async updateFreeGameImages(): Promise<void> {
     }
   }
 
