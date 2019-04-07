@@ -72,7 +72,6 @@ export class DiffCounterComponent implements OnInit {
         throw new ComponentNavigationError();
       });
     });
-
   }
 
   private postTime(): void {

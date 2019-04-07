@@ -72,7 +72,7 @@ export class GameService {
     }
   }
 
-  public async pushFreeGames(freeGamesToModify: IFreeGame[]): Promise<void> {
+  public pushFreeGames(freeGamesToModify: IFreeGame[]): void {
     this.freeGames = [];
     this.extendedFreeGames = [];
     this.convertScoresObject(freeGamesToModify);
@@ -95,6 +95,7 @@ export class GameService {
         this.extendedFreeGames.push(extendedFreeGame);
       }
     }
+
   }
 
   public getSimpleGames(): Observable<ISimpleGame[]> {

@@ -12,16 +12,18 @@ export class GameListComponent implements OnInit {
 
   @Input() protected readonly rightButton: string = "joindre";
   @Input() protected readonly leftButton: string = "jouer";
+  protected pushedGames: boolean;
 
   public constructor(private gameService: GameService) {
+    this.pushedGames = false;
   }
 
   public ngOnInit(): void {
     forkJoin(this.gameService.getSimpleGames(), this.gameService.getFreeGames()).subscribe(([simpleGames, freeGames]) => {
-
       this.gameService.pushSimpleGames(simpleGames);
-      this.gameService.pushFreeGames(freeGames).catch((value: Error) => {throw value; });
+      this.gameService.pushFreeGames(freeGames);
       this.gameService.updateFreeGameImages().catch((value: Error) => {throw value; });
+      this.pushedGames = true;
     });
   }
 
