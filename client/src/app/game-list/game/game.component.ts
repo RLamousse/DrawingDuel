@@ -1,9 +1,8 @@
 import {Component, Input, OnDestroy, OnInit} from "@angular/core";
 import {MatDialog, MatDialogConfig} from "@angular/material";
 import {Router} from "@angular/router";
-import {PlayerCountMessage} from "../../../../../common/communication/messages/message";
 import {ComponentNavigationError} from "../../../../../common/errors/component.errors";
-import {GameType} from "../../../../../common/model/game/game";
+import {GameType, OnlineType} from "../../../../../common/model/game/game";
 import {IRecordTime} from "../../../../../common/model/game/record-time";
 import {IRoomInfo} from "../../../../../common/model/rooms/room-info";
 import {RoomService} from "../../room.service";
@@ -47,7 +46,7 @@ export class GameComponent implements OnInit, OnDestroy {
 
   protected leftButtonClick(): void {
     if (this.leftButton === GameButtonOptions.PLAY) {
-      this.roomService.createRoom(this.gameName, PlayerCountMessage.SOLO);
+      this.roomService.createRoom(this.gameName, OnlineType.SOLO);
       this.gameType === GameType.SIMPLE ? this.navigatePlayView() : this.navigateFreeView();
     } else if (this.leftButton === GameButtonOptions.DELETE) {
       const dialogConfig: MatDialogConfig = new MatDialogConfig();
@@ -70,7 +69,7 @@ export class GameComponent implements OnInit, OnDestroy {
 
   private handleGameJoin(): void {
     if (this.rightButton === GameButtonOptions.CREATE) {
-      this.roomService.createRoom(this.gameName, PlayerCountMessage.MULTI);
+      this.roomService.createRoom(this.gameName, OnlineType.MULTI);
     } else if (this.rightButton === GameButtonOptions.JOIN) {
       this.roomService.checkInRoom(this.gameName);
     }

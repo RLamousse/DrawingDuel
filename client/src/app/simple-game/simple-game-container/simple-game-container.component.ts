@@ -3,7 +3,7 @@ import {
   createWebsocketMessage,
   ChatMessage,
   ChatMessagePosition,
-  ChatMessageType, PlayerCountMessage, WebsocketMessage
+  ChatMessageType, WebsocketMessage
 } from "../../../../../common/communication/messages/message";
 import {SocketEvent} from "../../../../../common/communication/socket-events";
 import {AlreadyFoundDifferenceError, NoDifferenceAtPointError} from "../../../../../common/errors/services.errors";

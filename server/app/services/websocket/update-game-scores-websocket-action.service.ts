@@ -5,7 +5,7 @@ import {
     createWebsocketMessage,
     ChatMessage,
     ChatMessagePosition,
-    ChatMessageType, PlayerCountMessage,
+    ChatMessageType,
     UpdateScoreMessage,
     WebsocketMessage
 } from "../../../../common/communication/messages/message";

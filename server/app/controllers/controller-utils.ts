@@ -51,7 +51,7 @@ export const assertUpdateScoreTable: (req: Express.Request) => void = (req: Requ
     typeof req.body.newTime.time !== "number" ||
     req.body.newTime.name === "" ||
     !(req.body.onlineType === OnlineType.SOLO ||
-    req.body.onlineType === OnlineType.MULTIPLAYER)) {
+    req.body.onlineType === OnlineType.MULTI)) {
         throw new RequestFormatError();
     }
 };

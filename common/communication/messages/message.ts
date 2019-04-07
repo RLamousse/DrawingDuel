@@ -51,7 +51,7 @@ export interface RoomMessage {
 }
 
 export interface RoomCreationMessage extends RoomMessage {
-    playerCount: PlayerCountMessage;
+    playerCount: OnlineType;
     username: string;
 }
 

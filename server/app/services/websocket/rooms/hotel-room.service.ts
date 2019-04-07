@@ -4,13 +4,13 @@ import {Socket} from "socket.io";
 import * as uuid from "uuid/v4";
 import {
     createWebsocketMessage,
-    PlayerCountMessage,
     RoomInteractionMessage,
     WebsocketMessage
 } from "../../../../../common/communication/messages/message";
 import {SocketEvent} from "../../../../../common/communication/socket-events";
 import {NonExistentGameError} from "../../../../../common/errors/database.errors";
 import {GameRoomCreationError, NonExistentRoomError} from "../../../../../common/errors/services.errors";
+import {OnlineType} from "../../../../../common/model/game/game";
 import {IRoomInfo} from "../../../../../common/model/rooms/room-info";
 import {IGameRoom} from "../../../model/room/game-room";
 import types from "../../../types";
@@ -31,14 +31,14 @@ export class HotelRoomService {
         this._sockets = new Map<Socket, string>();
     }
 
-    private static playerCountFromMessage(playerCountMessage: PlayerCountMessage): number {
+    private static playerCountFromMessage(playerCountMessage: OnlineType): number {
         const multi: number = 2;
         const solo: number = 1;
 
-        return playerCountMessage === PlayerCountMessage.SOLO ? solo : multi;
+        return playerCountMessage === OnlineType.SOLO ? solo : multi;
     }
 
-    public async createGameRoom(socket: Socket, gameName: string, playerCount: PlayerCountMessage): Promise<void> {
+    public async createGameRoom(socket: Socket, gameName: string, playerCount: OnlineType): Promise<void> {
         let room: IGameRoom;
         const roomId: string = uuid();
 

@@ -2,12 +2,12 @@ import {Injectable} from "@angular/core";
 import {Subscription} from "rxjs";
 import {
   createWebsocketMessage,
-  PlayerCountMessage,
   RoomCheckInMessage,
   RoomCreationMessage,
   WebsocketMessage
 } from "../../../common/communication/messages/message";
 import {SocketEvent} from "../../../common/communication/socket-events";
+import {OnlineType} from "../../../common/model/game/game";
 import {IRoomInfo} from "../../../common/model/rooms/room-info";
 import {SocketService} from "./socket.service";
 import {UNListService} from "./username.service";
@@ -51,7 +51,7 @@ export class RoomService {
     this.socket.onEvent<IRoomInfo[]>(SocketEvent.PUSH_ROOMS).subscribe(this.handleFetchRooms);
   }
 
-  public createRoom(gameName: string, playerCount: PlayerCountMessage): void {
+  public createRoom(gameName: string, playerCount: OnlineType): void {
     this.socket.send(SocketEvent.CREATE, createWebsocketMessage<RoomCreationMessage>({
       gameName,
       playerCount,

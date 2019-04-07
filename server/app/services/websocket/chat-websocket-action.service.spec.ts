@@ -79,7 +79,7 @@ describe("ChatWebsocketActionService", () => {
         service.execute(message, socket as unknown as SocketIO.Socket);
         expect(socket.eventValue).to.equal(SocketEvent.CHAT);
         expect(socket.emitValue).to.equal("12:51:46 – Différence trouvée.");
-        message.body.playerCount = OnlineType.MULTIPLAYER;
+        message.body.playerCount = OnlineType.MULTI;
         service.execute(message, socket as unknown as SocketIO.Socket);
         expect(socket.eventValue).to.equal(SocketEvent.CHAT);
         expect(socket.emitValue).to.equal("12:51:46 – Différence trouvée par Maxime.");
@@ -97,7 +97,7 @@ describe("ChatWebsocketActionService", () => {
         service.execute(message, socket as unknown as SocketIO.Socket);
         expect(socket.eventValue).to.equal(SocketEvent.CHAT);
         expect(socket.emitValue).to.equal("12:51:46 – Erreur.");
-        message.body.playerCount = OnlineType.MULTIPLAYER;
+        message.body.playerCount = OnlineType.MULTI;
         service.execute(message, socket as unknown as SocketIO.Socket);
         expect(socket.eventValue).to.equal(SocketEvent.CHAT);
         expect(socket.emitValue).to.equal("12:51:46 – Erreur par Maxime.");

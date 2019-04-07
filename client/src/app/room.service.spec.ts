@@ -1,8 +1,9 @@
 import {TestBed} from "@angular/core/testing";
 
 import {Subscription} from "rxjs";
-import {createWebsocketMessage, PlayerCountMessage} from "../../../common/communication/messages/message";
+import {createWebsocketMessage} from "../../../common/communication/messages/message";
 import {SocketEvent} from "../../../common/communication/socket-events";
+import {OnlineType} from "../../../common/model/game/game";
 import {IRoomInfo} from "../../../common/model/rooms/room-info";
 import {RoomService} from "./room.service";
 import {SocketService} from "./socket.service";
@@ -48,7 +49,7 @@ describe("RoomService", () => {
   it("should make the socket call to create the room", () => {
     const service: RoomService = TestBed.get(RoomService);
     const spy: jasmine.Spy = spyOn(service["socket"], "send");
-    service.createRoom("max", PlayerCountMessage.MULTI);
+    service.createRoom("max", OnlineType.MULTI);
     expect(spy).toHaveBeenCalled();
     expect(spy.calls.mostRecent().args[0]).toEqual(SocketEvent.CREATE);
   });

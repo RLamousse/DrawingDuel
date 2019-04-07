@@ -67,7 +67,7 @@ export class ChatWebsocketActionService extends WebsocketActionService {
 
     private getDiffErrorMessage(data: ChatMessage): string {
         let message: string = this._DIFF_ERROR_BASE_MESSAGE;
-        if (data.playerCount === OnlineType.MULTIPLAYER) {
+        if (data.playerCount === OnlineType.MULTI) {
             message += (` par ${data.playerName}`);
         }
 
@@ -76,7 +76,7 @@ export class ChatWebsocketActionService extends WebsocketActionService {
 
     private getDiffFoundMessage(data: ChatMessage): string {
         let message: string = this._DIFF_FOUND_BASE_MESSAGE;
-        if (data.playerCount === OnlineType.MULTIPLAYER) {
+        if (data.playerCount === OnlineType.MULTI) {
             message += (` par ${data.playerName}`);
         }
 

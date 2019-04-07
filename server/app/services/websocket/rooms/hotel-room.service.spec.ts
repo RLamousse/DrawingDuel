@@ -1,17 +1,17 @@
 // tslint:disable:max-file-line-count This is a test file full of Pitbull references...
 import {fail} from "assert";
 import {assert, expect} from "chai";
-import * as io from "socket.io";
 // tslint:disable-next-line:no-duplicate-imports Weird interaction between singletons and interface (olivier st-o approved)
 import {Server, Socket} from "socket.io";
 import {connect} from "socket.io-client";
 import {anything, anyString, instance, mock, reset, spy, verify, when} from "ts-mockito";
 import {IMock, Mock} from "typemoq";
-import {createWebsocketMessage, PlayerCountMessage, RoomInteractionMessage} from "../../../../../common/communication/messages/message";
+import {createWebsocketMessage, RoomInteractionMessage} from "../../../../../common/communication/messages/message";
 import {SocketEvent} from "../../../../../common/communication/socket-events";
 import {DatabaseError, NonExistentGameError} from "../../../../../common/errors/database.errors";
 import {GameRoomCreationError, NonExistentRoomError, NoDifferenceAtPointError} from "../../../../../common/errors/services.errors";
 import {IFreeGame} from "../../../../../common/model/game/free-game";
+import {OnlineType} from "../../../../../common/model/game/game";
 import {ISimpleGame} from "../../../../../common/model/game/simple-game";
 import {ORIGIN} from "../../../../../common/model/point";
 import {ISimpleGameInteractionData, ISimpleGameInteractionResponse} from "../../../../../common/model/rooms/interaction";
@@ -143,8 +143,8 @@ describe("A service to manage game rooms", () => {
         };
 
     const createGameRoom:
-        (hotelRoomService: HotelRoomService, gameName: string, gameType?: PlayerCountMessage) => Promise<IGameRoom> =
-        async (hotelRoomService: HotelRoomService, gameName: string, gameType: PlayerCountMessage = PlayerCountMessage.SOLO) => {
+        (hotelRoomService: HotelRoomService, gameName: string, gameType?: OnlineType) => Promise<IGameRoom> =
+        async (hotelRoomService: HotelRoomService, gameName: string, gameType: OnlineType = OnlineType.SOLO) => {
             const hotelRoomServiceSpy: HotelRoomService = spy(hotelRoomService);
 
             // TODO check room assert.isNotEmpty(serverSocket.rooms);
@@ -207,7 +207,7 @@ describe("A service to manage game rooms", () => {
                     .thenResolve(false);
             });
 
-            hotelRoomService.createGameRoom(serverSocket, "You can't catch meh boy", PlayerCountMessage.SOLO)
+            hotelRoomService.createGameRoom(serverSocket, "You can't catch meh boy", OnlineType.SOLO)
                 .then(() => fail())
                 .catch((error: NonExistentGameError) => {
                     expect(error.message)
@@ -252,7 +252,7 @@ describe("A service to manage game rooms", () => {
                     .thenThrow(new DatabaseError());
             });
 
-            hotelRoomService.createGameRoom(serverSocket, gameName, PlayerCountMessage.SOLO)
+            hotelRoomService.createGameRoom(serverSocket, gameName, OnlineType.SOLO)
                 .then(() => fail())
                 .catch((error: GameRoomCreationError) => {
                     expect(error.message)

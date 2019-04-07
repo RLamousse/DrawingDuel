@@ -6,7 +6,7 @@ import * as THREE from "three";
 import {
   createWebsocketMessage,
   ChatMessage,
-  ChatMessagePosition, ChatMessageType, PlayerCountMessage,
+  ChatMessagePosition, ChatMessageType,
   WebsocketMessage
 } from "../../../../common/communication/messages/message";
 import {DIFF_VALIDATOR_3D_BASE, SERVER_BASE_URL} from "../../../../common/communication/routes";
