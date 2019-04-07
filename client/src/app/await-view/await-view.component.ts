@@ -1,9 +1,11 @@
-import {Component, OnInit} from "@angular/core";
+import {Component, OnDestroy, OnInit} from "@angular/core";
 import {MatDialog, MatDialogConfig} from "@angular/material";
 import {ActivatedRoute, Router} from "@angular/router";
+import {Subscription} from "rxjs";
 import {WebsocketMessage} from "../../../../common/communication/messages/message";
 import {SocketEvent} from "../../../../common/communication/socket-events";
 import {ComponentNavigationError} from "../../../../common/errors/component.errors";
+import {RoomService} from "../room.service";
 import {SocketService} from "../socket.service";
 import {GameDeletionNotifComponent} from "./game-deletion-notif/game-deletion-notif.component";
 
@@ -12,15 +14,23 @@ import {GameDeletionNotifComponent} from "./game-deletion-notif/game-deletion-no
   templateUrl: "./await-view.component.html",
   styleUrls: ["./await-view.component.css"],
 })
-export class AwaitViewComponent implements OnInit {
+export class AwaitViewComponent implements OnInit, OnDestroy {
 
   protected gameName: string;
   protected isSimpleGame: boolean;
   protected readonly indexString: number = 0;
 
+  private gameStartSub: Subscription;
+
   public constructor(private activatedRoute: ActivatedRoute, private route: Router,
-                     private socket: SocketService, private dialog: MatDialog) {
+                     private socket: SocketService, private dialog: MatDialog,
+                     private roomService: RoomService) {
     this.executeGameDeletionRoutine = this.executeGameDeletionRoutine.bind(this);
+    this.handleGameStart = this.handleGameStart.bind(this);
+  }
+
+  public ngOnDestroy(): void {
+    this.gameStartSub.unsubscribe();
   }
 
   public ngOnInit(): void {
@@ -28,7 +38,13 @@ export class AwaitViewComponent implements OnInit {
       this.gameName = params["gameName"];
       this.isSimpleGame = params["gameType"];
     });
+    this.roomService.signalReady();
+    this.gameStartSub = this.roomService.subscribeToGameStart(this.handleGameStart);
     this.socket.onEvent(SocketEvent.DELETE).subscribe(this.executeGameDeletionRoutine);
+  }
+
+  private handleGameStart(): void {
+    console.log("GAME IS STARTING");
   }
 
   private executeGameDeletionRoutine(message: WebsocketMessage<[string, boolean]>): void {
@@ -37,8 +53,8 @@ export class AwaitViewComponent implements OnInit {
   }
 
   private navigateGameList (): void {
-    this.route.navigate(["/game-list/"]) // tslint:disable-next-line:no-any Generic error response
-    .catch((reason: any) => {
+    this.route.navigate(["/game-list/"])
+    .catch(() => {
       throw new ComponentNavigationError();
     });
   }
