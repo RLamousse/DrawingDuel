@@ -3,7 +3,11 @@ import Axios, {AxiosResponse} from "axios";
 import * as Httpstatus from "http-status-codes";
 import {Observable, Subject} from "rxjs";
 import {IDiffValidatorControllerRequest} from "../../../../common/communication/requests/diff-validator-controller.request";
-import {DB_SIMPLE_GAME, DIFF_VALIDATOR_BASE, SERVER_BASE_URL} from "../../../../common/communication/routes";
+import {
+  DIFF_VALIDATOR_BASE,
+  GAME_MANAGER_SIMPLE,
+  SERVER_BASE_URL
+} from "../../../../common/communication/routes";
 import {NonExistentGameError} from "../../../../common/errors/database.errors";
 import {AbstractServiceError, AlreadyFoundDifferenceError, NoDifferenceAtPointError} from "../../../../common/errors/services.errors";
 import {ISimpleGameState} from "../../../../common/model/game/game-state";
@@ -92,7 +96,7 @@ export class SimpleGameService {
   }
 
   private async getGame(): Promise<ISimpleGame> {
-    return Axios.get<ISimpleGame>(SERVER_BASE_URL + DB_SIMPLE_GAME + this._gameName)
+    return Axios.get<ISimpleGame>(SERVER_BASE_URL + GAME_MANAGER_SIMPLE + this._gameName)
       .then((value: AxiosResponse<ISimpleGame>) => value.data)
       // tslint:disable-next-line:no-any Since Axios defines reason as `any`
       .catch(() => {

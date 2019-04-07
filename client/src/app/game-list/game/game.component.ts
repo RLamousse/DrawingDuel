@@ -3,6 +3,7 @@ import {MatDialog, MatDialogConfig} from "@angular/material";
 import {Router} from "@angular/router";
 import {PlayerCountMessage} from "../../../../../common/communication/messages/message";
 import {ComponentNavigationError} from "../../../../../common/errors/component.errors";
+import {GameType} from "../../../../../common/model/game/game";
 import {IRecordTime} from "../../../../../common/model/game/record-time";
 import {IRoomInfo} from "../../../../../common/model/rooms/room-info";
 import {RoomService} from "../../room.service";
@@ -32,7 +33,8 @@ export class GameComponent implements OnInit, OnDestroy {
   @Input() public thumbnail: string;
   @Input() public rightButton: string;
   @Input() public leftButton: string;
-  @Input() public isSimpleGame: boolean;
+  @Input() public gameType: GameType;
+  @Input() public simpleGameTag: GameType = GameType.SIMPLE;
 
   public ngOnInit(): void {
     this.roomService.subscribeToFetchRooms(this.handleRoomAvailability);
@@ -46,11 +48,11 @@ export class GameComponent implements OnInit, OnDestroy {
   protected leftButtonClick(): void {
     if (this.leftButton === GameButtonOptions.PLAY) {
       this.roomService.createRoom(this.gameName, PlayerCountMessage.SOLO);
-      this.isSimpleGame ? this.navigatePlayView() : this.navigateFreeView();
+      this.gameType === GameType.SIMPLE ? this.navigatePlayView() : this.navigateFreeView();
     } else if (this.leftButton === GameButtonOptions.DELETE) {
       const dialogConfig: MatDialogConfig = new MatDialogConfig();
       dialogConfig.autoFocus = true;
-      dialogConfig.data = {gameName: this.gameName, isSimpleGame: this.isSimpleGame};
+      dialogConfig.data = {gameName: this.gameName, gameType: this.gameType};
       this.dialog.open(DeleteGameFormComponent, dialogConfig);
     }
   }
@@ -59,7 +61,7 @@ export class GameComponent implements OnInit, OnDestroy {
     if (this.rightButton === GameButtonOptions.REINITIALIZE) {
       const dialogConfig: MatDialogConfig = new MatDialogConfig();
       dialogConfig.autoFocus = true;
-      dialogConfig.data = {gameName: this.gameName, isSimpleGame: this.isSimpleGame};
+      dialogConfig.data = {gameName: this.gameName, gameType: this.gameType};
       this.dialog.open(ResetGameFormComponent, dialogConfig).afterClosed().subscribe(() => window.location.reload());
     } else {
       this.handleGameJoin();
@@ -83,13 +85,14 @@ export class GameComponent implements OnInit, OnDestroy {
   }
 
   private navigatePlayView(): void {
-    this.router.navigate(["/play-view/"], {
-      queryParams: {
-        gameName: this.gameName,
-        originalImage: this.originalImage,
-        modifiedImage: this.modifiedImage,
-        isSimpleGame: this.isSimpleGame,
-      },
+
+   this.router.navigate(["/play-view/"], {
+     queryParams: {
+       gameName: this.gameName,
+       originalImage: this.originalImage,
+       modifiedImage: this.modifiedImage,
+       gameType: this.gameType,
+     },
     })
       .catch(() => {
         throw new ComponentNavigationError();
@@ -100,7 +103,7 @@ export class GameComponent implements OnInit, OnDestroy {
     this.router.navigate(["/3d-view/"], {
       queryParams: {
         gameName: this.gameName,
-        isSimpleGame: this.isSimpleGame,
+        gameType: this.gameType,
       },
     })
       .catch(() => {
@@ -109,13 +112,23 @@ export class GameComponent implements OnInit, OnDestroy {
   }
 
   private navigateAwait(): void {
-    this.router.navigate(["/await-view/"], {
-      queryParams: {
-        gameName: this.gameName, gameType: this.isSimpleGame,
-      },
+    this.router.navigate(["/await-view/"], {queryParams: {
+      gameName: this.gameName, gameType: this.gameType},
     })
       .catch(() => {
         throw new ComponentNavigationError();
       });
   }
+
+  protected formatTime(time: number): string {
+    const DECIMALSTART: number = -2;
+    const DECIMALTOINTEGER: number = 100;
+    const SEPARATOR: string = ":";
+    let timeString: string = Math.floor(time).toString();
+    timeString += SEPARATOR;
+    timeString += ("0" + Math.round(time % 1 * DECIMALTOINTEGER).toString()).slice(DECIMALSTART);
+
+    return timeString;
+  }
+
 }

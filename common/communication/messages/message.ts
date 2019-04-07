@@ -1,5 +1,6 @@
 import {IInteractionData} from "../../model/rooms/interaction";
 import {IRecordTime} from "../../model/game/record-time";
+import {OnlineType} from "../../model/game/game";
 
 export interface Message {
     title: string;
@@ -36,13 +37,13 @@ export interface ChatMessage {
     playerName: string;
     gameName: string;
     position: ChatMessagePosition;
-    playerCount: PlayerCountMessage;
+    playerCount: OnlineType;
 }
 
 export interface UpdateScoreMessage {
     newTime: IRecordTime;
     gameName: string;
-    isSolo: boolean;
+    onlineType: OnlineType;
 }
 
 export interface RoomMessage {

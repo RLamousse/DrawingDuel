@@ -1,9 +1,9 @@
 /* tslint:disable:max-file-line-count */
 // tslint:disable:no-magic-numbers we want to use magic numbers to simplify our tests
 import Axios from "axios";
-import MockAdapter from "axios-mock-adapter";
-// tslint:disable-next-line:no-duplicate-imports Weird interaction between singletons and interface (olivier st-o approved)
 import AxiosAdapter from "axios-mock-adapter";
+// tslint:disable-next-line:no-duplicate-imports Weird interaction between singletons and interface (olivier st-o approved)
+import MockAdapter from "axios-mock-adapter";
 import {expect} from "chai";
 import * as HttpStatus from "http-status-codes";
 import {Socket} from "socket.io";
@@ -11,12 +11,13 @@ import {anything, instance, mock, when} from "ts-mockito";
 import {
     createWebsocketMessage,
     ChatMessage, ChatMessagePosition,
-    ChatMessageType, PlayerCountMessage,
     UpdateScoreMessage,
-    WebsocketMessage
+    WebsocketMessage,
+    ChatMessageType
 } from "../../../../common/communication/messages/message";
 import {MODIFY_SCORES, SERVER_BASE_URL} from "../../../../common/communication/routes";
 import {IllegalArgumentError, ScoreNotGoodEnough} from "../../../../common/errors/services.errors";
+import {OnlineType} from "../../../../common/model/game/game";
 import {ChatWebsocketActionService} from "./chat-websocket-action.service";
 import {UpdateGameScoresWebsocketActionService} from "./update-game-scores-websocket-action.service";
 
@@ -43,12 +44,13 @@ describe("Update Game Scores Websocket Action Service", () => {
         axiosMock.onPut(SERVER_BASE_URL + MODIFY_SCORES)
             .reply(HttpStatus.INTERNAL_SERVER_ERROR, new ScoreNotGoodEnough());
         when(mockedChatWebsocketActionService.execute(anything(), anything())).thenThrow();
-        const message: WebsocketMessage<UpdateScoreMessage> = createWebsocketMessage(
-            {
-                isSolo: true,
-                gameName: "someGame",
-                newTime: {name: "someGuy", time: 123},
-            });
+        const message: WebsocketMessage<UpdateScoreMessage> = createWebsocketMessage<UpdateScoreMessage>({
+            onlineType: OnlineType.SOLO,
+            gameName: "someGame",
+            newTime: {
+                name: "someGuy", time: 123,
+            },
+        });
 
         return getMockedService().execute(message, {} as Socket).catch(() => {
             expect.fail();
@@ -60,12 +62,13 @@ describe("Update Game Scores Websocket Action Service", () => {
         axiosMock.onPut(SERVER_BASE_URL + MODIFY_SCORES)
             .reply(HttpStatus.INTERNAL_SERVER_ERROR, new IllegalArgumentError());
         when(mockedChatWebsocketActionService.execute(anything(), anything())).thenReturn();
-        const message: WebsocketMessage<UpdateScoreMessage> = createWebsocketMessage(
-            {
-                isSolo: true,
-                gameName: "someGame",
-                newTime: {name: "someGuy", time: 123},
-            });
+        const message: WebsocketMessage<UpdateScoreMessage> = createWebsocketMessage<UpdateScoreMessage>({
+            onlineType: OnlineType.SOLO,
+            gameName: "someGame",
+            newTime: {
+                name: "someGuy", time: 123,
+            },
+        });
 
         return getMockedService().execute(message, {} as Socket).catch((error: Error) => {
             expect(error.message).to.eql(IllegalArgumentError.ARGUMENT_ERROR_MESSAGE );
@@ -81,16 +84,17 @@ describe("Update Game Scores Websocket Action Service", () => {
                 expect(data.body).to.contain({type: ChatMessageType.BEST_TIME,
                                               gameName: "someGame",
                                               playerName: "someGuy",
-                                              playerCount: PlayerCountMessage.SOLO,
+                                              playerCount: OnlineType.SOLO,
                                               position: ChatMessagePosition.FIRST,
                 });
             });
-        const message: WebsocketMessage<UpdateScoreMessage> = createWebsocketMessage(
-            {
-                isSolo: true,
+        const message: WebsocketMessage<UpdateScoreMessage> = createWebsocketMessage<UpdateScoreMessage>({
+                onlineType: OnlineType.SOLO,
                 gameName: "someGame",
-                newTime: {name: "someGuy", time: 123},
-            });
+                newTime: {
+                    name: "someGuy", time: 123,
+                },
+        });
         await getMockedService().execute(message, {} as Socket);
     });
 });

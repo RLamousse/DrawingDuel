@@ -1,26 +1,29 @@
 /* tslint:disable:max-file-line-count */
 // tslint:disable:no-magic-numbers
 import Axios from "axios";
-import AxiosAdapter from "axios-mock-adapter";
-// tslint:disable-next-line:no-duplicate-imports Weird interaction between singletons and interface (olivier st-o approved)
 import MockAdapter from "axios-mock-adapter";
+// tslint:disable-next-line:no-duplicate-imports Weird interaction between singletons and interface (olivier st-o approved)
+import AxiosAdapter from "axios-mock-adapter";
 import {expect} from "chai";
 import * as fs from "fs";
 import * as HttpStatus from "http-status-codes";
 import {anything, instance, mock, when} from "ts-mockito";
-import {DB_FREE_GAME, DB_SIMPLE_GAME, DIFF_CREATOR_BASE, SERVER_BASE_URL} from "../../../common/communication/routes";
+import {DIFF_CREATOR_BASE, SERVER_BASE_URL} from "../../../common/communication/routes";
 import {
+    AbstractDataBaseError,
     AlreadyExistentGameError,
-    NonExistentGameError,
     NonExistentThemeError
 } from "../../../common/errors/database.errors";
-import {DifferenceCountError} from "../../../common/errors/services.errors";
+import {AbstractServiceError, DifferenceCountError} from "../../../common/errors/services.errors";
 import {
     ModificationType,
     Themes
 } from "../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
 import {ISimpleDifferenceData} from "../../../common/model/game/simple-game";
 import {IPoint, ORIGIN} from "../../../common/model/point";
+import {DataBaseService} from "./data-base.service";
+import {FreeGamesCollectionService} from "./db/free-games.collection.service";
+import {SimpleGamesCollectionService} from "./db/simple-games.collection.service";
 import {DifferenceEvaluatorService} from "./difference-evaluator.service";
 import {FreeGameCreatorService} from "./free-game-creator.service";
 import {EXPECTED_DIFF_NUMBER, GameCreatorService} from "./game-creator.service";
@@ -32,6 +35,9 @@ describe("A service that creates a game", () => {
     let mockedDifferenceEvaluatorServiceMock: DifferenceEvaluatorService;
     let mockedImageUploadService: ImageUploadService;
     let mockedFreeGameCreatorService: FreeGameCreatorService;
+    let mockedDataBaseService: DataBaseService;
+    let mockedSimpleGames: SimpleGamesCollectionService;
+    let mockedFreeGames: FreeGamesCollectionService;
 
     const createdMockedDiffData: (diffCount: number) => ISimpleDifferenceData = (diffCount: number) => {
         const mockedDifferenceData: Map<number, IPoint[]> = new Map();
@@ -43,8 +49,12 @@ describe("A service that creates a game", () => {
     };
 
     const getMockedService: () => GameCreatorService = () => {
+        when(mockedDataBaseService.simpleGames).thenReturn(instance(mockedSimpleGames));
+        when(mockedDataBaseService.freeGames).thenReturn(instance(mockedFreeGames));
+
         return new GameCreatorService(
             instance(mockedDifferenceEvaluatorServiceMock),
+            instance(mockedDataBaseService),
             instance(mockedImageUploadService),
             instance(mockedFreeGameCreatorService),
         );
@@ -53,10 +63,15 @@ describe("A service that creates a game", () => {
     beforeEach(() => {
         axiosMock = new AxiosAdapter(Axios);
 
+        mockedDataBaseService = mock(DataBaseService);
+        mockedSimpleGames = mock(SimpleGamesCollectionService);
+        mockedFreeGames = mock(FreeGamesCollectionService);
         mockedDifferenceEvaluatorServiceMock = mock(DifferenceEvaluatorService);
         mockedImageUploadService = mock(ImageUploadService);
         mockedFreeGameCreatorService = mock(FreeGameCreatorService);
 
+        when(mockedSimpleGames.contains(anything())).thenResolve(false);
+        when(mockedFreeGames.contains(anything())).thenResolve(false);
         when(mockedDifferenceEvaluatorServiceMock.getSimpleNDifferences(anything()))
             .thenReturn(createdMockedDiffData(EXPECTED_DIFF_NUMBER));
         when(mockedImageUploadService.uploadImage(anything())).thenResolve("");
@@ -68,8 +83,7 @@ describe("A service that creates a game", () => {
 
         it("should throw a name error if the game name is already in the data base", async () => {
 
-            axiosMock.onGet(SERVER_BASE_URL + DB_SIMPLE_GAME + "nonExistingGameTest")
-                .reply(HttpStatus.OK);
+            when(mockedSimpleGames.contains(anything())).thenResolve(true);
 
             try {
                 await getMockedService()
@@ -84,11 +98,6 @@ describe("A service that creates a game", () => {
         });
 
         it("should throw a difference error if there are less than 7 differences", async () => {
-
-            axiosMock.onGet(SERVER_BASE_URL + DB_SIMPLE_GAME + "someGameTest")
-                .reply(HttpStatus.NOT_FOUND, {message: NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE});
-            axiosMock.onGet(SERVER_BASE_URL + DB_FREE_GAME + "someGameTest")
-                .reply(HttpStatus.NOT_FOUND, {message: NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE});
 
             axiosMock.onPost(SERVER_BASE_URL + DIFF_CREATOR_BASE)
                 .reply(HttpStatus.OK, fs.readFileSync("test/test_files_for_game_creator_service/6diff-modified.bmp"));
@@ -110,11 +119,6 @@ describe("A service that creates a game", () => {
 
         it("should throw a difference error if there are more than 7 differences", async () => {
 
-            axiosMock.onGet(SERVER_BASE_URL + DB_SIMPLE_GAME + "/someGameTest")
-                .reply(HttpStatus.NOT_FOUND, {message: NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE});
-            axiosMock.onGet(SERVER_BASE_URL + DB_FREE_GAME + "/someGameTest")
-                .reply(HttpStatus.NOT_FOUND, {message: NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE});
-
             axiosMock.onPost(SERVER_BASE_URL + DIFF_CREATOR_BASE)
                 .reply(HttpStatus.OK, fs.readFileSync("test/test_files_for_game_creator_service/8diff-modified.bmp"));
 
@@ -134,10 +138,6 @@ describe("A service that creates a game", () => {
         });
 
         it("should throw on diff image microservice call error", async () => {
-            axiosMock.onGet(SERVER_BASE_URL + DB_SIMPLE_GAME + "/someGameTest")
-                .reply(HttpStatus.NOT_FOUND, {message: NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE});
-            axiosMock.onGet(SERVER_BASE_URL + DB_FREE_GAME + "/someGameTest")
-                .reply(HttpStatus.NOT_FOUND, {message: NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE});
 
             axiosMock.onPost(SERVER_BASE_URL + DIFF_CREATOR_BASE)
                 .reply(HttpStatus.INTERNAL_SERVER_ERROR, {message: "error"});
@@ -153,10 +153,6 @@ describe("A service that creates a game", () => {
         });
 
         it("should throw on differenceEvaluatorService call error", async () => {
-            axiosMock.onGet(SERVER_BASE_URL + DB_SIMPLE_GAME + "/someGameTest")
-                .reply(HttpStatus.NOT_FOUND, {message: NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE});
-            axiosMock.onGet(SERVER_BASE_URL + DB_FREE_GAME + "/someGameTest")
-                .reply(HttpStatus.NOT_FOUND, {message: NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE});
 
             axiosMock.onPost(SERVER_BASE_URL + DIFF_CREATOR_BASE)
                 .reply(HttpStatus.OK, fs.readFileSync("test/test_files_for_game_creator_service/7diff-modified.bmp"));
@@ -174,8 +170,7 @@ describe("A service that creates a game", () => {
         });
 
         it("should throw on db get game call error", async () => {
-            axiosMock.onGet(SERVER_BASE_URL + DB_SIMPLE_GAME + "someGameTest")
-                .reply(HttpStatus.INTERNAL_SERVER_ERROR, {message: "error"});
+            when(mockedSimpleGames.contains(anything())).thenReject(new Error("error"));
 
             return getMockedService()
                 .createSimpleGame(
@@ -183,15 +178,11 @@ describe("A service that creates a game", () => {
                     fs.readFileSync("test/test_files_for_game_creator_service/original.bmp"),
                     fs.readFileSync("test/test_files_for_game_creator_service/7diff-modified.bmp"))
                 .catch((reason: Error) => {
-                    expect(reason.message).to.eql("Database error: error");
+                    expect(reason.message).to.eql(new AbstractDataBaseError("error").message);
                 });
         });
 
         it("should throw on ImageUploadService call error", async () => {
-            axiosMock.onGet(SERVER_BASE_URL + DB_SIMPLE_GAME + "/someGameTest")
-                .reply(HttpStatus.NOT_FOUND, {message: NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE});
-            axiosMock.onGet(SERVER_BASE_URL + DB_FREE_GAME + "/someGameTest")
-                .reply(HttpStatus.NOT_FOUND, {message: NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE});
 
             axiosMock.onPost(SERVER_BASE_URL + DIFF_CREATOR_BASE)
                 .reply(HttpStatus.OK, fs.readFileSync("test/test_files_for_game_creator_service/7diff-modified.bmp"));
@@ -204,22 +195,16 @@ describe("A service that creates a game", () => {
                     fs.readFileSync("test/test_files_for_game_creator_service/original.bmp"),
                     fs.readFileSync("test/test_files_for_game_creator_service/7diff-modified.bmp"))
                 .catch((reason: Error) => {
-                    expect(reason.message).to.eql("Database error: error");
+                    expect(reason.message).to.eql(new AbstractServiceError("error").message);
                 });
         });
 
         it("should throw on db create game call error", async () => {
 
-            axiosMock.onGet(SERVER_BASE_URL + DB_SIMPLE_GAME + "/someGameTest")
-                .reply(HttpStatus.NOT_FOUND, {message: NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE});
-            axiosMock.onGet(SERVER_BASE_URL + DB_FREE_GAME + "/someGameTest")
-                .reply(HttpStatus.NOT_FOUND, {message: NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE});
-
             axiosMock.onPost(SERVER_BASE_URL + DIFF_CREATOR_BASE)
                 .reply(HttpStatus.OK, fs.readFileSync("test/test_files_for_game_creator_service/7diff-modified.bmp"));
 
-            axiosMock.onPost(SERVER_BASE_URL + DB_SIMPLE_GAME)
-                .reply(HttpStatus.INTERNAL_SERVER_ERROR, new Error("error"));
+            when(mockedSimpleGames.create(anything())).thenReject(new Error("error"));
 
             return getMockedService()
                 .createSimpleGame(
@@ -227,22 +212,16 @@ describe("A service that creates a game", () => {
                     fs.readFileSync("test/test_files_for_game_creator_service/original.bmp"),
                     fs.readFileSync("test/test_files_for_game_creator_service/7diff-modified.bmp"))
                 .catch((reason: Error) => {
-                    expect(reason.message).to.contain("Unable to create game: error");
+                    expect(reason.message).to.eql(new AbstractDataBaseError("error").message);
                 });
         });
 
         it("should return a success message if everything is good", async () => {
 
-            axiosMock.onGet(SERVER_BASE_URL + DB_SIMPLE_GAME + "/someGameTest")
-                .reply(HttpStatus.NOT_FOUND, {message: NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE});
-            axiosMock.onGet(SERVER_BASE_URL + DB_FREE_GAME + "/someGameTest")
-                .reply(HttpStatus.NOT_FOUND, {message: NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE});
-
             axiosMock.onPost(SERVER_BASE_URL + DIFF_CREATOR_BASE)
                 .reply(HttpStatus.OK, fs.readFileSync("test/test_files_for_game_creator_service/7diff-modified.bmp"));
 
-            axiosMock.onPost(SERVER_BASE_URL + DB_SIMPLE_GAME)
-                .reply(HttpStatus.OK);
+            when(mockedSimpleGames.create(anything())).thenResolve({title: "Game created", body: "hurray"});
 
             when(mockedDifferenceEvaluatorServiceMock.getSimpleNDifferences(anything()))
                 .thenReturn(createdMockedDiffData(EXPECTED_DIFF_NUMBER));
@@ -260,10 +239,7 @@ describe("A service that creates a game", () => {
 
         it("should throw a name error if the game name is already in the free games data base(simple game name existence)", async () => {
 
-            axiosMock.onGet(SERVER_BASE_URL + DB_SIMPLE_GAME + "nonExistingGameTest")
-                .reply(HttpStatus.NOT_FOUND);
-            axiosMock.onGet(SERVER_BASE_URL + DB_FREE_GAME + "nonExistingGameTest")
-                .reply(HttpStatus.OK);
+            when(mockedFreeGames.contains(anything())).thenResolve(true);
 
             try {
                 await getMockedService()
@@ -280,8 +256,7 @@ describe("A service that creates a game", () => {
 
         it("should throw a name error if the game name is already in the simple games data base(free game name existence)", async () => {
 
-            axiosMock.onGet(SERVER_BASE_URL + DB_SIMPLE_GAME + "nonExistingGameTest")
-                .reply(HttpStatus.OK);
+            when(mockedSimpleGames.contains(anything())).thenResolve(true);
 
             try {
                 await getMockedService()
@@ -297,8 +272,8 @@ describe("A service that creates a game", () => {
         });
 
         it("should throw error on db get simple game call", async () => {
-            axiosMock.onGet(SERVER_BASE_URL + DB_SIMPLE_GAME + "someGameTest")
-                .reply(HttpStatus.INTERNAL_SERVER_ERROR, {message: "error"});
+
+            when(mockedSimpleGames.contains(anything())).thenReject(new Error("error"));
 
             return getMockedService()
                 .createFreeGame( "someGameTest",
@@ -306,16 +281,13 @@ describe("A service that creates a game", () => {
                                  Themes.Geometry,
                                  [ModificationType.add, ModificationType.remove, ModificationType.changeColor])
                 .catch((reason: Error) => {
-                    expect(reason.message).to.eql("Database error: error");
+                    expect(reason.message).to.eql(new AbstractDataBaseError("error").message);
                 });
         });
 
         it("should throw error on db get free game call", async () => {
 
-            axiosMock.onGet(SERVER_BASE_URL + DB_SIMPLE_GAME + "someGameTest")
-                .reply(HttpStatus.NOT_FOUND, {message: NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE});
-            axiosMock.onGet(SERVER_BASE_URL + DB_FREE_GAME + "someGameTest")
-                .reply(HttpStatus.INTERNAL_SERVER_ERROR, {message: "error"});
+            when(mockedFreeGames.contains(anything())).thenReject(new Error("error"));
 
             return getMockedService()
                 .createFreeGame( "someGameTest",
@@ -323,19 +295,13 @@ describe("A service that creates a game", () => {
                                  Themes.Geometry,
                                  [ModificationType.add, ModificationType.remove, ModificationType.changeColor])
                 .catch((reason: Error) => {
-                    expect(reason.message).to.eql("Database error: error");
+                    expect(reason.message).to.eql(new AbstractDataBaseError("error").message);
                 });
         });
 
         it("should throw error if the theme is other than Geometry", async () => {
 
-            axiosMock.onGet(SERVER_BASE_URL + DB_SIMPLE_GAME + "someGameTest")
-                .reply(HttpStatus.NOT_FOUND, {message: NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE});
-            axiosMock.onGet(SERVER_BASE_URL + DB_FREE_GAME + "someGameTest")
-                .reply(HttpStatus.NOT_FOUND, {message: NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE});
-
-            axiosMock.onPost(SERVER_BASE_URL + DB_FREE_GAME)
-                .reply(HttpStatus.INTERNAL_SERVER_ERROR, new Error("error"));
+            when(mockedFreeGames.create(anything())).thenReject(new Error("error"));
 
             return getMockedService()
                 .createFreeGame( "someGameTest",
@@ -349,13 +315,7 @@ describe("A service that creates a game", () => {
 
         it("should throw error on db create game call", async () => {
 
-            axiosMock.onGet(SERVER_BASE_URL + DB_SIMPLE_GAME + "/someGameTest")
-                .reply(HttpStatus.NOT_FOUND, {message: NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE});
-            axiosMock.onGet(SERVER_BASE_URL + DB_FREE_GAME + "/someGameTest")
-                .reply(HttpStatus.NOT_FOUND, {message: NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE});
-
-            axiosMock.onPost(SERVER_BASE_URL + DB_FREE_GAME)
-                .reply(HttpStatus.INTERNAL_SERVER_ERROR, new Error("error"));
+            when(mockedFreeGames.create(anything())).thenReject(new Error("error"));
 
             return getMockedService()
                 .createFreeGame( "someGameTest",
@@ -363,19 +323,13 @@ describe("A service that creates a game", () => {
                                  Themes.Geometry,
                                  [ModificationType.add, ModificationType.remove, ModificationType.changeColor])
                 .catch((reason: Error) => {
-                    expect(reason.message).to.eql("Database error: Unable to create game: error");
+                    expect(reason.message).to.eql(new AbstractDataBaseError("error").message);
                 });
         });
 
         it("should return a success message if everything is good", async () => {
 
-            axiosMock.onGet(SERVER_BASE_URL + DB_SIMPLE_GAME + "/someGameTest")
-                .reply(HttpStatus.NOT_FOUND, {message: NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE});
-            axiosMock.onGet(SERVER_BASE_URL + DB_FREE_GAME + "/someGameTest")
-                .reply(HttpStatus.NOT_FOUND, {message: NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE});
-
-            axiosMock.onPost(SERVER_BASE_URL + DB_FREE_GAME)
-                .reply(HttpStatus.OK);
+            when(mockedFreeGames.create(anything())).thenResolve();
 
             when(mockedFreeGameCreatorService.generateIScenes(anything(), anything(), Themes.Geometry))
                 .thenReturn({originalObjects: [], modifiedObjects: [], differentObjects: []});

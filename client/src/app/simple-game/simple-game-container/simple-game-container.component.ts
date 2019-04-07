@@ -7,6 +7,7 @@ import {
 } from "../../../../../common/communication/messages/message";
 import {SocketEvent} from "../../../../../common/communication/socket-events";
 import {AlreadyFoundDifferenceError, NoDifferenceAtPointError} from "../../../../../common/errors/services.errors";
+import {OnlineType} from "../../../../../common/model/game/game";
 import {DifferenceCluster, DIFFERENCE_CLUSTER_POINTS_INDEX} from "../../../../../common/model/game/simple-game";
 import {tansformOrigin, IPoint} from "../../../../../common/model/point";
 import {SocketService} from "../../socket.service";
@@ -71,10 +72,10 @@ export class SimpleGameContainerComponent {
   }
 
   private notifyClickToWebsocket(good: boolean): void {
-    const message: WebsocketMessage<ChatMessage> = createWebsocketMessage(
+    const message: WebsocketMessage<ChatMessage> = createWebsocketMessage<ChatMessage>(
       {
         gameName: "",
-        playerCount: PlayerCountMessage.SOLO,
+        playerCount: OnlineType.SOLO,
         playerName: UNListService.username,
         position: ChatMessagePosition.NA,
         timestamp: new Date(),

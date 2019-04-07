@@ -5,6 +5,7 @@ import {Subscription} from "rxjs";
 import {WebsocketMessage} from "../../../../common/communication/messages/message";
 import {SocketEvent} from "../../../../common/communication/socket-events";
 import {ComponentNavigationError} from "../../../../common/errors/component.errors";
+import {GameType} from "../../../../common/model/game/game";
 import {RoomService} from "../room.service";
 import {SocketService} from "../socket.service";
 import {GameDeletionNotifComponent} from "./game-deletion-notif/game-deletion-notif.component";
@@ -17,7 +18,7 @@ import {GameDeletionNotifComponent} from "./game-deletion-notif/game-deletion-no
 export class AwaitViewComponent implements OnInit, OnDestroy {
 
   protected gameName: string;
-  protected isSimpleGame: boolean;
+  protected gameType: GameType;
   protected readonly indexString: number = 0;
 
   private gameStartSub: Subscription;
@@ -36,7 +37,7 @@ export class AwaitViewComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.activatedRoute.queryParams.subscribe((params) => {
       this.gameName = params["gameName"];
-      this.isSimpleGame = params["gameType"];
+      this.gameType = params["gameType"];
     });
     this.roomService.signalReady();
     this.gameStartSub = this.roomService.subscribeToGameStart(this.handleGameStart);
@@ -63,7 +64,7 @@ export class AwaitViewComponent implements OnInit, OnDestroy {
     if (message.body[this.indexString] === this.gameName) {
       const dialogConfig: MatDialogConfig = new MatDialogConfig();
       dialogConfig.autoFocus = true;
-      dialogConfig.data = {gameName: this.gameName, isSimpleGame: this.isSimpleGame};
+      dialogConfig.data = {gameName: this.gameName, gameType: this.gameType};
       this.dialog.open(GameDeletionNotifComponent, dialogConfig);
     }
   }

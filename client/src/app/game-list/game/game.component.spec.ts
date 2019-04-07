@@ -12,6 +12,9 @@ const navigateMock: Function = () => {
 describe("GameComponent", () => {
   let component: GameComponent;
   let fixture: ComponentFixture<GameComponent>;
+  const mockTime1: number = 0.01;
+  const mockTime2: number = 1;
+  const mockTime3: number = 3.53;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -79,6 +82,12 @@ describe("GameComponent", () => {
     const spy: jasmine.Spy = spyOn(component["roomService"], "checkInRoom");
     component["rightButtonClick"]();
     expect(spy).toHaveBeenCalled();
+  });
+
+  it("should have the right time format for the game view", () => {
+    expect(component["formatTime"](mockTime1)).toEqual("0:01");
+    expect(component["formatTime"](mockTime2)).toEqual("1:00");
+    expect(component["formatTime"](mockTime3)).toEqual("3:53");
   });
 
 });

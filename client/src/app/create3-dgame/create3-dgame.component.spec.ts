@@ -1,4 +1,3 @@
-import { HttpClientModule } from "@angular/common/http";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { AbstractControl, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import {
@@ -41,7 +40,6 @@ describe("Create3DGameComponent", () => {
         BrowserModule,
         ReactiveFormsModule,
         FormsModule,
-        HttpClientModule,
         MatFormFieldModule,
         MatButtonModule,
         MatInputModule,

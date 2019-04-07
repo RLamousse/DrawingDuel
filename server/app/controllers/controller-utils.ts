@@ -9,6 +9,7 @@ import {
     ModificationType,
     Themes
 } from "../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
+import {OnlineType} from "../../../common/model/game/game";
 import {EXPECTED_DIFF_NUMBER} from "../services/game-creator.service";
 
 export const REQUIRED_IMAGE_HEIGHT: number = 480;
@@ -18,7 +19,6 @@ export const ORIGINAL_IMAGE_FIELD_NAME: string = "originalImage";
 export const MODIFIED_IMAGE_FIELD_NAME: string = "modifiedImage";
 export const EXPECTED_FILES_FORMAT: string = "image/bmp";
 export const GAME_CREATION_SUCCESS_MESSAGE: Message = {title: "Game created", body: "The game was successfully created!"};
-export const MODIFY_TABLE_SUCCESS_MESSAGE: Message = {title: "Modified Table", body: "The score table was successfully modified!"};
 
 const NUMBER_OF_MODIFICATION_TYPES: number = 3;
 export const MAX_3D_OBJECTS: number = 1000;
@@ -50,7 +50,8 @@ export const assertUpdateScoreTable: (req: Express.Request) => void = (req: Requ
     typeof req.body.newTime.name !== "string" ||
     typeof req.body.newTime.time !== "number" ||
     req.body.newTime.name === "" ||
-    typeof  req.body.isSolo !== "boolean") {
+    !(req.body.onlineType === OnlineType.SOLO ||
+    req.body.onlineType === OnlineType.MULTIPLAYER)) {
         throw new RequestFormatError();
     }
 };

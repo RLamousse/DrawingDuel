@@ -5,10 +5,10 @@ import {
     createWebsocketMessage,
     ChatMessage,
     ChatMessageType,
-    PlayerCountMessage,
     WebsocketMessage
 } from "../../../../common/communication/messages/message";
 import {SocketEvent} from "../../../../common/communication/socket-events";
+import {OnlineType} from "../../../../common/model/game/game";
 import {WebsocketActionService} from "./websocket-action.service";
 
 @injectable()
@@ -67,7 +67,7 @@ export class ChatWebsocketActionService extends WebsocketActionService {
 
     private getDiffErrorMessage(data: ChatMessage): string {
         let message: string = this._DIFF_ERROR_BASE_MESSAGE;
-        if (data.playerCount === PlayerCountMessage.MULTI) {
+        if (data.playerCount === OnlineType.MULTIPLAYER) {
             message += (` par ${data.playerName}`);
         }
 
@@ -76,7 +76,7 @@ export class ChatWebsocketActionService extends WebsocketActionService {
 
     private getDiffFoundMessage(data: ChatMessage): string {
         let message: string = this._DIFF_FOUND_BASE_MESSAGE;
-        if (data.playerCount === PlayerCountMessage.MULTI) {
+        if (data.playerCount === OnlineType.MULTIPLAYER) {
             message += (` par ${data.playerName}`);
         }
 

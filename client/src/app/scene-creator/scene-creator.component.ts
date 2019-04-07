@@ -1,6 +1,8 @@
-import {AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild} from "@angular/core";
+import {Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild} from "@angular/core";
 import {ActivatedRoute} from "@angular/router";
+import {SceneGenerationError} from "../../../../common/errors/services.errors";
 import {IFreeGame} from "../../../../common/model/game/free-game";
+import {GameType} from "../../../../common/model/game/game";
 import {IPoint} from "../../../../common/model/point";
 import {X_FACTOR, Y_FACTOR} from "../../../../common/util/util";
 import {GameService} from "../game.service";
@@ -25,14 +27,16 @@ export const VICTORY_TEXT: string = "VICTOIRE";
              templateUrl: "./scene-creator.component.html",
              styleUrls: ["./scene-creator.component.css"],
            })
-export class SceneCreatorComponent implements AfterViewInit, OnInit, OnDestroy {
+export class SceneCreatorComponent implements OnInit, OnDestroy {
   private clickEnabled: boolean;
+  protected finishedLoad: boolean;
   public constructor(private renderService: SceneRendererService, private route: ActivatedRoute,
                      private freeGameCreator: FreeGameCreatorService, private gameService: GameService) {
     this.clickEnabled = true;
   }
 
   protected gameName: string;
+  protected FREE_GAME_TYPE: GameType = GameType.FREE;
   protected cursorEnabled: boolean = true;
 
   private get originalContainer(): HTMLDivElement {
@@ -60,6 +64,13 @@ export class SceneCreatorComponent implements AfterViewInit, OnInit, OnDestroy {
       this.gameName = params["gameName"];
     });
 
+    this.renderService.init(this.originalContainer, this.modifiedContainer);
+    this.verifyGame().then((scene: IScene) =>
+                             this.renderService.loadScenes(scene.scene, scene.modifiedScene, this.gameName),
+    ).catch((e: Error) => {
+      throw new SceneGenerationError();
+    });
+
   }
 
   private async verifyGame(): Promise<IScene> {
@@ -68,17 +79,6 @@ export class SceneCreatorComponent implements AfterViewInit, OnInit, OnDestroy {
         const freeScenes: IScene = this.freeGameCreator.createScenes(freeGame.scenes);
         resolve(freeScenes);
       });
-    });
-  }
-
-  public ngAfterViewInit(): void {
-    const errMsg: string = "An error occured when trying to render the free view games";
-    this.renderService.init(this.originalContainer, this.modifiedContainer);
-    this.verifyGame().then((scene: IScene) =>
-                             this.renderService.loadScenes(scene.scene, scene.modifiedScene, this.gameName),
-    ).catch((e: Error) => {
-      e.message = errMsg;
-      throw e;
     });
   }
 

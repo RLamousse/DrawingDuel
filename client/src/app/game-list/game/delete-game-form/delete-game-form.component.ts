@@ -1,10 +1,11 @@
-import { Component, Inject } from "@angular/core";
+import {Component, Inject} from "@angular/core";
 import {MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
 import {Router} from "@angular/router";
 import {createWebsocketMessage, WebsocketMessage} from "../../../../../../common/communication/messages/message";
 import {SocketEvent} from "../../../../../../common/communication/socket-events";
 import {IDialogData} from "../../../../../../common/dialog-data-interface/IDialogData";
 import {ComponentNavigationError} from "../../../../../../common/errors/component.errors";
+import {GameType} from "../../../../../../common/model/game/game";
 import {GameService} from "../../../game.service";
 import {SocketService} from "../../../socket.service";
 
@@ -15,8 +16,6 @@ import {SocketService} from "../../../socket.service";
 })
 
 export class DeleteGameFormComponent  {
-  private socketMessage: WebsocketMessage<[string, boolean]>;
-
   public constructor( protected dialogRef: MatDialogRef<DeleteGameFormComponent>,
                       protected router: Router,
                       protected socket: SocketService,
@@ -30,7 +29,7 @@ export class DeleteGameFormComponent  {
 
   public deleteGame(): void {
     this.sendDeleteMessage();
-    this.deleteGameByType(this.data.gameName, this.data.isSimpleGame);
+    this.deleteGameByType(this.data.gameName, this.data.gameType);
     this.dialogRef.close();
     this.router.navigate(["/admin/"])
       .catch(() => {
@@ -39,12 +38,17 @@ export class DeleteGameFormComponent  {
   }
 
   private sendDeleteMessage(): void {
-    this.socketMessage = createWebsocketMessage<[string, boolean]>([this.data.gameName, this.data.isSimpleGame]);
-    this.socket.send(SocketEvent.DELETE, this.socketMessage);
+    const socketMessage: WebsocketMessage<[string, GameType]> = createWebsocketMessage<[string, GameType]>(
+      [
+        this.data.gameName,
+        this.data.gameType,
+      ],
+    );
+    this.socket.send(SocketEvent.DELETE, socketMessage);
   }
 
-  private deleteGameByType(gameName: string, isSimpleGame: boolean ): void {
-    isSimpleGame ? this.gameService.hideSimpleByName(gameName) : this.gameService.hideFreeByName(gameName);
+  private deleteGameByType(gameName: string, gameType: GameType ): void {
+    gameType === GameType.SIMPLE ? this.gameService.hideSimpleByName(gameName) : this.gameService.hideFreeByName(gameName);
     window.location.reload();
   }
 }

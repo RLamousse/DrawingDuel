@@ -6,7 +6,7 @@ import * as THREE from "three";
 import {
   createWebsocketMessage,
   ChatMessage,
-  PlayerCountMessage, ChatMessagePosition, ChatMessageType,
+  ChatMessagePosition, ChatMessageType, PlayerCountMessage,
   WebsocketMessage
 } from "../../../../common/communication/messages/message";
 import {DIFF_VALIDATOR_3D_BASE, SERVER_BASE_URL} from "../../../../common/communication/routes";
@@ -14,6 +14,7 @@ import {SocketEvent} from "../../../../common/communication/socket-events";
 import { ComponentNotLoadedError } from "../../../../common/errors/component.errors";
 import {AbstractServiceError, AlreadyFoundDifferenceError, NoDifferenceAtPointError} from "../../../../common/errors/services.errors";
 import { IJson3DObject } from "../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
+import {OnlineType} from "../../../../common/model/game/game";
 import {IFreeGameState} from "../../../../common/model/game/game-state";
 import { deepCompare, sleep, X_FACTOR } from "../../../../common/util/util";
 import {
@@ -261,12 +262,11 @@ export class SceneRendererService {
       });
   }
   private notifyClickToWebsocket(good: boolean): void {
-    const message: WebsocketMessage<ChatMessage> = createWebsocketMessage(
-      {
-        gameName: "", playerCount: PlayerCountMessage.SOLO,
+    const message: WebsocketMessage<ChatMessage> = createWebsocketMessage<ChatMessage>({
+        gameName: "", playerCount: OnlineType.SOLO,
         playerName: UNListService.username, position: ChatMessagePosition.NA,
         timestamp: new Date(), type: good ? ChatMessageType.DIFF_FOUND : ChatMessageType.DIFF_ERROR,
-      });
+    });
     this.socket.send(SocketEvent.CHAT, message);
   }
   private checkIfAlreadyFound(object: IJson3DObject): void {
