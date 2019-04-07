@@ -15,6 +15,8 @@ export class InitialViewComponent implements OnInit{
   public errorMessage: string = "";
   public available: boolean;
   private readonly BACKGROUND_COLOR: string = "#272731";
+  private readonly BUTTON_ID: string = "#stars";
+  private readonly BACKGROUND_CENTERED: string = "center";
 
   public constructor(
     public userService: UNListService,
@@ -32,15 +34,15 @@ export class InitialViewComponent implements OnInit{
   }
 
   private setButtonBackGround(): void {
-    const element: HTMLElement | null = document.getElementById("#stars");
+    const element: HTMLElement | null = document.getElementById(this.BUTTON_ID);
     if (element !== null) {
       element.style.backgroundImage = BACKGROUND_IMAGE;
-      element.style.backgroundPosition = "center";
+      element.style.backgroundPosition = this.BACKGROUND_CENTERED;
     }
   }
 
   public changeBackground(): void {
-    const element: HTMLElement | null = document.getElementById("#stars");
+    const element: HTMLElement | null = document.getElementById(this.BUTTON_ID);
     if (document.body.style.backgroundImage === "") {
       document.body.style.backgroundImage = BACKGROUND_IMAGE;
       if (element !== null) {
@@ -52,7 +54,7 @@ export class InitialViewComponent implements OnInit{
       document.body.style.backgroundColor = this.BACKGROUND_COLOR;
       if (element !== null) {
         element.style.backgroundImage = BACKGROUND_IMAGE;
-        element.style.backgroundPosition = "center";
+        element.style.backgroundPosition = this.BACKGROUND_CENTERED;
       }
     }
   }
