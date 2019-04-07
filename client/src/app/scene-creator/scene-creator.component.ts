@@ -1,6 +1,8 @@
 import {Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild} from "@angular/core";
 import {ActivatedRoute} from "@angular/router";
+import {SceneGenerationError} from "../../../../common/errors/services.errors";
 import {IFreeGame} from "../../../../common/model/game/free-game";
+import {GameType} from "../../../../common/model/game/game";
 import {IPoint} from "../../../../common/model/point";
 import {X_FACTOR, Y_FACTOR} from "../../../../common/util/util";
 import {GameService} from "../game.service";
@@ -34,6 +36,7 @@ export class SceneCreatorComponent implements OnInit, OnDestroy {
   }
 
   protected gameName: string;
+  protected FREE_GAME_TYPE: GameType = GameType.FREE;
   protected cursorEnabled: boolean = true;
 
   private get originalContainer(): HTMLDivElement {
@@ -61,13 +64,11 @@ export class SceneCreatorComponent implements OnInit, OnDestroy {
       this.gameName = params["gameName"];
     });
 
-    const errMsg: string = "An error occured when trying to render the free view games";
     this.renderService.init(this.originalContainer, this.modifiedContainer);
     this.verifyGame().then((scene: IScene) =>
                              this.renderService.loadScenes(scene.scene, scene.modifiedScene, this.gameName),
     ).catch((e: Error) => {
-      e.message = errMsg;
-      throw e;
+      throw new SceneGenerationError();
     });
 
   }
