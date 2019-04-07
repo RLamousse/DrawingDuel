@@ -1,25 +1,29 @@
-<div class="window">
-  <h1 class="title">Jeu des 7 différences</h1>
-  <div class = "row">
-    <div>
-        <img src={{logoPath}} alt="Logo_jeu"/>
+<div class="global">
+  <div class="window">
+    <h1 class="title">Jeu des 7 différences</h1>
+    <div class = "row">
+      <div>
+        <img src="../../assets/images/logo.PNG" alt="Logo_jeu"/>
+      </div>
+      <div style="margin-left: 40px;">
+        <h1>Bienvenue {{username}} !</h1>
+        <h2>Met à jour ton identifiant:</h2>
+        <mat-form-field>
+          <input matInput #message type="text" placeholder="Identifiant" maxlength="10" style="min-width: 250px" [(ngModel)]="newUsername" required>
+          <mat-hint align="start"><strong>4 à 10 caractères</strong> </mat-hint>
+          <mat-hint align="end">{{message.value.length}}/10</mat-hint>
+          <button mat-button *ngIf="newUsername" matSuffix mat-icon-button aria-label="Clear" (click)="newUsername=''">
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-form-field>
+        <h3 style='color:red'>{{errorMessage}}</h3>
+        <nav>
+          <button mat-raised-button color="primary" class="button" (click)="updateUsername()">Commencer</button>
+          <button mat-raised-button color="primary" class="button" (click)="changeBackground()">Changer fond d'écran</button>
+        </nav>
+      </div>
     </div>
-    <div style="margin-left: 40px;">
-      <h1>Bienvenue {{username}} !</h1>
-      <h2>Met à jour ton identifiant:</h2>
-      <mat-form-field>
-        <input matInput #message type="text" placeholder="Identifiant" maxlength="10" style="min-width: 250px" [(ngModel)]="newUsername" required>
-        <mat-hint align="start"><strong>4 à 10 caractères</strong> </mat-hint>
-        <mat-hint align="end">{{message.value.length}}/10</mat-hint>
-        <button mat-button *ngIf="newUsername" matSuffix mat-icon-button aria-label="Clear" (click)="newUsername=''">
-          <mat-icon>close</mat-icon>
-        </button>
-      </mat-form-field>
-      <h3 style='color:red'>{{errorMessage}}</h3>
-      <nav>
-        <button mat-raised-button color="primary" class="button" (click)="updateUsername()">Commencer</button>
-      </nav>
-    </div>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
   </div>
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
 </div>
+

@@ -2,7 +2,8 @@ import {HttpClientModule} from "@angular/common/http";
 import {NgModule, NO_ERRORS_SCHEMA} from "@angular/core";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {
-  MatButtonModule, MatCardModule, MatCheckboxModule, MatFormFieldModule, MatIconModule, MatInputModule, MatListModule, MatSelectModule, MatSliderModule
+  MatButtonModule, MatCardModule, MatCheckboxModule, MatFormFieldModule, MatIconModule,
+  MatInputModule, MatListModule, MatSelectModule, MatSliderModule
 } from "@angular/material";
 import {MatDialogModule} from "@angular/material/dialog";
 import {BrowserModule} from "@angular/platform-browser";

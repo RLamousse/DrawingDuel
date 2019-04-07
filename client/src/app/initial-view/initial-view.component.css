@@ -1,11 +1,15 @@
 .window{
     width: 700px;
     margin: auto;
-    margin-top: 5%;
-    border: 2px solid darkblue;
+    border: 2px solid black;
     border-radius: 25px;
-    background-color:lightblue;
+    background-color:#3F51B5;
     padding: 30px;
+}
+
+.global{
+  padding-top: 5%;
+  height: 80%;
 }
 
 .row {
@@ -24,14 +28,14 @@
 }
 
 .title{
-    color: darkblue;
+    color: white;
     text-align: center;
 }
 
 .button{
     display: inline-block;
     margin-right: 35px;
-    border: 1px darkblue solid;
+    border: 1px black solid;
 }
 
 .buttonRow{
@@ -41,7 +45,7 @@
 }
 
 img{
-  width: 300px;
+  width: 200px;
   padding-right: 30px;
-  border-right: 1px darkblue solid;
+  border-right: 1px black solid;
 }

@@ -3,6 +3,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormsModule } from "@angular/forms";
 import { Router } from "@angular/router";
+import {BACKGROUND_IMAGE_TEST} from "../../../../common/communication/routes";
 import { UNListService } from "../username.service";
 import { InitialViewComponent } from "./initial-view.component";
 
@@ -72,5 +73,13 @@ describe("Initial View Component tests", () => {
     (component as any).handleUsernameAvailability(true);
     expect(component.username).toBe("Candice");
     expect(UNListService.username).toBe("Candice");
+  });
+
+  it("should update the background when changeBackground() is called", () => {
+    expect(document.body.style.backgroundImage).toBe("");
+    component["changeBackground"]();
+    expect(document.body.style.backgroundImage).toBe(BACKGROUND_IMAGE_TEST);
+    component["changeBackground"]();
+    expect(document.body.style.backgroundImage).toBe("");
   });
 });

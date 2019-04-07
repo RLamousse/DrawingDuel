@@ -1,5 +1,6 @@
 import { Component, Input } from "@angular/core";
 import { Router } from "@angular/router";
+import {BACKGROUND_IMAGE} from "../../../../common/communication/routes";
 import { UNListService } from "../username.service";
 
 @Component({
@@ -13,7 +14,7 @@ export class InitialViewComponent {
   public username: string = "inconnu";
   public errorMessage: string = "";
   public available: boolean;
-  public readonly logoPath: string = require("./logo.png");
+  private readonly BACKGROUND_COLOR: string = "#272731";
 
   public constructor(
     public userService: UNListService,
@@ -24,6 +25,15 @@ export class InitialViewComponent {
 
   public updateUsername(): void {
     this.userService.checkAvailability(this.newUsername, this.handleUsernameAvailability);
+  }
+
+  protected changeBackground(): void {
+    if (document.body.style.backgroundImage === "") {
+      document.body.style.backgroundImage = BACKGROUND_IMAGE;
+    } else {
+      document.body.style.backgroundImage = "";
+      document.body.style.backgroundColor = this.BACKGROUND_COLOR;
+    }
   }
 
   private async handleUsernameAvailability(answer: boolean): Promise<void> {
