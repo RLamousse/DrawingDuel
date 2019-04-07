@@ -38,6 +38,19 @@
     border: 1px black solid;
 }
 
+.rightWindow{
+  margin: auto;
+}
+
+.username{
+  min-width: 250px;
+}
+
+#stars{
+  background-image: url("../../assets/images/space.jpg");
+  background-position: center;
+}
+
 .buttonRow{
     margin-right:35px;
     display: flex;

@@ -82,4 +82,17 @@ describe("Initial View Component tests", () => {
     component["changeBackground"]();
     expect(document.body.style.backgroundImage).toBe("");
   });
+
+  it("should updates message and username according to username availability", () => {
+    component.newUsername = "tom";
+    component["handleUsernameAvailability"](true);
+    expect(component.username).toBe("tom");
+    component["handleUsernameAvailability"](false);
+    expect(component.errorMessage).toBe(unListSpyService.message);
+  });
+
+  it("should check if username is available when called", () => {
+    component.updateUsername();
+    expect(unListSpyService.checkAvailability).toHaveBeenCalled();
+  });
 });

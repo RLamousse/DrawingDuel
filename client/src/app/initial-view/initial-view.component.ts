@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import {Component, Input, OnInit} from "@angular/core";
 import { Router } from "@angular/router";
 import {BACKGROUND_IMAGE} from "../../../../common/communication/routes";
 import { UNListService } from "../username.service";
@@ -8,7 +8,7 @@ import { UNListService } from "../username.service";
   templateUrl: "./initial-view.component.html",
   styleUrls: ["./initial-view.component.css"],
 })
-export class InitialViewComponent {
+export class InitialViewComponent implements OnInit{
 
   @Input() public newUsername: string;
   public username: string = "inconnu";
@@ -23,16 +23,37 @@ export class InitialViewComponent {
     this.handleUsernameAvailability = this.handleUsernameAvailability.bind(this);
   }
 
+  public ngOnInit(): void {
+    this.setButtonBackGround();
+  }
+
   public updateUsername(): void {
     this.userService.checkAvailability(this.newUsername, this.handleUsernameAvailability);
   }
 
-  protected changeBackground(): void {
+  private setButtonBackGround(): void {
+    const element: HTMLElement | null = document.getElementById("#stars");
+    if (element !== null) {
+      element.style.backgroundImage = BACKGROUND_IMAGE;
+      element.style.backgroundPosition = "center";
+    }
+  }
+
+  public changeBackground(): void {
+    const element: HTMLElement | null = document.getElementById("#stars");
     if (document.body.style.backgroundImage === "") {
       document.body.style.backgroundImage = BACKGROUND_IMAGE;
+      if (element !== null) {
+        element.style.backgroundImage = "";
+        element.style.backgroundColor = this.BACKGROUND_COLOR;
+      }
     } else {
       document.body.style.backgroundImage = "";
       document.body.style.backgroundColor = this.BACKGROUND_COLOR;
+      if (element !== null) {
+        element.style.backgroundImage = BACKGROUND_IMAGE;
+        element.style.backgroundPosition = "center";
+      }
     }
   }
 
