@@ -9,7 +9,7 @@ import Types from "../types";
 import {executePromiseSafely} from "./controller-utils";
 
 @injectable()
-export class DataBaseController {
+export class GameManagerController {
 
     public constructor(@inject(Types.DataBaseService) private dataBaseService: DataBaseService) {
     }
@@ -17,40 +17,20 @@ export class DataBaseController {
     public get router(): Router {
         const router: Router = Router();
 
-        // ┌──┬───────┬──┐
-        // │  │ GAMES │  │
-        // └──┴───────┴──┘
+        // ┌──┬────────┬──┐
+        // │  │ SIMPLE │  │
+        // └──┴────────┴──┘
 
-        // Simple Games
-
-        router.post("/games/simple", async (req: Request, res: Response, next: NextFunction) => {
-            executePromiseSafely(res, next, async () => {
-                res.json(await this.dataBaseService.simpleGames.create(req.body));
-            });
-        });
-
-        router.put("/games/simple/:id", async (req: Request, res: Response, next: NextFunction) => {
-            executePromiseSafely(res, next, async () => {
-                res.json(await this.dataBaseService.simpleGames.update(req.params["id"], req.body));
-            });
-        });
-
-        router.delete("/games/simple/:id", async (req: Request, res: Response, next: NextFunction) => {
-            executePromiseSafely(res, next, async () => {
-                res.json(await this.dataBaseService.simpleGames.delete(req.params["id"]));
-            });
-        });
-
-        router.get("/games/simple", async (req: Request, res: Response, next: NextFunction) => {
+        router.get("/simple/", async (req: Request, res: Response, next: NextFunction) => {
             executePromiseSafely(res, next, async () => {
                 res.json(await this.dataBaseService.simpleGames.getAll());
             });
         });
 
-        router.get("/games/simple/:gameName", async (req: Request, res: Response, next: NextFunction) => {
+        router.get("/simple/:id", async (req: Request, res: Response, next: NextFunction) => {
             executePromiseSafely(res, next, async () => {
                 this.dataBaseService.simpleGames
-                    .getFromId(req.params["gameName"])
+                    .getFromId(req.params["id"])
                     .then((value: ISimpleGame) => {
                         res.json(value);
                     }).catch((reason: Error) => {
@@ -64,36 +44,26 @@ export class DataBaseController {
             });
         });
 
-        // Free Games
-
-        router.post("/games/free", async (req: Request, res: Response, next: NextFunction) => {
+        router.put("/simple/:id", async (req: Request, res: Response, next: NextFunction) => {
             executePromiseSafely(res, next, async () => {
-                res.json(await this.dataBaseService.freeGames.create(req.body));
+                res.json(await this.dataBaseService.simpleGames.update(req.params["id"], req.body));
             });
         });
 
-        router.put("/games/free/:id", async (req: Request, res: Response, next: NextFunction) => {
-            executePromiseSafely(res, next, async () => {
-                res.json(await this.dataBaseService.freeGames.update(req.params["id"], req.body));
-            });
-        });
+        // ┌──┬──────┬──┐
+        // │  │ FREE │  │
+        // └──┴──────┴──┘
 
-        router.delete("/games/free/:id", async (req: Request, res: Response, next: NextFunction) => {
-            executePromiseSafely(res, next, async () => {
-                res.json(await this.dataBaseService.freeGames.delete(req.params["id"]));
-            });
-        });
-
-        router.get("/games/free", async (req: Request, res: Response, next: NextFunction) => {
+        router.get("/free/", async (req: Request, res: Response, next: NextFunction) => {
             executePromiseSafely(res, next, async () => {
                 res.json(await this.dataBaseService.freeGames.getAll());
             });
         });
 
-        router.get("/games/free/:gameName", async (req: Request, res: Response, next: NextFunction) => {
+        router.get("/free/:id", async (req: Request, res: Response, next: NextFunction) => {
             executePromiseSafely(res, next, async () => {
                 this.dataBaseService.freeGames
-                    .getFromId(req.params["gameName"])
+                    .getFromId(req.params["id"])
                     .then((value: IFreeGame) => {
                         res.json(value);
                     }).catch((reason: Error) => {
@@ -104,6 +74,12 @@ export class DataBaseController {
                     }
                     res.json(reason);
                 });
+            });
+        });
+
+        router.put("/free/:id", async (req: Request, res: Response, next: NextFunction) => {
+            executePromiseSafely(res, next, async () => {
+                res.json(await this.dataBaseService.freeGames.update(req.params["id"], req.body));
             });
         });
 

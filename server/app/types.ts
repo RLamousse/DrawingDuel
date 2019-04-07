@@ -3,7 +3,7 @@ export default  {
         Application: Symbol("Application"),
         GameCreatorController: Symbol("GameCreatorController"),
         GameCreatorService: Symbol("GameCreatorService"),
-        DataBaseController: Symbol("DataBaseController"),
+        GameManagerController: Symbol("GameManagerController"),
         DataBaseService: Symbol("DataBaseService"),
         DifferenceEvaluatorService: Symbol("DifferenceEvaluatorService"),
         UserNameService: Symbol("UserNameService"),
