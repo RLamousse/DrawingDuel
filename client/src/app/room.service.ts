@@ -4,7 +4,6 @@ import {
   PlayerCountMessage,
   RoomCheckInMessage,
   RoomCreationMessage,
-  RoomMessage,
   WebsocketMessage
 } from "../../../../../common/communication/messages/message";
 import {SocketEvent} from "../../../../../common/communication/socket-events";
@@ -66,10 +65,8 @@ export class RoomService {
     }));
   }
 
-  public checkOutRoom(gameName: string): void {
-    this.socket.send(SocketEvent.CHECK_OUT, createWebsocketMessage<RoomMessage>({
-      gameName,
-    }));
+  public checkOutRoom(): void {
+    this.socket.send(SocketEvent.CHECK_OUT, createWebsocketMessage());
   }
 
   public unsubscribe(): void {
