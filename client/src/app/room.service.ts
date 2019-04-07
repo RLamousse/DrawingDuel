@@ -5,11 +5,12 @@ import {
   RoomCheckInMessage,
   RoomCreationMessage,
   WebsocketMessage
-} from "../../../../../common/communication/messages/message";
-import {SocketEvent} from "../../../../../common/communication/socket-events";
-import {IRoomInfo} from "../../../../../common/model/rooms/room-info";
-import {SocketService} from "../../socket.service";
-import {UNListService} from "../../username.service";
+} from "../../../common/communication/messages/message";
+import {SocketEvent} from "../../../common/communication/socket-events";
+import {IRoomInfo} from "../../../common/model/rooms/room-info";
+import {SocketService} from "./socket.service";
+import {UNListService} from "./username.service";
+import {Subscription} from "rxjs";
 
 @Injectable({
               providedIn: "root",
@@ -71,5 +72,13 @@ export class RoomService {
 
   public unsubscribe(): void {
     this._rooms.length = 0;
+  }
+
+  public signalReady(): void {
+    this.socket.send(SocketEvent.READY, createWebsocketMessage());
+  }
+
+  public subscribeToGameStart(callback: () => void): Subscription {
+    return this.socket.onEvent(SocketEvent.READY).subscribe(callback);
   }
 }
