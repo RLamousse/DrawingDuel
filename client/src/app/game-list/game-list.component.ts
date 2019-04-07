@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from "@angular/core";
-import {forkJoin} from "rxjs";
+import { forkJoin } from "rxjs";
+import {GameType} from "../../../../common/model/game/game";
 import { GameService } from "../game.service";
 
 @Component({
@@ -10,6 +11,8 @@ import { GameService } from "../game.service";
 
 export class GameListComponent implements OnInit {
 
+  @Input() protected  readonly simpleGameTag: GameType = GameType.SIMPLE;
+  @Input() protected  readonly freeGameTag: GameType = GameType.FREE;
   @Input() protected readonly rightButton: string = "joindre";
   @Input() protected readonly leftButton: string = "jouer";
   protected pushedGames: boolean;

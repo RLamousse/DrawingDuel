@@ -5,7 +5,6 @@ import { Observable, Subject } from "rxjs";
 import * as THREE from "three";
 import {
   ChatMessage,
-  ChatMessagePlayerCount,
   ChatMessagePosition, ChatMessageType,
   WebsocketMessage
 } from "../../../../common/communication/messages/message";
@@ -14,6 +13,7 @@ import {SocketEvent} from "../../../../common/communication/socket-events";
 import { ComponentNotLoadedError } from "../../../../common/errors/component.errors";
 import {AbstractServiceError, AlreadyFoundDifferenceError, NoDifferenceAtPointError} from "../../../../common/errors/services.errors";
 import { IJson3DObject } from "../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
+import {OnlineType} from "../../../../common/model/game/game";
 import { deepCompare, sleep, X_FACTOR } from "../../../../common/util/util";
 import {
   playRandomSound,
@@ -261,7 +261,7 @@ export class SceneRendererService {
     const message: WebsocketMessage<ChatMessage> = {
       title: SocketEvent.CHAT,
       body: {
-        gameName: "", playerCount: ChatMessagePlayerCount.SOLO,
+        gameName: "", playerCount: OnlineType.SOLO,
         playerName: UNListService.username, position: ChatMessagePosition.NA,
         timestamp: new Date(), type: good ? ChatMessageType.DIFF_FOUND : ChatMessageType.DIFF_ERROR,
       },

@@ -1,12 +1,12 @@
 import {Component, Input, ViewChild} from "@angular/core";
 import {
   ChatMessage,
-  ChatMessagePlayerCount,
   ChatMessagePosition,
   ChatMessageType, WebsocketMessage
 } from "../../../../../common/communication/messages/message";
 import {SocketEvent} from "../../../../../common/communication/socket-events";
 import {AlreadyFoundDifferenceError, NoDifferenceAtPointError} from "../../../../../common/errors/services.errors";
+import {OnlineType} from "../../../../../common/model/game/game";
 import {DifferenceCluster, DIFFERENCE_CLUSTER_POINTS_INDEX} from "../../../../../common/model/game/simple-game";
 import {tansformOrigin, IPoint} from "../../../../../common/model/point";
 import {SocketService} from "../../socket.service";
@@ -75,7 +75,7 @@ export class SimpleGameContainerComponent {
       title: SocketEvent.CHAT,
       body: {
         gameName: "",
-        playerCount: ChatMessagePlayerCount.SOLO,
+        playerCount: OnlineType.SOLO,
         playerName: UNListService.username,
         position: ChatMessagePosition.NA,
         timestamp: new Date(),

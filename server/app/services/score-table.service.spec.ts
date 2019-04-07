@@ -1,22 +1,23 @@
 // We want to use some magic numbers in the tests
 /* tslint:disable:no-magic-numbers */
-import Axios from "axios";
-import AxiosAdapter from "axios-mock-adapter";
-// tslint:disable-next-line:no-duplicate-imports Weird interaction between singletons and interface (olivier st-o approved)
-import MockAdapter from "axios-mock-adapter";
 import {expect} from "chai";
-import * as HttpStatus from "http-status-codes";
-import {Message} from "../../../common/communication/messages/message";
-import {DB_FREE_GAME, DB_SIMPLE_GAME, SERVER_BASE_URL} from "../../../common/communication/routes";
-import {NonExistentGameError} from "../../../common/errors/database.errors";
+import {anything, instance, mock, when} from "ts-mockito";
+import {
+    AbstractDataBaseError,
+    InvalidGameInfoError,
+    NonExistentGameError
+} from "../../../common/errors/database.errors";
 import {ScoreNotGoodEnough} from "../../../common/errors/services.errors";
+import {IFreeGame} from "../../../common/model/game/free-game";
+import {OnlineType} from "../../../common/model/game/game";
 import {IRecordTime} from "../../../common/model/game/record-time";
+import {ISimpleGame} from "../../../common/model/game/simple-game";
+import {DataBaseService} from "./data-base.service";
+import {FreeGamesCollectionService} from "./db/free-games.collection.service";
+import {SimpleGamesCollectionService} from "./db/simple-games.collection.service";
 import {ScoreTableService} from "./score-table.service";
 
-const scoreTableService: ScoreTableService = new ScoreTableService();
 describe("ScoreTableService", () => {
-    let axiosMock: MockAdapter;
-    const SUCCESS_MESSAGE: Message = {title: "success", body: "success"};
     // @ts-ignore
     const EMPTY_TIME: IRecordTime = null;
     const VERY_HIGHT_TIME_SCORE_BOY: IRecordTime = {name: "Tommy", time: 15};
@@ -30,85 +31,118 @@ describe("ScoreTableService", () => {
                                                 {name: "Jack", time: 5},
                                                 {name: "Bill", time: 10}];
 
+    let mockedDataBaseService: DataBaseService;
+    let mockedSimpleGames: SimpleGamesCollectionService;
+    let mockedFreeGames: FreeGamesCollectionService;
+
+    const initScoreTableService: () => ScoreTableService = () => {
+        when(mockedDataBaseService.simpleGames).thenReturn(instance(mockedSimpleGames));
+        when(mockedDataBaseService.freeGames).thenReturn(instance(mockedFreeGames));
+
+        return new ScoreTableService(instance(mockedDataBaseService));
+    };
+
     beforeEach(() => {
-        axiosMock = new AxiosAdapter(Axios);
-        axiosMock.onGet(SERVER_BASE_URL + DB_SIMPLE_GAME + "tom")
-            .reply(HttpStatus.OK, {bestSoloTimes: INITIAL_SCORE_TABLE});
-        axiosMock.onGet(SERVER_BASE_URL + DB_FREE_GAME + "tom")
-            .reply(HttpStatus.NOT_FOUND);
+        mockedDataBaseService = mock(DataBaseService);
+        mockedSimpleGames = mock(SimpleGamesCollectionService);
+        mockedFreeGames = mock(FreeGamesCollectionService);
+        when(mockedFreeGames.contains(anything())).thenResolve(false);
+        when(mockedSimpleGames.contains(anything())).thenResolve(true);
+        when(mockedSimpleGames.getFromId(anything()))
+            .thenResolve({bestSoloTimes: JSON.parse(JSON.stringify(INITIAL_SCORE_TABLE)),
+                          bestMultiTimes: JSON.parse(JSON.stringify(INITIAL_SCORE_TABLE))} as ISimpleGame);
     });
 
     describe("Modify scores", () => {
         it("should throw score error if null time inserted", async () => {
 
-            return scoreTableService.updateTableScore("tom", EMPTY_TIME, true).catch((reason: ScoreNotGoodEnough) => {
+            return initScoreTableService().updateTableScore("tom", EMPTY_TIME, OnlineType.SOLO).catch((reason: ScoreNotGoodEnough) => {
                 expect(reason.message).to.contain("null");
             });
         });
 
         it("should throw ScoreNotGoodEnough error if the score has a too high value", async () => {
 
-            return scoreTableService.updateTableScore("tom", VERY_HIGHT_TIME_SCORE_BOY, true).catch((reason: ScoreNotGoodEnough) => {
+            return initScoreTableService().updateTableScore("tom", VERY_HIGHT_TIME_SCORE_BOY, OnlineType.SOLO)
+                .catch((reason: ScoreNotGoodEnough) => {
                 expect(reason.message).to.eql(ScoreNotGoodEnough.SCORE_NOT_GOOD_ENOUGH);
             });
         });
 
-        it("should return 3 if the score deserves the third place", async () => {
+        it("should throw if the data-base throws unpredicted error(update simple game)", async () => {
 
-            axiosMock.onPut(SERVER_BASE_URL + DB_SIMPLE_GAME + "tom")
-                .reply(HttpStatus.OK, SUCCESS_MESSAGE);
+            when(mockedSimpleGames.update(anything(), anything())).thenReject(new InvalidGameInfoError());
 
-            return scoreTableService.updateTableScore("tom", HIGHT_TIME_SCORE_BOY, true).then((value: number) => {
+            return initScoreTableService().updateTableScore("tom", HIGHT_TIME_SCORE_BOY, OnlineType.SOLO)
+                .catch((reason: AbstractDataBaseError) => {
+                expect(reason.message).to.eql(new AbstractDataBaseError(InvalidGameInfoError.GAME_INFO_FORMAT_ERROR_MESSAGE).message);
+            });
+        });
+
+        it("should return 3 if the score deserves the third place(simple games)", async () => {
+
+            when(mockedSimpleGames.update(anything(), anything())).thenResolve();
+
+            return initScoreTableService().updateTableScore("tom", HIGHT_TIME_SCORE_BOY, OnlineType.SOLO).then((value: number) => {
                 expect(value).to.eql(3);
             });
         });
 
-        it("should return 2 if the score deserves the second place", async () => {
+        it("should return 2 if the score deserves the second place(simple games)", async () => {
 
-            axiosMock.onPut(SERVER_BASE_URL + DB_SIMPLE_GAME + "tom")
-                .reply(HttpStatus.OK, SUCCESS_MESSAGE);
+            when(mockedSimpleGames.update(anything(), anything())).thenResolve();
 
-            return scoreTableService.updateTableScore("tom", MIDDLE_TIME_SCORE_BOY, true).then((value: number) => {
+            return initScoreTableService().updateTableScore("tom", MIDDLE_TIME_SCORE_BOY, OnlineType.SOLO).then((value: number) => {
                 expect(value).to.eql(2);
             });
         });
 
-        it("should return 1 if the score deserves the first place", async () => {
+        it("should return 1 if the score deserves the first place(simple games)", async () => {
 
-            axiosMock.onPut(SERVER_BASE_URL + DB_SIMPLE_GAME + "tom")
-                .reply(HttpStatus.OK, SUCCESS_MESSAGE);
+            when(mockedSimpleGames.update(anything(), anything())).thenResolve();
 
-            return scoreTableService.updateTableScore("tom", LOW_TIME_SCORE_BOY, true).then((value: number) => {
+            return initScoreTableService().updateTableScore("tom", LOW_TIME_SCORE_BOY, OnlineType.SOLO).then((value: number) => {
+                expect(value).to.eql(1);
+            });
+        });
+
+        it("should return 1 if the score deserves the first place(free games)", async () => {
+
+            when(mockedFreeGames.contains(anything())).thenResolve(true);
+            when(mockedFreeGames.getFromId(anything()))
+                .thenResolve({bestSoloTimes: JSON.parse(JSON.stringify(INITIAL_SCORE_TABLE)),
+                              bestMultiTimes: JSON.parse(JSON.stringify(INITIAL_SCORE_TABLE))} as IFreeGame);
+            when(mockedFreeGames.update(anything(), anything())).thenResolve();
+
+            return initScoreTableService().updateTableScore("tom", LOW_TIME_SCORE_BOY, OnlineType.SOLO).then((value: number) => {
                 expect(value).to.eql(1);
             });
         });
 
         it("should throw ScoreNotGoodEnough error if the score is the same as third place", async () => {
 
-            axiosMock.onPut(SERVER_BASE_URL + DB_SIMPLE_GAME + "tom")
-                .reply(HttpStatus.OK, SUCCESS_MESSAGE);
+            when(mockedSimpleGames.update(anything(), anything())).thenResolve();
 
-            return scoreTableService.updateTableScore("tom", SAME_THAN_THIRD_SCORE, true).catch((reason: ScoreNotGoodEnough) => {
+            return initScoreTableService().updateTableScore("tom", SAME_THAN_THIRD_SCORE, OnlineType.SOLO)
+                .catch((reason: ScoreNotGoodEnough) => {
                 expect(reason.message).to.eql(ScoreNotGoodEnough.SCORE_NOT_GOOD_ENOUGH);
             });
         });
 
-        it("should return 3 if the score is the same as the one in second place", async () => {
+        it("should return 3 if the score is the same as the one in second place(simple games)", async () => {
 
-            axiosMock.onPut(SERVER_BASE_URL + DB_SIMPLE_GAME + "tom")
-                .reply(HttpStatus.OK, SUCCESS_MESSAGE);
+            when(mockedSimpleGames.update(anything(), anything())).thenResolve();
 
-            return scoreTableService.updateTableScore("tom", SAME_THAN_SECOND_SCORE, true).then((value: number) => {
+            return initScoreTableService().updateTableScore("tom", SAME_THAN_SECOND_SCORE, OnlineType.SOLO).then((value: number) => {
                 expect(value).to.eql(3);
             });
         });
 
-        it("should return 2 if the score is the same as the one in first place", async () => {
+        it("should return 2 if the score is the same as the one in first place(simple games)", async () => {
 
-            axiosMock.onPut(SERVER_BASE_URL + DB_SIMPLE_GAME + "tom")
-                .reply(HttpStatus.OK, SUCCESS_MESSAGE);
+            when(mockedSimpleGames.update(anything(), anything())).thenResolve();
 
-            return scoreTableService.updateTableScore("tom", SAME_THAN_FIRST_SCORE, true).then((value: number) => {
+            return initScoreTableService().updateTableScore("tom", SAME_THAN_FIRST_SCORE, OnlineType.SOLO).then((value: number) => {
                 expect(value).to.eql(2);
             });
         });
@@ -116,22 +150,56 @@ describe("ScoreTableService", () => {
     describe("Reset scores", () => {
         it("should throw if the name is not an existing name", async () => {
 
-            axiosMock.onGet(SERVER_BASE_URL + DB_FREE_GAME + "tom")
-                .reply(HttpStatus.NOT_FOUND);
-            axiosMock.onGet(SERVER_BASE_URL + DB_SIMPLE_GAME + "tom")
-                .reply(HttpStatus.NOT_FOUND);
+            when(mockedSimpleGames.contains(anything())).thenResolve(false);
 
-            return scoreTableService.resetScores("tom").catch((reason: NonExistentGameError) => {
+            return initScoreTableService().resetScores("tom").catch((reason: NonExistentGameError) => {
                 expect(reason.message).to.eql(NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE);
             });
         });
 
-        it("should not throw if the name is an existing name", async () => {
+        it("should throw if the data-base throws unpredicted error(get simple game)", async () => {
 
-            axiosMock.onPut(SERVER_BASE_URL + DB_SIMPLE_GAME + "tom")
-                .reply(HttpStatus.OK, SUCCESS_MESSAGE);
+            when(mockedSimpleGames.getFromId(anything())).thenReject(new InvalidGameInfoError());
 
-            return scoreTableService.resetScores("tom");
+            return initScoreTableService().resetScores("tom").catch((reason: AbstractDataBaseError) => {
+                expect(reason.message).to.eql((new AbstractDataBaseError(InvalidGameInfoError.GAME_INFO_FORMAT_ERROR_MESSAGE).message));
+            });
+        });
+
+        it("should throw if the data-base throws unpredicted error(get free game)", async () => {
+
+            when(mockedFreeGames.getFromId(anything())).thenReject(new InvalidGameInfoError());
+
+            return initScoreTableService().resetScores("tom").catch((reason: AbstractDataBaseError) => {
+                expect(reason.message).to.eql((new AbstractDataBaseError(InvalidGameInfoError.GAME_INFO_FORMAT_ERROR_MESSAGE).message));
+            });
+        });
+
+        it("should not throw if the name is an existing name(simple)", async () => {
+
+            when(mockedFreeGames.update(anything(), anything())).thenResolve();
+
+            return initScoreTableService().resetScores("tom");
+        });
+
+        it("should not throw if the name is an existing name(free)", async () => {
+
+            when(mockedFreeGames.contains(anything())).thenResolve(true);
+            when(mockedFreeGames.getFromId(anything()))
+                .thenResolve({bestSoloTimes: JSON.parse(JSON.stringify(INITIAL_SCORE_TABLE)),
+                              bestMultiTimes: JSON.parse(JSON.stringify(INITIAL_SCORE_TABLE))} as IFreeGame);
+            when(mockedFreeGames.update(anything(), anything())).thenResolve();
+
+            return initScoreTableService().resetScores("tom");
+        });
+
+        it("should throw if the data-base throws unpredicted error(update simple game)", async () => {
+
+            when(mockedSimpleGames.update(anything(), anything())).thenReject(new InvalidGameInfoError());
+
+            return initScoreTableService().resetScores("tom").catch((reason: AbstractDataBaseError) => {
+                expect(reason.message).to.eql((new AbstractDataBaseError(InvalidGameInfoError.GAME_INFO_FORMAT_ERROR_MESSAGE).message));
+            });
         });
     });
 });

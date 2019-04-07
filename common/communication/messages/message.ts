@@ -1,5 +1,6 @@
 import { SocketEvent } from "../socket-events";
 import {IRecordTime} from "../../model/game/record-time";
+import {OnlineType} from "../../model/game/game";
 
 export interface Message {
     title: string;
@@ -18,11 +19,6 @@ export enum ChatMessagePosition {
     NA = "NA",
 }
 
-export enum ChatMessagePlayerCount {
-    SOLO = "solo",
-    MULTI = "un contre un"
-}
-
 export enum ChatMessageType {
     DIFF_FOUND,
     DIFF_ERROR,
@@ -37,13 +33,13 @@ export interface ChatMessage {
     playerName: string;
     gameName: string;
     position: ChatMessagePosition;
-    playerCount: ChatMessagePlayerCount;
+    playerCount: OnlineType;
 }
 
 export interface UpdateScoreMessage {
     newTime: IRecordTime;
     gameName: string;
-    isSolo: boolean;
+    onlineType: OnlineType;
 }
 
 export function isAWebsocketMessage (object: any) {
