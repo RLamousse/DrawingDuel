@@ -1,6 +1,8 @@
 import {ComponentFixture, TestBed } from "@angular/core/testing";
 import {MatDialogModule} from "@angular/material";
 import {ActivatedRoute, Router} from "@angular/router";
+import {WebsocketMessage} from "../../../../common/communication/messages/message";
+import {SocketEvent} from "../../../../common/communication/socket-events";
 import {SocketService} from "../socket.service";
 import { AwaitViewComponent } from "./await-view.component";
 import {GameDeletionNotifComponent} from "./game-deletion-notif/game-deletion-notif.component";
@@ -8,6 +10,8 @@ import {GameDeletionNotifComponent} from "./game-deletion-notif/game-deletion-no
 describe("AwaitViewComponent", () => {
   let component: AwaitViewComponent;
   let fixture: ComponentFixture<AwaitViewComponent>;
+  const MOCKSOKETMESSAGE: WebsocketMessage<[string, boolean]> = { title: SocketEvent.DELETE,
+                                                                  body: ["mockname", true], };
 
   beforeEach((done) => {
     TestBed.configureTestingModule(
@@ -45,6 +49,14 @@ describe("AwaitViewComponent", () => {
   it("should create", () => {
     expect(component).toBeTruthy();
   });
+
+  it("should call notifyGameDeletion", () => {
+    // tslint:disable-next-line:no-any
+    spyOn<any>(component, "notifyGameDeletion").and.callThrough();
+    component["notifyGameDeletion"](MOCKSOKETMESSAGE);
+    expect(component["notifyGameDeletion"]).toHaveBeenCalled();
+  });
+
 });
 
 afterEach(() => {
