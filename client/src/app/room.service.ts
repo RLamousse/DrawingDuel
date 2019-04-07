@@ -1,4 +1,5 @@
 import {Injectable} from "@angular/core";
+import {Subscription} from "rxjs";
 import {
   createWebsocketMessage,
   PlayerCountMessage,
@@ -10,7 +11,6 @@ import {SocketEvent} from "../../../common/communication/socket-events";
 import {IRoomInfo} from "../../../common/model/rooms/room-info";
 import {SocketService} from "./socket.service";
 import {UNListService} from "./username.service";
-import {Subscription} from "rxjs";
 
 @Injectable({
               providedIn: "root",
