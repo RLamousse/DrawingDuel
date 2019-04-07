@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from "@angular/core";
 import { IFreeGame } from "../../../../common/model/game/free-game";
 import { ISimpleGame } from "../../../../common/model/game/simple-game";
 import { GameService } from "../game.service";
+import {RoomService} from "../room.service";
 import {GameButtonOptions} from "./game/game-button-enum";
 
 @Component({
@@ -15,7 +16,8 @@ export class GameListComponent implements OnInit {
   @Input() protected readonly rightButton: string = GameButtonOptions.JOIN;
   @Input() protected readonly leftButton: string = GameButtonOptions.PLAY;
 
-  public constructor(private gameService: GameService) {
+  public constructor(private gameService: GameService,
+                     private roomService: RoomService) {
   }
 
   public ngOnInit(): void {
@@ -27,6 +29,7 @@ export class GameListComponent implements OnInit {
       this.gameService.pushFreeGames(freeGamesToPush).catch((value: Error) => {throw value; });
       this.gameService.updateFreeGameImages().catch((value: Error) => {throw value; });
     });
+    this.roomService.checkOutRoom();
   }
 
 }
