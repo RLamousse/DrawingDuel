@@ -8,7 +8,7 @@ import { UNListService } from "../username.service";
   templateUrl: "./initial-view.component.html",
   styleUrls: ["./initial-view.component.css"],
 })
-export class InitialViewComponent implements OnInit{
+export class InitialViewComponent implements OnInit {
 
   @Input() public newUsername: string;
   public username: string = "inconnu";

@@ -85,9 +85,9 @@ describe("Initial View Component tests", () => {
 
   it("should updates message and username according to username availability", () => {
     component.newUsername = "tom";
-    component["handleUsernameAvailability"](true);
+    component["handleUsernameAvailability"](true).then().catch();
     expect(component.username).toBe("tom");
-    component["handleUsernameAvailability"](false);
+    component["handleUsernameAvailability"](false).then().catch();
     expect(component.errorMessage).toBe(unListSpyService.message);
   });
 
