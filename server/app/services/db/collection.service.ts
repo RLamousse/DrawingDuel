@@ -91,6 +91,16 @@ export abstract class CollectionService<T> {
             });
     }
 
+    public async deleteSelected(filter: FilterQuery<T>): Promise<Message> {
+        return this._collection.deleteMany(filter)
+            .then(() => {
+                return this.queryDeletionSuccessMessage();
+            })
+            .catch(() => {
+                throw new DatabaseError();
+            });
+    }
+
     protected async getDocument(id: string): Promise<T> {
         return this._collection.findOne({[this.idFieldName]: {$eq: id}})
             .then((value: T) => {
