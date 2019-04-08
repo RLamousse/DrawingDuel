@@ -23,8 +23,8 @@ import {
 } from "../simple-game/game-sounds";
 import {SocketService} from "../socket.service";
 import {UNListService} from "../username.service";
+import {ObjectCollisionService} from "./objectCollisionService/object-collision.service";
 import { RenderUpdateService } from "./render-update.service";
-
 interface IFreeGameState {
   isCheatModeActive: boolean;
   isWaitingInThread: boolean;
@@ -33,7 +33,6 @@ interface IFreeGameState {
   blinkThread?: NodeJS.Timeout;
 }
 export const SCENE_TYPE: string = "Scene";
-@Injectable()
 @Injectable({
     providedIn: "root",
   })
@@ -51,7 +50,7 @@ export class SceneRendererService {
   protected velocity: THREE.Vector3;
   private readonly fieldOfView: number = 90;
   private readonly nearClippingPane: number = 1;
-  private readonly farClippingPane: number = 1000;
+  private readonly farClippingPane: number = 2900;
   private readonly backGroundColor: number = 0x001A33;
   private readonly cameraX: number = 0;
   private readonly cameraY: number = 0;
@@ -64,7 +63,9 @@ export class SceneRendererService {
   public gameState: IFreeGameState;
 
   public constructor(private renderUpdateService: RenderUpdateService,
-                     private socket: SocketService) {
+                     private socket: SocketService,
+                     private objectCollisionService: ObjectCollisionService,
+                     ) {
     this.gameState = {isCheatModeActive: false, isWaitingInThread: false, foundDifference: []};
   }
   private setRenderer(): void {
@@ -80,18 +81,19 @@ export class SceneRendererService {
     this.modifiedContainer.appendChild(this.rendererMod.domElement);
   }
   private renderLoop(): void {
-    requestAnimationFrame(() => this.renderLoop());
     this.rendererOri.render(this.scene, this.camera);
     this.rendererMod.render(this.modifiedScene, this.camera);
     this.time = performance.now();
     const delta: number = (this.time - this.prevTime) / this.timeFactor;
     this.renderUpdateService.updateVelocity(this.velocity, delta);
+    this.velocity = this.objectCollisionService.raycastCollision
+      (this.camera, this.scene.children, this.modifiedScene.children, this.velocity);
     this.renderUpdateService.updateCamera(this.camera, delta, this.velocity);
     this.prevTime = this.time;
+    requestAnimationFrame(() => this.renderLoop());
   }
   private setCamera(): void {
     const aspectRatio: number = this.getAspectRatio();
-
     this.camera = new THREE.PerspectiveCamera(
       this.fieldOfView,
       aspectRatio,
@@ -205,7 +207,6 @@ export class SceneRendererService {
 
         return this.differenceValidationAtPoint(undefined);
       }
-      // Only take the first intersected object by the ray, hence the 0's
       if (intersectOri.length === 0 && intersectMod.length !== 0) {
         return this.differenceValidationAtPoint(this.get3DObject(intersectMod[0]));
       } else {
@@ -220,7 +221,7 @@ export class SceneRendererService {
     }
   }
   private getRecursiveParent(obj: THREE.Object3D): THREE.Object3D {
-    while ((obj.parent as THREE.Object3D).type !== SCENE_TYPE) {
+    if ((obj.parent as THREE.Object3D).type !== SCENE_TYPE) {
       return this.getRecursiveParent(obj.parent as THREE.Object3D);
     }
 

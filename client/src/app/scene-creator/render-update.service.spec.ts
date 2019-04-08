@@ -121,17 +121,15 @@ describe("RenderUpdateService", () => {
   });
 
   // Test RightClickHold
-  it("should setUp oldX, oldY, deltaX and deltaY", () => {
+  it("should setUp oldX, oldY", () => {
     const service: RenderUpdateService = TestBed.get(RenderUpdateService);
     service["right"]  = true;
     service.rightClick = true;
     service.rightClickHold(45, 123);
-    expect(service["deltaX"]).toEqual(0);
-    expect(service["deltaY"]).toEqual(0);
     expect(service["oldX"]).toEqual(45);
     expect(service["oldY"]).toEqual(123);
   });
-  it("should not setUp oldX, oldY, deltaX and deltaY", () => {
+  it("should not setUp oldX, oldY or change the value of deltaX and Y", () => {
     const service: RenderUpdateService = TestBed.get(RenderUpdateService);
     service["right"] = false;
     service["oldX"] = 0;
@@ -151,8 +149,8 @@ describe("RenderUpdateService", () => {
     service["oldX"] = 0;
     service["oldY"] = 0;
     service.rotationCamera(100, -150);
-    expect(service["deltaY"]).toEqual((0 - 100) / 4000);
-    expect(service["deltaX"]).toEqual((0 - (-150)) / 4000);
+    expect(service["deltaY"]).toEqual((0 - 100) * Math.PI / 800);
+    expect(service["deltaX"]).toEqual((0 - (-150)) * Math.PI / 800);
   });
 
   // Test UpdateDifference
