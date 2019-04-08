@@ -45,6 +45,22 @@ export abstract class CollectionService<T> {
             });
     }
 
+    public async getAllWithQuery(query: FilterQuery<T>): Promise<T[]> {
+        return this._collection.find(query).toArray()
+            .then((items: T[]) => {
+                items.forEach((item: T) => {
+                    // @ts-ignore even thought item is read as a T type(IFreeGame or ISimpleGame),
+                    // mongo generates an _id attribute, and we want it removed!
+                    delete item._id;
+                });
+
+                return items;
+            })
+            .catch(() => {
+                throw new DatabaseError();
+            });
+    }
+
     public async documentCountWithQuery(query: FilterQuery<T>): Promise<number> {
         try {
             return this._collection.countDocuments(query);

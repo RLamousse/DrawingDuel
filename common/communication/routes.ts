@@ -18,6 +18,7 @@ export const GAME_MANAGER_FREE: string = GAME_MANAGER_BASE + "free/";
 
 export const GAME_MANAGER_GET_REQUEST: string = "get/";
 export const GAME_MANAGER_GET_ALL_REQUEST: string = "get-all/";
+export const GAME_MANAGER_GET_NOT_DELETED_REQUEST: string = "get-not-deleted/";
 export const GAME_MANAGER_UPDATE_REQUEST: string = "update/";
 
 export const USERNAME_ADD: string = USERNAME_BASE + "add/";

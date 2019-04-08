@@ -9,6 +9,7 @@ import { SimpleGamesCollectionService } from "./db/simple-games.collection.servi
 export const SIMPLE_GAMES_COLLECTION: string = "simpleGames";
 export const FREE_GAMES_COLLECTION: string = "freeGames";
 export const TO_BE_DELETED_FILTER_QUERY: FilterQuery<IGame> = {["toBeDeleted"]: {$eq: true}};
+export const NOT_TO_BE_DELETED_FILTER_QUERY: FilterQuery<IGame> = {["toBeDeleted"]: {$eq: false}};
 
 @injectable()
 export class DataBaseService {
