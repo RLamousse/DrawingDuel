@@ -24,6 +24,7 @@ export class ObjectCollisionService {
   public constructor() {
     this.comparisonVec = new THREE.Vector3();
   }
+
   public raycastCollision(camera: THREE.Camera, oriObjs: THREE.Object3D[], modObjs: THREE.Object3D[], vel: THREE.Vector3): void {
     for (const vec of this.directionVecs) {
       const vecClone: THREE.Vector3 = vec.clone().applyQuaternion(camera.quaternion);
@@ -35,6 +36,7 @@ export class ObjectCollisionService {
       }
     }
   }
+
   private isCollision(inter: THREE.Intersection[]): boolean {
     return (inter.length > 0 && inter[0].distance < this.collisionDist);
   }
