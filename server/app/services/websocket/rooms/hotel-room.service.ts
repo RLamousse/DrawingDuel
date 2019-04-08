@@ -123,12 +123,12 @@ export class HotelRoomService {
 
         // TODO test .in().on()
         socket.in(room.id).on(SocketEvent.INTERACT, <T>(message: WebsocketMessage<RoomInteractionMessage<T>>) => {
-            room.interact(socket.id, message.body.interactionData)
+            room.interact(socket.id, message.body)
                 .then((interactionResponse: T) => {
                     this.radioTower.sendToRoom(SocketEvent.INTERACT, createWebsocketMessage(interactionResponse), room.id);
                 })
                 .catch((error: Error) => {
-                    socket.emit(SocketEvent.INTERACT, error);
+                    socket.emit(SocketEvent.INTERACT, createWebsocketMessage(error));
                     // TODO Send error to chat
                 });
         });
