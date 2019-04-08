@@ -36,7 +36,7 @@ describe("SupprimerFormComponent", () => {
     expect(component).toBeTruthy();
   });
 
-  it("should call notifyGameDeletion", () => {
+  it("should call sendDeleteMessage", () => {
     // tslint:disable-next-line:no-any
     spyOn<any>(component, "sendDeleteMessage").and.callThrough();
     component["sendDeleteMessage"]();
