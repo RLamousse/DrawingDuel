@@ -1,5 +1,6 @@
 import {Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild} from "@angular/core";
 import {ActivatedRoute} from "@angular/router";
+import {FreeViewGamesRenderingError} from "../../../../common/errors/component.errors";
 import {IFreeGame} from "../../../../common/model/game/free-game";
 import {IPoint} from "../../../../common/model/point";
 import {X_FACTOR, Y_FACTOR} from "../../../../common/util/util";
@@ -59,13 +60,11 @@ export class SceneCreatorComponent implements OnInit, OnDestroy {
     this.route.queryParams.subscribe((params) => {
       this.gameName = params["gameName"];
     });
-    const errMsg: string = "An error occured when trying to render the free view games";
     this.renderService.init(this.originalContainer, this.modifiedContainer);
     this.verifyGame().then((scene: IScene) =>
       this.renderService.loadScenes(scene.scene, scene.modifiedScene, this.gameName),
-    ).catch((e: Error) => {
-      e.message = errMsg;
-      throw e;
+    ).catch(() => {
+     throw new FreeViewGamesRenderingError();
     });
   }
 

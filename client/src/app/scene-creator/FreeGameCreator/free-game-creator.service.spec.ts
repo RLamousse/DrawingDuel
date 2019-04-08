@@ -200,7 +200,7 @@ describe("FreeGameCreatorService", () => {
   });
 
   // Test setSkyBoxGeometric
-  it("should add a skyBox obj to the scene and modified scene", () => {
+  it("should add a skyBox obj to the geometric scene and modified scene", () => {
     const service: FreeGameCreatorService = TestBed.get(FreeGameCreatorService);
     service["scene"] = new THREE.Scene();
     service["modifiedScene"] = new THREE.Scene();
