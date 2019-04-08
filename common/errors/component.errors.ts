@@ -20,3 +20,10 @@ export class ComponentCanvasError extends Error {
         super(ComponentCanvasError.COMPONENT_CANVAS_ERROR_MESSAGE);
     }
 }
+
+export class FreeViewGamesRenderingError extends  Error {
+    public static readonly FREE_VIEW_GAMES_RENDERING_ERROR_MESSAGE: string = "An error occured when trying to render the free view games";
+    constructor() {
+        super(FreeViewGamesRenderingError.FREE_VIEW_GAMES_RENDERING_ERROR_MESSAGE);
+    }
+}

@@ -19,6 +19,8 @@ export class FreeGameCreatorService {
   private objects: THREE.Mesh[];
   private modifiedObjects: THREE.Mesh[];
 
+  private readonly SKY_BOX_NAME: string = "skyBox";
+
   public constructor() {
     this.formService = new Form3DService();
     this.objects = [];
@@ -65,6 +67,7 @@ export class FreeGameCreatorService {
     for (const j of primitiveScenes.modifiedObjects) {
       this.generateThematicObject(j, false);
     }
+    this.setSkyBoxThematic();
   }
 
   private generateThematicObject(object: IObject.IJson3DObject, isOriginalObject: boolean): void {
@@ -100,6 +103,42 @@ export class FreeGameCreatorService {
     });
   }
 
+  private setSkyBoxThematic (): void {
+    const textureLoader: THREE.TextureLoader = new THREE.TextureLoader();
+    const DIMENSION: number = 2000;
+    const geometry: THREE.BoxGeometry = new THREE.BoxGeometry(DIMENSION, DIMENSION, DIMENSION);
+    const materials: THREE.MeshBasicMaterial[] = [];
+    const SKY_BOX_TEXT: string[] = [
+      "assets/images/lightblue/right.png",
+      "assets/images/lightblue/left.png",
+      "assets/images/lightblue/top.png",
+      "assets/images/lightblue/bot.png",
+      "assets/images/lightblue/front.png",
+      "assets/images/lightblue/back.png",
+    ];
+    for (let index: number = 0; index < geometry.faces.length; index++) {
+      materials.push(new THREE.MeshBasicMaterial({
+        map: textureLoader.load(SKY_BOX_TEXT[index]),
+        side: THREE.DoubleSide,
+      }));
+    }
+    const skyBox: THREE.Mesh = new THREE.Mesh(geometry, materials);
+    skyBox.name = this.SKY_BOX_NAME;
+    this.scene.add(skyBox.clone());
+    this.modifiedScene.add(skyBox.clone());
+  }
+
+  private setSkyBoxGeometric(): void {
+    const DIMENSION: number = 2000;
+    const geometry: THREE.BoxGeometry = new THREE.BoxGeometry(DIMENSION, DIMENSION, DIMENSION);
+    const material: THREE.MeshBasicMaterial = new THREE.MeshBasicMaterial({side: THREE.DoubleSide});
+    material.visible = false;
+    const skyBox: THREE.Mesh = new THREE.Mesh(geometry, material);
+    skyBox.name = this.SKY_BOX_NAME;
+    this.scene.add(skyBox.clone());
+    this.modifiedScene.add(skyBox.clone());
+  }
+
   private buildTexturePath(name: string): string {
     return ("assets/Models/textures/" + name + ".jpg");
   }
@@ -115,6 +154,7 @@ export class FreeGameCreatorService {
       this.scene.add(object);
       this.objects.push(object);
     }
+    this.setSkyBoxGeometric();
   }
 
   private generateModifiedScene(primitiveScenes: IObject.IScenesJSON): void {
