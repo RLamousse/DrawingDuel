@@ -4,7 +4,11 @@ import MockAdapter from "axios-mock-adapter";
 // tslint:disable-next-line:no-duplicate-imports Weird interaction between singletons and interface (olivier st-o approved)
 import AxiosAdapter from "axios-mock-adapter";
 import * as HttpStatus from "http-status-codes";
-import {DB_SIMPLE_GAME, DIFF_VALIDATOR_BASE, SERVER_BASE_URL} from "../../../../common/communication/routes";
+import {
+  DIFF_VALIDATOR_BASE,
+  GAME_MANAGER_SIMPLE,
+  SERVER_BASE_URL
+} from "../../../../common/communication/routes";
 import {AlreadyFoundDifferenceError, NoDifferenceAtPointError} from "../../../../common/errors/services.errors";
 import {DifferenceCluster, DIFFERENCE_CLUSTER_POINTS_INDEX} from "../../../../common/model/game/simple-game";
 import {ORIGIN} from "../../../../common/model/point";
@@ -16,7 +20,7 @@ describe("SimpleGameService", () => {
   let service: SimpleGameService;
   const DIFF_VALIDATOR_URL: string = SERVER_BASE_URL + DIFF_VALIDATOR_BASE;
   const DIFF_VALIDATOR_GET_CALLS_REGEX: RegExp = new RegExp(`${DIFF_VALIDATOR_URL}/*`);
-  const DB_URL: string = SERVER_BASE_URL + DB_SIMPLE_GAME;
+  const DB_URL: string = SERVER_BASE_URL + GAME_MANAGER_SIMPLE;
   const DB_GET_CALLS_REGEX: RegExp = new RegExp(`${DB_URL}/*`);
 
   beforeEach(() => {

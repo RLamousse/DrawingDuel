@@ -97,5 +97,6 @@ export class Create3DGameComponent extends AbstractForm implements OnInit {
         alert(error.message);
         this.disableButton = false;
       });
+    this.exit();
   }
 }

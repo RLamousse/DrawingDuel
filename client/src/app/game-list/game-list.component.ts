@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from "@angular/core";
-import { IFreeGame } from "../../../../common/model/game/free-game";
-import { ISimpleGame } from "../../../../common/model/game/simple-game";
+import { forkJoin } from "rxjs";
+import {GameType} from "../../../../common/model/game/game";
 import { GameService } from "../game.service";
 
 @Component({
@@ -11,20 +11,22 @@ import { GameService } from "../game.service";
 
 export class GameListComponent implements OnInit {
 
+  @Input() protected  readonly simpleGameTag: GameType = GameType.SIMPLE;
+  @Input() protected  readonly freeGameTag: GameType = GameType.FREE;
   @Input() protected readonly rightButton: string = "joindre";
   @Input() protected readonly leftButton: string = "jouer";
+  protected pushedGames: boolean;
 
   public constructor(private gameService: GameService) {
+    this.pushedGames = false;
   }
 
   public ngOnInit(): void {
-    this.gameService.getSimpleGames().subscribe((simpleGamesToPush: ISimpleGame[]) => {
-      this.gameService.pushSimpleGames(simpleGamesToPush);
-    });
-
-    this.gameService.getFreeGames().subscribe((freeGamesToPush: IFreeGame[]) => {
-      this.gameService.pushFreeGames(freeGamesToPush).catch((value: Error) => {throw value; });
+    forkJoin(this.gameService.getSimpleGames(), this.gameService.getFreeGames()).subscribe(([simpleGames, freeGames]) => {
+      this.gameService.pushSimpleGames(simpleGames);
+      this.gameService.pushFreeGames(freeGames);
       this.gameService.updateFreeGameImages().catch((value: Error) => {throw value; });
+      this.pushedGames = true;
     });
   }
 

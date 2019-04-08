@@ -5,6 +5,9 @@ import "reflect-metadata";
 import { FreeGamesCollectionService } from "./db/free-games.collection.service";
 import { SimpleGamesCollectionService } from "./db/simple-games.collection.service";
 
+export const SIMPLE_GAMES_COLLECTION: string = "simpleGames";
+export const FREE_GAMES_COLLECTION: string = "freeGames";
+
 @injectable()
 export class DataBaseService {
 
@@ -22,8 +25,8 @@ export class DataBaseService {
         MongoClient.connect(this.DB_URL, {useNewUrlParser: true})
             .then((client: MongoClient) => {
                 this._dataBase = client.db(this.DB_DB);
-                this._simpleGames = new SimpleGamesCollectionService(this._dataBase.collection("simpleGames"));
-                this._freeGames = new FreeGamesCollectionService(this._dataBase.collection("freeGames"));
+                this._simpleGames = new SimpleGamesCollectionService(this._dataBase.collection(SIMPLE_GAMES_COLLECTION));
+                this._freeGames = new FreeGamesCollectionService(this._dataBase.collection(FREE_GAMES_COLLECTION));
             })
             .catch(() => {
                 console.error("Unable to connect to the database!");

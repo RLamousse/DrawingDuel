@@ -2,6 +2,7 @@ import {Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild} from 
 import {ActivatedRoute} from "@angular/router";
 import {FreeViewGamesRenderingError} from "../../../../common/errors/component.errors";
 import {IFreeGame} from "../../../../common/model/game/free-game";
+import {GameType} from "../../../../common/model/game/game";
 import {IPoint} from "../../../../common/model/point";
 import {X_FACTOR, Y_FACTOR} from "../../../../common/util/util";
 import {GameService} from "../game.service";
@@ -28,12 +29,14 @@ export const VICTORY_TEXT: string = "VICTOIRE";
            })
 export class SceneCreatorComponent implements OnInit, OnDestroy {
   private clickEnabled: boolean;
+  protected finishedLoad: boolean;
   public constructor(private renderService: SceneRendererService, private route: ActivatedRoute,
                      private freeGameCreator: FreeGameCreatorService, private gameService: GameService) {
     this.clickEnabled = true;
   }
 
   protected gameName: string;
+  protected FREE_GAME_TYPE: GameType = GameType.FREE;
   protected cursorEnabled: boolean = true;
 
   private get originalContainer(): HTMLDivElement {

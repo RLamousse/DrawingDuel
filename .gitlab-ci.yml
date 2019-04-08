@@ -74,14 +74,6 @@ client coverage:
       - merge_requests
       - master
       - dev
-    changes:
-      - .gitlab-ci.yml
-      - client/**/*
-  artifacts:
-    untracked: false
-    expire_in: 30 days
-    paths:
-      - client/coverage
 
 server coverage:
   extends: .coverage
@@ -93,14 +85,6 @@ server coverage:
       - merge_requests
       - master
       - dev
-    changes:
-      - .gitlab-ci.yml
-      - server/**/*
-  artifacts:
-    untracked: false
-    expire_in: 30 days
-    paths:
-      - server/coverage
 
 # Lint report job template
 .lint:
