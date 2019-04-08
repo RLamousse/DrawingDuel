@@ -8,6 +8,7 @@ import { SimpleGamesCollectionService } from "./db/simple-games.collection.servi
 
 export const SIMPLE_GAMES_COLLECTION: string = "simpleGames";
 export const FREE_GAMES_COLLECTION: string = "freeGames";
+export const TO_BE_DELETED_FILTER_QUERY: FilterQuery<IGame> = {["toBeDeleted"]: {$eq: true}};
 
 @injectable()
 export class DataBaseService {
@@ -17,7 +18,6 @@ export class DataBaseService {
     private readonly DB_PASSWORD: string = config.get("mongo.password");
     private readonly DB_DB: string = config.get("mongo.database");
     private readonly DB_URL: string = `mongodb+srv://${this.DB_USER}:${this.DB_PASSWORD}@cluster0-ijbac.mongodb.net/test?retryWrites=true`;
-    private readonly  TO_BE_DELETED_FILTER_QUERY: FilterQuery<IGame> = {["toBeDeleted"]: {$eq: true}};
 
     private _dataBase: Db;
     private _simpleGames: SimpleGamesCollectionService;
@@ -49,7 +49,7 @@ export class DataBaseService {
     }
 
     private async cleanGamesToBeDeleted(): Promise<void> {
-        await this.simpleGames.deleteDocumentWithQuery(this.TO_BE_DELETED_FILTER_QUERY);
-        await this.freeGames.deleteDocumentWithQuery(this.TO_BE_DELETED_FILTER_QUERY);
+        await this.simpleGames.deleteDocumentWithQuery(TO_BE_DELETED_FILTER_QUERY);
+        await this.freeGames.deleteDocumentWithQuery(TO_BE_DELETED_FILTER_QUERY);
     }
 }

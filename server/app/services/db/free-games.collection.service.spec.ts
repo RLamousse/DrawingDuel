@@ -12,7 +12,7 @@ import {
     NonExistentGameError
 } from "../../../../common/errors/database.errors";
 import {IFreeGame} from "../../../../common/model/game/free-game";
-import {IGame} from "../../../../common/model/game/game";
+import {TO_BE_DELETED_FILTER_QUERY} from "../data-base.service";
 import {FreeGamesCollectionService} from "./free-games.collection.service";
 import {GAME_NAME_FIELD} from "./simple-games.collection.service";
 
@@ -35,8 +35,6 @@ describe("A db service for free games", () => {
 
     const createGameQueryForId: (id: string) => FilterQuery<IFreeGame> =
         (id: string): FilterQuery<IFreeGame> => ({[GAME_NAME_FIELD]: {$eq: id}});
-
-    const FLAG_FILTER_QUERY: FilterQuery<IGame> = {["toBeDeleted"]: {$eq: true}};
 
     const createGameQueryForUpdate: (data: Partial<IFreeGame>) => UpdateQuery<IFreeGame> =
         (data: Partial<IFreeGame>): UpdateQuery<IFreeGame> => ({$set: data});
@@ -221,13 +219,13 @@ describe("A db service for free games", () => {
 
         it("should delete only games that are supposed to be deleted", async () => {
 
-            mockedCollection.setup(async (collection: Collection<IFreeGame>) => collection.deleteMany(FLAG_FILTER_QUERY))
+            mockedCollection.setup(async (collection: Collection<IFreeGame>) => collection.deleteMany(TO_BE_DELETED_FILTER_QUERY))
             // @ts-ignore Spoof DeleteWriteOpResultObject for DB delete promise
                 .returns(async () => Promise.resolve({}));
 
             freeGamesCollectionService = new FreeGamesCollectionService(mockedCollection.object);
 
-            return freeGamesCollectionService.deleteDocumentWithQuery(FLAG_FILTER_QUERY)
+            return freeGamesCollectionService.deleteDocumentWithQuery(TO_BE_DELETED_FILTER_QUERY)
                 .then((message: Message) => {
                     expect(message)
                         .to.eql(freeGamesCollectionService["queryDeletionSuccessMessage"]());

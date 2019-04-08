@@ -12,8 +12,8 @@ import {
     NonExistentGameError
 } from "../../../../common/errors/database.errors";
 import {IFreeGame} from "../../../../common/model/game/free-game";
-import {IGame} from "../../../../common/model/game/game";
 import {ISimpleGame} from "../../../../common/model/game/simple-game";
+import {TO_BE_DELETED_FILTER_QUERY} from "../data-base.service";
 import {GAME_NAME_FIELD, SimpleGamesCollectionService} from "./simple-games.collection.service";
 
 describe("A db service for simple games", () => {
@@ -33,8 +33,6 @@ describe("A db service for simple games", () => {
 
     const createGameQueryForId: (id: string) => FilterQuery<ISimpleGame> =
         (id: string): FilterQuery<ISimpleGame> => ({[GAME_NAME_FIELD]: {$eq: id}});
-
-    const FLAG_FILTER_QUERY: FilterQuery<IGame> = {["toBeDeleted"]: {$eq: true}};
 
     const createGameQueryForUpdate: (data: Partial<ISimpleGame>) => UpdateQuery<ISimpleGame> =
         (data: Partial<ISimpleGame>): UpdateQuery<ISimpleGame> => ({$set: data});
@@ -217,13 +215,13 @@ describe("A db service for simple games", () => {
 
         it("should delete only games that are supposed to be deleted", async () => {
 
-            mockedCollection.setup(async (collection: Collection<ISimpleGame>) => collection.deleteMany(FLAG_FILTER_QUERY))
+            mockedCollection.setup(async (collection: Collection<ISimpleGame>) => collection.deleteMany(TO_BE_DELETED_FILTER_QUERY))
             // @ts-ignore Spoof DeleteWriteOpResultObject for DB delete promise
                 .returns(async () => Promise.resolve({}));
 
             simpleGamesCollectionService = new SimpleGamesCollectionService(mockedCollection.object);
 
-            return simpleGamesCollectionService.deleteDocumentWithQuery(FLAG_FILTER_QUERY)
+            return simpleGamesCollectionService.deleteDocumentWithQuery(TO_BE_DELETED_FILTER_QUERY)
                 .then((message: Message) => {
                     expect(message)
                         .to.eql(simpleGamesCollectionService["queryDeletionSuccessMessage"]());
