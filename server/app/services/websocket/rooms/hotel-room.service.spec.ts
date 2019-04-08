@@ -1,8 +1,9 @@
 // tslint:disable:max-file-line-count This is a test file full of Pitbull references...
 import {fail} from "assert";
 import {assert, expect} from "chai";
-// tslint:disable-next-line:no-duplicate-imports Weird interaction between singletons and interface (olivier st-o approved)
 import {Server, Socket} from "socket.io";
+// tslint:disable-next-line:no-duplicate-imports Weird interaction between singletons and interface (olivier st-o approved)
+import * as io from "socket.io";
 import {connect} from "socket.io-client";
 import {anything, anyString, instance, mock, reset, spy, verify, when} from "ts-mockito";
 import {IMock, Mock} from "typemoq";
