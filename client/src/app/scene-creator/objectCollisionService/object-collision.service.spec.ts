@@ -91,6 +91,18 @@ describe("ObjectCollisionService", () => {
     expect(vel.x).toEqual(0);
   });
 
+  it("should still call cancelVelocity if the modScene contain a collision", () => {
+    const service: ObjectCollisionService = TestBed.get(ObjectCollisionService);
+    spyOn(service as any, "isCollision").and.returnValues(false, true);
+    spyOn(service as any, "cancelVelocity");
+    const ori: THREE.Object3D[] = [];
+    const mod: THREE.Object3D[] = [];
+    const cam: THREE.Camera = new THREE.Camera();
+    const vel: THREE.Vector3 = new THREE.Vector3();
+    service.raycastCollision(cam, ori, mod, vel);
+    expect(service["cancelVelocity"]).toHaveBeenCalled();
+  });
+
   it("should not put vel.x to 0 when vel.x < 0 && comparisonVec.x > 0", () => {
     const service: ObjectCollisionService = TestBed.get(ObjectCollisionService);
     const vel: THREE.Vector3 = new THREE.Vector3(-1, 0, 0);
