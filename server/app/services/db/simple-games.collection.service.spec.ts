@@ -223,7 +223,7 @@ describe("A db service for simple games", () => {
 
             simpleGamesCollectionService = new SimpleGamesCollectionService(mockedCollection.object);
 
-            return simpleGamesCollectionService.deleteSelected(FLAG_FILTER_QUERY)
+            return simpleGamesCollectionService.deleteDocumentWithQuery(FLAG_FILTER_QUERY)
                 .then((message: Message) => {
                     expect(message)
                         .to.eql(simpleGamesCollectionService["queryDeletionSuccessMessage"]());

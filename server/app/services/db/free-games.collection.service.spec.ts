@@ -227,7 +227,7 @@ describe("A db service for free games", () => {
 
             freeGamesCollectionService = new FreeGamesCollectionService(mockedCollection.object);
 
-            return freeGamesCollectionService.deleteSelected(FLAG_FILTER_QUERY)
+            return freeGamesCollectionService.deleteDocumentWithQuery(FLAG_FILTER_QUERY)
                 .then((message: Message) => {
                     expect(message)
                         .to.eql(freeGamesCollectionService["queryDeletionSuccessMessage"]());

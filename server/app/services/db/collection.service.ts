@@ -91,7 +91,7 @@ export abstract class CollectionService<T> {
             });
     }
 
-    public async deleteSelected(filter: FilterQuery<T>): Promise<Message> {
+    public async deleteDocumentWithQuery(filter: FilterQuery<T>): Promise<Message> {
         return this._collection.deleteMany(filter)
             .then(() => {
                 return this.queryDeletionSuccessMessage();

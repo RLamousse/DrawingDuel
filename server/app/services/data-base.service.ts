@@ -49,7 +49,7 @@ export class DataBaseService {
     }
 
     private async cleanGamesToBeDeleted(): Promise<void> {
-        await this.simpleGames.deleteSelected(this.TO_BE_DELETED_FILTER_QUERY);
-        await this.freeGames.deleteSelected(this.TO_BE_DELETED_FILTER_QUERY);
+        await this.simpleGames.deleteDocumentWithQuery(this.TO_BE_DELETED_FILTER_QUERY);
+        await this.freeGames.deleteDocumentWithQuery(this.TO_BE_DELETED_FILTER_QUERY);
     }
 }
