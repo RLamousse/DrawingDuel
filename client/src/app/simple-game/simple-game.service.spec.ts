@@ -5,7 +5,7 @@ import MockAdapter from "axios-mock-adapter";
 import AxiosAdapter from "axios-mock-adapter";
 import * as HttpStatus from "http-status-codes";
 import {
-  DIFF_VALIDATOR_BASE,
+  DIFF_VALIDATOR_BASE, GAME_MANAGER_GET_REQUEST,
   GAME_MANAGER_SIMPLE,
   SERVER_BASE_URL
 } from "../../../../common/communication/routes";
@@ -21,7 +21,7 @@ describe("SimpleGameService", () => {
   const DIFF_VALIDATOR_URL: string = SERVER_BASE_URL + DIFF_VALIDATOR_BASE;
   const DIFF_VALIDATOR_GET_CALLS_REGEX: RegExp = new RegExp(`${DIFF_VALIDATOR_URL}/*`);
   const DB_URL: string = SERVER_BASE_URL + GAME_MANAGER_SIMPLE;
-  const DB_GET_CALLS_REGEX: RegExp = new RegExp(`${DB_URL}/*`);
+  const DB_GET_CALLS_REGEX: RegExp = new RegExp(`${DB_URL + GAME_MANAGER_GET_REQUEST}/*`);
 
   beforeEach(() => {
     axiosMock = new AxiosAdapter(Axios);

@@ -6,7 +6,7 @@ import * as request from "supertest";
 import {anything, instance, mock, when} from "ts-mockito";
 import {Message} from "../../../common/communication/messages/message";
 import {
-    GAME_MANAGER_FREE,
+    GAME_MANAGER_FREE, GAME_MANAGER_GET_ALL_REQUEST, GAME_MANAGER_GET_REQUEST,
     GAME_MANAGER_SIMPLE,
 } from "../../../common/communication/routes";
 import {DatabaseError, NonExistentGameError} from "../../../common/errors/database.errors";
@@ -49,7 +49,7 @@ describe("Data-base controller", () => {
     describe("Simple Games", () => {
         it("should send a success message on get all", async () => {
             return request(app)
-                .get(GAME_MANAGER_SIMPLE)
+                .get(GAME_MANAGER_SIMPLE + GAME_MANAGER_GET_ALL_REQUEST)
                 .expect(HttpStatus.OK)
                 .then((response) => {
                     expect(response.body).to.eql([]);
@@ -57,21 +57,21 @@ describe("Data-base controller", () => {
         });
         it("should send a success message on get one game", async () => {
             return request(app)
-                .get(GAME_MANAGER_SIMPLE + "someGameTest")
+                .get(GAME_MANAGER_SIMPLE + GAME_MANAGER_GET_REQUEST + "someGameTest")
                 .expect(HttpStatus.OK);
         });
         it("should send an error if the game is not found", async () => {
             when(mockSimpleGames.getFromId(anything())).thenReject(new NonExistentGameError());
 
             return request(app)
-                .get(GAME_MANAGER_SIMPLE + "notExistingGame")
+                .get(GAME_MANAGER_SIMPLE + GAME_MANAGER_GET_REQUEST + "notExistingGame")
                 .expect(HttpStatus.NOT_FOUND);
         });
         it("should send an error if there was an error in the server", async () => {
             when(mockSimpleGames.getFromId(anything())).thenReject(new DatabaseError());
 
             return request(app)
-                .get(GAME_MANAGER_SIMPLE + "/notExistingGame")
+                .get(GAME_MANAGER_SIMPLE + GAME_MANAGER_GET_REQUEST + "/notExistingGame")
                 .expect(HttpStatus.INTERNAL_SERVER_ERROR);
         });
     });
@@ -79,7 +79,7 @@ describe("Data-base controller", () => {
     describe("Free Games", () => {
         it("should send a success message on get all", async () => {
             return request(app)
-                .get(GAME_MANAGER_FREE)
+                .get(GAME_MANAGER_FREE + GAME_MANAGER_GET_ALL_REQUEST)
                 .expect(HttpStatus.OK)
                 .then((response) => {
                     expect(response.body).to.eql([]);
@@ -87,21 +87,21 @@ describe("Data-base controller", () => {
         });
         it("should send a success message on get one game", async () => {
             return request(app)
-                .get(GAME_MANAGER_FREE + "someGameTest")
+                .get(GAME_MANAGER_FREE + GAME_MANAGER_GET_REQUEST + "someGameTest")
                 .expect(HttpStatus.OK);
         });
         it("should send an error if the game is not found", async () => {
             when(mockFreeGames.getFromId(anything())).thenReject(new NonExistentGameError());
 
             return request(app)
-                .get(GAME_MANAGER_FREE + "notExistingGame")
+                .get(GAME_MANAGER_FREE + GAME_MANAGER_GET_REQUEST + "notExistingGame")
                 .expect(HttpStatus.NOT_FOUND);
         });
         it("should send an error if there was an error in the server", async () => {
             when(mockFreeGames.getFromId(anything())).thenReject(new DatabaseError());
 
             return request(app)
-                .get(GAME_MANAGER_FREE + "notExistingGame")
+                .get(GAME_MANAGER_FREE + GAME_MANAGER_GET_REQUEST + "notExistingGame")
                 .expect(HttpStatus.INTERNAL_SERVER_ERROR);
         });
     });

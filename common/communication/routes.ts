@@ -16,6 +16,10 @@ export const FREE_GAME_CREATION_ROUTE: string = GAME_CREATOR_BASE + "create-free
 export const GAME_MANAGER_SIMPLE: string = GAME_MANAGER_BASE + "simple/";
 export const GAME_MANAGER_FREE: string = GAME_MANAGER_BASE + "free/";
 
+export const GAME_MANAGER_GET_REQUEST: string = "get/";
+export const GAME_MANAGER_GET_ALL_REQUEST: string = "getAll/";
+export const GAME_MANAGER_UPDATE_REQUEST: string = "update/";
+
 export const USERNAME_ADD: string = USERNAME_BASE + "add/";
 export const USERNAME_RELEASE: string = USERNAME_BASE + "release/";
 

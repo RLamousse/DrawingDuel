@@ -4,7 +4,7 @@ import * as Httpstatus from "http-status-codes";
 import {Observable, Subject} from "rxjs";
 import {IDiffValidatorControllerRequest} from "../../../../common/communication/requests/diff-validator-controller.request";
 import {
-  DIFF_VALIDATOR_BASE,
+  DIFF_VALIDATOR_BASE, GAME_MANAGER_GET_REQUEST,
   GAME_MANAGER_SIMPLE,
   SERVER_BASE_URL
 } from "../../../../common/communication/routes";
@@ -96,7 +96,7 @@ export class SimpleGameService {
   }
 
   private async getGame(): Promise<ISimpleGame> {
-    return Axios.get<ISimpleGame>(SERVER_BASE_URL + GAME_MANAGER_SIMPLE + this._gameName)
+    return Axios.get<ISimpleGame>(SERVER_BASE_URL + GAME_MANAGER_SIMPLE + GAME_MANAGER_GET_REQUEST + this._gameName)
       .then((value: AxiosResponse<ISimpleGame>) => value.data)
       // tslint:disable-next-line:no-any Since Axios defines reason as `any`
       .catch(() => {
