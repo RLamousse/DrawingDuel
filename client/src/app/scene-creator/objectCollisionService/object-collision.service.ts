@@ -10,12 +10,12 @@ export class ObjectCollisionService {
     new THREE.Vector3(0, 0, -1),
     new THREE.Vector3(1, 0, 0),
     new THREE.Vector3(-1, 0, 0),
-    new THREE.Vector3(0, 1, 0),
-    new THREE.Vector3(0, -1, 0),
     new THREE.Vector3(1, 0, 1),
     new THREE.Vector3(-1, 0, -1),
     new THREE.Vector3(1, 0, -1),
     new THREE.Vector3(-1, 0, 1),
+    new THREE.Vector3(0, 1, -1),
+    new THREE.Vector3(0, -1, -1),
     ];
   private readonly collisionDist: number = 25;
 
@@ -46,21 +46,27 @@ export class ObjectCollisionService {
 
   private cancelVelocity(vel: THREE.Vector3, dirColl: THREE.Vector3, oriDir: THREE.Vector3): void {
     this.comparisonVec = dirColl.clone();
-    if (oriDir.x - dirColl.x < -1 || oriDir.x - dirColl.x > 1) {
+    if (this.isReverseOrientation(oriDir.x, dirColl.x)) {
       this.comparisonVec.x = -this.comparisonVec.x;
     }
-    if (oriDir.z - dirColl.z < -1 || oriDir.z - dirColl.z > 1) {
+    if (this.isReverseOrientation(oriDir.z, dirColl.z)) {
       this.comparisonVec.z = -this.comparisonVec.z;
     }
-    if (vel.x < 0 && this.comparisonVec.x < 0) {
-      vel.x = 0;
-    } else if (vel.x > 0 && this.comparisonVec.x > 0) {
-      vel.x = 0;
+    vel.x = this.velocityCalculation(vel.x, this.comparisonVec.x);
+    vel.z = this.velocityCalculation(vel.z, this.comparisonVec.z);
+  }
+
+  private isReverseOrientation(oriDir: number, dirColl: number): boolean {
+    return oriDir - dirColl < -1 || oriDir - dirColl > 1;
+  }
+
+  private velocityCalculation(vel: number, compVec: number): number {
+    if (vel < 0 && compVec < 0) {
+      return 0;
+    } else if (vel > 0 && compVec > 0) {
+      return 0;
     }
-    if (vel.z < 0 && this.comparisonVec.z < 0) {
-      vel.z = 0;
-    } else if (vel.z > 0 && this.comparisonVec.z > 0) {
-      vel.z = 0;
-    }
+
+    return vel;
   }
 }
