@@ -21,7 +21,7 @@ export class GameManagerController {
         // │  │ SIMPLE │  │
         // └──┴────────┴──┘
 
-        router.get("/simple/getAll", async (req: Request, res: Response, next: NextFunction) => {
+        router.get("/simple/get-all", async (req: Request, res: Response, next: NextFunction) => {
             executePromiseSafely(res, next, async () => {
                 res.json(await this.dataBaseService.simpleGames.getAll());
             });
@@ -44,7 +44,7 @@ export class GameManagerController {
             });
         });
 
-        router.put("/simple/modify/:id", async (req: Request, res: Response, next: NextFunction) => {
+        router.put("/simple/update/:id", async (req: Request, res: Response, next: NextFunction) => {
             executePromiseSafely(res, next, async () => {
                 res.json(await this.dataBaseService.simpleGames.update(req.params["id"], req.body));
             });
@@ -54,7 +54,7 @@ export class GameManagerController {
         // │  │ FREE │  │
         // └──┴──────┴──┘
 
-        router.get("/free/getAll", async (req: Request, res: Response, next: NextFunction) => {
+        router.get("/free/get-all", async (req: Request, res: Response, next: NextFunction) => {
             executePromiseSafely(res, next, async () => {
                 res.json(await this.dataBaseService.freeGames.getAll());
             });
@@ -77,7 +77,7 @@ export class GameManagerController {
             });
         });
 
-        router.put("/free/modify/:id", async (req: Request, res: Response, next: NextFunction) => {
+        router.put("/free/update/:id", async (req: Request, res: Response, next: NextFunction) => {
             executePromiseSafely(res, next, async () => {
                 res.json(await this.dataBaseService.freeGames.update(req.params["id"], req.body));
             });
