@@ -105,6 +105,13 @@ export class SimpleGamesCollectionService extends CollectionService<ISimpleGame>
         };
     }
 
+    protected queryDeletionSuccessMessage(): Message {
+        return {
+            title: "Simple games deleted",
+            body: "All corresponding simple games successfully deleted!",
+        };
+    }
+
     protected get idFieldName(): string {
         return GAME_NAME_FIELD;
     }

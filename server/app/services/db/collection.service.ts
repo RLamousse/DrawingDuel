@@ -23,6 +23,7 @@ export abstract class CollectionService<T> {
     protected abstract creationSuccessMessage(data: T): Message;
     protected abstract updateSuccessMessage(id: string): Message;
     protected abstract deletionSuccessMessage(id: string): Message;
+    protected abstract queryDeletionSuccessMessage(): Message;
 
     public async contains(id: string): Promise<boolean> {
         return await this.documentCount(id) !== 0;
