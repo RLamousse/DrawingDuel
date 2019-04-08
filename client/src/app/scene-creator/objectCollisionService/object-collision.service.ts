@@ -31,9 +31,13 @@ export class ObjectCollisionService {
       const vecClone: THREE.Vector3 = vec.clone().applyQuaternion(camera.quaternion);
       const ray: THREE.Raycaster = new THREE.Raycaster(camera.position.clone(), vecClone.normalize());
       const interOri: THREE.Intersection[] = ray.intersectObjects(oriObjs, true);
-      const interMod: THREE.Intersection[] = ray.intersectObjects(modObjs, true);
-      if (this.isCollision(interOri) || this.isCollision(interMod)) {
+      if (this.isCollision(interOri)) {
         this.cancelVelocity(velocity, vecClone, vec);
+      } else {
+        const interMod: THREE.Intersection[] = ray.intersectObjects(modObjs, true);
+        if (this.isCollision(interMod)) {
+          this.cancelVelocity(velocity, vecClone, vec);
+        }
       }
     }
 
