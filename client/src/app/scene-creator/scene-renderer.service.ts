@@ -220,8 +220,7 @@ export class SceneRendererService {
     }
   }
   private getRecursiveParent(obj: THREE.Object3D): THREE.Object3D {
-    // put an if instead of a while
-    while ((obj.parent as THREE.Object3D).type !== SCENE_TYPE) {
+    if ((obj.parent as THREE.Object3D).type !== SCENE_TYPE) {
       return this.getRecursiveParent(obj.parent as THREE.Object3D);
     }
 
