@@ -86,7 +86,8 @@ export class SceneRendererService {
     this.time = performance.now();
     const delta: number = (this.time - this.prevTime) / this.timeFactor;
     this.renderUpdateService.updateVelocity(this.velocity, delta);
-    this.objectCollisionService.raycastCollision(this.camera, this.scene.children, this.modifiedScene.children, this.velocity);
+    this.velocity = this.objectCollisionService.raycastCollision
+      (this.camera, this.scene.children, this.modifiedScene.children, this.velocity);
     this.renderUpdateService.updateCamera(this.camera, delta, this.velocity);
     this.prevTime = this.time;
     requestAnimationFrame(() => this.renderLoop());

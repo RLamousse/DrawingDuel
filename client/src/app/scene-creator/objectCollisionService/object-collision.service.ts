@@ -25,16 +25,19 @@ export class ObjectCollisionService {
     this.comparisonVec = new THREE.Vector3();
   }
 
-  public raycastCollision(camera: THREE.Camera, oriObjs: THREE.Object3D[], modObjs: THREE.Object3D[], vel: THREE.Vector3): void {
+  public raycastCollision(camera: THREE.Camera, oriObjs: THREE.Object3D[], modObjs: THREE.Object3D[], vel: THREE.Vector3): THREE.Vector3 {
+    const velocity: THREE.Vector3 = vel.clone();
     for (const vec of this.directionVecs) {
       const vecClone: THREE.Vector3 = vec.clone().applyQuaternion(camera.quaternion);
       const ray: THREE.Raycaster = new THREE.Raycaster(camera.position.clone(), vecClone.normalize());
       const interOri: THREE.Intersection[] = ray.intersectObjects(oriObjs, true);
       const interMod: THREE.Intersection[] = ray.intersectObjects(modObjs, true);
       if (this.isCollision(interOri) || this.isCollision(interMod)) {
-        this.cancelVelocity(vel, vecClone, vec);
+        this.cancelVelocity(velocity, vecClone, vec);
       }
     }
+
+    return velocity;
   }
 
   private isCollision(inter: THREE.Intersection[]): boolean {
