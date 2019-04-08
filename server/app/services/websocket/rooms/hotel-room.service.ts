@@ -125,7 +125,7 @@ export class HotelRoomService {
         socket.in(room.id).on(SocketEvent.INTERACT, <T>(message: WebsocketMessage<RoomInteractionMessage<T>>) => {
             room.interact(socket.id, message.body.interactionData)
                 .then((interactionResponse: T) => {
-                    this.radioTower.sendToRoom(SocketEvent.INTERACT, interactionResponse, room.id);
+                    this.radioTower.sendToRoom(SocketEvent.INTERACT, createWebsocketMessage(interactionResponse), room.id);
                 })
                 .catch((error: Error) => {
                     socket.emit(SocketEvent.INTERACT, error);

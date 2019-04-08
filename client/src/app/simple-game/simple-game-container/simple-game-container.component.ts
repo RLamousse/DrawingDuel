@@ -12,8 +12,8 @@ import {DifferenceCluster, DIFFERENCE_CLUSTER_POINTS_INDEX} from "../../../../..
 import {tansformOrigin, IPoint} from "../../../../../common/model/point";
 import {SocketService} from "../../socket.service";
 import {UNListService} from "../../username.service";
-import {playRandomSound, NO_DIFFERENCE_SOUNDS} from "../game-sounds";
-import {PixelData, SimpleGameCanvasComponent, TextType} from "../simple-game-canvas/simple-game-canvas.component";
+import {playRandomSound, FOUND_DIFFERENCE_SOUNDS, NO_DIFFERENCE_SOUNDS} from "../game-sounds";
+import {PixelData, SimpleGameCanvasComponent} from "../simple-game-canvas/simple-game-canvas.component";
 import {SimpleGameService} from "../simple-game.service";
 
 export const IDENTIFICATION_ERROR_TIMOUT_MS: number = 1000;
@@ -36,6 +36,8 @@ export class SimpleGameContainerComponent {
 
   public constructor(private simpleGameService: SimpleGameService,
                      private socket: SocketService) {
+    this.handleValidationResponse = this.handleValidationResponse.bind(this);
+    this.simpleGameService.registerDifferenceCallback(this.handleValidationResponse);
   }
 
   protected async onOriginalCanvasClick(clickEvent: IPoint): Promise<void> {
@@ -46,29 +48,48 @@ export class SimpleGameContainerComponent {
     return this.onCanvasClick(clickEvent, this.modifiedImageComponent);
   }
 
+  private handleValidationResponse (value: DifferenceCluster | Error): void {
+    if (!(value instanceof Error)) {
+      this.notifyClickToWebsocket(true);
+      const differencePoints: IPoint[] = value[DIFFERENCE_CLUSTER_POINTS_INDEX]
+        .map((point: IPoint) => tansformOrigin(point, this.originalImageComponent.height));
+      const pixels: PixelData[] = this.originalImageComponent.getPixels(differencePoints);
+      this.modifiedImageComponent.drawPixels(pixels);
+      playRandomSound(FOUND_DIFFERENCE_SOUNDS);
+      this.clickEnabled = true;
+    } else {
+      if ((value as Error).message === AlreadyFoundDifferenceError.ALREADY_FOUND_DIFFERENCE_ERROR_MESSAGE ||
+        (value as Error).message === NoDifferenceAtPointError.NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE) {
+        playRandomSound(NO_DIFFERENCE_SOUNDS);
+        // this.handleIdentificationError(clickEvent, clickedComponent);
+      }
+      this.notifyClickToWebsocket(false);
+    }
+  }
+
   private async onCanvasClick(clickEvent: IPoint, clickedComponent: SimpleGameCanvasComponent): Promise<void> {
     if (!this.clickEnabled) {
       return;
     }
     this.clickEnabled = false;
 
-    return this.simpleGameService.validateDifferenceAtPoint(clickEvent)
-      .then((differenceCluster: DifferenceCluster) => {
-        this.notifyClickToWebsocket(true);
-        const differencePoints: IPoint[] = differenceCluster[DIFFERENCE_CLUSTER_POINTS_INDEX]
-          .map((point: IPoint) => tansformOrigin(point, this.originalImageComponent.height));
-        const pixels: PixelData[] = this.originalImageComponent.getPixels(differencePoints);
-        this.modifiedImageComponent.drawPixels(pixels);
-        this.clickEnabled = true;
-      })
-      .catch((reason: Error) => {
-        if (reason.message === AlreadyFoundDifferenceError.ALREADY_FOUND_DIFFERENCE_ERROR_MESSAGE ||
-          reason.message === NoDifferenceAtPointError.NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE) {
-          playRandomSound(NO_DIFFERENCE_SOUNDS);
-          this.handleIdentificationError(clickEvent, clickedComponent);
-        }
-        this.notifyClickToWebsocket(false);
-      });
+    return this.simpleGameService.validateDifferenceAtPoint(clickEvent);
+      // .then((differenceCluster: DifferenceCluster) => {
+      //   this.notifyClickToWebsocket(true);
+      //   const differencePoints: IPoint[] = differenceCluster[DIFFERENCE_CLUSTER_POINTS_INDEX]
+      //     .map((point: IPoint) => tansformOrigin(point, this.originalImageComponent.height));
+      //   const pixels: PixelData[] = this.originalImageComponent.getPixels(differencePoints);
+      //   this.modifiedImageComponent.drawPixels(pixels);
+      //   this.clickEnabled = true;
+      // })
+      // .catch((reason: Error) => {
+      //   if (reason.message === AlreadyFoundDifferenceError.ALREADY_FOUND_DIFFERENCE_ERROR_MESSAGE ||
+      //     reason.message === NoDifferenceAtPointError.NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE) {
+      //     playRandomSound(NO_DIFFERENCE_SOUNDS);
+      //     this.handleIdentificationError(clickEvent, clickedComponent);
+      //   }
+      //   this.notifyClickToWebsocket(false);
+      // });
   }
 
   private notifyClickToWebsocket(good: boolean): void {
@@ -84,19 +105,19 @@ export class SimpleGameContainerComponent {
     this.socket.send(SocketEvent.CHAT, message);
   }
 
-  private handleIdentificationError(clickEvent: IPoint, clickedComponent: SimpleGameCanvasComponent): void {
-    const pixelsBackup: Uint8ClampedArray = clickedComponent.getRawPixelData();
-    clickedComponent.drawText(
-      IDENTIFICATION_ERROR_TEXT,
-      tansformOrigin(clickEvent, clickedComponent.height),
-      TextType.ERROR);
-
-    setTimeout(
-      () => {
-        clickedComponent.setRawPixelData(pixelsBackup);
-        this.clickEnabled = true;
-      },
-      IDENTIFICATION_ERROR_TIMOUT_MS,
-    );
-  }
+  // private handleIdentificationError(clickEvent: IPoint, clickedComponent: SimpleGameCanvasComponent): void {
+  //   const pixelsBackup: Uint8ClampedArray = clickedComponent.getRawPixelData();
+  //   clickedComponent.drawText(
+  //     IDENTIFICATION_ERROR_TEXT,
+  //     tansformOrigin(clickEvent, clickedComponent.height),
+  //     TextType.ERROR);
+  //
+  //   setTimeout(
+  //     () => {
+  //       clickedComponent.setRawPixelData(pixelsBackup);
+  //       this.clickEnabled = true;
+  //     },
+  //     IDENTIFICATION_ERROR_TIMOUT_MS,
+  //   );
+  // }
 }
