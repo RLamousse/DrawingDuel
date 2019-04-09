@@ -6,8 +6,7 @@ import {
     ObjectTexture,
     Themes
 } from "../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
-import {DEFAULT_OBJECT} from "../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
-import * as IObject from "../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
+import {DEFAULT_OBJECT, IJson3DObject, IScenesDB} from "../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
 import {IPoint3D, ORIGIN_3D} from "../../../common/model/point";
 import Types from "../types";
 import {Object3DCreatorService} from "./object3D-creator.service";
@@ -27,8 +26,8 @@ export class FreeGameCreatorService {
         return Math.floor(Math.random() * (max - min + 1) + min);
     }
 
-    private handleCollision(object: IObject.IJson3DObject,
-                            list: IObject.IJson3DObject[]): IObject.IJson3DObject {
+    private handleCollision(object: IJson3DObject,
+                            list: IJson3DObject[]): IJson3DObject {
         let collision: boolean = true;
         if (list.length !== 0) {
             while (collision) {
@@ -45,7 +44,7 @@ export class FreeGameCreatorService {
         return object;
     }
 
-    private isColliding (currObject: IObject.IJson3DObject, object: IObject.IJson3DObject, distanceMin: number = this.MIN_DIST): boolean {
+    private isColliding(currObject: IJson3DObject, object: IJson3DObject, distanceMin: number = this.MIN_DIST): boolean {
         const power: number = 2;
         const distance: number = Math.sqrt(
             (Math.pow((currObject.position.x - object.position.x), power)) +
@@ -56,9 +55,9 @@ export class FreeGameCreatorService {
         return (distance < distanceMin);
     }
 
-    private generate3DObject(): IObject.IJson3DObject {
+    private generate3DObject(): IJson3DObject {
         let randomObject: number;
-        let createdObject: IObject.IJson3DObject;
+        let createdObject: IJson3DObject;
         randomObject = this.getRandomValue(0, this.MAX_TYPE_OBJECTS);
         switch (randomObject) {
             case ObjectGeometry.sphere: {
@@ -84,13 +83,13 @@ export class FreeGameCreatorService {
         return createdObject;
     }
 
-    public generateIScenes(obj3DToCreate: number, modificationTypes: ModificationType[], sceneType: Themes): IObject.IScenesDB {
-        const objects: IObject.IJson3DObject[] = [];
+    public generateIScenes(obj3DToCreate: number, modificationTypes: ModificationType[], sceneType: Themes): IScenesDB {
+        const objects: IJson3DObject[] = [];
         if (sceneType === Themes.Space) {
             objects.push(this.renderEarth());
         }
         for (let i: number = 0; i < obj3DToCreate; ++i) {
-            let object: IObject.IJson3DObject;
+            let object: IJson3DObject;
             (sceneType === Themes.Geometry) ?
                 object = this.generate3DObject() : object = this.object3DCreatorService.createThematicObject();
             object.position = this.generateRandomPosition();
@@ -98,16 +97,16 @@ export class FreeGameCreatorService {
             this.setAstronautCloseFromEarth(object, objects);
             objects.push(object);
         }
-        const modifiedObjects: IObject.IJson3DObject[] = JSON.parse(JSON.stringify(objects));
-        const differentObjects: IObject.IJson3DObject[] = this.generateDifferences(modificationTypes, modifiedObjects);
+        const modifiedObjects: IJson3DObject[] = JSON.parse(JSON.stringify(objects));
+        const differentObjects: IJson3DObject[] = this.generateDifferences(modificationTypes, modifiedObjects);
 
         return {originalObjects: objects, modifiedObjects: modifiedObjects, differentObjects: differentObjects};
     }
 
     private generateDifferences(
         modificationTypes: ModificationType[],
-        modifiedObjects: IObject.IJson3DObject[],
-    ): IObject.IJson3DObject[] {
+        modifiedObjects: IJson3DObject[],
+    ): IJson3DObject[] {
         const MOD_COUNT: number = 7;
         const INDEXES: Set<number> = new Set();
         while (INDEXES.size !== MOD_COUNT) {
@@ -120,11 +119,11 @@ export class FreeGameCreatorService {
     private randomDifference(
         table: Set<number>,
         modificationTypes: ModificationType[],
-        modifiedObjects: IObject.IJson3DObject[]): IObject.IJson3DObject[] {
+        modifiedObjects: IJson3DObject[]): IJson3DObject[] {
 
         const MAX_MOD_TYPE: number = modificationTypes.length - 1;
         const ARRAY_INDEXES: number[] = Array.from(table).sort((n1: number, n2: number) => n1 - n2).reverse();
-        const modObjects: IObject.IJson3DObject[] = [];
+        const modObjects: IJson3DObject[] = [];
         let randomModifications: number;
 
         for (const index of ARRAY_INDEXES) {
@@ -149,8 +148,8 @@ export class FreeGameCreatorService {
         return modObjects;
     }
 
-    private addObject(modifiedObjects: IObject.IJson3DObject[], modObjects: IObject.IJson3DObject[]): void {
-        let object: IObject.IJson3DObject;
+    private addObject(modifiedObjects: IJson3DObject[], modObjects: IJson3DObject[]): void {
+        let object: IJson3DObject;
         (modifiedObjects[0].gameType === Themes.Geometry) ?
             object = this.generate3DObject() :
             object = this.object3DCreatorService.createThematicObject();
@@ -159,7 +158,7 @@ export class FreeGameCreatorService {
         modObjects.push(JSON.parse(JSON.stringify(object)));
     }
 
-    private changeColor(modifiedObjects: IObject.IJson3DObject[], index: number): void {
+    private changeColor(modifiedObjects: IJson3DObject[], index: number): void {
         const MASK: number = 0xFFFFFF;
         const TEXTURE_SIZE: number = 4;
         (modifiedObjects[0].gameType === Themes.Geometry) ?
@@ -175,15 +174,15 @@ export class FreeGameCreatorService {
         };
     }
 
-    private renderEarth(): IObject.IJson3DObject {
-        const earth: IObject.IJson3DObject = this.object3DCreatorService.createThematicObject(ObjectGeometry.earth);
+    private renderEarth(): IJson3DObject {
+        const earth: IJson3DObject = this.object3DCreatorService.createThematicObject(ObjectGeometry.earth);
         earth.scale = spaceObjects[spaceObjects.length - 1].scale;
         earth.position = ORIGIN_3D;
 
         return earth;
     }
 
-    private setAstronautCloseFromEarth(object: IObject.IJson3DObject, objects: IObject.IJson3DObject[]): void {
+    private setAstronautCloseFromEarth(object: IJson3DObject, objects: IJson3DObject[]): void {
         const CLOSE_FROM_EARTH: number = 50;
         const FURTHER_FROM_EARTH: number = 70;
         const MIN_DIST: number = 10;
