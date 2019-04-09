@@ -3,6 +3,11 @@ codecov:
   branch: dev
 
 coverage:
-  precision: 2
-  round: down
-  range: "0...100"
+  status:
+    project:
+      default:
+        threshold: null
+
+parsers:
+  javascript:
+    enable_partials: yes
