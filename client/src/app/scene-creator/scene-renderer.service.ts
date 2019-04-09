@@ -1,14 +1,14 @@
-import { Injectable } from "@angular/core";
-import Axios, { AxiosResponse } from "axios";
+import {Injectable} from "@angular/core";
+import Axios, {AxiosResponse} from "axios";
 import * as Httpstatus from "http-status-codes";
-import { Observable, Subject } from "rxjs";
+import {Observable, Subject} from "rxjs";
 import {Intersection, Mesh, Object3D, PerspectiveCamera, Raycaster, Scene, Vector2, Vector3, WebGLRenderer} from "three";
 import {ChatMessage, ChatMessagePosition, ChatMessageType, WebsocketMessage} from "../../../../common/communication/messages/message";
 import {DIFF_VALIDATOR_3D_BASE, SERVER_BASE_URL} from "../../../../common/communication/routes";
 import {SocketEvent} from "../../../../common/communication/socket-events";
-import { ComponentNotLoadedError } from "../../../../common/errors/component.errors";
+import {ComponentNotLoadedError} from "../../../../common/errors/component.errors";
 import {AbstractServiceError, AlreadyFoundDifferenceError, NoDifferenceAtPointError} from "../../../../common/errors/services.errors";
-import { IJson3DObject } from "../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
+import {IJson3DObject} from "../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
 import {OnlineType} from "../../../../common/model/game/game";
 import {IVector3} from "../../../../common/model/point";
 import {deepCompare, sleep, X_FACTOR} from "../../../../common/util/util";
@@ -16,7 +16,7 @@ import {playRandomSound, FOUND_DIFFERENCE_SOUNDS, NO_DIFFERENCE_SOUNDS, STAR_THE
 import {SocketService} from "../socket.service";
 import {UNListService} from "../username.service";
 import {ObjectCollisionService} from "./objectCollisionService/object-collision.service";
-import { RenderUpdateService } from "./render-update.service";
+import {RenderUpdateService} from "./render-update.service";
 interface IFreeGameState {
   isCheatModeActive: boolean;
   isWaitingInThread: boolean;
