@@ -4,6 +4,7 @@ import {
   Themes
 } from "../../../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
 import * as IObject from "../../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
+import {NULL_VECTOR3, ORIGIN_3D} from "../../../../../common/model/point";
 import {Form3DService} from "./3-dform.service";
 
 /* tslint:disable:no-magic-numbers */
@@ -22,8 +23,10 @@ describe("3DFormService", () => {
     const service: Form3DService = TestBed.get(Form3DService);
     const dummyCube: IObject.ICube = {
       type: ObjectGeometry.cube,
-      color: 0xF4F4F4, position: [25, 12, 2],
-      rotation: [0, 0, 0], sideLenght: 10,
+      color: 0xF4F4F4,
+      position: {x: 25, y: 12, z: 2},
+      rotation: NULL_VECTOR3,
+      sideLength: 10,
       scale: 1,
       gameType: Themes.Geometry,
     };
@@ -41,8 +44,9 @@ describe("3DFormService", () => {
     const service: Form3DService = TestBed.get(Form3DService);
     const dummySphere: IObject.ISphere = {
       type: ObjectGeometry.sphere,
-      color: 0xF4F4F4, position: [25, 12, 2],
-      rotation: [0, 0, 0],
+      color: 0xF4F4F4,
+      position: {x: 25, y: 12, z: 2},
+      rotation: NULL_VECTOR3,
       heightSegments: 32,
       radius: 10,
       widthSegments: 32,
@@ -63,8 +67,9 @@ describe("3DFormService", () => {
     const service: Form3DService = TestBed.get(Form3DService);
     const dummyCone: IObject.ICone = {
       type: ObjectGeometry.cone,
-      color: 0xF4F4F4, position: [5, 12, 2],
-      rotation: [0, 0, 0],
+      color: 0xF4F4F4,
+      position: {x: 5, y: 12, z: 2},
+      rotation: NULL_VECTOR3,
       height: 10,
       radialSegment: 32,
       radius: 10,
@@ -85,8 +90,9 @@ describe("3DFormService", () => {
     const service: Form3DService = TestBed.get(Form3DService);
     const dummyCylinder: IObject.ICylinder = {
       type: ObjectGeometry.cylinder,
-      color: 0xF4F4F4, position: [0, 0, 0],
-      rotation: [0, 0, 0],
+      color: 0xF4F4F4,
+      position: ORIGIN_3D,
+      rotation: NULL_VECTOR3,
       botRadius: 10,
       height: 10,
       radiusSegment: 32,
@@ -108,8 +114,9 @@ describe("3DFormService", () => {
     const service: Form3DService = TestBed.get(Form3DService);
     const dummyPyramid: IObject.IPyramid = {
       type: ObjectGeometry.pyramid,
-      color: 0xF4F4F4, position: [100, 2, 2],
-      rotation: [0, 0, 0],
+      color: 0xF4F4F4,
+      position: {x: 100, y: 2, z: 2},
+      rotation: NULL_VECTOR3,
       topRadius: 0,
       heightSegment: 1,
       radiusSegment: 3,

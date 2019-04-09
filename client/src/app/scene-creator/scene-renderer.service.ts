@@ -14,7 +14,8 @@ import { ComponentNotLoadedError } from "../../../../common/errors/component.err
 import {AbstractServiceError, AlreadyFoundDifferenceError, NoDifferenceAtPointError} from "../../../../common/errors/services.errors";
 import { IJson3DObject } from "../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
 import {OnlineType} from "../../../../common/model/game/game";
-import { deepCompare, sleep, X_FACTOR } from "../../../../common/util/util";
+import {IVector3} from "../../../../common/model/point";
+import {deepCompare, sleep, X_FACTOR} from "../../../../common/util/util";
 import {
   playRandomSound,
   FOUND_DIFFERENCE_SOUNDS,
@@ -37,6 +38,17 @@ export const SCENE_TYPE: string = "Scene";
     providedIn: "root",
   })
 export class SceneRendererService {
+
+  public constructor(private renderUpdateService: RenderUpdateService,
+                     private socket: SocketService,
+                     private objectCollisionService: ObjectCollisionService,
+  ) {
+    this.gameState = {isCheatModeActive: false, isWaitingInThread: false, foundDifference: []};
+  }
+
+  public get foundDifferenceCount(): Observable<number> {
+    return this.differenceCountSubject;
+  }
   public originalContainer: HTMLDivElement;
   public modifiedContainer: HTMLDivElement;
   public scene: THREE.Scene;
@@ -62,11 +74,8 @@ export class SceneRendererService {
   private differenceCountSubject: Subject<number> = new Subject();
   public gameState: IFreeGameState;
 
-  public constructor(private renderUpdateService: RenderUpdateService,
-                     private socket: SocketService,
-                     private objectCollisionService: ObjectCollisionService,
-                     ) {
-    this.gameState = {isCheatModeActive: false, isWaitingInThread: false, foundDifference: []};
+  private static compareToThreeVector3(x: IVector3, y: THREE.Vector3): boolean {
+    return deepCompare(x, {x: y.x, y: y.y, z: y.z} as IVector3);
   }
   private setRenderer(): void {
     this.rendererOri = new THREE.WebGLRenderer({preserveDrawingBuffer: true});
@@ -151,7 +160,7 @@ export class SceneRendererService {
 
       newData.forEach((jsonValue: IJson3DObject) => {
         (this.gameState.cheatDiffData as Set<THREE.Object3D>).forEach((objectValue: THREE.Object3D) => {
-          if (this.isObjectAtSamePlace(jsonValue.position, objectValue.position)) {
+          if (SceneRendererService.compareToThreeVector3(jsonValue.position, objectValue.position)) {
             (this.gameState.cheatDiffData as Set<THREE.Object3D>).delete(objectValue);
           }
         });
@@ -162,7 +171,7 @@ export class SceneRendererService {
     this.gameState.cheatDiffData = new Set<THREE.Object3D>();
     (await callBackFunction()).forEach((jsonValue: IJson3DObject) => {
       this.scene.children.concat(this.modifiedScene.children).forEach((objectValue: THREE.Object3D) => {
-        if (this.isObjectAtSamePlace(jsonValue.position, objectValue.position) &&
+        if (SceneRendererService.compareToThreeVector3(jsonValue.position, objectValue.position) &&
           (objectValue instanceof THREE.Mesh || objectValue instanceof THREE.Scene)) {
           (this.gameState.cheatDiffData as Set<THREE.Object3D>).add(objectValue);
         }
@@ -177,9 +186,6 @@ export class SceneRendererService {
     await this.threadFinish();
     this.gameState.isCheatModeActive = false;
     this.gameState.cheatDiffData = undefined;
-  }
-  private isObjectAtSamePlace(jsonPosition: number[], objectPosition: THREE.Vector3): boolean {
-    return deepCompare(jsonPosition, [objectPosition.x, objectPosition.y, objectPosition.z]);
   }
   private async threadFinish(): Promise<void> {
     while (this.gameState.isWaitingInThread) {
@@ -276,9 +282,6 @@ export class SceneRendererService {
         throw new AlreadyFoundDifferenceError();
       }
     }
-  }
-  public get foundDifferenceCount(): Observable<number> {
-    return this.differenceCountSubject;
   }
   private updateRoutine(jsonObj: IJson3DObject, obj: THREE.Object3D): void {
     this.gameState.foundDifference.push(jsonObj);

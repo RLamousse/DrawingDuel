@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import * as THREE from "three";
-import {Coordinate} from "../../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
+import {IVector3} from "../../../../common/model/point";
+import {deepCompare} from "../../../../common/util/util";
 
 @Injectable({
   providedIn: "root",
@@ -123,9 +124,7 @@ export class RenderUpdateService {
       center1.z === center2.z);
   }
 
-  public isSameObject(obj1: number[], obj2: number[]): boolean {
-    return (obj1[Coordinate.X] === obj2[Coordinate.X] &&
-      obj1[Coordinate.Y] === obj2[Coordinate.Y] &&
-      obj1[Coordinate.Z] === obj2[Coordinate.Z]);
+  public isSameObject(obj1: IVector3, obj2: IVector3): boolean {
+    return deepCompare(obj1, obj2);
   }
 }

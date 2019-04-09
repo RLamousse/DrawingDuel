@@ -7,6 +7,7 @@ import {
   Themes
 } from "../../../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
 import * as IObject from "../../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
+import {NULL_VECTOR3, ORIGIN_3D} from "../../../../../common/model/point";
 import {IScene} from "../../scene-interface";
 import {Form3DService} from "../3DFormService/3-dform.service";
 import {FreeGameCreatorService} from "./free-game-creator.service";
@@ -42,15 +43,18 @@ class MockedForm3DService extends Form3DService {
 
 const dummyCube: IObject.ICube = {
   type: ObjectGeometry.cube,
-  color: 0xF4F4F4, position: [0, 0, 0],
-  rotation: [0, 0, 0], sideLenght: 10,
+  color: 0xF4F4F4,
+  position: ORIGIN_3D,
+  rotation: NULL_VECTOR3,
+  sideLength: 10,
   scale: 1,
   gameType: Themes.Geometry,
 };
 const dummyCone: IObject.ICone = {
   type: ObjectGeometry.cone,
-  color: 0xF4F4F4, position: [0, 0, 0],
-  rotation: [0, 0, 0],
+  color: 0xF4F4F4,
+  position: ORIGIN_3D,
+  rotation: NULL_VECTOR3,
   height: 10,
   radialSegment: 32,
   radius: 10,
@@ -59,8 +63,9 @@ const dummyCone: IObject.ICone = {
 };
 const dummySphere: IObject.ISphere = {
   type: ObjectGeometry.sphere,
-  color: 0xF4F4F4, position: [0, 0, 0],
-  rotation: [0, 0, 0],
+  color: 0xF4F4F4,
+  position: ORIGIN_3D,
+  rotation: NULL_VECTOR3,
   heightSegments: 32,
   radius: 10,
   widthSegments: 32,
@@ -69,8 +74,9 @@ const dummySphere: IObject.ISphere = {
 };
 const dummyCylinder: IObject.ICylinder = {
   type: ObjectGeometry.cylinder,
-  color: 0xF4F4F4, position: [0, 0, 0],
-  rotation: [0, 0, 0],
+  color: 0xF4F4F4,
+  position: ORIGIN_3D,
+  rotation: NULL_VECTOR3,
   botRadius: 10,
   height: 10,
   radiusSegment: 32,
@@ -80,8 +86,9 @@ const dummyCylinder: IObject.ICylinder = {
 };
 const dummyPyramid: IObject.IPyramid = {
   type: ObjectGeometry.pyramid,
-  color: 0xF4F4F4, position: [0, 0, 0],
-  rotation: [0, 0, 0],
+  color: 0xF4F4F4,
+  position: ORIGIN_3D,
+  rotation: NULL_VECTOR3,
   topRadius: 0,
   heightSegment: 1,
   radiusSegment: 3,
@@ -220,8 +227,8 @@ describe("FreeGameCreatorService", () => {
     const service: FreeGameCreatorService = TestBed.get(FreeGameCreatorService);
     const obj: IObject.IJson3DObject = {
       type: 100,
-      position: [],
-      rotation: [],
+      position: ORIGIN_3D,
+      rotation: NULL_VECTOR3,
       color: 0xFFFFFF,
       scale: 1,
       gameType: Themes.Geometry,
@@ -236,8 +243,8 @@ describe("FreeGameCreatorService", () => {
   it("should calls buildObjectPath and not call traverseChildren, originalObject", () => {
     const service: FreeGameCreatorService = TestBed.get(FreeGameCreatorService);
     const obj: IObject.IJson3DObject = {
-      position: [],
-      rotation: [],
+      position: ORIGIN_3D,
+      rotation: NULL_VECTOR3,
       color: 0xFFFFFF,
       type: 5,
       gameType: Themes.Space,
@@ -255,8 +262,8 @@ describe("FreeGameCreatorService", () => {
   it("should calls buildObjectPath and call not traverseChildren, modifiedObject", () => {
     const service: FreeGameCreatorService = TestBed.get(FreeGameCreatorService);
     const obj: IObject.IJson3DObject = {
-      position: [],
-      rotation: [],
+      position: ORIGIN_3D,
+      rotation: NULL_VECTOR3,
       color: 0xFFFFFF,
       type: 5,
       gameType: Themes.Space,

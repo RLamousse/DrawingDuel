@@ -1,15 +1,28 @@
 import { Injectable } from "@angular/core";
 import * as THREE from "three";
-import { Coordinate } from "../../../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
 import * as IObject from "../../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
+import {IPoint3D, IVector3} from "../../../../../common/model/point";
 @Injectable()
 export class Form3DService {
 
+  private static toThreeVector3(vec: IVector3): THREE.Vector3 {
+    const {x, y, z}: IPoint3D = vec;
+
+    return new THREE.Vector3(x, y, z);
+  }
+
+  private static setUpParameters(mesh: THREE.Mesh, obj: IObject.IJson3DObject): void {
+    mesh.position.copy(Form3DService.toThreeVector3(obj.position));
+    mesh.rotateX(obj.rotation.x);
+    mesh.rotateY(obj.rotation.y);
+    mesh.rotateZ(obj.rotation.z);
+  }
+
   public createCube(obj: IObject.ICube): THREE.Mesh {
-    const geometry: THREE.BoxGeometry = new THREE.BoxGeometry(obj.sideLenght, obj.sideLenght, obj.sideLenght);
+    const geometry: THREE.BoxGeometry = new THREE.BoxGeometry(obj.sideLength, obj.sideLength, obj.sideLength);
     const material: THREE.MeshPhongMaterial = new THREE.MeshPhongMaterial({ color: obj.color });
     const cube: THREE.Mesh = new THREE.Mesh(geometry, material);
-    this.setUpParameters(cube, obj);
+    Form3DService.setUpParameters(cube, obj);
 
     return cube;
   }
@@ -18,7 +31,7 @@ export class Form3DService {
     const geometry: THREE.SphereGeometry = new THREE.SphereGeometry(obj.radius, obj.widthSegments, obj.heightSegments);
     const material: THREE.MeshPhongMaterial = new THREE.MeshPhongMaterial({ color: obj.color });
     const sphere: THREE.Mesh = new THREE.Mesh(geometry, material);
-    this.setUpParameters(sphere, obj);
+    Form3DService.setUpParameters(sphere, obj);
 
     return sphere;
   }
@@ -27,7 +40,7 @@ export class Form3DService {
     const geometry: THREE.ConeGeometry = new THREE.ConeGeometry(obj.radius, obj.height, obj.radialSegment);
     const material: THREE.MeshPhongMaterial = new THREE.MeshPhongMaterial({ color: obj.color });
     const cone: THREE.Mesh = new THREE.Mesh(geometry, material);
-    this.setUpParameters(cone, obj);
+    Form3DService.setUpParameters(cone, obj);
 
     return cone;
   }
@@ -41,7 +54,7 @@ export class Form3DService {
     );
     const material: THREE.MeshPhongMaterial = new THREE.MeshPhongMaterial({ color: obj.color });
     const cylinder: THREE.Mesh = new THREE.Mesh(geometry, material);
-    this.setUpParameters(cylinder, obj);
+    Form3DService.setUpParameters(cylinder, obj);
 
     return cylinder;
   }
@@ -56,24 +69,17 @@ export class Form3DService {
     );
     const material: THREE.MeshPhongMaterial = new THREE.MeshPhongMaterial({ color: obj.color });
     const pyramid: THREE.Mesh = new THREE.Mesh(geometry, material);
-    this.setUpParameters(pyramid, obj);
+    Form3DService.setUpParameters(pyramid, obj);
 
     return pyramid;
-  }
-
-  private setUpParameters(mesh: THREE.Mesh, obj: IObject.IJson3DObject): void {
-    mesh.position.set(obj.position[Coordinate.X], obj.position[Coordinate.Y], obj.position[Coordinate.Z]);
-    mesh.rotateX(obj.rotation[Coordinate.X]);
-    mesh.rotateY(obj.rotation[Coordinate.Y]);
-    mesh.rotateZ(obj.rotation[Coordinate.Z]);
   }
 
   public setUpThematicParameters(object: IObject.IJson3DObject, gltf: THREE.GLTF): void {
     const scaleFactor: number = object.scale;
     gltf.scene.scale.set(scaleFactor, scaleFactor, scaleFactor);
-    gltf.scene.rotateX(object.rotation[Coordinate.X]);
-    gltf.scene.rotateY(object.rotation[Coordinate.Y]);
-    gltf.scene.rotateZ(object.rotation[Coordinate.Z]);
-    gltf.scene.position.set(object.position[Coordinate.X], object.position[Coordinate.Y], object.position[Coordinate.Z]);
+    gltf.scene.rotateX(object.rotation.x);
+    gltf.scene.rotateY(object.rotation.y);
+    gltf.scene.rotateZ(object.rotation.z);
+    gltf.scene.position.copy(Form3DService.toThreeVector3(object.position));
   }
 }

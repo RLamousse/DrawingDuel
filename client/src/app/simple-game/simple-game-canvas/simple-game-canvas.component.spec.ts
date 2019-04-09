@@ -1,7 +1,7 @@
 import {async, ComponentFixture, TestBed} from "@angular/core/testing";
 import {By} from "@angular/platform-browser";
 import {ComponentCanvasError} from "../../../../../common/errors/component.errors";
-import {tansformOrigin, IPoint, ORIGIN} from "../../../../../common/model/point";
+import {inverseY, IPoint, ORIGIN} from "../../../../../common/model/point";
 import {createArray} from "../../../../../common/util/util";
 
 import {
@@ -139,7 +139,7 @@ describe("SimpleGameCanvasComponent", () => {
     component.pointClick
       .subscribe((event: IPoint) => {
         expect(event)
-          .toEqual(tansformOrigin(point, DEFAULT_CANVAS_HEIGHT));
+          .toEqual(inverseY(point, DEFAULT_CANVAS_HEIGHT));
       });
 
     fixture.debugElement.query(By.css("canvas"))

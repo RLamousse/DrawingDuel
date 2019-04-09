@@ -102,7 +102,7 @@ describe("SceneRendererService", () => {
     service.loadScenes(original, modified, "someGame");
     await service.modifyCheatState(async () => {
       return new Promise<IJson3DObject[]>((resolve) => {
-        resolve([{position: [12, 0, 0]} as IJson3DObject]);
+        resolve([{position: {x: 12, y: 0, z: 0}} as IJson3DObject]);
       });
     });
     jasmine.clock().tick(300);
