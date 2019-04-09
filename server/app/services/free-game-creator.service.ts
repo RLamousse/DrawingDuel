@@ -1,13 +1,14 @@
 import {inject, injectable} from "inversify";
 import {
     spaceObjects,
-    Coordinate,
     ModificationType,
     ObjectGeometry,
     ObjectTexture,
     Themes
 } from "../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
+import {DEFAULT_OBJECT} from "../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
 import * as IObject from "../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
+import {IPoint3D, ORIGIN_3D} from "../../../common/model/point";
 import Types from "../types";
 import {Object3DCreatorService} from "./object3D-creator.service";
 
@@ -47,9 +48,9 @@ export class FreeGameCreatorService {
     private isColliding (currObject: IObject.IJson3DObject, object: IObject.IJson3DObject, distanceMin: number = this.MIN_DIST): boolean {
         const power: number = 2;
         const distance: number = Math.sqrt(
-            (Math.pow((currObject.position[Coordinate.X] - object.position[Coordinate.X]), power)) +
-            (Math.pow((currObject.position[Coordinate.Y] - object.position[Coordinate.Y]), power)) +
-            (Math.pow((currObject.position[Coordinate.Z] - object.position[Coordinate.Z]), power)),
+            (Math.pow((currObject.position.x - object.position.x), power)) +
+            (Math.pow((currObject.position.y - object.position.y), power)) +
+            (Math.pow((currObject.position.z - object.position.z), power)),
         );
 
         return (distance < distanceMin);
@@ -76,7 +77,7 @@ export class FreeGameCreatorService {
                 createdObject = this.object3DCreatorService.createPyramid();
                 break; }
             default: {
-                createdObject = { position: [], rotation: [], color: 0, type: ObjectGeometry.cube, gameType: Themes.Geometry, scale: 1 };
+                createdObject = DEFAULT_OBJECT;
             }
         }
 
@@ -166,19 +167,18 @@ export class FreeGameCreatorService {
             modifiedObjects[index].texture = ObjectTexture[ObjectTexture[this.getRandomValue(0, TEXTURE_SIZE)]];
     }
 
-    private generateRandomPosition(): number[] {
-
-        return [
-            this.getRandomValue(-this.MAX_GAME_X, this.MAX_GAME_X),
-            this.getRandomValue(-this.MAX_GAME_Y, this.MAX_GAME_Y),
-            this.getRandomValue(-this.MAX_GAME_Z, this.MAX_GAME_Z),
-        ];
+    private generateRandomPosition(): IPoint3D {
+        return {
+            x: this.getRandomValue(-this.MAX_GAME_X, this.MAX_GAME_X),
+            y: this.getRandomValue(-this.MAX_GAME_Y, this.MAX_GAME_Y),
+            z: this.getRandomValue(-this.MAX_GAME_Z, this.MAX_GAME_Z),
+        };
     }
 
     private renderEarth(): IObject.IJson3DObject {
         const earth: IObject.IJson3DObject = this.object3DCreatorService.createThematicObject(ObjectGeometry.earth);
         earth.scale = spaceObjects[spaceObjects.length - 1].scale;
-        earth.position = [0, 0, 0];
+        earth.position = ORIGIN_3D;
 
         return earth;
     }
@@ -192,9 +192,9 @@ export class FreeGameCreatorService {
             let collision: boolean = true;
             object.scale = spaceObjects[ASTRONAUT_INDEX].scale;
             while (collision) {
-                object.position[Coordinate.X] = this.randomNegative() * this.getRandomValue(CLOSE_FROM_EARTH, FURTHER_FROM_EARTH);
-                object.position[Coordinate.Y] = this.randomNegative() * this.getRandomValue(CLOSE_FROM_EARTH, FURTHER_FROM_EARTH);
-                object.position[Coordinate.Z] = this.randomNegative() * this.getRandomValue(CLOSE_FROM_EARTH, FURTHER_FROM_EARTH);
+                object.position.x = this.randomNegative() * this.getRandomValue(CLOSE_FROM_EARTH, FURTHER_FROM_EARTH);
+                object.position.y = this.randomNegative() * this.getRandomValue(CLOSE_FROM_EARTH, FURTHER_FROM_EARTH);
+                object.position.z = this.randomNegative() * this.getRandomValue(CLOSE_FROM_EARTH, FURTHER_FROM_EARTH);
                 for (const indexObj of objects) {
                     collision = this.isColliding(object, indexObj, MIN_DIST);
                     if (collision) {

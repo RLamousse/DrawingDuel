@@ -20,24 +20,25 @@ export class DiffValidator3DController {
                 executePromiseSafely(res, next, async () => {
                     assertParamsOfRequest(req, "gameName", "center");
 
-                    this.diffValidator3DService.getDifferentObjects(req.query.gameName, JSON.parse(req.query.center),
-                    ).then((diffObj: IJson3DObject) => {
-                        const response: IJson3DObject = {
-                            position: diffObj.position,
-                            color: diffObj.color,
-                            type: diffObj.type,
-                            rotation: diffObj.rotation,
-                            scale: diffObj.scale,
-                            gameType: diffObj.gameType,
-                        };
+                    this.diffValidator3DService.getDifferentObjects(req.query.gameName, req.query.center)
+                        .then((diffObj: IJson3DObject) => {
+                            const response: IJson3DObject = {
+                                position: diffObj.position,
+                                color: diffObj.color,
+                                type: diffObj.type,
+                                rotation: diffObj.rotation,
+                                scale: diffObj.scale,
+                                gameType: diffObj.gameType,
+                            };
 
-                        return res.json(response);
-                    }).catch((error: Error) => {
-                        if (error.message === Object3DIsNotADifference.OBJ_3D_NOT_A_DIFFERENCE_ERROR_MESSAGE) {
-                            res.status(Httpstatus.NOT_FOUND);
-                        }
+                            return res.json(response);
+                        })
+                        .catch((error: Error) => {
+                            if (error.message === Object3DIsNotADifference.OBJ_3D_NOT_A_DIFFERENCE_ERROR_MESSAGE) {
+                                res.status(Httpstatus.NOT_FOUND);
+                            }
 
-                        return res.json(error);
+                            return res.json(error);
                     });
                 });
             });

@@ -4,12 +4,12 @@ import {
     ObjectGeometry
 } from "../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
 import * as JsonScene from "../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
+import {NULL_VECTOR3, ORIGIN_3D} from "../../../common/model/point";
 import { Object3DCreatorService } from "./object3D-creator.service";
 
 describe("Object3DCreatorService", () => {
     let service: Object3DCreatorService;
     const SEGMENTS: number = 32;
-    const TABLE_LENGHT: number = 3;
     beforeEach(() => {
         service = new Object3DCreatorService();
     });
@@ -19,9 +19,9 @@ describe("Object3DCreatorService", () => {
         const cube: JsonScene.ICube = service.createCube();
         expect(cube.type).to.eql(ObjectGeometry.cube);
         expect(cube.color).to.not.eql(undefined);
-        expect(cube.sideLenght).to.not.eql(undefined);
-        expect(cube.position.length).to.eql(TABLE_LENGHT);
-        expect(cube.rotation.length).to.eql(TABLE_LENGHT);
+        expect(cube.sideLength).to.not.eql(undefined);
+        expect(cube.position).to.eql(ORIGIN_3D);
+        expect(cube.position).to.eql(NULL_VECTOR3);
     });
     // Test createSphere
     it("should return an ISphere object with the right type of geometry, defined attributes", () => {
@@ -31,8 +31,8 @@ describe("Object3DCreatorService", () => {
         expect(sphere.radius).to.not.eql(undefined);
         expect(sphere.widthSegments).to.eql(SEGMENTS);
         expect(sphere.heightSegments).to.eql(SEGMENTS);
-        expect(sphere.position.length).to.eql(TABLE_LENGHT);
-        expect(sphere.rotation.length).to.eql(TABLE_LENGHT);
+        expect(sphere.position).to.eql(ORIGIN_3D);
+        expect(sphere.position).to.eql(NULL_VECTOR3);
     });
     // Test createCone
     it("should return an ICone object with the right type of geometry, defined attributes", () => {
@@ -42,8 +42,8 @@ describe("Object3DCreatorService", () => {
         expect(cone.radius).to.not.eql(undefined);
         expect(cone.height).to.not.eql(undefined);
         expect(cone.radialSegment).to.eql(SEGMENTS);
-        expect(cone.position.length).to.eql(TABLE_LENGHT);
-        expect(cone.rotation.length).to.eql(TABLE_LENGHT);
+        expect(cone.position).to.eql(ORIGIN_3D);
+        expect(cone.position).to.eql(NULL_VECTOR3);
     });
     // Test createCylinder
     it("should return an ICylinder object with the right type of geometry, defined attributes", () => {
@@ -54,8 +54,8 @@ describe("Object3DCreatorService", () => {
         expect(cyl.botRadius).to.not.eql(undefined);
         expect(cyl.height).to.not.eql(undefined);
         expect(cyl.radiusSegment).to.eql(SEGMENTS);
-        expect(cyl.position.length).to.eql(TABLE_LENGHT);
-        expect(cyl.rotation.length).to.eql(TABLE_LENGHT);
+        expect(cyl.position).to.eql(ORIGIN_3D);
+        expect(cyl.position).to.eql(NULL_VECTOR3);
     });
     // Test createPyramid
     it("should return an IPyramid object with the right type of geometry, defined attributes", () => {
@@ -68,8 +68,8 @@ describe("Object3DCreatorService", () => {
         expect(pyr.height).to.not.eql(undefined);
         expect(pyr.radiusSegment).to.eql(RAD_SEG);
         expect(pyr.heightSegment).to.eql(1);
-        expect(pyr.position.length).to.eql(TABLE_LENGHT);
-        expect(pyr.rotation.length).to.eql(TABLE_LENGHT);
+        expect(pyr.position).to.eql(ORIGIN_3D);
+        expect(pyr.position).to.eql(NULL_VECTOR3);
     });
 
     // test randomTypeByProba
