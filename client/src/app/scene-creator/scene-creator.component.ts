@@ -1,6 +1,6 @@
 import {Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild} from "@angular/core";
 import {ActivatedRoute} from "@angular/router";
-import {SceneGenerationError} from "../../../../common/errors/services.errors";
+import {FreeViewGamesRenderingError} from "../../../../common/errors/component.errors";
 import {IFreeGame} from "../../../../common/model/game/free-game";
 import {GameType} from "../../../../common/model/game/game";
 import {IPoint} from "../../../../common/model/point";
@@ -63,14 +63,12 @@ export class SceneCreatorComponent implements OnInit, OnDestroy {
     this.route.queryParams.subscribe((params) => {
       this.gameName = params["gameName"];
     });
-
     this.renderService.init(this.originalContainer, this.modifiedContainer);
     this.verifyGame().then((scene: IScene) =>
-                             this.renderService.loadScenes(scene.scene, scene.modifiedScene, this.gameName),
-    ).catch((e: Error) => {
-      throw new SceneGenerationError();
+      this.renderService.loadScenes(scene.scene, scene.modifiedScene, this.gameName),
+    ).catch(() => {
+     throw new FreeViewGamesRenderingError();
     });
-
   }
 
   private async verifyGame(): Promise<IScene> {

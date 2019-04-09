@@ -1,4 +1,3 @@
-import { HttpClientModule } from "@angular/common/http";
 import { async, TestBed } from "@angular/core/testing";
 import { IExtendedFreeGame } from "../../../common/model/game/extended-free-game";
 import { IFreeGame } from "../../../common/model/game/free-game";
@@ -74,7 +73,6 @@ describe("GameService", () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientModule],
       providers: [GameService],
     });
   }));
@@ -82,7 +80,6 @@ describe("GameService", () => {
   beforeEach(() => {
     spyService = jasmine.createSpyObj("GameService", ["getGames"]);
     TestBed.configureTestingModule({
-      imports: [HttpClientModule],
       providers: [
         { provide: GameService, useValue: spyService }, GameService, FreeGamePhotoService, FreeGameCreatorService],
     });

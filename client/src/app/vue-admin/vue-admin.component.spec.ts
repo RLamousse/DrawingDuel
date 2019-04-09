@@ -1,4 +1,3 @@
-import {HttpClientModule} from "@angular/common/http";
 import {ComponentFixture, TestBed} from "@angular/core/testing";
 import {MatDialogModule} from "@angular/material";
 import * as THREE from "three";
@@ -30,7 +29,7 @@ describe("VueAdminComponent", () => {
     return TestBed.configureTestingModule(
       {
         declarations: [VueAdminComponent, GameListComponent, GameComponent],
-        imports: [MatDialogModule, HttpClientModule],
+        imports: [MatDialogModule],
         providers: [FreeGamePhotoService, {provide: FreeGameCreatorService, useValue: mockedFreeGameCreator}, SocketService],
       }).compileComponents();
   });
