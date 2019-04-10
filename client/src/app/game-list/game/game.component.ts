@@ -30,7 +30,6 @@ export class GameComponent implements OnInit {
 
   public ngOnInit(): void {
     this.thumbnail = "assets/images/loadingScreen.gif";
-    console.log("bite");
   }
 
   protected leftButtonClick(): void {
