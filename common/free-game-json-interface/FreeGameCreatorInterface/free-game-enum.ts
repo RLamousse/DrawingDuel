@@ -30,8 +30,6 @@ export const spaceObjects: IThematicObject[] = [
     {type: ObjectGeometry.earth, scale: 12, probability: 0, maxRotation: Math.PI * 2},
 ];
 
-export enum Coordinate { X, Y, Z }
-
 export enum Themes {
     Geometry = "geometry",
     Space = "space",

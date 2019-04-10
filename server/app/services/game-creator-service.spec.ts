@@ -20,7 +20,7 @@ import {
     Themes
 } from "../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
 import {ISimpleDifferenceData} from "../../../common/model/game/simple-game";
-import {IPoint, ORIGIN} from "../../../common/model/point";
+import {getOrigin, IPoint} from "../../../common/model/point";
 import {DataBaseService} from "./data-base.service";
 import {FreeGamesCollectionService} from "./db/free-games.collection.service";
 import {SimpleGamesCollectionService} from "./db/simple-games.collection.service";
@@ -42,7 +42,7 @@ describe("A service that creates a game", () => {
     const createdMockedDiffData: (diffCount: number) => ISimpleDifferenceData = (diffCount: number) => {
         const mockedDifferenceData: Map<number, IPoint[]> = new Map();
         for (let i: number = 0; i < diffCount; i++) {
-            mockedDifferenceData.set(i, [ORIGIN]);
+            mockedDifferenceData.set(i, [getOrigin()]);
         }
 
         return Array.from(mockedDifferenceData.entries());
