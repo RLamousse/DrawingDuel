@@ -1,4 +1,4 @@
-import {Component, Input} from "@angular/core";
+import {Component, Input, OnInit} from "@angular/core";
 import {MatDialog, MatDialogConfig} from "@angular/material";
 import {Router} from "@angular/router";
 import {ComponentNavigationError} from "../../../../../common/errors/component.errors";
@@ -13,9 +13,8 @@ import {ResetGameFormComponent} from "./reset-game-form/reset-game-form.componen
   styleUrls: ["./game.component.css"],
 })
 
-export class GameComponent {
+export class GameComponent implements OnInit{
 
-  public constructor(private router: Router, private dialog: MatDialog) {}
   @Input() public gameName: string = "test";
   @Input() public bestSoloTimes: IRecordTime[];
   @Input() public bestMultiTimes: IRecordTime[];
@@ -26,6 +25,10 @@ export class GameComponent {
   @Input() public leftButton: string;
   @Input() public gameType: GameType;
   @Input() public simpleGameTag: GameType = GameType.SIMPLE;
+
+  public ngOnInit(): void {
+    this.thumbnail = "assets/images/loadingScreen.gif";
+  }
 
   protected leftButtonClick(): void {
     if (this.leftButton === "jouer") {
