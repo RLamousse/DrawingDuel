@@ -1,4 +1,5 @@
-import {Component, Input, ViewChild} from "@angular/core";
+import {Component, Input, OnDestroy, ViewChild} from "@angular/core";
+import {Subscription} from "rxjs";
 import {
   createWebsocketMessage,
   ChatMessage,
@@ -8,8 +9,9 @@ import {
 import {SocketEvent} from "../../../../../common/communication/socket-events";
 import {AlreadyFoundDifferenceError, NoDifferenceAtPointError} from "../../../../../common/errors/services.errors";
 import {OnlineType} from "../../../../../common/model/game/game";
-import {DifferenceCluster, DIFFERENCE_CLUSTER_POINTS_INDEX} from "../../../../../common/model/game/simple-game";
+import {DIFFERENCE_CLUSTER_POINTS_INDEX} from "../../../../../common/model/game/simple-game";
 import {tansformOrigin, IPoint} from "../../../../../common/model/point";
+import {ISimpleGameInteractionResponse} from "../../../../../common/model/rooms/interaction";
 import {SocketService} from "../../socket.service";
 import {UNListService} from "../../username.service";
 import {playRandomSound, FOUND_DIFFERENCE_SOUNDS, NO_DIFFERENCE_SOUNDS} from "../game-sounds";
@@ -24,7 +26,7 @@ export const IDENTIFICATION_ERROR_TEXT: string = "Erreur";
              templateUrl: "./simple-game-container.component.html",
              styleUrls: ["./simple-game-container.component.css"],
            })
-export class SimpleGameContainerComponent {
+export class SimpleGameContainerComponent implements OnDestroy{
 
   @Input() public originalImage: string;
   @Input() public modifiedImage: string;
@@ -33,11 +35,12 @@ export class SimpleGameContainerComponent {
   @ViewChild("modifiedImageComponent") private modifiedImageComponent: SimpleGameCanvasComponent;
 
   protected clickEnabled: boolean = true;
+  private callbackSub: Subscription;
 
   public constructor(private simpleGameService: SimpleGameService,
                      private socket: SocketService) {
     this.handleValidationResponse = this.handleValidationResponse.bind(this);
-    this.simpleGameService.registerDifferenceCallback(this.handleValidationResponse);
+    this.callbackSub = this.simpleGameService.registerDifferenceCallback(this.handleValidationResponse);
   }
 
   protected async onOriginalCanvasClick(clickEvent: IPoint): Promise<void> {
@@ -48,10 +51,10 @@ export class SimpleGameContainerComponent {
     return this.onCanvasClick(clickEvent, this.modifiedImageComponent);
   }
 
-  private handleValidationResponse (value: DifferenceCluster | Error): void {
-    if (!(value instanceof Error)) {
+  private handleValidationResponse (value: ISimpleGameInteractionResponse | Error): void {
+    if ((value as ISimpleGameInteractionResponse).differenceCluster) {
       this.notifyClickToWebsocket(true);
-      const differencePoints: IPoint[] = value[DIFFERENCE_CLUSTER_POINTS_INDEX]
+      const differencePoints: IPoint[] = (value as ISimpleGameInteractionResponse).differenceCluster[DIFFERENCE_CLUSTER_POINTS_INDEX]
         .map((point: IPoint) => tansformOrigin(point, this.originalImageComponent.height));
       const pixels: PixelData[] = this.originalImageComponent.getPixels(differencePoints);
       this.modifiedImageComponent.drawPixels(pixels);
@@ -63,8 +66,11 @@ export class SimpleGameContainerComponent {
         playRandomSound(NO_DIFFERENCE_SOUNDS);
         // this.handleIdentificationError(clickEvent, clickedComponent);
       }
+      // todo remove next line
+      this.clickEnabled = true;
       this.notifyClickToWebsocket(false);
     }
+    this.callbackSub.unsubscribe();
   }
 
   private async onCanvasClick(clickEvent: IPoint, clickedComponent: SimpleGameCanvasComponent): Promise<void> {
@@ -72,6 +78,8 @@ export class SimpleGameContainerComponent {
       return;
     }
     this.clickEnabled = false;
+    this.callbackSub.unsubscribe();
+    this.callbackSub = this.simpleGameService.registerDifferenceCallback(this.handleValidationResponse);
 
     return this.simpleGameService.validateDifferenceAtPoint(clickEvent);
       // .then((differenceCluster: DifferenceCluster) => {
@@ -103,6 +111,10 @@ export class SimpleGameContainerComponent {
         type: good ? ChatMessageType.DIFF_FOUND : ChatMessageType.DIFF_ERROR,
       });
     this.socket.send(SocketEvent.CHAT, message);
+  }
+
+  public ngOnDestroy(): void {
+    this.callbackSub.unsubscribe();
   }
 
   // private handleIdentificationError(clickEvent: IPoint, clickedComponent: SimpleGameCanvasComponent): void {

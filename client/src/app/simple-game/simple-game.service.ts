@@ -8,12 +8,11 @@ import {NonExistentGameError} from "../../../../common/errors/database.errors";
 // import {AlreadyFoundDifferenceError, NoDifferenceAtPointError} from "../../../../common/errors/services.errors";
 // import {ISimpleGameState} from "../../../../common/model/game/game-state";
 import {
-  DifferenceCluster,
   // DIFFERENCE_CLUSTER_POINTS_INDEX,
   ISimpleGame
 } from "../../../../common/model/game/simple-game";
 import {IPoint} from "../../../../common/model/point";
-import {ISimpleGameInteractionData} from "../../../../common/model/rooms/interaction";
+import {ISimpleGameInteractionData, ISimpleGameInteractionResponse} from "../../../../common/model/rooms/interaction";
 import {SocketService} from "../socket.service";
 
 @Injectable({
@@ -56,9 +55,9 @@ export class SimpleGameService {
     this._differenceCountSubject = new Subject();
   }
 
-  public registerDifferenceCallback(callback: (message: DifferenceCluster | Error) => void): Subscription {
-    return this.socket.onEvent<DifferenceCluster | Error>(SocketEvent.INTERACT)
-      .subscribe((value: WebsocketMessage<DifferenceCluster | Error>) => {
+  public registerDifferenceCallback(callback: (message: ISimpleGameInteractionResponse | Error) => void): Subscription {
+    return this.socket.onEvent<ISimpleGameInteractionResponse | Error>(SocketEvent.INTERACT)
+      .subscribe((value: WebsocketMessage<ISimpleGameInteractionResponse | Error>) => {
         callback(value.body);
     });
   }
