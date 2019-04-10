@@ -9,18 +9,17 @@ export interface IPoint3D extends IPoint {
 
 export type IVector3 = IPoint3D;
 
-export const ORIGIN: IPoint = {
-    x: 0,
-    y: 0,
-};
+export const getOrigin:
+    () => IPoint =
+    () => {
+        return {x: 0, y: 0};
+    };
 
-export const ORIGIN_3D: IPoint3D = {
-    x: 0,
-    y: 0,
-    z: 0,
-};
-
-export const NULL_VECTOR3: IVector3 = ORIGIN_3D;
+export const getOrigin3D:
+    () => IPoint3D =
+    () => {
+        return {x: 0, y: 0, z: 0};
+    };
 
 export const inverseY:
     (point: IPoint, height: number) => IPoint =

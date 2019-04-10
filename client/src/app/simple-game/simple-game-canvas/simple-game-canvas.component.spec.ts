@@ -1,7 +1,7 @@
 import {async, ComponentFixture, TestBed} from "@angular/core/testing";
 import {By} from "@angular/platform-browser";
 import {ComponentCanvasError} from "../../../../../common/errors/component.errors";
-import {inverseY, IPoint, ORIGIN} from "../../../../../common/model/point";
+import {getOrigin, inverseY, IPoint} from "../../../../../common/model/point";
 import {createArray} from "../../../../../common/util/util";
 
 import {
@@ -71,12 +71,12 @@ describe("SimpleGameCanvasComponent", () => {
     component["_height"] = 1;
     component["_canvasContext"] = context;
 
-    const actualPixels: PixelData[] = component.getPixels([ORIGIN]);
+    const actualPixels: PixelData[] = component.getPixels([getOrigin()]);
     expect(actualPixels)
       .toEqual(
         [
           {
-            coords: ORIGIN,
+            coords: getOrigin(),
             data: new Uint8ClampedArray(RED_PIXEL),
           },
         ]);
@@ -123,7 +123,7 @@ describe("SimpleGameCanvasComponent", () => {
     component.drawPixels(
       [
         {
-          coords: ORIGIN,
+          coords: getOrigin(),
           data: new Uint8ClampedArray(RED_PIXEL),
         },
       ]);
@@ -132,7 +132,7 @@ describe("SimpleGameCanvasComponent", () => {
   });
 
   it("should emit a click event on click", () => {
-    const point: IPoint = ORIGIN;
+    const point: IPoint = getOrigin();
 
     component["_height"] = DEFAULT_CANVAS_HEIGHT;
 
@@ -174,11 +174,11 @@ describe("SimpleGameCanvasComponent", () => {
     spyOn(component["_canvasContext"], "strokeText");
     spyOn(component["_canvasContext"], "fillText");
 
-    component.drawText(expectedText, ORIGIN, TextType.ERROR);
+    component.drawText(expectedText, getOrigin(), TextType.ERROR);
 
     expect(component["_canvasContext"].fillStyle).toEqual(ERROR_TEXT_COLOR);
-    expect(component["_canvasContext"].strokeText).toHaveBeenCalledWith(expectedText, ORIGIN.x, ORIGIN.y);
-    expect(component["_canvasContext"].fillText).toHaveBeenCalledWith(expectedText, ORIGIN.x, ORIGIN.y);
+    expect(component["_canvasContext"].strokeText).toHaveBeenCalledWith(expectedText, getOrigin().x, getOrigin().y);
+    expect(component["_canvasContext"].fillText).toHaveBeenCalledWith(expectedText, getOrigin().x, getOrigin().y);
   });
 
   it("should draw victory text on canvas", () => {
@@ -193,10 +193,10 @@ describe("SimpleGameCanvasComponent", () => {
     component["_canvasContext"] = context;
     spyOn(context, "fillText");
 
-    component.drawText(expectedText, ORIGIN, TextType.VICTORY);
+    component.drawText(expectedText, getOrigin(), TextType.VICTORY);
 
     expect(context.fillStyle).toEqual(VICTORY_TEXT_COLOR);
-    expect(context.fillText).toHaveBeenCalledWith(expectedText, ORIGIN.x, ORIGIN.y);
+    expect(context.fillText).toHaveBeenCalledWith(expectedText, getOrigin().x, getOrigin().y);
   });
 
   it("should draw black text when textType is not defined", () => {
@@ -211,9 +211,9 @@ describe("SimpleGameCanvasComponent", () => {
     component["_canvasContext"] = context;
     spyOn(context, "fillText");
 
-    component.drawText(expectedText, ORIGIN);
+    component.drawText(expectedText, getOrigin());
 
     expect(context.fillStyle).toEqual(DEFAULT_TEXT_COLOR);
-    expect(context.fillText).toHaveBeenCalledWith(expectedText, ORIGIN.x, ORIGIN.y);
+    expect(context.fillText).toHaveBeenCalledWith(expectedText, getOrigin().x, getOrigin().y);
   });
 });

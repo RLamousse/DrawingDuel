@@ -4,8 +4,8 @@ import {
   ObjectGeometry,
   Themes
 } from "../../../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
-import * as IObject from "../../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
-import {NULL_VECTOR3, ORIGIN_3D} from "../../../../../common/model/point";
+import {ICone, ICube, ICylinder, IPyramid, ISphere} from "../../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
+import {getOrigin3D} from "../../../../../common/model/point";
 import {Form3DService} from "./3-dform.service";
 
 /* tslint:disable:no-magic-numbers */
@@ -22,11 +22,11 @@ describe("3DFormService", () => {
   // Test createCube
   it("should create a Mesh with cube geometry with right position", () => {
     const service: Form3DService = TestBed.get(Form3DService);
-    const dummyCube: IObject.ICube = {
+    const dummyCube: ICube = {
       type: ObjectGeometry.cube,
       color: 0xF4F4F4,
       position: {x: 25, y: 12, z: 2},
-      rotation: NULL_VECTOR3,
+      rotation: getOrigin3D(),
       sideLength: 10,
       scale: 1,
       gameType: Themes.Geometry,
@@ -43,11 +43,11 @@ describe("3DFormService", () => {
   // Test createSphere
   it("should create a Mesh with sphere geometry with right position", () => {
     const service: Form3DService = TestBed.get(Form3DService);
-    const dummySphere: IObject.ISphere = {
+    const dummySphere: ISphere = {
       type: ObjectGeometry.sphere,
       color: 0xF4F4F4,
       position: {x: 25, y: 12, z: 2},
-      rotation: NULL_VECTOR3,
+      rotation: getOrigin3D(),
       heightSegments: 32,
       radius: 10,
       widthSegments: 32,
@@ -66,11 +66,11 @@ describe("3DFormService", () => {
   // Test createCone
   it("should create a Mesh with cone geometry with right position", () => {
     const service: Form3DService = TestBed.get(Form3DService);
-    const dummyCone: IObject.ICone = {
+    const dummyCone: ICone = {
       type: ObjectGeometry.cone,
       color: 0xF4F4F4,
       position: {x: 5, y: 12, z: 2},
-      rotation: NULL_VECTOR3,
+      rotation: getOrigin3D(),
       height: 10,
       radialSegment: 32,
       radius: 10,
@@ -89,11 +89,11 @@ describe("3DFormService", () => {
   // Test createCylinder
   it("should create a Mesh with cylinder geometry with right position", () => {
     const service: Form3DService = TestBed.get(Form3DService);
-    const dummyCylinder: IObject.ICylinder = {
+    const dummyCylinder: ICylinder = {
       type: ObjectGeometry.cylinder,
       color: 0xF4F4F4,
-      position: ORIGIN_3D,
-      rotation: NULL_VECTOR3,
+      position: getOrigin3D(),
+      rotation: getOrigin3D(),
       botRadius: 10,
       height: 10,
       radiusSegment: 32,
@@ -113,11 +113,11 @@ describe("3DFormService", () => {
   // Test createPyramid
   it("should create a Mesh with cylinder geometry with right position", () => {
     const service: Form3DService = TestBed.get(Form3DService);
-    const dummyPyramid: IObject.IPyramid = {
+    const dummyPyramid: IPyramid = {
       type: ObjectGeometry.pyramid,
       color: 0xF4F4F4,
       position: {x: 100, y: 2, z: 2},
-      rotation: NULL_VECTOR3,
+      rotation: getOrigin3D(),
       topRadius: 0,
       heightSegment: 1,
       radiusSegment: 3,

@@ -5,42 +5,42 @@ import {
     ObjectGeometry,
     Themes
 } from "../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
-import * as IObject from "../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
-import {distance, NULL_VECTOR3, ORIGIN_3D} from "../../../common/model/point";
+import {IJson3DObject, IScenesJSON} from "../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
+import {distance, getOrigin3D} from "../../../common/model/point";
 import {container} from "../inversify.config";
 import types from "../types";
 import {FreeGameCreatorService} from "./free-game-creator.service";
 import {Object3DCreatorService} from "./object3D-creator.service";
 
 const MASK: number = 0xFFFFFF;
-const mockedBaseObject: IObject.IJson3DObject = {
+const mockedBaseObject: IJson3DObject = {
     type: ObjectGeometry.cube,
-    position: ORIGIN_3D,
-    rotation: NULL_VECTOR3,
+    position: getOrigin3D(),
+    rotation: getOrigin3D(),
     color: Math.random() * MASK,
     scale: 1,
     gameType: Themes.Geometry,
 };
 
-const mockedAstroObject: IObject.IJson3DObject = {
+const mockedAstroObject: IJson3DObject = {
     type: ObjectGeometry.astronaut,
-    position: ORIGIN_3D,
-    rotation: NULL_VECTOR3,
+    position: getOrigin3D(),
+    rotation: getOrigin3D(),
     color: Math.random() * MASK,
     scale: 1,
     gameType: Themes.Space,
 };
 
-const mockedAstroObject2: IObject.IJson3DObject = {
+const mockedAstroObject2: IJson3DObject = {
     type: ObjectGeometry.astronaut,
-    position: ORIGIN_3D,
-    rotation: NULL_VECTOR3,
+    position: getOrigin3D(),
+    rotation: getOrigin3D(),
     color: Math.random() * MASK,
     scale: 1,
     gameType: Themes.Space,
 };
 
-const objects: IObject.IJson3DObject[] = [];
+const objects: IJson3DObject[] = [];
 
 const mockedObject3DCreator = {
     createCube: () => {
@@ -88,7 +88,7 @@ describe("FreeGameCreatorService", () => {
         const modTypes: ModificationType[] = [];
         const objNumber: number = 10;
         const MAX_DIST: number = 43;
-        const response: IObject.IScenesJSON = freeGameCreatorService.generateIScenes(objNumber, modTypes, Themes.Geometry);
+        const response: IScenesJSON = freeGameCreatorService.generateIScenes(objNumber, modTypes, Themes.Geometry);
         expect(response.originalObjects.length).to.eql(objNumber);
         for (const i of response.originalObjects) {
             for (const j of response.originalObjects) {
@@ -104,7 +104,7 @@ describe("FreeGameCreatorService", () => {
         const modTypes: ModificationType[] = [ModificationType.remove];
         const objNumber: number = 30;
         const DIFF: number = 7;
-        const response: IObject.IScenesJSON = freeGameCreatorService.generateIScenes(objNumber, modTypes, Themes.Geometry);
+        const response: IScenesJSON = freeGameCreatorService.generateIScenes(objNumber, modTypes, Themes.Geometry);
         expect(response.originalObjects.length).to.eql(objNumber);
         expect(response.modifiedObjects.length).to.eql(objNumber - DIFF);
     });
@@ -113,7 +113,7 @@ describe("FreeGameCreatorService", () => {
         const modTypes: ModificationType[] = [ModificationType.add];
         const objNumber: number = 30;
         const DIFF: number = 7;
-        const response: IObject.IScenesJSON = freeGameCreatorService.generateIScenes(objNumber, modTypes, Themes.Geometry);
+        const response: IScenesJSON = freeGameCreatorService.generateIScenes(objNumber, modTypes, Themes.Geometry);
         expect(response.originalObjects.length).to.eql(objNumber);
         expect(response.modifiedObjects.length).to.eql(objNumber + DIFF);
     });
@@ -122,7 +122,7 @@ describe("FreeGameCreatorService", () => {
         const modTypes: ModificationType[] = [ModificationType.changeColor];
         const objNumber: number = 30;
         const DIFF: number = 7;
-        const response: IObject.IScenesJSON = freeGameCreatorService.generateIScenes(objNumber, modTypes, Themes.Geometry);
+        const response: IScenesJSON = freeGameCreatorService.generateIScenes(objNumber, modTypes, Themes.Geometry);
         expect(response.originalObjects.length).to.eql(response.modifiedObjects.length);
         let colDiffCounter: number = 0;
         for (let i: number = 0; i < objNumber; ++i) {
@@ -135,15 +135,15 @@ describe("FreeGameCreatorService", () => {
 
     // test render earth
     it("should return a valid earth 3D object", () => {
-        const earth: IObject.IJson3DObject = freeGameCreatorService["renderEarth"]();
+        const earth: IJson3DObject = freeGameCreatorService["renderEarth"]();
 
-        expect(earth.position).to.be.eql(ORIGIN_3D);
+        expect(earth.position).to.be.eql(getOrigin3D());
         expect(earth.type).to.be.eql(ObjectGeometry.earth);
     });
 
     // test setAstronautCloseFromEarth
-    it.skip("should go through the collision and set a new position and scale", () => {
-        const object: IObject.IJson3DObject = mockedAstroObject;
+    it("should go through the collision and set a new position and scale", () => {
+        const object: IJson3DObject = mockedAstroObject;
         objects.push(mockedAstroObject2);
         freeGameCreatorService["setAstronautCloseFromEarth"](object, objects);
         const TEST: number = 4;

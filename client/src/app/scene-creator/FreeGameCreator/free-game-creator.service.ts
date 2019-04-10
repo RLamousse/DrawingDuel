@@ -19,7 +19,14 @@ import {
   ObjectGeometry, ObjectTexture,
   Themes
 } from "../../../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
-import * as IObject from "../../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
+import {
+  ICone, ICube,
+  ICylinder,
+  IJson3DObject,
+  IPyramid,
+  IScenesJSON,
+  ISphere
+} from "../../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
 import {IScene} from "../../scene-interface";
 import {Form3DService} from "../3DFormService/3-dform.service";
 
@@ -41,7 +48,7 @@ export class FreeGameCreatorService {
     this.modifiedObjects = [];
   }
 
-  public createScenes(primitiveScenes: IObject.IScenesJSON): IScene {
+  public createScenes(primitiveScenes: IScenesJSON): IScene {
     this.scene = new Scene();
     this.modifiedScene = new Scene();
     this.setLighting();
@@ -74,7 +81,7 @@ export class FreeGameCreatorService {
     this.modifiedScene.add(modifiedAmbiantLight);
   }
 
-  private generateThematicScenes(primitiveScenes: IObject.IScenesJSON): void {
+  private generateThematicScenes(primitiveScenes: IScenesJSON): void {
     for (const i of primitiveScenes.originalObjects) {
       this.generateThematicObject(i, true);
     }
@@ -84,7 +91,7 @@ export class FreeGameCreatorService {
     this.setSkyBoxThematic();
   }
 
-  private generateThematicObject(object: IObject.IJson3DObject, isOriginalObject: boolean): void {
+  private generateThematicObject(object: IJson3DObject, isOriginalObject: boolean): void {
     const loader: GLTFLoader = new GLTFLoader();
     loader.load(this.buildObjectPath(ObjectGeometry[object.type]), (gltf: GLTF) => {
       if (object.texture) {
@@ -161,7 +168,7 @@ export class FreeGameCreatorService {
     return ("assets/Models/space/" + name + "/scene.gltf");
   }
 
-  private generateOriginalScene(primitiveScenes: IObject.IScenesJSON): void {
+  private generateOriginalScene(primitiveScenes: IScenesJSON): void {
     let object: Mesh;
     for (const i of primitiveScenes.originalObjects) {
       object = this.generate3DObject(i);
@@ -171,7 +178,7 @@ export class FreeGameCreatorService {
     this.setSkyBoxGeometric();
   }
 
-  private generateModifiedScene(primitiveScenes: IObject.IScenesJSON): void {
+  private generateModifiedScene(primitiveScenes: IScenesJSON): void {
     let object: Mesh;
     for (const i of primitiveScenes.modifiedObjects) {
       object = this.generate3DObject(i);
@@ -180,27 +187,27 @@ export class FreeGameCreatorService {
     }
   }
 
-  private generate3DObject(obj: IObject.IJson3DObject): Mesh {
+  private generate3DObject(obj: IJson3DObject): Mesh {
     let createdObject: Mesh;
     switch (obj.type) {
       case ObjectGeometry.sphere: {
-        createdObject = this.formService.createSphere(obj as IObject.ISphere);
+        createdObject = this.formService.createSphere(obj as ISphere);
         break;
       }
       case ObjectGeometry.cube: {
-        createdObject = this.formService.createCube(obj as IObject.ICube);
+        createdObject = this.formService.createCube(obj as ICube);
         break;
       }
       case ObjectGeometry.cone: {
-        createdObject = this.formService.createCone(obj as IObject.ICone);
+        createdObject = this.formService.createCone(obj as ICone);
         break;
       }
       case ObjectGeometry.cylinder: {
-        createdObject = this.formService.createCylinder(obj as IObject.ICylinder);
+        createdObject = this.formService.createCylinder(obj as ICylinder);
         break;
       }
       case ObjectGeometry.pyramid: {
-        createdObject = this.formService.createPyramid(obj as IObject.IPyramid);
+        createdObject = this.formService.createPyramid(obj as IPyramid);
         break;
       }
       default: {

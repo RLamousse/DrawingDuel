@@ -7,7 +7,8 @@ import {
     Themes
 } from "../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
 import {DEFAULT_OBJECT, IJson3DObject, IScenesDB} from "../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
-import {IPoint3D, ORIGIN_3D} from "../../../common/model/point";
+import {getOrigin3D, IPoint3D} from "../../../common/model/point";
+import {getRandomValue} from "../../../common/util/util";
 import Types from "../types";
 import {Object3DCreatorService} from "./object3D-creator.service";
 
@@ -21,10 +22,6 @@ export class FreeGameCreatorService {
     private readonly MAX_GAME_X: number = 300;
     private readonly MAX_GAME_Y: number = 300;
     private readonly MAX_GAME_Z: number = 300;
-
-    private getRandomValue(min: number, max: number): number {
-        return Math.floor(Math.random() * (max - min + 1) + min);
-    }
 
     private handleCollision(object: IJson3DObject,
                             list: IJson3DObject[]): IJson3DObject {
@@ -58,7 +55,7 @@ export class FreeGameCreatorService {
     private generate3DObject(): IJson3DObject {
         let randomObject: number;
         let createdObject: IJson3DObject;
-        randomObject = this.getRandomValue(0, this.MAX_TYPE_OBJECTS);
+        randomObject = getRandomValue(0, this.MAX_TYPE_OBJECTS);
         switch (randomObject) {
             case ObjectGeometry.sphere: {
                 createdObject = this.object3DCreatorService.createSphere();
@@ -90,8 +87,7 @@ export class FreeGameCreatorService {
         }
         for (let i: number = 0; i < obj3DToCreate; ++i) {
             let object: IJson3DObject;
-            (sceneType === Themes.Geometry) ?
-                object = this.generate3DObject() : object = this.object3DCreatorService.createThematicObject();
+            object = sceneType === Themes.Geometry ? this.generate3DObject() : this.object3DCreatorService.createThematicObject();
             object.position = this.generateRandomPosition();
             object = this.handleCollision(object, objects);
             this.setAstronautCloseFromEarth(object, objects);
@@ -103,14 +99,11 @@ export class FreeGameCreatorService {
         return {originalObjects: objects, modifiedObjects: modifiedObjects, differentObjects: differentObjects};
     }
 
-    private generateDifferences(
-        modificationTypes: ModificationType[],
-        modifiedObjects: IJson3DObject[],
-    ): IJson3DObject[] {
+    private generateDifferences(modificationTypes: ModificationType[], modifiedObjects: IJson3DObject[]): IJson3DObject[] {
         const MOD_COUNT: number = 7;
         const INDEXES: Set<number> = new Set();
         while (INDEXES.size !== MOD_COUNT) {
-            INDEXES.add(this.getRandomValue(1, modifiedObjects.length - 1));
+            INDEXES.add(getRandomValue(1, modifiedObjects.length - 1));
         }
 
         return this.randomDifference(INDEXES, modificationTypes, modifiedObjects);
@@ -127,7 +120,7 @@ export class FreeGameCreatorService {
         let randomModifications: number;
 
         for (const index of ARRAY_INDEXES) {
-            randomModifications = this.getRandomValue(0, MAX_MOD_TYPE);
+            randomModifications = getRandomValue(0, MAX_MOD_TYPE);
             switch (modificationTypes[randomModifications]) {
                 case ModificationType.remove:
                     modObjects.push(JSON.parse(JSON.stringify(modifiedObjects[index])));
@@ -163,21 +156,21 @@ export class FreeGameCreatorService {
         const TEXTURE_SIZE: number = 4;
         (modifiedObjects[0].gameType === Themes.Geometry) ?
             modifiedObjects[index].color = (Math.random() * MASK) :
-            modifiedObjects[index].texture = ObjectTexture[ObjectTexture[this.getRandomValue(0, TEXTURE_SIZE)]];
+            modifiedObjects[index].texture = ObjectTexture[ObjectTexture[getRandomValue(0, TEXTURE_SIZE)]];
     }
 
     private generateRandomPosition(): IPoint3D {
         return {
-            x: this.getRandomValue(-this.MAX_GAME_X, this.MAX_GAME_X),
-            y: this.getRandomValue(-this.MAX_GAME_Y, this.MAX_GAME_Y),
-            z: this.getRandomValue(-this.MAX_GAME_Z, this.MAX_GAME_Z),
+            x: getRandomValue(-this.MAX_GAME_X, this.MAX_GAME_X),
+            y: getRandomValue(-this.MAX_GAME_Y, this.MAX_GAME_Y),
+            z: getRandomValue(-this.MAX_GAME_Z, this.MAX_GAME_Z),
         };
     }
 
     private renderEarth(): IJson3DObject {
         const earth: IJson3DObject = this.object3DCreatorService.createThematicObject(ObjectGeometry.earth);
         earth.scale = spaceObjects[spaceObjects.length - 1].scale;
-        earth.position = ORIGIN_3D;
+        earth.position = getOrigin3D();
 
         return earth;
     }
@@ -191,9 +184,9 @@ export class FreeGameCreatorService {
             let collision: boolean = true;
             object.scale = spaceObjects[ASTRONAUT_INDEX].scale;
             while (collision) {
-                object.position.x = this.randomNegative() * this.getRandomValue(CLOSE_FROM_EARTH, FURTHER_FROM_EARTH);
-                object.position.y = this.randomNegative() * this.getRandomValue(CLOSE_FROM_EARTH, FURTHER_FROM_EARTH);
-                object.position.z = this.randomNegative() * this.getRandomValue(CLOSE_FROM_EARTH, FURTHER_FROM_EARTH);
+                object.position.x = this.randomNegative() * getRandomValue(CLOSE_FROM_EARTH, FURTHER_FROM_EARTH);
+                object.position.y = this.randomNegative() * getRandomValue(CLOSE_FROM_EARTH, FURTHER_FROM_EARTH);
+                object.position.z = this.randomNegative() * getRandomValue(CLOSE_FROM_EARTH, FURTHER_FROM_EARTH);
                 for (const indexObj of objects) {
                     collision = this.isColliding(object, indexObj, MIN_DIST);
                     if (collision) {
@@ -207,7 +200,7 @@ export class FreeGameCreatorService {
     private randomNegative(): number {
         const NEGATIF: number = -1;
 
-        return (this.getRandomValue(0, 1) > 0) ?
+        return (getRandomValue(0, 1) > 0) ?
             1 :
             NEGATIF;
     }

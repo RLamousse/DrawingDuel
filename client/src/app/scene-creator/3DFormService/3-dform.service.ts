@@ -1,6 +1,13 @@
 import { Injectable } from "@angular/core";
 import {BoxGeometry, ConeGeometry, CylinderGeometry, GLTF, Mesh, MeshPhongMaterial, SphereGeometry, Vector3} from "three";
-import * as IObject from "../../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
+import {
+  ICone,
+  ICube,
+  ICylinder,
+  IJson3DObject,
+  IPyramid,
+  ISphere
+} from "../../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
 import {IPoint3D, IVector3} from "../../../../../common/model/point";
 @Injectable()
 export class Form3DService {
@@ -11,14 +18,14 @@ export class Form3DService {
     return new Vector3(x, y, z);
   }
 
-  private static setUpParameters(mesh: Mesh, obj: IObject.IJson3DObject): void {
+  private static setUpParameters(mesh: Mesh, obj: IJson3DObject): void {
     mesh.position.copy(Form3DService.toThreeVector3(obj.position));
     mesh.rotateX(obj.rotation.x);
     mesh.rotateY(obj.rotation.y);
     mesh.rotateZ(obj.rotation.z);
   }
 
-  public createCube(obj: IObject.ICube): Mesh {
+  public createCube(obj: ICube): Mesh {
     const geometry: BoxGeometry = new BoxGeometry(obj.sideLength, obj.sideLength, obj.sideLength);
     const material: MeshPhongMaterial = new MeshPhongMaterial({color: obj.color});
     const cube: Mesh = new Mesh(geometry, material);
@@ -27,7 +34,7 @@ export class Form3DService {
     return cube;
   }
 
-  public createSphere(obj: IObject.ISphere): Mesh {
+  public createSphere(obj: ISphere): Mesh {
     const geometry: SphereGeometry = new SphereGeometry(obj.radius, obj.widthSegments, obj.heightSegments);
     const material: MeshPhongMaterial = new MeshPhongMaterial({color: obj.color});
     const sphere: Mesh = new Mesh(geometry, material);
@@ -36,7 +43,7 @@ export class Form3DService {
     return sphere;
   }
 
-  public createCone(obj: IObject.ICone): Mesh {
+  public createCone(obj: ICone): Mesh {
     const geometry: ConeGeometry = new ConeGeometry(obj.radius, obj.height, obj.radialSegment);
     const material: MeshPhongMaterial = new MeshPhongMaterial({color: obj.color});
     const cone: Mesh = new Mesh(geometry, material);
@@ -45,7 +52,7 @@ export class Form3DService {
     return cone;
   }
 
-  public createCylinder(obj: IObject.ICylinder): Mesh {
+  public createCylinder(obj: ICylinder): Mesh {
     const geometry: CylinderGeometry = new CylinderGeometry(
       obj.topRadius,
       obj.botRadius,
@@ -59,7 +66,7 @@ export class Form3DService {
     return cylinder;
   }
 
-  public createPyramid(obj: IObject.IPyramid): Mesh {
+  public createPyramid(obj: IPyramid): Mesh {
     const geometry: CylinderGeometry = new CylinderGeometry(
       obj.topRadius,
       obj.botRadius,
@@ -74,7 +81,7 @@ export class Form3DService {
     return pyramid;
   }
 
-  public setUpThematicParameters(object: IObject.IJson3DObject, gltf: GLTF): void {
+  public setUpThematicParameters(object: IJson3DObject, gltf: GLTF): void {
     const scaleFactor: number = object.scale;
     gltf.scene.scale.set(scaleFactor, scaleFactor, scaleFactor);
     gltf.scene.rotateX(object.rotation.x);

@@ -5,7 +5,7 @@ import {Object3DIsNotADifference} from "../../../common/errors/services.errors";
 import {Themes} from "../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
 import {IJson3DObject} from "../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
 import {IFreeGame} from "../../../common/model/game/free-game";
-import {NULL_VECTOR3, ORIGIN_3D} from "../../../common/model/point";
+import {getOrigin3D} from "../../../common/model/point";
 import {DataBaseService} from "./data-base.service";
 import {FreeGamesCollectionService} from "./db/free-games.collection.service";
 import {DiffValidator3DService} from "./diff-validator-3D.service";
@@ -18,8 +18,8 @@ describe("A service validating if there is a difference at a coord for a free ga
             originalObjects: [],
             modifiedObjects: [],
             differentObjects: [{
-                position: ORIGIN_3D,
-                rotation: NULL_VECTOR3,
+                position: getOrigin3D(),
+                rotation: getOrigin3D(),
                 type: 0,
                 color: 0xFFFFFF,
                 gameType: Themes.Geometry,
@@ -48,7 +48,7 @@ describe("A service validating if there is a difference at a coord for a free ga
 
         when(mockedFreeGames.getFromId(anything())).thenReject(new NonExistentGameError());
 
-        return initDiffValidatorService().getDifferentObjects("notAValidGame", ORIGIN_3D)
+        return initDiffValidatorService().getDifferentObjects("notAValidGame", getOrigin3D())
             .catch((reason: Error) => {
                 expect(reason.message).to.equal(NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE);
             });
@@ -56,7 +56,7 @@ describe("A service validating if there is a difference at a coord for a free ga
 
     it("should return an object corresponding to the center", async () => {
 
-        return initDiffValidatorService().getDifferentObjects("game", ORIGIN_3D)
+        return initDiffValidatorService().getDifferentObjects("game", getOrigin3D())
             .then((value: IJson3DObject) => {
                 return expect(value).to.eql(mockedFreeGame.scenes.differentObjects[0]);
             });

@@ -6,8 +6,15 @@ import {
   ObjectTexture,
   Themes
 } from "../../../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
-import * as IObject from "../../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
-import {NULL_VECTOR3, ORIGIN_3D} from "../../../../../common/model/point";
+import {
+  ICone,
+  ICube,
+  ICylinder,
+  IJson3DObject,
+  IPyramid, IScenesJSON,
+  ISphere
+} from "../../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
+import {getOrigin3D} from "../../../../../common/model/point";
 import {IScene} from "../../scene-interface";
 import {Form3DService} from "../3DFormService/3-dform.service";
 import {FreeGameCreatorService} from "./free-game-creator.service";
@@ -36,47 +43,47 @@ class MockedForm3DService extends Form3DService {
     return new Mesh(new BoxGeometry(10, 10, 10), new Material());
   }
 
-  public setUpThematicParameters(object: IObject.IJson3DObject, gltf: GLTF): void {
+  public setUpThematicParameters(object: IJson3DObject, gltf: GLTF): void {
     return;
   }
 }
 
-const dummyCube: IObject.ICube = {
+const dummyCube: ICube = {
   type: ObjectGeometry.cube,
   color: 0xF4F4F4,
-  position: ORIGIN_3D,
-  rotation: NULL_VECTOR3,
+  position: getOrigin3D(),
+  rotation: getOrigin3D(),
   sideLength: 10,
   scale: 1,
   gameType: Themes.Geometry,
 };
-const dummyCone: IObject.ICone = {
+const dummyCone: ICone = {
   type: ObjectGeometry.cone,
   color: 0xF4F4F4,
-  position: ORIGIN_3D,
-  rotation: NULL_VECTOR3,
+  position: getOrigin3D(),
+  rotation: getOrigin3D(),
   height: 10,
   radialSegment: 32,
   radius: 10,
   scale: 1,
   gameType: Themes.Geometry,
 };
-const dummySphere: IObject.ISphere = {
+const dummySphere: ISphere = {
   type: ObjectGeometry.sphere,
   color: 0xF4F4F4,
-  position: ORIGIN_3D,
-  rotation: NULL_VECTOR3,
+  position: getOrigin3D(),
+  rotation: getOrigin3D(),
   heightSegments: 32,
   radius: 10,
   widthSegments: 32,
   scale: 1,
   gameType: Themes.Geometry,
 };
-const dummyCylinder: IObject.ICylinder = {
+const dummyCylinder: ICylinder = {
   type: ObjectGeometry.cylinder,
   color: 0xF4F4F4,
-  position: ORIGIN_3D,
-  rotation: NULL_VECTOR3,
+  position: getOrigin3D(),
+  rotation: getOrigin3D(),
   botRadius: 10,
   height: 10,
   radiusSegment: 32,
@@ -84,11 +91,11 @@ const dummyCylinder: IObject.ICylinder = {
   scale: 1,
   gameType: Themes.Geometry,
 };
-const dummyPyramid: IObject.IPyramid = {
+const dummyPyramid: IPyramid = {
   type: ObjectGeometry.pyramid,
   color: 0xF4F4F4,
-  position: ORIGIN_3D,
-  rotation: NULL_VECTOR3,
+  position: getOrigin3D(),
+  rotation: getOrigin3D(),
   topRadius: 0,
   heightSegment: 1,
   radiusSegment: 3,
@@ -97,7 +104,7 @@ const dummyPyramid: IObject.IPyramid = {
   scale: 1,
   gameType: Themes.Geometry,
 };
-const dummyScenes: IObject.IScenesJSON = {
+const dummyScenes: IScenesJSON = {
   originalObjects: [dummyCube, dummyCone, dummyCylinder, dummyPyramid, dummySphere],
   modifiedObjects: [dummyCube, dummyCone, dummyCylinder],
 };
@@ -225,10 +232,10 @@ describe("FreeGameCreatorService", () => {
   // Test generate3DObject, default case
   it("should return with the default case when invalid objType is pass to the function", () => {
     const service: FreeGameCreatorService = TestBed.get(FreeGameCreatorService);
-    const obj: IObject.IJson3DObject = {
+    const obj: IJson3DObject = {
       type: 100,
-      position: ORIGIN_3D,
-      rotation: NULL_VECTOR3,
+      position: getOrigin3D(),
+      rotation: getOrigin3D(),
       color: 0xFFFFFF,
       scale: 1,
       gameType: Themes.Geometry,
@@ -242,9 +249,9 @@ describe("FreeGameCreatorService", () => {
   // Test generateThematicObject
   it("should calls buildObjectPath and not call traverseChildren, originalObject", () => {
     const service: FreeGameCreatorService = TestBed.get(FreeGameCreatorService);
-    const obj: IObject.IJson3DObject = {
-      position: ORIGIN_3D,
-      rotation: NULL_VECTOR3,
+    const obj: IJson3DObject = {
+      position: getOrigin3D(),
+      rotation: getOrigin3D(),
       color: 0xFFFFFF,
       type: 5,
       gameType: Themes.Space,
@@ -261,9 +268,9 @@ describe("FreeGameCreatorService", () => {
   // Test generateThematicObject
   it("should calls buildObjectPath and call not traverseChildren, modifiedObject", () => {
     const service: FreeGameCreatorService = TestBed.get(FreeGameCreatorService);
-    const obj: IObject.IJson3DObject = {
-      position: ORIGIN_3D,
-      rotation: NULL_VECTOR3,
+    const obj: IJson3DObject = {
+      position: getOrigin3D(),
+      rotation: getOrigin3D(),
       color: 0xFFFFFF,
       type: 5,
       gameType: Themes.Space,

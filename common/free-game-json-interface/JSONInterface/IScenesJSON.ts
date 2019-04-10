@@ -1,4 +1,4 @@
-﻿import {IPoint3D, IVector3, NULL_VECTOR3, ORIGIN_3D} from "../../model/point";
+﻿import {getOrigin3D, IPoint3D, IVector3} from "../../model/point";
 import {ObjectGeometry, ObjectTexture, Themes} from "../FreeGameCreatorInterface/free-game-enum";
 
 export interface IScenesJSON{
@@ -52,8 +52,8 @@ export interface ICylinder extends IJson3DObject {
 }
 
 export const DEFAULT_OBJECT: IJson3DObject = {
-    position: ORIGIN_3D,
-    rotation: NULL_VECTOR3,
+    position: getOrigin3D(),
+    rotation: getOrigin3D(),
     color: 0,
     type: ObjectGeometry.cube,
     gameType: Themes.Geometry,
