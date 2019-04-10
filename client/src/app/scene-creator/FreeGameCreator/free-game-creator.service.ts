@@ -1,5 +1,6 @@
 import {Injectable} from "@angular/core";
 import {
+  sRGBEncoding,
   AmbientLight,
   BoxGeometry,
   DirectionalLight,
@@ -10,7 +11,6 @@ import {
   MeshPhongMaterial,
   Object3D,
   Scene,
-  sRGBEncoding,
   Texture,
   TextureLoader
 } from "three";
@@ -133,7 +133,7 @@ export class FreeGameCreatorService {
     for (let index: number = 0; index < geometry.faces.length; index++) {
       materials.push(new MeshBasicMaterial({
         map: textureLoader.load(SKY_BOX_TEXT[index]),
-                                             side: DoubleSide,
+        side: DoubleSide,
       }));
     }
     const skyBox: Mesh = new Mesh(geometry, materials);
