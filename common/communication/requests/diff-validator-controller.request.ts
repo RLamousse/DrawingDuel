@@ -3,3 +3,10 @@ export interface IDiffValidatorControllerRequest {
     coordX: number,
     coordY: number,
 }
+
+export interface I3DDiffValidatorControllerRequest {
+    gameName: string,
+    centerX: number,
+    centerY: number,
+    centerZ: number,
+}

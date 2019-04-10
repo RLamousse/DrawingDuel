@@ -12,11 +12,11 @@ coverage:
       client:
         paths:
           - client/src/**/*
-        threshold: null
       server:
         paths:
           - server/app/**/*
-        threshold: null
+      default:
+        threshold: 0
   range: 70..100
   round: down
   precision: 2
