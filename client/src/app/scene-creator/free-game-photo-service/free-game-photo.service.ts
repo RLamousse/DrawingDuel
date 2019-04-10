@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import * as THREE from "three";
+import {PerspectiveCamera, Scene, WebGLRenderer} from "three";
 import {sleep} from "../../../../../common/util/util";
 
 @Injectable({
@@ -14,9 +14,9 @@ export class FreeGamePhotoService {
   private readonly cameraZ: number = 200;
   private readonly WAIT_TIME: number = 1500;
 
-  public async takePhoto(scene: THREE.Scene): Promise<string> {
+  public async takePhoto(scene: Scene): Promise<string> {
     const divElem: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
-    const camera: THREE.PerspectiveCamera = new THREE.PerspectiveCamera(
+    const camera: PerspectiveCamera = new PerspectiveCamera(
       this.fieldOfView,
       1,
       this.nearClippingPane,
@@ -24,7 +24,7 @@ export class FreeGamePhotoService {
     );
     camera.position.set(0, 0, this.cameraZ);
 
-    const renderer: THREE.WebGLRenderer = new THREE.WebGLRenderer({ preserveDrawingBuffer: true });
+    const renderer: WebGLRenderer = new WebGLRenderer({preserveDrawingBuffer: true});
     renderer.setClearColor(this.backGroundColor);
     renderer.setPixelRatio(devicePixelRatio);
     renderer.setSize(this.renderSize, this.renderSize);

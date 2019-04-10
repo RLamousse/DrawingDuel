@@ -10,7 +10,7 @@ import {SocketEvent} from "../../../../../common/communication/socket-events";
 import {AlreadyFoundDifferenceError, NoDifferenceAtPointError} from "../../../../../common/errors/services.errors";
 import {OnlineType} from "../../../../../common/model/game/game";
 import {DIFFERENCE_CLUSTER_POINTS_INDEX} from "../../../../../common/model/game/simple-game";
-import {tansformOrigin, IPoint} from "../../../../../common/model/point";
+import {inverseY, IPoint} from "../../../../../common/model/point";
 import {ISimpleGameInteractionResponse} from "../../../../../common/model/rooms/interaction";
 import {SocketService} from "../../socket.service";
 import {UNListService} from "../../username.service";
@@ -85,7 +85,7 @@ export class SimpleGameContainerComponent implements OnDestroy{
       // .then((differenceCluster: DifferenceCluster) => {
       //   this.notifyClickToWebsocket(true);
       //   const differencePoints: IPoint[] = differenceCluster[DIFFERENCE_CLUSTER_POINTS_INDEX]
-      //     .map((point: IPoint) => tansformOrigin(point, this.originalImageComponent.height));
+      //     .map((point: IPoint) => inverseY(point, this.originalImageComponent.height));
       //   const pixels: PixelData[] = this.originalImageComponent.getPixels(differencePoints);
       //   this.modifiedImageComponent.drawPixels(pixels);
       //   this.clickEnabled = true;
@@ -121,7 +121,7 @@ export class SimpleGameContainerComponent implements OnDestroy{
   //   const pixelsBackup: Uint8ClampedArray = clickedComponent.getRawPixelData();
   //   clickedComponent.drawText(
   //     IDENTIFICATION_ERROR_TEXT,
-  //     tansformOrigin(clickEvent, clickedComponent.height),
+  //     inverseY(clickEvent, clickedComponent.height),
   //     TextType.ERROR);
   //
   //   setTimeout(

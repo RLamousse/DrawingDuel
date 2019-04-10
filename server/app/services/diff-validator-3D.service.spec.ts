@@ -5,6 +5,7 @@ import {Object3DIsNotADifference} from "../../../common/errors/services.errors";
 import {Themes} from "../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
 import {IJson3DObject} from "../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
 import {IFreeGame} from "../../../common/model/game/free-game";
+import {getOrigin3D} from "../../../common/model/point";
 import {DataBaseService} from "./data-base.service";
 import {FreeGamesCollectionService} from "./db/free-games.collection.service";
 import {DiffValidator3DService} from "./diff-validator-3D.service";
@@ -17,9 +18,9 @@ describe("A service validating if there is a difference at a coord for a free ga
             originalObjects: [],
             modifiedObjects: [],
             differentObjects: [{
-                position: [0, 0, 0],
+                position: getOrigin3D(),
+                rotation: getOrigin3D(),
                 type: 0,
-                rotation: [0, 0, 0],
                 color: 0xFFFFFF,
                 gameType: Themes.Geometry,
                 scale: 1,
@@ -47,7 +48,7 @@ describe("A service validating if there is a difference at a coord for a free ga
 
         when(mockedFreeGames.getFromId(anything())).thenReject(new NonExistentGameError());
 
-        return initDiffValidatorService().getDifferentObjects("notAValidGame", [0, 0, 0])
+        return initDiffValidatorService().getDifferentObjects("notAValidGame", getOrigin3D())
             .catch((reason: Error) => {
                 expect(reason.message).to.equal(NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE);
             });
@@ -55,7 +56,7 @@ describe("A service validating if there is a difference at a coord for a free ga
 
     it("should return an object corresponding to the center", async () => {
 
-        return initDiffValidatorService().getDifferentObjects("game", [0, 0, 0])
+        return initDiffValidatorService().getDifferentObjects("game", getOrigin3D())
             .then((value: IJson3DObject) => {
                 return expect(value).to.eql(mockedFreeGame.scenes.differentObjects[0]);
             });
@@ -64,7 +65,7 @@ describe("A service validating if there is a difference at a coord for a free ga
     it("should throw an Object3DIsNotADifference error when passed bad coordinates", async () => {
 
         // tslint:disable-next-line:no-magic-numbers
-        return initDiffValidatorService().getDifferentObjects("game", [12, 23, 45])
+        return initDiffValidatorService().getDifferentObjects("game", {x: 12, y: 23, z: 45})
             .catch((reason: Error) => {
                 expect(reason.message).to.equal(Object3DIsNotADifference.OBJ_3D_NOT_A_DIFFERENCE_ERROR_MESSAGE);
             });

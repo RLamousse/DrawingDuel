@@ -1,36 +1,30 @@
-import { Injectable } from "@angular/core";
-import Axios, { AxiosResponse } from "axios";
+import {Injectable} from "@angular/core";
+import Axios, {AxiosResponse} from "axios";
 import * as Httpstatus from "http-status-codes";
-import { Observable, Subject } from "rxjs";
-import * as THREE from "three";
-import {
-  createWebsocketMessage,
-  ChatMessage,
-  ChatMessagePosition, ChatMessageType,
-  WebsocketMessage
-} from "../../../../common/communication/messages/message";
+import {Observable, Subject} from "rxjs";
+import {Intersection, Mesh, Object3D, PerspectiveCamera, Raycaster, Scene, Vector2, Vector3, WebGLRenderer} from "three";
+import {ChatMessage, ChatMessagePosition, ChatMessageType, WebsocketMessage} from "../../../../common/communication/messages/message";
+import {I3DDiffValidatorControllerRequest} from "../../../../common/communication/requests/diff-validator-controller.request";
 import {DIFF_VALIDATOR_3D_BASE, SERVER_BASE_URL} from "../../../../common/communication/routes";
 import {SocketEvent} from "../../../../common/communication/socket-events";
-import { ComponentNotLoadedError } from "../../../../common/errors/component.errors";
+import {ComponentNotLoadedError} from "../../../../common/errors/component.errors";
 import {AbstractServiceError, AlreadyFoundDifferenceError, NoDifferenceAtPointError} from "../../../../common/errors/services.errors";
-import { IJson3DObject } from "../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
+import {IJson3DObject} from "../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
 import {OnlineType} from "../../../../common/model/game/game";
-import {IFreeGameState} from "../../../../common/model/game/game-state";
-import { deepCompare, sleep, X_FACTOR } from "../../../../common/util/util";
-import {
-  playRandomSound,
-  FOUND_DIFFERENCE_SOUNDS,
-  NO_DIFFERENCE_SOUNDS,
-  STAR_THEME_SOUND
-} from "../simple-game/game-sounds";
+import {getOrigin3D, IVector3} from "../../../../common/model/point";
+import {deepCompare, sleep, X_FACTOR} from "../../../../common/util/util";
+import {playRandomSound, FOUND_DIFFERENCE_SOUNDS, NO_DIFFERENCE_SOUNDS, STAR_THEME_SOUND} from "../simple-game/game-sounds";
 import {SocketService} from "../socket.service";
 import {UNListService} from "../username.service";
+import {ObjectCollisionService} from "./objectCollisionService/object-collision.service";
+import {RenderUpdateService} from "./render-update.service";
+interface IFreeGameState {
 import { RenderUpdateService } from "./render-update.service";
 
 interface IFreeGameRendererState extends IFreeGameState {
   isCheatModeActive: boolean;
   isWaitingInThread: boolean;
-  cheatDiffData?: Set<THREE.Object3D>;
+  cheatDiffData?: Set<Object3D>;
   blinkThread?: NodeJS.Timeout;
 }
 export const SCENE_TYPE: string = "Scene";
@@ -40,7 +34,9 @@ export const SCENE_TYPE: string = "Scene";
 export class SceneRendererService {
 
   public constructor(private renderUpdateService: RenderUpdateService,
-                     private socket: SocketService) {
+                     private socket: SocketService,
+                     private objectCollisionService: ObjectCollisionService,
+  ) {
     this.gameState = {isCheatModeActive: false, isWaitingInThread: false, foundDifference: []};
   }
   public get foundDifferenceCount(): Observable<number> {
@@ -48,18 +44,18 @@ export class SceneRendererService {
   }
   public originalContainer: HTMLDivElement;
   public modifiedContainer: HTMLDivElement;
-  public scene: THREE.Scene;
-  public modifiedScene: THREE.Scene;
+  public scene: Scene;
+  public modifiedScene: Scene;
   public gameName: string;
-  private camera: THREE.PerspectiveCamera;
-  private rendererOri: THREE.WebGLRenderer;
-  private rendererMod: THREE.WebGLRenderer;
+  private camera: PerspectiveCamera;
+  private rendererOri: WebGLRenderer;
+  private rendererMod: WebGLRenderer;
   protected time: number;
   protected prevTime: number;
-  protected velocity: THREE.Vector3;
+  protected velocity: Vector3;
   private readonly fieldOfView: number = 90;
   private readonly nearClippingPane: number = 1;
-  private readonly farClippingPane: number = 1000;
+  private readonly farClippingPane: number = 2900;
   private readonly backGroundColor: number = 0x001A33;
   private readonly cameraX: number = 0;
   private readonly cameraY: number = 0;
@@ -71,35 +67,36 @@ export class SceneRendererService {
   private differenceCountSubject: Subject<number> = new Subject();
   public gameState: IFreeGameRendererState;
 
-  private static isObjectAtSamePlace(jsonPosition: number[], objectPosition: THREE.Vector3): boolean {
-    return deepCompare(jsonPosition, [objectPosition.x, objectPosition.y, objectPosition.z]);
+  private static compareToThreeVector3(x: IVector3, y: Vector3): boolean {
+    return deepCompare(x, {x: y.x, y: y.y, z: y.z} as IVector3);
   }
   private setRenderer(): void {
-    this.rendererOri = new THREE.WebGLRenderer({preserveDrawingBuffer: true});
+    this.rendererOri = new WebGLRenderer({preserveDrawingBuffer: true});
     this.rendererOri.setClearColor(this.backGroundColor);
     this.rendererOri.setPixelRatio(devicePixelRatio);
     this.rendererOri.setSize(this.originalContainer.clientWidth, this.originalContainer.clientHeight);
     this.originalContainer.appendChild(this.rendererOri.domElement);
-    this.rendererMod = new THREE.WebGLRenderer();
+    this.rendererMod = new WebGLRenderer();
     this.rendererMod.setClearColor(this.backGroundColor);
     this.rendererMod.setPixelRatio(devicePixelRatio);
     this.rendererMod.setSize(this.modifiedContainer.clientWidth, this.modifiedContainer.clientHeight);
     this.modifiedContainer.appendChild(this.rendererMod.domElement);
   }
   private renderLoop(): void {
-    requestAnimationFrame(() => this.renderLoop());
     this.rendererOri.render(this.scene, this.camera);
     this.rendererMod.render(this.modifiedScene, this.camera);
     this.time = performance.now();
     const delta: number = (this.time - this.prevTime) / this.timeFactor;
     this.renderUpdateService.updateVelocity(this.velocity, delta);
+    this.velocity = this.objectCollisionService.raycastCollision
+      (this.camera, this.scene.children, this.modifiedScene.children, this.velocity);
     this.renderUpdateService.updateCamera(this.camera, delta, this.velocity);
     this.prevTime = this.time;
+    requestAnimationFrame(() => this.renderLoop());
   }
   private setCamera(): void {
     const aspectRatio: number = this.getAspectRatio();
-
-    this.camera = new THREE.PerspectiveCamera(
+    this.camera = new PerspectiveCamera(
       this.fieldOfView,
       aspectRatio,
       this.nearClippingPane,
@@ -118,7 +115,7 @@ export class SceneRendererService {
     this.setCamera();
     this.setRenderer();
   }
-  public loadScenes(original: THREE.Scene, modified: THREE.Scene, gameName: string): void {
+  public loadScenes(original: Scene, modified: Scene, gameName: string): void {
     if (this.originalContainer === undefined || this.modifiedContainer === undefined) {
       throw (new ComponentNotLoadedError());
     }
@@ -126,17 +123,17 @@ export class SceneRendererService {
     this.modifiedScene = modified;
     this.time = 0;
     this.prevTime = performance.now();
-    this.velocity = new THREE.Vector3();
+    this.velocity = new Vector3();
     this.gameName = gameName;
     this.gameState.foundDifference = [];
     this.renderLoop();
   }
   private async blink(): Promise<void> {
-    (this.gameState.cheatDiffData as Set<THREE.Mesh>).forEach((value: THREE.Mesh) => this.changeVisibility(value));
+    (this.gameState.cheatDiffData as Set<Mesh>).forEach((value: Mesh) => this.changeVisibility(value));
     this.gameState.isWaitingInThread = true;
     await sleep(this.INVISIBLE_INTERVAL_MS);
     this.gameState.isWaitingInThread = false;
-    (this.gameState.cheatDiffData as Set<THREE.Mesh>).forEach((value: THREE.Mesh) => this.changeVisibility(value));
+    (this.gameState.cheatDiffData as Set<Mesh>).forEach((value: Mesh) => this.changeVisibility(value));
   }
   public async modifyCheatState(loadCheatData: () => Promise<IJson3DObject[]>): Promise<void> {
     this.gameState.isCheatModeActive = !this.gameState.isCheatModeActive;
@@ -155,21 +152,21 @@ export class SceneRendererService {
     if (this.gameState.isCheatModeActive) {
 
       newData.forEach((jsonValue: IJson3DObject) => {
-        (this.gameState.cheatDiffData as Set<THREE.Object3D>).forEach((objectValue: THREE.Object3D) => {
-          if (SceneRendererService.isObjectAtSamePlace(jsonValue.position, objectValue.position)) {
-            (this.gameState.cheatDiffData as Set<THREE.Object3D>).delete(objectValue);
+        (this.gameState.cheatDiffData as Set<Object3D>).forEach((objectValue: Object3D) => {
+          if (SceneRendererService.compareToThreeVector3(jsonValue.position, objectValue.position)) {
+            (this.gameState.cheatDiffData as Set<Object3D>).delete(objectValue);
           }
         });
       });
     }
   }
   private async loadCheatData(callBackFunction: () => Promise<IJson3DObject[]>): Promise<void> {
-    this.gameState.cheatDiffData = new Set<THREE.Object3D>();
+    this.gameState.cheatDiffData = new Set<Object3D>();
     (await callBackFunction()).forEach((jsonValue: IJson3DObject) => {
-      this.scene.children.concat(this.modifiedScene.children).forEach((objectValue: THREE.Object3D) => {
-        if (SceneRendererService.isObjectAtSamePlace(jsonValue.position, objectValue.position) &&
-          (objectValue instanceof THREE.Mesh || objectValue instanceof THREE.Scene)) {
-          (this.gameState.cheatDiffData as Set<THREE.Object3D>).add(objectValue);
+      this.scene.children.concat(this.modifiedScene.children).forEach((objectValue: Object3D) => {
+        if (SceneRendererService.compareToThreeVector3(jsonValue.position, objectValue.position) &&
+          (objectValue instanceof Mesh || objectValue instanceof Scene)) {
+          (this.gameState.cheatDiffData as Set<Object3D>).add(objectValue);
         }
       });
     });
@@ -199,54 +196,47 @@ export class SceneRendererService {
         x = ((xPos - this.rendererMod.domElement.offsetLeft) / this.rendererMod.domElement.offsetWidth) * POS_FACT - 1;
         y = -((yPos - this.rendererMod.domElement.offsetTop) / this.rendererMod.domElement.offsetHeight) * POS_FACT + 1;
       }
-      const direction: THREE.Vector2 = new THREE.Vector2(x, y);
-      const rayCast: THREE.Raycaster = new THREE.Raycaster();
+      const direction: Vector2 = new Vector2(x, y);
+      const rayCast: Raycaster = new Raycaster();
       rayCast.setFromCamera(direction, this.camera);
-      const intersectOri: THREE.Intersection[] = rayCast.intersectObjects(this.scene.children, true);
-      const intersectMod: THREE.Intersection[] = rayCast.intersectObjects(this.modifiedScene.children, true);
+      const intersectOri: Intersection[] = rayCast.intersectObjects(this.scene.children, true);
+      const intersectMod: Intersection[] = rayCast.intersectObjects(this.modifiedScene.children, true);
       if (intersectOri.length === 0 && intersectMod.length === 0) {
         playRandomSound(NO_DIFFERENCE_SOUNDS);
 
         return this.differenceValidationAtPoint(undefined);
       }
-      // Only take the first intersected object by the ray, hence the 0's
-      if (intersectOri.length === 0 && intersectMod.length !== 0) {
-        return this.differenceValidationAtPoint(this.get3DObject(intersectMod[0]));
-      } else {
-        return this.differenceValidationAtPoint(this.get3DObject(intersectOri[0]));
-      }
+      const object: Intersection = intersectOri.length === 0 && intersectMod.length !== 0 ? intersectMod[0] : intersectOri[0];
+
+      return this.differenceValidationAtPoint(this.get3DObject(object));
   }
-  private get3DObject(obj: THREE.Intersection): THREE.Object3D {
-    if ((obj.object.parent as THREE.Object3D).type === SCENE_TYPE) {
+  private get3DObject(obj: Intersection): Object3D {
+    if ((obj.object.parent as Object3D).type === SCENE_TYPE) {
       return obj.object;
     } else {
       return this.getRecursiveParent(obj.object);
     }
   }
-  private getRecursiveParent(obj: THREE.Object3D): THREE.Object3D {
-    while ((obj.parent as THREE.Object3D).type !== SCENE_TYPE) {
-      return this.getRecursiveParent(obj.parent as THREE.Object3D);
+  private getRecursiveParent(obj: Object3D): Object3D {
+    if ((obj.parent as Object3D).type !== SCENE_TYPE) {
+      return this.getRecursiveParent(obj.parent as Object3D);
     }
 
-    return (obj.parent as THREE.Object3D);
+    return (obj.parent as Object3D);
   }
-  private async differenceValidationAtPoint(object: THREE.Object3D|undefined): Promise<IJson3DObject> {
-    let centerObj: number[] = [];
-    if (object !== undefined) {
-      centerObj = [object.position.x, object.position.y, object.position.z];
-    }
+  private async differenceValidationAtPoint(object: Object3D | undefined): Promise<IJson3DObject> {
+    const {x, y, z} = object !== undefined ? object.position : getOrigin3D();
+    const queryParams: I3DDiffValidatorControllerRequest = {
+      gameName: this.gameName, centerX: x, centerY: y, centerZ: z,
+    };
 
-    return Axios.get<IJson3DObject>(
-      SERVER_BASE_URL + DIFF_VALIDATOR_3D_BASE,
-      {
-        params: {center: JSON.stringify(centerObj), gameName: this.gameName},
-      })
+    return Axios.get<IJson3DObject>(SERVER_BASE_URL + DIFF_VALIDATOR_3D_BASE, {params: queryParams})
       .then(async (value: AxiosResponse<IJson3DObject>) => {
         if (this.gameState.foundDifference.length !== 0 || this.gameState.foundDifference !== undefined) {
           this.checkIfAlreadyFound(value.data);
         }
         this.notifyClickToWebsocket(true);
-        this.updateRoutine(value.data, object as THREE.Object3D);
+        this.updateRoutine(value.data, object as Object3D);
         await this.updateCheateDiffData([value.data as IJson3DObject]);
 
         return value.data as IJson3DObject;
@@ -271,25 +261,25 @@ export class SceneRendererService {
   }
   private checkIfAlreadyFound(object: IJson3DObject): void {
     for (const obj of this.gameState.foundDifference) {
-      if (this.renderUpdateService.isSameObject(obj.position, object.position)) {
+      if (deepCompare(obj.position, object.position)) {
         playRandomSound(NO_DIFFERENCE_SOUNDS);
         throw new AlreadyFoundDifferenceError();
       }
     }
   }
-  private updateRoutine(jsonObj: IJson3DObject, obj: THREE.Object3D): void {
+  private updateRoutine(jsonObj: IJson3DObject, obj: Object3D): void {
     this.gameState.foundDifference.push(jsonObj);
     this.renderUpdateService.updateDifference(obj, this.scene, this.modifiedScene);
     this.differenceCountSubject.next(this.gameState.foundDifference.length);
     playRandomSound(FOUND_DIFFERENCE_SOUNDS);
   }
-  private changeVisibility(value: THREE.Mesh|THREE.Scene): void {
-    if (value instanceof  THREE.Mesh) {
+  private changeVisibility(value: Mesh | Scene): void {
+    if (value instanceof Mesh) {
       Array.isArray(value.material) ? value.material.forEach((material) => {material.visible = !material.visible; } ) :
         value.material.visible = !value.material.visible;
     } else {
-      value.children.forEach((valueChild: THREE.Object3D) => {
-        this.changeVisibility(valueChild as THREE.Scene);
+      value.children.forEach((valueChild: Object3D) => {
+        this.changeVisibility(valueChild as Scene);
       });
     }
   }

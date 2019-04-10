@@ -78,14 +78,6 @@ export class Object3DIsNotADifference extends Error {
     }
 }
 
-export class SceneGenerationError extends  Error {
-    public static readonly SCENE_GENERATION_ERROR_MESSAGE: string = "An error occured when trying to render the free view games";
-
-    constructor(){
-        super(SceneGenerationError.SCENE_GENERATION_ERROR_MESSAGE);
-    }
-}
-
 export class AbstractServiceError extends Error {
     public static readonly PREFIX: string = "Error in service: ";
 

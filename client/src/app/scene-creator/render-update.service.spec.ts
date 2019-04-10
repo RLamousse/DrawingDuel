@@ -1,7 +1,6 @@
 import { TestBed } from "@angular/core/testing";
-import * as THREE from "three";
+import {BoxGeometry, Camera, Mesh, MeshPhongMaterial, Object3D, Scene, Vector3} from "three";
 import { RenderUpdateService } from "./render-update.service";
-// tslint:disable:max-file-line-count
 // tslint:disable:no-magic-numbers
 describe("RenderUpdateService", () => {
 
@@ -17,7 +16,7 @@ describe("RenderUpdateService", () => {
     const service: RenderUpdateService = TestBed.get(RenderUpdateService);
     service["up"] = true;
     service["down"] = false;
-    const vel: THREE.Vector3 = new THREE.Vector3(0, 0, 0);
+    const vel: Vector3 = new Vector3(0, 0, 0);
     const delta: number = 5;
     service.updateVelocity(vel, delta);
     expect(vel.z).toBeLessThan(0);
@@ -26,7 +25,7 @@ describe("RenderUpdateService", () => {
     const service: RenderUpdateService = TestBed.get(RenderUpdateService);
     service["up"] = false;
     service["down"] = true;
-    const vel: THREE.Vector3 = new THREE.Vector3(0, 0, 0);
+    const vel: Vector3 = new Vector3(0, 0, 0);
     const delta: number = 5;
     service.updateVelocity(vel, delta);
     expect(vel.z).toBeGreaterThan(0);
@@ -35,7 +34,7 @@ describe("RenderUpdateService", () => {
     const service: RenderUpdateService = TestBed.get(RenderUpdateService);
     service["left"] = true;
     service["right"] = false;
-    const vel: THREE.Vector3 = new THREE.Vector3(0, 0, 0);
+    const vel: Vector3 = new Vector3(0, 0, 0);
     const delta: number = 5;
     service.updateVelocity(vel, delta);
     expect(vel.x).toBeLessThan(0);
@@ -44,7 +43,7 @@ describe("RenderUpdateService", () => {
     const service: RenderUpdateService = TestBed.get(RenderUpdateService);
     service["left"] = false;
     service["right"] = true;
-    const vel: THREE.Vector3 = new THREE.Vector3(0, 0, 0);
+    const vel: Vector3 = new Vector3(0, 0, 0);
     const delta: number = 5;
     service.updateVelocity(vel, delta);
     expect(vel.x).toBeGreaterThan(0);
@@ -56,8 +55,8 @@ describe("RenderUpdateService", () => {
     service["right"] = false;
     service.rightClick = true;
     const delta: number = 0.5;
-    const vel: THREE.Vector3 = new THREE.Vector3(10, 10, 100);
-    const camera: THREE.Camera = new THREE.Camera();
+    const vel: Vector3 = new Vector3(10, 10, 100);
+    const camera: Camera = new Camera();
     service.updateCamera(camera, delta, vel);
     expect(camera.position.z).toEqual(vel.z * delta);
     expect(camera.position.x).toEqual(vel.x * delta);
@@ -69,8 +68,8 @@ describe("RenderUpdateService", () => {
     const delta: number = 0;
     service["deltaX"] = 10;
     service["deltaY"] = -8;
-    const vel: THREE.Vector3 = new THREE.Vector3(10, 10, 100);
-    const camera: THREE.Camera = new THREE.Camera();
+    const vel: Vector3 = new Vector3(10, 10, 100);
+    const camera: Camera = new Camera();
     const baseX: number = camera.position.x;
     const baseZ: number = camera.position.z;
     service.updateCamera(camera, delta, vel);
@@ -121,17 +120,15 @@ describe("RenderUpdateService", () => {
   });
 
   // Test RightClickHold
-  it("should setUp oldX, oldY, deltaX and deltaY", () => {
+  it("should setUp oldX, oldY", () => {
     const service: RenderUpdateService = TestBed.get(RenderUpdateService);
     service["right"]  = true;
     service.rightClick = true;
     service.rightClickHold(45, 123);
-    expect(service["deltaX"]).toEqual(0);
-    expect(service["deltaY"]).toEqual(0);
     expect(service["oldX"]).toEqual(45);
     expect(service["oldY"]).toEqual(123);
   });
-  it("should not setUp oldX, oldY, deltaX and deltaY", () => {
+  it("should not setUp oldX, oldY or change the value of deltaX and Y", () => {
     const service: RenderUpdateService = TestBed.get(RenderUpdateService);
     service["right"] = false;
     service["oldX"] = 0;
@@ -151,16 +148,16 @@ describe("RenderUpdateService", () => {
     service["oldX"] = 0;
     service["oldY"] = 0;
     service.rotationCamera(100, -150);
-    expect(service["deltaY"]).toEqual((0 - 100) / 4000);
-    expect(service["deltaX"]).toEqual((0 - (-150)) / 4000);
+    expect(service["deltaY"]).toEqual((0 - 100) * Math.PI / 800);
+    expect(service["deltaX"]).toEqual((0 - (-150)) * Math.PI / 800);
   });
 
   // Test UpdateDifference
   it("should add inside the modifiedScene the deleted element", () => {
     const service: RenderUpdateService = TestBed.get(RenderUpdateService);
-    const scene: THREE.Scene = new THREE.Scene();
-    const modifiedScene: THREE.Scene = new THREE.Scene();
-    const obj: THREE.Object3D = new THREE.Object3D();
+    const scene: Scene = new Scene();
+    const modifiedScene: Scene = new Scene();
+    const obj: Object3D = new Object3D();
     scene.add(obj);
     service.updateDifference(obj, scene, modifiedScene);
     expect(modifiedScene.children.length).toEqual(1);
@@ -168,11 +165,11 @@ describe("RenderUpdateService", () => {
 
   it("should not add obj inside the modifiedScene since not the same obj", () => {
     const service: RenderUpdateService = TestBed.get(RenderUpdateService);
-    const scene: THREE.Scene = new THREE.Scene();
-    const modifiedScene: THREE.Scene = new THREE.Scene();
-    const obj1: THREE.Object3D = new THREE.Object3D();
+    const scene: Scene = new Scene();
+    const modifiedScene: Scene = new Scene();
+    const obj1: Object3D = new Object3D();
     obj1.position.set(50, 50, 50);
-    const obj2: THREE.Object3D = new THREE.Object3D();
+    const obj2: Object3D = new Object3D();
     scene.add(obj1);
     service.updateDifference(obj2, scene, modifiedScene);
     expect(modifiedScene.children.length).toEqual(0);
@@ -180,9 +177,9 @@ describe("RenderUpdateService", () => {
 
   it("should delete the added obj inside modifiedScene", () => {
     const service: RenderUpdateService = TestBed.get(RenderUpdateService);
-    const scene: THREE.Scene = new THREE.Scene();
-    const modifiedScene: THREE.Scene = new THREE.Scene();
-    const obj: THREE.Object3D = new THREE.Object3D();
+    const scene: Scene = new Scene();
+    const modifiedScene: Scene = new Scene();
+    const obj: Object3D = new Object3D();
     modifiedScene.add(obj);
     expect(modifiedScene.children.length).toEqual(1);
     service.updateDifference(obj, scene, modifiedScene);
@@ -191,51 +188,51 @@ describe("RenderUpdateService", () => {
 
   it("should update the color of the modObj, modObj clicked", () => {
     const service: RenderUpdateService = TestBed.get(RenderUpdateService);
-    const scene: THREE.Scene = new THREE.Scene();
-    const modifiedScene: THREE.Scene = new THREE.Scene();
-    const oriGeo: THREE.BoxGeometry = new THREE.BoxGeometry();
-    const oriMaterial: THREE.MeshPhongMaterial = new THREE.MeshPhongMaterial();
+    const scene: Scene = new Scene();
+    const modifiedScene: Scene = new Scene();
+    const oriGeo: BoxGeometry = new BoxGeometry();
+    const oriMaterial: MeshPhongMaterial = new MeshPhongMaterial();
     oriMaterial.color.setHex(0xFFFFFF);
-    const modGeo: THREE.BoxGeometry = new THREE.BoxGeometry();
-    const modMaterial: THREE.MeshPhongMaterial = new THREE.MeshPhongMaterial();
+    const modGeo: BoxGeometry = new BoxGeometry();
+    const modMaterial: MeshPhongMaterial = new MeshPhongMaterial();
     oriMaterial.color.setHex(0x000000);
-    const oriObj: THREE.Mesh = new THREE.Mesh(oriGeo, oriMaterial);
-    const modObj: THREE.Mesh = new THREE.Mesh(modGeo, modMaterial);
+    const oriObj: Mesh = new Mesh(oriGeo, oriMaterial);
+    const modObj: Mesh = new Mesh(modGeo, modMaterial);
     scene.add(oriObj);
     modifiedScene.add(modObj);
     service.updateDifference(modObj, scene, modifiedScene);
-    expect(((modifiedScene.children[0] as THREE.Mesh).material as THREE.MeshPhongMaterial).color.getHex())
+    expect(((modifiedScene.children[0] as Mesh).material as MeshPhongMaterial).color.getHex())
       .toEqual(0x000000);
   });
 
   it("should update the color of the modObj, oriObj clicked", () => {
     const service: RenderUpdateService = TestBed.get(RenderUpdateService);
-    const scene: THREE.Scene = new THREE.Scene();
-    const modifiedScene: THREE.Scene = new THREE.Scene();
-    const oriGeo: THREE.BoxGeometry = new THREE.BoxGeometry();
-    const oriMaterial: THREE.MeshPhongMaterial = new THREE.MeshPhongMaterial();
+    const scene: Scene = new Scene();
+    const modifiedScene: Scene = new Scene();
+    const oriGeo: BoxGeometry = new BoxGeometry();
+    const oriMaterial: MeshPhongMaterial = new MeshPhongMaterial();
     oriMaterial.color.setHex(0xFFFFFF);
-    const modGeo: THREE.BoxGeometry = new THREE.BoxGeometry();
-    const modMaterial: THREE.MeshPhongMaterial = new THREE.MeshPhongMaterial();
+    const modGeo: BoxGeometry = new BoxGeometry();
+    const modMaterial: MeshPhongMaterial = new MeshPhongMaterial();
     oriMaterial.color.setHex(0x000000);
-    const oriObj: THREE.Mesh = new THREE.Mesh(oriGeo, oriMaterial);
-    const modObj: THREE.Mesh = new THREE.Mesh(modGeo, modMaterial);
+    const oriObj: Mesh = new Mesh(oriGeo, oriMaterial);
+    const modObj: Mesh = new Mesh(modGeo, modMaterial);
     scene.add(oriObj);
     modifiedScene.add(modObj);
     service.updateDifference(oriObj, scene, modifiedScene);
-    expect(((modifiedScene.children[0] as THREE.Mesh).material as THREE.MeshPhongMaterial).color.getHex())
+    expect(((modifiedScene.children[0] as Mesh).material as MeshPhongMaterial).color.getHex())
       .toEqual(0x000000);
   });
 
   it("should not update the scenes, obj3 does not exist inside scenes", () => {
     const service: RenderUpdateService = TestBed.get(RenderUpdateService);
-    const scene: THREE.Scene = new THREE.Scene();
-    const modifiedScene: THREE.Scene = new THREE.Scene();
-    const obj1: THREE.Object3D = new THREE.Object3D();
+    const scene: Scene = new Scene();
+    const modifiedScene: Scene = new Scene();
+    const obj1: Object3D = new Object3D();
     obj1.position.set(10, -10, 100);
-    const obj2: THREE.Object3D = new THREE.Object3D();
+    const obj2: Object3D = new Object3D();
     obj2.position.set(0, -10, 200);
-    const obj3: THREE.Object3D = new THREE.Object3D();
+    const obj3: Object3D = new Object3D();
     obj3.position.set(10, 10, 300);
     scene.add(obj1);
     modifiedScene.add(obj2);
@@ -246,11 +243,11 @@ describe("RenderUpdateService", () => {
 
   it("should modified the scenes, the modified scene added should not be visible", () => {
     const service: RenderUpdateService = TestBed.get(RenderUpdateService);
-    const scene: THREE.Scene = new THREE.Scene();
-    const modifiedScene: THREE.Scene = new THREE.Scene();
-    const obj1: THREE.Scene = new THREE.Scene();
+    const scene: Scene = new Scene();
+    const modifiedScene: Scene = new Scene();
+    const obj1: Scene = new Scene();
     obj1.position.set(10, -10, 100);
-    const obj2: THREE.Scene = new THREE.Scene();
+    const obj2: Scene = new Scene();
     obj2.position.set(10, -10, 100);
     scene.add(obj1);
     modifiedScene.add(obj2);
@@ -261,30 +258,15 @@ describe("RenderUpdateService", () => {
 
   it("should modified the scenes, the modifiedScene should have length + 1", () => {
     const service: RenderUpdateService = TestBed.get(RenderUpdateService);
-    const scene: THREE.Scene = new THREE.Scene();
-    const modifiedScene: THREE.Scene = new THREE.Scene();
-    const obj1: THREE.Scene = new THREE.Scene();
+    const scene: Scene = new Scene();
+    const modifiedScene: Scene = new Scene();
+    const obj1: Scene = new Scene();
     obj1.position.set(10, -10, 100);
-    const obj2: THREE.Scene = new THREE.Scene();
+    const obj2: Scene = new Scene();
     obj2.position.set(10, -10, 100);
     scene.add(obj1);
     modifiedScene.add(obj2);
     service.updateDifference(obj1, scene, modifiedScene);
     expect(modifiedScene.children.length).toEqual(2);
-  });
-
-  // Test isSameObject
-  it("should return true if the 2 object have the same center", () => {
-    const service: RenderUpdateService = TestBed.get(RenderUpdateService);
-    const pos1: number[] = [10, 69, 700];
-    const pos2: number[] = [10, 69, 700];
-    expect(service.isSameObject(pos1, pos2)).toBeTruthy();
-  });
-
-  it("should return false if the 2 object have a different center", () => {
-    const service: RenderUpdateService = TestBed.get(RenderUpdateService);
-    const pos1: number[] = [10, 69, 700];
-    const pos2: number[] = [0, 1, -850];
-    expect(service.isSameObject(pos1, pos2)).toBeFalsy();
   });
 });
