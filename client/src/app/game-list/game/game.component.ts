@@ -1,6 +1,7 @@
 import {Component, Input, OnInit} from "@angular/core";
 import {MatDialog, MatDialogConfig} from "@angular/material";
 import {Router} from "@angular/router";
+import {LOADING_GIF} from "../../../../../common/communication/routes";
 import {ComponentNavigationError} from "../../../../../common/errors/component.errors";
 import {GameType} from "../../../../../common/model/game/game";
 import {IRecordTime} from "../../../../../common/model/game/record-time";
@@ -29,7 +30,7 @@ export class GameComponent implements OnInit {
   @Input() public simpleGameTag: GameType = GameType.SIMPLE;
 
   public ngOnInit(): void {
-    this.thumbnail = "assets/images/loadingScreen.gif";
+    this.thumbnail = LOADING_GIF;
   }
 
   protected leftButtonClick(): void {
