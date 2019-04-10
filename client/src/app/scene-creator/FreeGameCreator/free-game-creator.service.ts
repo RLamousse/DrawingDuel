@@ -94,7 +94,7 @@ export class FreeGameCreatorService {
   private generateThematicObject(object: IJson3DObject, isOriginalObject: boolean): void {
     const loader: GLTFLoader = new GLTFLoader();
     loader.load(this.buildObjectPath(ObjectGeometry[object.type]), (gltf: GLTF) => {
-      if (object.texture) {
+      if (object.texture !== undefined) {
         this.traverseChildren(gltf.scene.children[0], object.texture);
       }
       this.formService.setUpThematicParameters(object, gltf);
