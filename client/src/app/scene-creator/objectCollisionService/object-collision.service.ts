@@ -1,40 +1,40 @@
 import {Injectable} from "@angular/core";
-import * as THREE from "three";
+import {Camera, Intersection, Object3D, Raycaster, Vector3} from "three";
 
 @Injectable({
   providedIn: "root",
 })
 export class ObjectCollisionService {
-  private readonly directionVecs: THREE.Vector3[] = [
-    new THREE.Vector3(0, 0, 1),
-    new THREE.Vector3(0, 0, -1),
-    new THREE.Vector3(1, 0, 0),
-    new THREE.Vector3(-1, 0, 0),
-    new THREE.Vector3(1, 0, 1),
-    new THREE.Vector3(-1, 0, -1),
-    new THREE.Vector3(1, 0, -1),
-    new THREE.Vector3(-1, 0, 1),
-    new THREE.Vector3(0, 1, -1),
-    new THREE.Vector3(0, -1, -1),
+  private readonly directionVecs: Vector3[] = [
+    new Vector3(0, 0, 1),
+    new Vector3(0, 0, -1),
+    new Vector3(1, 0, 0),
+    new Vector3(-1, 0, 0),
+    new Vector3(1, 0, 1),
+    new Vector3(-1, 0, -1),
+    new Vector3(1, 0, -1),
+    new Vector3(-1, 0, 1),
+    new Vector3(0, 1, -1),
+    new Vector3(0, -1, -1),
     ];
   private readonly collisionDist: number = 25;
 
-  private comparisonVec: THREE.Vector3;
+  private comparisonVec: Vector3;
 
   public constructor() {
-    this.comparisonVec = new THREE.Vector3();
+    this.comparisonVec = new Vector3();
   }
 
-  public raycastCollision(camera: THREE.Camera, oriObjs: THREE.Object3D[], modObjs: THREE.Object3D[], vel: THREE.Vector3): THREE.Vector3 {
-    const velocity: THREE.Vector3 = vel.clone();
+  public raycastCollision(camera: Camera, oriObjs: Object3D[], modObjs: Object3D[], vel: Vector3): Vector3 {
+    const velocity: Vector3 = vel.clone();
     for (const vec of this.directionVecs) {
-      const vecClone: THREE.Vector3 = vec.clone().applyQuaternion(camera.quaternion);
-      const ray: THREE.Raycaster = new THREE.Raycaster(camera.position.clone(), vecClone.normalize());
-      const interOri: THREE.Intersection[] = ray.intersectObjects(oriObjs, true);
+      const vecClone: Vector3 = vec.clone().applyQuaternion(camera.quaternion);
+      const ray: Raycaster = new Raycaster(camera.position.clone(), vecClone.normalize());
+      const interOri: Intersection[] = ray.intersectObjects(oriObjs, true);
       if (this.isCollision(interOri)) {
         this.cancelVelocity(velocity, vecClone, vec);
       } else {
-        const interMod: THREE.Intersection[] = ray.intersectObjects(modObjs, true);
+        const interMod: Intersection[] = ray.intersectObjects(modObjs, true);
         if (this.isCollision(interMod)) {
           this.cancelVelocity(velocity, vecClone, vec);
         }
@@ -44,11 +44,11 @@ export class ObjectCollisionService {
     return velocity;
   }
 
-  private isCollision(inter: THREE.Intersection[]): boolean {
+  private isCollision(inter: Intersection[]): boolean {
     return (inter.length > 0 && inter[0].distance < this.collisionDist);
   }
 
-  private cancelVelocity(vel: THREE.Vector3, dirColl: THREE.Vector3, oriDir: THREE.Vector3): void {
+  private cancelVelocity(vel: Vector3, dirColl: Vector3, oriDir: Vector3): void {
     this.comparisonVec = dirColl.clone();
     if (this.isReverseOrientation(oriDir.x, dirColl.x)) {
       this.comparisonVec.x = -this.comparisonVec.x;

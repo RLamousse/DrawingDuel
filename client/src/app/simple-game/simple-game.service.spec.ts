@@ -11,7 +11,7 @@ import {
 } from "../../../../common/communication/routes";
 import {AlreadyFoundDifferenceError, NoDifferenceAtPointError} from "../../../../common/errors/services.errors";
 import {DifferenceCluster, DIFFERENCE_CLUSTER_POINTS_INDEX} from "../../../../common/model/game/simple-game";
-import {ORIGIN} from "../../../../common/model/point";
+import {getOrigin} from "../../../../common/model/point";
 import {SimpleGameService} from "./simple-game.service";
 
 describe("SimpleGameService", () => {
@@ -27,7 +27,7 @@ describe("SimpleGameService", () => {
     axiosMock = new AxiosAdapter(Axios);
 
     axiosMock.onGet(DB_GET_CALLS_REGEX)
-      .reply(HttpStatus.OK, {diffData: [0, [ORIGIN]]});
+      .reply(HttpStatus.OK, {diffData: [0, [getOrigin()]]});
 
     return TestBed.configureTestingModule({});
   });
@@ -37,7 +37,7 @@ describe("SimpleGameService", () => {
     service.gameName = "SimpleGameService-Test";
     // @ts-ignore Mock certain properties of object
     service["_game"] = {
-      diffData: [[0, [ORIGIN]]],
+      diffData: [[0, [getOrigin()]]],
     };
   });
 
@@ -49,7 +49,7 @@ describe("SimpleGameService", () => {
     axiosMock.onGet(DIFF_VALIDATOR_GET_CALLS_REGEX)
       .reply(HttpStatus.NOT_FOUND);
 
-    return service.validateDifferenceAtPoint(ORIGIN)
+    return service.validateDifferenceAtPoint(getOrigin())
       .catch((reason: Error) => {
         expect(reason.message).toEqual(NoDifferenceAtPointError.NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE);
       });
@@ -59,7 +59,7 @@ describe("SimpleGameService", () => {
     axiosMock.onGet(DIFF_VALIDATOR_GET_CALLS_REGEX)
       .reply(HttpStatus.INTERNAL_SERVER_ERROR);
 
-    return service.validateDifferenceAtPoint(ORIGIN)
+    return service.validateDifferenceAtPoint(getOrigin())
       .catch((reason: Error) => {
         expect(reason.message).not.toEqual(NoDifferenceAtPointError.NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE);
       });
@@ -69,9 +69,9 @@ describe("SimpleGameService", () => {
     axiosMock.onGet(DIFF_VALIDATOR_GET_CALLS_REGEX)
       .reply(HttpStatus.OK);
 
-    return service.validateDifferenceAtPoint(ORIGIN)
+    return service.validateDifferenceAtPoint(getOrigin())
       .then((differenceCluster: DifferenceCluster) => {
-        expect(differenceCluster[DIFFERENCE_CLUSTER_POINTS_INDEX]).toContain(ORIGIN);
+        expect(differenceCluster[DIFFERENCE_CLUSTER_POINTS_INDEX]).toContain(getOrigin());
       });
   });
 
@@ -79,9 +79,9 @@ describe("SimpleGameService", () => {
     axiosMock.onGet(DIFF_VALIDATOR_GET_CALLS_REGEX)
       .reply(HttpStatus.OK);
 
-    await service.validateDifferenceAtPoint(ORIGIN);
+    await service.validateDifferenceAtPoint(getOrigin());
 
-    return service.validateDifferenceAtPoint(ORIGIN)
+    return service.validateDifferenceAtPoint(getOrigin())
       .catch((reason: Error) => {
         expect(reason.message).toEqual(AlreadyFoundDifferenceError.ALREADY_FOUND_DIFFERENCE_ERROR_MESSAGE);
       });
@@ -96,6 +96,6 @@ describe("SimpleGameService", () => {
       done();
     });
 
-    await service.validateDifferenceAtPoint(ORIGIN);
+    await service.validateDifferenceAtPoint(getOrigin());
   });
 });

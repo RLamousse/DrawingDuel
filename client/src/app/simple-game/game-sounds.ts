@@ -1,4 +1,5 @@
 import {Howl} from "howler";
+import {getRandomValue} from "../../../../common/util/util";
 
 export const AIRHORN_SOUND: Howl = new Howl(
   {
@@ -136,5 +137,5 @@ export const stopSounds: () => void = (): void => {
 
 export const playRandomSound: (sounds: Howl[]) => void = (sounds: Howl[]): void => {
   stopSounds();
-  sounds[Math.floor(Math.random() * sounds.length)].play();
+  sounds[getRandomValue(0, sounds.length - 1)].play();
 };
