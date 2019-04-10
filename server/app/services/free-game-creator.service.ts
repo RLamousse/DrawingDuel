@@ -19,9 +19,9 @@ export class FreeGameCreatorService {
 
     private readonly MAX_TYPE_OBJECTS: number = 4;
     private readonly MIN_DIST: number = 130;
-    private readonly MAX_GAME_X: number = 300;
-    private readonly MAX_GAME_Y: number = 300;
-    private readonly MAX_GAME_Z: number = 300;
+    private readonly MAX_GAME_X: number = 450;
+    private readonly MAX_GAME_Y: number = 450;
+    private readonly MAX_GAME_Z: number = 450;
 
     private handleCollision(object: IJson3DObject,
                             list: IJson3DObject[]): IJson3DObject {

@@ -23,6 +23,7 @@ import {deepCompare, sleep, X_FACTOR} from "../../../../common/util/util";
 import {playRandomSound, FOUND_DIFFERENCE_SOUNDS, NO_DIFFERENCE_SOUNDS, STAR_THEME_SOUND} from "../simple-game/game-sounds";
 import {SocketService} from "../socket.service";
 import {UNListService} from "../username.service";
+import {SKY_BOX_NAME} from "./FreeGameCreator/free-game-creator.service";
 import {ObjectCollisionService} from "./objectCollisionService/object-collision.service";
 import {RenderUpdateService} from "./render-update.service";
 
@@ -33,11 +34,9 @@ interface IFreeGameRendererState extends IFreeGameState {
   blinkThread?: NodeJS.Timeout;
 }
 export const SCENE_TYPE: string = "Scene";
-@Injectable({
-    providedIn: "root",
-  })
-export class SceneRendererService {
 
+@Injectable({providedIn: "root"})
+export class SceneRendererService {
   public constructor(private renderUpdateService: RenderUpdateService,
                      private socket: SocketService,
                      private objectCollisionService: ObjectCollisionService,
@@ -93,8 +92,9 @@ export class SceneRendererService {
     this.time = performance.now();
     const delta: number = (this.time - this.prevTime) / this.timeFactor;
     this.renderUpdateService.updateVelocity(this.velocity, delta);
-    this.velocity = this.objectCollisionService.raycastCollision
-      (this.camera, this.scene.children, this.modifiedScene.children, this.velocity);
+    this.velocity = this.objectCollisionService.raycastCollision(
+      this.camera, this.scene.children, this.modifiedScene.children, this.velocity,
+    );
     this.renderUpdateService.updateCamera(this.camera, delta, this.velocity);
     this.prevTime = this.time;
     requestAnimationFrame(() => this.renderLoop());
@@ -191,29 +191,31 @@ export class SceneRendererService {
     }
   }
   public async objDiffValidation(xPos: number, yPos: number): Promise<IJson3DObject> {
-      let x: number = 0;
-      let y: number = 0;
-      const POS_FACT: number = 2;
-      if ( xPos < this.rendererMod.domElement.offsetLeft) {
-        x = ((xPos - this.rendererOri.domElement.offsetLeft) / this.rendererOri.domElement.offsetWidth) * POS_FACT - 1;
-        y = -((yPos - this.rendererOri.domElement.offsetTop) / this.rendererOri.domElement.offsetHeight) * POS_FACT + 1;
-      } else {
-        x = ((xPos - this.rendererMod.domElement.offsetLeft) / this.rendererMod.domElement.offsetWidth) * POS_FACT - 1;
-        y = -((yPos - this.rendererMod.domElement.offsetTop) / this.rendererMod.domElement.offsetHeight) * POS_FACT + 1;
-      }
-      const direction: Vector2 = new Vector2(x, y);
-      const rayCast: Raycaster = new Raycaster();
-      rayCast.setFromCamera(direction, this.camera);
-      const intersectOri: Intersection[] = rayCast.intersectObjects(this.scene.children, true);
-      const intersectMod: Intersection[] = rayCast.intersectObjects(this.modifiedScene.children, true);
-      if (intersectOri.length === 0 && intersectMod.length === 0) {
-        playRandomSound(NO_DIFFERENCE_SOUNDS);
+    let x: number = 0;
+    let y: number = 0;
+    const POS_FACT: number = 2;
+    if (xPos < this.rendererMod.domElement.offsetLeft) {
+      x = ((xPos - this.rendererOri.domElement.offsetLeft) / this.rendererOri.domElement.offsetWidth) * POS_FACT - 1;
+      y = -((yPos - this.rendererOri.domElement.offsetTop) / this.rendererOri.domElement.offsetHeight) * POS_FACT + 1;
+    } else {
+      x = ((xPos - this.rendererMod.domElement.offsetLeft) / this.rendererMod.domElement.offsetWidth) * POS_FACT - 1;
+      y = -((yPos - this.rendererMod.domElement.offsetTop) / this.rendererMod.domElement.offsetHeight) * POS_FACT + 1;
+    }
+    const direction: Vector2 = new Vector2(x, y);
+    const rayCast: Raycaster = new Raycaster();
+    rayCast.setFromCamera(direction, this.camera);
+    const intersectOri: Intersection[] = rayCast.intersectObjects(this.scene.children, true)
+      .filter((intersection: Intersection) => intersection.object.name !== SKY_BOX_NAME);
+    const intersectMod: Intersection[] = rayCast.intersectObjects(this.modifiedScene.children, true)
+      .filter((intersection: Intersection) => intersection.object.name !== SKY_BOX_NAME);
+    if (intersectOri.length === 0 && intersectMod.length === 0) {
+      playRandomSound(NO_DIFFERENCE_SOUNDS);
+      this.notifyClickToWebsocket(false);
+      throw new NoDifferenceAtPointError();
+    }
+    const object: Intersection = intersectOri.length === 0 && intersectMod.length !== 0 ? intersectMod[0] : intersectOri[0];
 
-        return this.differenceValidationAtPoint(undefined);
-      }
-      const object: Intersection = intersectOri.length === 0 && intersectMod.length !== 0 ? intersectMod[0] : intersectOri[0];
-
-      return this.differenceValidationAtPoint(this.get3DObject(object));
+    return this.differenceValidationAtPoint(this.get3DObject(object));
   }
   private get3DObject(obj: Intersection): Object3D {
     if ((obj.object.parent as Object3D).type === SCENE_TYPE) {
@@ -229,8 +231,9 @@ export class SceneRendererService {
 
     return (obj.parent as Object3D);
   }
-  private async differenceValidationAtPoint(object: Object3D | undefined): Promise<IJson3DObject> {
-    const {x, y, z} = object !== undefined ? object.position : getOrigin3D();
+
+  private async differenceValidationAtPoint(object: Object3D): Promise<IJson3DObject> {
+    const {x, y, z} = object.position;
     const queryParams: I3DDiffValidatorControllerRequest = {
       gameName: this.gameName, centerX: x, centerY: y, centerZ: z,
     };
@@ -280,7 +283,9 @@ export class SceneRendererService {
   }
   private changeVisibility(value: Mesh | Scene): void {
     if (value instanceof Mesh) {
-      Array.isArray(value.material) ? value.material.forEach((material) => {material.visible = !material.visible; } ) :
+      Array.isArray(value.material) ? value.material.forEach((material) => {
+          material.visible = !material.visible;
+        }) :
         value.material.visible = !value.material.visible;
     } else {
       value.children.forEach((valueChild: Object3D) => {

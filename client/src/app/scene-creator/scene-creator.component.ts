@@ -93,19 +93,16 @@ export class SceneCreatorComponent implements OnInit, OnDestroy {
   }
 
   public onDivContClick($event: MouseEvent): void {
-    if (
-      this.clickEnabled
-    ) {
+    if (this.clickEnabled) {
       this.clickEnabled = false;
-      this.renderService.objDiffValidation($event.clientX, $event.clientY).then(() => {
-        const VICTORY_COUNT: number = 7;
-        this.clickEnabled = true;
-        if (this.renderService.gameState.foundDifference.length === VICTORY_COUNT) {
-          this.canvasVictoryDraw();
-          this.clickEnabled = false;
-        }
-
-        return;
+      this.renderService.objDiffValidation($event.clientX, $event.clientY)
+        .then(() => {
+          const VICTORY_COUNT: number = 7;
+          this.clickEnabled = true;
+          if (this.renderService.gameState.foundDifference.length === VICTORY_COUNT) {
+            this.canvasVictoryDraw();
+            this.clickEnabled = false;
+          }
         })
         .catch(() => {
           this.cursorEnabled = false;
@@ -113,8 +110,6 @@ export class SceneCreatorComponent implements OnInit, OnDestroy {
           if (canvasContext !== null) {
             this.resetRoutine(canvasContext);
           }
-
-          return;
         });
     }
   }
