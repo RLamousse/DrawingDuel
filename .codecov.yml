@@ -11,11 +11,11 @@ coverage:
     project:
       client:
         paths:
-          - client/src/*
+          - client/src/**/*
         threshold: null
       server:
         paths:
-          - server/app/*
+          - server/app/**/*
         threshold: null
   range: 70..100
   round: down
