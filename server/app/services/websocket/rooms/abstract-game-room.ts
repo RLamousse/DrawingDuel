@@ -8,17 +8,17 @@ export abstract class AbstractGameRoom<T extends IGame, U extends IGameState> im
 
     private readonly _id: string;
     protected readonly _game: T;
-    protected readonly _playerCount: number;
+    protected readonly _playerCapacity: number;
     protected readonly _gameStates: Map<string, U>;
 
     private _onReady: () => void;
     protected _connectedPlayers: Map<string, boolean>;
     protected _ongoing: boolean;
 
-    protected constructor(id: string, game: T, playerCount: number = 1) {
+    protected constructor(id: string, game: T, playerCapacity: number = 1) {
         this._id = id;
         this._game = game;
-        this._playerCount = playerCount;
+        this._playerCapacity = playerCapacity;
         this._gameStates = new Map();
         this._connectedPlayers = new Map();
         this._ongoing = false;
@@ -44,7 +44,7 @@ export abstract class AbstractGameRoom<T extends IGame, U extends IGameState> im
             this._connectedPlayers.set(clientId, true);
         }
 
-        if (this._connectedPlayers.size === this._playerCount && this.isEveryClientReady()) {
+        if (this._connectedPlayers.size === this._playerCapacity && this.isEveryClientReady()) {
             this._ongoing = true;
             this._onReady();
         }
@@ -55,7 +55,7 @@ export abstract class AbstractGameRoom<T extends IGame, U extends IGameState> im
     }
 
     public get vacant(): boolean {
-        return this._connectedPlayers.size < this._playerCount;
+        return this._connectedPlayers.size < this._playerCapacity;
     }
 
     public get empty(): boolean {
@@ -72,6 +72,10 @@ export abstract class AbstractGameRoom<T extends IGame, U extends IGameState> im
 
     public setOnReadyCallBack(callback: () => void): void {
         this._onReady = callback;
+    }
+
+    public get playerCapacity(): number {
+        return this._playerCapacity;
     }
 
     protected getGameStateForClient(clientId: string): U {
