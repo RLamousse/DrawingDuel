@@ -6,6 +6,8 @@ import {
     Themes
 } from "../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
 import * as JsonScene from "../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
+import {getOrigin3D, IVector3} from "../../../common/model/point";
+import {getRandomValue} from "../../../common/util/util";
 
 @injectable()
 export class Object3DCreatorService {
@@ -20,21 +22,17 @@ export class Object3DCreatorService {
     private readonly FULL_ROTATION: number = this.FACTOR2 * Math.PI;
 
     private sizeGenerator(baseSize: number): number {
-
-        return (
-            Math.floor(Math.random() * (this.MAX_SIZE_FACTOR - this.MIN_SIZE_FACTOR + 1) + this.MIN_SIZE_FACTOR) /
-            this.PERCENT_FACTOR * baseSize
-        );
+        return getRandomValue(this.MIN_SIZE_FACTOR, this.MAX_SIZE_FACTOR) / this.PERCENT_FACTOR * baseSize;
     }
 
     public createCube(): JsonScene.ICube {
 
         return {
             type: ObjectGeometry.cube,
-            position: [0, 0, 0],
+            position: getOrigin3D(),
             rotation: this.logicRandomRotation(this.FULL_ROTATION),
             color: Math.random() * this.COLOR_MASK,
-            sideLenght: this.sizeGenerator(this.BASE_SIZE),
+            sideLength: this.sizeGenerator(this.BASE_SIZE),
             scale: 1,
             gameType: Themes.Geometry,
         };
@@ -45,7 +43,7 @@ export class Object3DCreatorService {
 
         return {
             type: ObjectGeometry.sphere,
-            position: [0, 0, 0],
+            position: getOrigin3D(),
             rotation: this.logicRandomRotation(this.FULL_ROTATION),
             color: Math.random() * this.COLOR_MASK,
             radius: sphereSize,
@@ -61,7 +59,7 @@ export class Object3DCreatorService {
 
         return {
             type: ObjectGeometry.cone,
-            position: [0, 0, 0],
+            position: getOrigin3D(),
             rotation: this.logicRandomRotation(this.FULL_ROTATION),
             color: Math.random() * this.COLOR_MASK,
             radius: coneSize / this.RADIUS_FACTOR,
@@ -77,7 +75,7 @@ export class Object3DCreatorService {
 
         return {
             type: ObjectGeometry.cylinder,
-            position: [0, 0, 0],
+            position: getOrigin3D(),
             rotation: this.logicRandomRotation(this.FULL_ROTATION),
             color: Math.random() * this.COLOR_MASK,
             topRadius: cylinderSize / this.RADIUS_FACTOR,
@@ -97,7 +95,7 @@ export class Object3DCreatorService {
 
         return {
             type: ObjectGeometry.pyramid,
-            position: [0, 0, 0],
+            position: getOrigin3D(),
             rotation: this.logicRandomRotation(this.FULL_ROTATION),
             color: Math.random() * this.COLOR_MASK,
             topRadius: PYRAMID_TOP_RAD,
@@ -120,7 +118,7 @@ export class Object3DCreatorService {
         return {
             type: randomObj.type,
             scale: this.sizeGenerator(spaceObjects[randomObj.index].scale),
-            position: [0, 0, 0],
+            position: getOrigin3D(),
             rotation: this.logicRandomRotation(spaceObjects[randomObj.index].maxRotation),
             gameType: Themes.Space,
             color: this.COLOR_MASK,
@@ -131,13 +129,12 @@ export class Object3DCreatorService {
         return (Math.random() * (max - min) + min);
     }
 
-    private logicRandomRotation(maxRotation: number): number[] {
-
-        return [
-            this.getRandomValue(- maxRotation, maxRotation),
-            this.getRandomValue(0, this.FULL_ROTATION),
-            this.getRandomValue( - maxRotation, maxRotation),
-        ];
+    private logicRandomRotation(maxRotation: number): IVector3 {
+        return {
+            x: this.getRandomValue(-maxRotation, maxRotation),
+            y: this.getRandomValue(0, this.FULL_ROTATION),
+            z: this.getRandomValue(-maxRotation, maxRotation),
+        };
     }
 
     private randomTypeByProba(): IIndexObj {

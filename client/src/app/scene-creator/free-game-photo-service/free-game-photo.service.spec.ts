@@ -1,5 +1,5 @@
 import { TestBed } from "@angular/core/testing";
-import * as THREE from "three";
+import {BoxGeometry, Mesh, MeshPhongMaterial, Scene} from "three";
 import { FreeGamePhotoService } from "./free-game-photo.service";
 
 describe("FreeGamePhotoService", () => {
@@ -15,9 +15,9 @@ describe("FreeGamePhotoService", () => {
   // Test takePhoto
   it("should takePhoto to return the data string", async(done) => {
     const service: FreeGamePhotoService = TestBed.get(FreeGamePhotoService);
-    const scene: THREE.Scene = new THREE.Scene();
+    const scene: Scene = new Scene();
     const size: number = 36;
-    const cube: THREE.Mesh = new THREE.Mesh(new THREE.BoxGeometry(size, size, size), new THREE.MeshPhongMaterial());
+    const cube: Mesh = new Mesh(new BoxGeometry(size, size, size), new MeshPhongMaterial());
     scene.add(cube);
     const photoData: string = await service.takePhoto(scene);
     const dataHeader: string = "data:";

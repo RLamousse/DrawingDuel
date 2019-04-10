@@ -2,7 +2,7 @@ import {Component, NO_ERRORS_SCHEMA} from "@angular/core";
 import {async, ComponentFixture, TestBed} from "@angular/core/testing";
 import {AlreadyFoundDifferenceError, NoDifferenceAtPointError} from "../../../../../common/errors/services.errors";
 import {DifferenceCluster} from "../../../../../common/model/game/simple-game";
-import {IPoint, ORIGIN} from "../../../../../common/model/point";
+import {getOrigin, IPoint} from "../../../../../common/model/point";
 import {SocketService} from "../../socket.service";
 import {PixelData, TextType} from "../simple-game-canvas/simple-game-canvas.component";
 import {SimpleGameService} from "../simple-game.service";
@@ -15,7 +15,7 @@ describe("SimpleGameContainerComponent", () => {
   let mockedSimpleGameService: jasmine.SpyObj<SimpleGameService>;
 
   const pixelOfCanvas: PixelData = {
-    coords: ORIGIN,
+    coords: getOrigin(),
     data: new Uint8ClampedArray(Array.of(0, 0, 0, 0)),
   };
 
@@ -86,13 +86,13 @@ describe("SimpleGameContainerComponent", () => {
       spyOn(component["originalImageComponent"], "setRawPixelData");
       spyOn(component["originalImageComponent"], "drawText");
 
-      return component["onOriginalCanvasClick"](ORIGIN)
+      return component["onOriginalCanvasClick"](getOrigin())
         .then(() => {
           expect(component["originalImageComponent"].getRawPixelData)
             .toHaveBeenCalled();
 
           expect(component["originalImageComponent"].drawText)
-            .toHaveBeenCalledWith(IDENTIFICATION_ERROR_TEXT, ORIGIN, TextType.ERROR);
+            .toHaveBeenCalledWith(IDENTIFICATION_ERROR_TEXT, getOrigin(), TextType.ERROR);
 
           expect(component["clickEnabled"]).toBeFalsy();
 
@@ -115,13 +115,13 @@ describe("SimpleGameContainerComponent", () => {
       spyOn(component["modifiedImageComponent"], "setRawPixelData");
       spyOn(component["modifiedImageComponent"], "drawText");
 
-      return component["onModifiedCanvasClick"](ORIGIN)
+      return component["onModifiedCanvasClick"](getOrigin())
         .then(() => {
           expect(component["modifiedImageComponent"].getRawPixelData)
             .toHaveBeenCalled();
 
           expect(component["modifiedImageComponent"].drawText)
-            .toHaveBeenCalledWith(IDENTIFICATION_ERROR_TEXT, ORIGIN, TextType.ERROR);
+            .toHaveBeenCalledWith(IDENTIFICATION_ERROR_TEXT, getOrigin(), TextType.ERROR);
 
           expect(component["clickEnabled"]).toBeFalsy();
 
@@ -147,13 +147,13 @@ describe("SimpleGameContainerComponent", () => {
       spyOn(component["originalImageComponent"], "setRawPixelData");
       spyOn(component["originalImageComponent"], "drawText");
 
-      return component["onOriginalCanvasClick"](ORIGIN)
+      return component["onOriginalCanvasClick"](getOrigin())
         .then(() => {
           expect(component["originalImageComponent"].getRawPixelData)
             .toHaveBeenCalled();
 
           expect(component["originalImageComponent"].drawText)
-            .toHaveBeenCalledWith(IDENTIFICATION_ERROR_TEXT, ORIGIN, TextType.ERROR);
+            .toHaveBeenCalledWith(IDENTIFICATION_ERROR_TEXT, getOrigin(), TextType.ERROR);
 
           expect(component["clickEnabled"]).toBeFalsy();
 
@@ -176,13 +176,13 @@ describe("SimpleGameContainerComponent", () => {
       spyOn(component["modifiedImageComponent"], "setRawPixelData");
       spyOn(component["modifiedImageComponent"], "drawText");
 
-      return component["onModifiedCanvasClick"](ORIGIN)
+      return component["onModifiedCanvasClick"](getOrigin())
         .then(() => {
           expect(component["modifiedImageComponent"].getRawPixelData)
             .toHaveBeenCalled();
 
           expect(component["modifiedImageComponent"].drawText)
-            .toHaveBeenCalledWith(IDENTIFICATION_ERROR_TEXT, ORIGIN, TextType.ERROR);
+            .toHaveBeenCalledWith(IDENTIFICATION_ERROR_TEXT, getOrigin(), TextType.ERROR);
 
           expect(component["clickEnabled"]).toBeFalsy();
 
@@ -202,18 +202,18 @@ describe("SimpleGameContainerComponent", () => {
   describe("Click on valid difference", () => {
 
     it("should copy pixel from the original canvas to the modified on original canvas click", async () => {
-      const expectedValue: PixelData[] = [{coords: ORIGIN, data: new Uint8ClampedArray(0)}];
+      const expectedValue: PixelData[] = [{coords: getOrigin(), data: new Uint8ClampedArray(0)}];
 
       mockedSimpleGameService.validateDifferenceAtPoint
-        .and.callFake(async () => Promise.resolve([0, [ORIGIN]] as DifferenceCluster));
+        .and.callFake(async () => Promise.resolve([0, [getOrigin()]] as DifferenceCluster));
       spyOn(component["originalImageComponent"], "getPixels")
         .and.returnValue(expectedValue);
       spyOn(component["modifiedImageComponent"], "drawPixels");
 
-      return component["onOriginalCanvasClick"](ORIGIN)
+      return component["onOriginalCanvasClick"](getOrigin())
         .then(() => {
           expect(component["originalImageComponent"].getPixels)
-            .toHaveBeenCalledWith([ORIGIN]);
+            .toHaveBeenCalledWith([getOrigin()]);
           expect(component["modifiedImageComponent"].drawPixels)
             .toHaveBeenCalledWith(expectedValue);
         })
@@ -221,18 +221,18 @@ describe("SimpleGameContainerComponent", () => {
     });
 
     it("should copy pixel from the original canvas to the modified on modified canvas click", async () => {
-      const expectedValue: PixelData[] = [{coords: ORIGIN, data: new Uint8ClampedArray(0)}];
+      const expectedValue: PixelData[] = [{coords: getOrigin(), data: new Uint8ClampedArray(0)}];
 
       mockedSimpleGameService.validateDifferenceAtPoint
-        .and.callFake(async () => Promise.resolve([0, [ORIGIN]] as DifferenceCluster));
+        .and.callFake(async () => Promise.resolve([0, [getOrigin()]] as DifferenceCluster));
       spyOn(component["originalImageComponent"], "getPixels")
         .and.returnValue(expectedValue);
       spyOn(component["modifiedImageComponent"], "drawPixels");
 
-      return component["onModifiedCanvasClick"](ORIGIN)
+      return component["onModifiedCanvasClick"](getOrigin())
         .then(() => {
           expect(component["originalImageComponent"].getPixels)
-            .toHaveBeenCalledWith([ORIGIN]);
+            .toHaveBeenCalledWith([getOrigin()]);
           expect(component["modifiedImageComponent"].drawPixels)
             .toHaveBeenCalledWith(expectedValue);
         })
@@ -245,7 +245,7 @@ describe("SimpleGameContainerComponent", () => {
     mockedSimpleGameService.validateDifferenceAtPoint
       .and.callFake(async () => Promise.reject(new NoDifferenceAtPointError()));
 
-    component["onModifiedCanvasClick"](ORIGIN)
+    component["onModifiedCanvasClick"](getOrigin())
       .then(() => {
         const secondClickPoint: IPoint = {x: 1, y: 1};
         component["onModifiedCanvasClick"](secondClickPoint)

@@ -1,6 +1,6 @@
 import {ComponentFixture, TestBed} from "@angular/core/testing";
 import {MatDialogModule} from "@angular/material";
-import * as THREE from "three";
+import {Scene} from "three";
 import {GameListComponent} from "../game-list/game-list.component";
 import {GameComponent} from "../game-list/game/game.component";
 import {FreeGameCreatorService} from "../scene-creator/FreeGameCreator/free-game-creator.service";
@@ -19,7 +19,7 @@ describe("VueAdminComponent", () => {
     public createScenes(): IScene {
       this.isCalled = true;
 
-      return {scene: new THREE.Scene(), modifiedScene: new THREE.Scene()};
+      return {scene: new Scene(), modifiedScene: new Scene()};
     }
   }
 

@@ -1,5 +1,5 @@
 import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from "@angular/core";
-import {tansformOrigin, IPoint} from "../../../../../common/model/point";
+import {inverseY, IPoint} from "../../../../../common/model/point";
 
 export interface PixelData {
   coords: IPoint;
@@ -115,7 +115,7 @@ export class SimpleGameCanvasComponent implements OnInit {
 
   protected clickHandler(event: MouseEvent): void {
     const {offsetX, offsetY} = event;
-    this.pointClick.emit(tansformOrigin({x: offsetX, y: offsetY}, this._height));
+    this.pointClick.emit(inverseY({x: offsetX, y: offsetY}, this._height));
   }
 
   private getPixelStartIndex(point: IPoint): number {
