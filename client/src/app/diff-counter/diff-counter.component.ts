@@ -1,6 +1,7 @@
-import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from "@angular/core";
 import {MatDialog, MatDialogConfig} from "@angular/material";
 import {Router} from "@angular/router";
+import {Subscription} from "rxjs";
 import {createWebsocketMessage, UpdateScoreMessage, WebsocketMessage} from "../../../../common/communication/messages/message";
 import {SocketEvent} from "../../../../common/communication/socket-events";
 import {ComponentNavigationError} from "../../../../common/errors/component.errors";
@@ -16,7 +17,7 @@ import {EndGameNotifComponent} from "./end-game-notif/end-game-notif.component";
              templateUrl: "./diff-counter.component.html",
              styleUrls: ["./diff-counter.component.css"],
            })
-export class DiffCounterComponent implements OnInit {
+export class DiffCounterComponent implements OnInit, OnDestroy {
 
   @Output() private stopTime: EventEmitter<undefined> = new EventEmitter();
 
@@ -27,10 +28,12 @@ export class DiffCounterComponent implements OnInit {
   @Input() private gameType: GameType;
   private readonly MAX_DIFF_NUM: number = 7;
   private readonly MINUTES_FACTOR: number = 60;
+  private subscriptions: Subscription[];
 
   public constructor(private simpleGameService: SimpleGameService, private dialog: MatDialog,
                      protected socket: SocketService, private router: Router, private sceneRendererService: SceneRendererService) {
     this.diffNumber = 0;
+    this.subscriptions = [];
   }
 
   public ngOnInit(): void {
@@ -84,6 +87,10 @@ export class DiffCounterComponent implements OnInit {
       },
     });
     this.socket.send(SocketEvent.UPDATE_SCORE, socketMessage);
+  }
+
+  public ngOnDestroy(): void {
+    this.subscriptions.forEach((elem: Subscription) => elem.unsubscribe());
   }
 
 }

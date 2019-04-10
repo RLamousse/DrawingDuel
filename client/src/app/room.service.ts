@@ -1,4 +1,4 @@
-import {Injectable} from "@angular/core";
+import {Injectable, OnDestroy} from "@angular/core";
 import {Subscription} from "rxjs";
 import {
   createWebsocketMessage,
@@ -15,10 +15,12 @@ import {UNListService} from "./username.service";
 @Injectable({
               providedIn: "root",
 })
-export class RoomService {
+export class RoomService implements OnDestroy {
 
   private roomWatchers: ((value: IRoomInfo[]) => void)[];
   private _rooms: IRoomInfo[];
+  private roomFetchSub: Subscription;
+  private roomPushSub: Subscription;
 
   public constructor(private socket: SocketService) {
     this.roomWatchers = [];
@@ -43,12 +45,12 @@ export class RoomService {
   }
 
   private triggerFetchRooms (): void {
-    this.socket.onEvent<IRoomInfo[]>(SocketEvent.FETCH).subscribe(this.handleFetchRooms);
+    this.roomFetchSub = this.socket.onEvent<IRoomInfo[]>(SocketEvent.FETCH).subscribe(this.handleFetchRooms);
     this.socket.send(SocketEvent.FETCH, createWebsocketMessage());
   }
 
   private listenToRoomPush (): void {
-    this.socket.onEvent<IRoomInfo[]>(SocketEvent.PUSH_ROOMS).subscribe(this.handleFetchRooms);
+    this.roomPushSub = this.socket.onEvent<IRoomInfo[]>(SocketEvent.PUSH_ROOMS).subscribe(this.handleFetchRooms);
   }
 
   public createRoom(gameName: string, playerCount: OnlineType): void {
@@ -80,5 +82,10 @@ export class RoomService {
 
   public subscribeToGameStart(callback: () => void): Subscription {
     return this.socket.onEvent(SocketEvent.READY).subscribe(callback);
+  }
+
+  public ngOnDestroy(): void {
+    this.roomFetchSub.unsubscribe();
+    this.roomPushSub.unsubscribe();
   }
 }

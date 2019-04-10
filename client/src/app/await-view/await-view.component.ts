@@ -22,6 +22,7 @@ export class AwaitViewComponent implements OnInit, OnDestroy {
   protected readonly indexString: number = 0;
 
   private gameStartSub: Subscription;
+  private gameDeletionSub: Subscription;
 
   public constructor(private activatedRoute: ActivatedRoute, private route: Router,
                      private socket: SocketService, private dialog: MatDialog,
@@ -32,6 +33,7 @@ export class AwaitViewComponent implements OnInit, OnDestroy {
 
   public ngOnDestroy(): void {
     this.gameStartSub.unsubscribe();
+    this.gameDeletionSub.unsubscribe();
   }
 
   public ngOnInit(): void {
@@ -41,7 +43,7 @@ export class AwaitViewComponent implements OnInit, OnDestroy {
     });
     this.roomService.signalReady();
     this.gameStartSub = this.roomService.subscribeToGameStart(this.handleGameStart);
-    this.socket.onEvent(SocketEvent.DELETE).subscribe(this.executeGameDeletionRoutine);
+    this.gameDeletionSub = this.socket.onEvent(SocketEvent.DELETE).subscribe(this.executeGameDeletionRoutine);
   }
 
   private handleGameStart(): void {
