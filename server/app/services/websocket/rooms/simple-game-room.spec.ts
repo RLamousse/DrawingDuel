@@ -14,7 +14,7 @@ import {
     NoVacancyGameRoomError
 } from "../../../../../common/errors/services.errors";
 import {DIFFERENCE_CLUSTER_POINTS_INDEX, ISimpleGame} from "../../../../../common/model/game/simple-game";
-import {ORIGIN} from "../../../../../common/model/point";
+import {getOrigin} from "../../../../../common/model/point";
 import {ISimpleGameInteractionResponse} from "../../../../../common/model/rooms/interaction";
 import {SimpleGameRoom} from "./simple-game-room";
 
@@ -135,7 +135,7 @@ describe("A simple game room", () => {
             axiosMock.onGet(DIFF_VALIDATOR_GET_CALLS_REGEX)
                 .reply(HttpStatus.NOT_FOUND);
 
-            return simpleGameRoom.interact("client", {coord: ORIGIN})
+            return simpleGameRoom.interact("client", {coord: getOrigin()})
                 .catch((reason: Error) => {
                     expect(reason.message).to.eql(NoDifferenceAtPointError.NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE);
                 });
@@ -147,7 +147,7 @@ describe("A simple game room", () => {
             axiosMock.onGet(DIFF_VALIDATOR_GET_CALLS_REGEX)
                 .reply(HttpStatus.INTERNAL_SERVER_ERROR);
 
-            return simpleGameRoom.interact("client", {coord: ORIGIN})
+            return simpleGameRoom.interact("client", {coord: getOrigin()})
                 .catch((reason: Error) => {
                     expect(reason.message).not.to.eql(NoDifferenceAtPointError.NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE);
                 });
@@ -157,27 +157,27 @@ describe("A simple game room", () => {
             const simpleGameRoom: SimpleGameRoom = initSimpleGameRoom(
                 (mockedSimpleGame: IMock<ISimpleGame>) => {
                     mockedSimpleGame.setup((game: ISimpleGame) => game.diffData)
-                        .returns(() => [[0, [ORIGIN]]]);
+                        .returns(() => [[0, [getOrigin()]]]);
                 });
             simpleGameRoom["_gameStates"].set("client", {foundDifferenceClusters: []});
 
             axiosMock.onGet(DIFF_VALIDATOR_GET_CALLS_REGEX)
                 .reply(HttpStatus.OK);
 
-            return simpleGameRoom.interact("client", {coord: ORIGIN})
+            return simpleGameRoom.interact("client", {coord: getOrigin()})
                 .then((response: ISimpleGameInteractionResponse) => {
-                    expect(response.differenceCluster[DIFFERENCE_CLUSTER_POINTS_INDEX]).to.contain(ORIGIN);
+                    expect(response.differenceCluster[DIFFERENCE_CLUSTER_POINTS_INDEX]).to.contain(getOrigin());
                 });
         });
 
         it("should throw if a difference cluster was already found", async () => {
             const simpleGameRoom: SimpleGameRoom = initSimpleGameRoom();
-            simpleGameRoom["_gameStates"].set("client", {foundDifferenceClusters: [[0, [ORIGIN]]]});
+            simpleGameRoom["_gameStates"].set("client", {foundDifferenceClusters: [[0, [getOrigin()]]]});
 
             axiosMock.onGet(DIFF_VALIDATOR_GET_CALLS_REGEX)
                 .reply(HttpStatus.OK);
 
-            return simpleGameRoom.interact("client", {coord: ORIGIN})
+            return simpleGameRoom.interact("client", {coord: getOrigin()})
                 .catch((reason: Error) => {
                     expect(reason.message).to.eql(AlreadyFoundDifferenceError.ALREADY_FOUND_DIFFERENCE_ERROR_MESSAGE);
                 });
@@ -189,7 +189,7 @@ describe("A simple game room", () => {
             axiosMock.onGet(DIFF_VALIDATOR_GET_CALLS_REGEX)
                 .reply(HttpStatus.OK);
 
-            return simpleGameRoom.interact("client", {coord: ORIGIN})
+            return simpleGameRoom.interact("client", {coord: getOrigin()})
                 .catch((reason: Error) => {
                     expect(reason.message).to.eql(GameRoomError.GAME_ROOM_ERROR_MESSAGE);
                 });
