@@ -14,7 +14,7 @@ import {GameRoomCreationError, NonExistentRoomError, NoDifferenceAtPointError} f
 import {IFreeGame} from "../../../../../common/model/game/free-game";
 import {OnlineType} from "../../../../../common/model/game/game";
 import {ISimpleGame} from "../../../../../common/model/game/simple-game";
-import {ORIGIN} from "../../../../../common/model/point";
+import {getOrigin} from "../../../../../common/model/point";
 import {ISimpleGameInteractionData, ISimpleGameInteractionResponse} from "../../../../../common/model/rooms/interaction";
 import {IRoomInfo} from "../../../../../common/model/rooms/room-info";
 import {IGameRoom} from "../../../model/room/game-room";
@@ -24,6 +24,7 @@ import {SimpleGamesCollectionService} from "../../db/simple-games.collection.ser
 import {RadioTowerService} from "../radio-tower.service";
 import {HotelRoomService} from "./hotel-room.service";
 import {SimpleGameRoom} from "./simple-game-room";
+import {ChatWebsocketActionService} from "../chat-websocket-action.service";
 
 describe("A service to manage game rooms", () => {
 
@@ -40,6 +41,7 @@ describe("A service to manage game rooms", () => {
     let mockedDatabaseService: DataBaseService;
     let freeGamesCollectionService: FreeGamesCollectionService;
     let radioTowerService: RadioTowerService;
+    let chatActionService: ChatWebsocketActionService;
 
     const initHotelRoomService:
         (mockConfigurator?: Callback) => HotelRoomService =
@@ -48,6 +50,7 @@ describe("A service to manage game rooms", () => {
             simpleGamesCollectionService = mock(SimpleGamesCollectionService);
             freeGamesCollectionService = mock(FreeGamesCollectionService);
             radioTowerService = mock(RadioTowerService);
+            chatActionService = mock(ChatWebsocketActionService);
 
             if (mockConfigurator !== undefined) {
                 mockConfigurator();
@@ -58,7 +61,7 @@ describe("A service to manage game rooms", () => {
             when(mockedDatabaseService.freeGames)
                 .thenReturn(instance(freeGamesCollectionService));
 
-            return new HotelRoomService(instance(mockedDatabaseService), instance(radioTowerService));
+            return new HotelRoomService(instance(mockedDatabaseService), instance(radioTowerService), instance(chatActionService));
         };
 
     const createSimpleGameMock:
@@ -381,12 +384,12 @@ describe("A service to manage game rooms", () => {
         describe("Socket interact handler", () => {
             it("should send interaction response to room", (done: Callback) => {
                 const gameName: string = "It's Mr. 305 checkin' in for the remix";
-                const interactionData: ISimpleGameInteractionData = {coord: ORIGIN};
+                const interactionData: ISimpleGameInteractionData = {coord: getOrigin()};
                 const interactionMessage: RoomInteractionMessage<ISimpleGameInteractionData> = {
                     gameName: gameName,
                     interactionData: interactionData,
                 };
-                const interactionResponse: ISimpleGameInteractionResponse = {differenceCluster: [0, [ORIGIN]]};
+                const interactionResponse: ISimpleGameInteractionResponse = {differenceCluster: [0, [getOrigin()]]};
                 const roomMock: IMock<IGameRoom> = createRoomMock(gameName, true);
                 roomMock.setup(async (room: IGameRoom) => room.interact(serverSocket.id, interactionData))
                     .returns(async () => Promise.resolve(interactionResponse));
@@ -401,7 +404,7 @@ describe("A service to manage game rooms", () => {
 
             it.skip("should emit an interaction error to client", (done: Callback) => {
                 const gameName: string = "It's Mr. 305 checkin' in for the remix";
-                const interactionData: ISimpleGameInteractionData = {coord: ORIGIN};
+                const interactionData: ISimpleGameInteractionData = {coord: getOrigin()};
                 const interactionMessage: RoomInteractionMessage<ISimpleGameInteractionData> = {
                     gameName: gameName,
                     interactionData: interactionData,
