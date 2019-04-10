@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import * as THREE from "three";
+import {Camera, Euler, Mesh, MeshPhongMaterial, Object3D, Scene, Vector3} from "three";
 
 @Injectable({
   providedIn: "root",
@@ -33,7 +33,7 @@ export class RenderUpdateService {
     this.deltaY = 0;
   }
 
-  public updateVelocity(velocity: THREE.Vector3, delta: number): void {
+  public updateVelocity(velocity: Vector3, delta: number): void {
     velocity.z -= velocity.z * this.decelerationFactor * delta;
     velocity.x -= velocity.x * this.decelerationFactor * delta;
     if ( this.up ) {
@@ -50,11 +50,11 @@ export class RenderUpdateService {
     }
   }
 
-  public updateCamera(camera: THREE.Camera, delta: number, velocity: THREE.Vector3): void {
+  public updateCamera(camera: Camera, delta: number, velocity: Vector3): void {
     camera.translateZ( velocity.z * delta );
     camera.translateX( velocity.x * delta );
     if ( this.rightClick ) {
-      const eulerRotation: THREE.Euler = new THREE.Euler(0, 0, 0, "YXZ");
+      const eulerRotation: Euler = new Euler(0, 0, 0, "YXZ");
       eulerRotation.x = this.deltaX;
       eulerRotation.y = this.deltaY;
       camera.quaternion.setFromEuler(eulerRotation);
@@ -85,9 +85,9 @@ export class RenderUpdateService {
     this.deltaX += (this.oldY - yPos) * Math.PI / this.camRotationSpeedFactor;
   }
 
-  public updateDifference(object: THREE.Object3D, scene: THREE.Scene, modifiedScene: THREE.Scene): void {
-    let originalObj: THREE.Object3D = new THREE.Object3D();
-    let modifObj: THREE.Object3D = new THREE.Object3D();
+  public updateDifference(object: Object3D, scene: Scene, modifiedScene: Scene): void {
+    let originalObj: Object3D = new Object3D();
+    let modifObj: Object3D = new Object3D();
     for (const obj of modifiedScene.children) {
       if (obj.position.equals(object.position)) {
         modifObj = obj;
@@ -101,10 +101,10 @@ export class RenderUpdateService {
       }
     }
     if (originalObj.name && modifObj.name) {
-      const modifMaterial: THREE.MeshPhongMaterial = (modifObj as THREE.Mesh).material as THREE.MeshPhongMaterial;
+      const modifMaterial: MeshPhongMaterial = (modifObj as Mesh).material as MeshPhongMaterial;
       if (modifMaterial) {
         (modifMaterial).color =
-          ((originalObj as THREE.Mesh).material as THREE.MeshPhongMaterial).color;
+          ((originalObj as Mesh).material as MeshPhongMaterial).color;
       } else {
         modifObj.visible = false;
         modifiedScene.add(originalObj);

@@ -1,4 +1,5 @@
 import {TestBed} from "@angular/core/testing";
+import {Mesh} from "three";
 import {
   ObjectGeometry,
   Themes
@@ -19,7 +20,7 @@ describe("3DFormService", () => {
   });
 
   // Test createCube
-  it("should create a THREE.Mesh with cube geometry with right position", () => {
+  it("should create a Mesh with cube geometry with right position", () => {
     const service: Form3DService = TestBed.get(Form3DService);
     const dummyCube: IObject.ICube = {
       type: ObjectGeometry.cube,
@@ -30,7 +31,7 @@ describe("3DFormService", () => {
       scale: 1,
       gameType: Themes.Geometry,
     };
-    const cube: THREE.Mesh = service.createCube(dummyCube);
+    const cube: Mesh = service.createCube(dummyCube);
 
     expect(cube.geometry.type).toBe("BoxGeometry");
 
@@ -40,7 +41,7 @@ describe("3DFormService", () => {
   });
 
   // Test createSphere
-  it("should create a THREE.Mesh with sphere geometry with right position", () => {
+  it("should create a Mesh with sphere geometry with right position", () => {
     const service: Form3DService = TestBed.get(Form3DService);
     const dummySphere: IObject.ISphere = {
       type: ObjectGeometry.sphere,
@@ -53,7 +54,7 @@ describe("3DFormService", () => {
       scale: 1,
       gameType: Themes.Geometry,
     };
-    const sphere: THREE.Mesh = service.createSphere(dummySphere);
+    const sphere: Mesh = service.createSphere(dummySphere);
 
     expect(sphere.geometry.type).toBe("SphereGeometry");
 
@@ -63,7 +64,7 @@ describe("3DFormService", () => {
   });
 
   // Test createCone
-  it("should create a THREE.Mesh with cone geometry with right position", () => {
+  it("should create a Mesh with cone geometry with right position", () => {
     const service: Form3DService = TestBed.get(Form3DService);
     const dummyCone: IObject.ICone = {
       type: ObjectGeometry.cone,
@@ -76,7 +77,7 @@ describe("3DFormService", () => {
       scale: 1,
       gameType: Themes.Geometry,
     };
-    const cone: THREE.Mesh = service.createCone(dummyCone);
+    const cone: Mesh = service.createCone(dummyCone);
 
     expect(cone.geometry.type).toBe("ConeGeometry");
 
@@ -86,7 +87,7 @@ describe("3DFormService", () => {
   });
 
   // Test createCylinder
-  it("should create a THREE.Mesh with cylinder geometry with right position", () => {
+  it("should create a Mesh with cylinder geometry with right position", () => {
     const service: Form3DService = TestBed.get(Form3DService);
     const dummyCylinder: IObject.ICylinder = {
       type: ObjectGeometry.cylinder,
@@ -100,7 +101,7 @@ describe("3DFormService", () => {
       scale: 1,
       gameType: Themes.Geometry,
     };
-    const cylinder: THREE.Mesh = service.createCylinder(dummyCylinder);
+    const cylinder: Mesh = service.createCylinder(dummyCylinder);
 
     expect(cylinder.geometry.type).toBe("CylinderGeometry");
 
@@ -110,7 +111,7 @@ describe("3DFormService", () => {
   });
 
   // Test createPyramid
-  it("should create a THREE.Mesh with cylinder geometry with right position", () => {
+  it("should create a Mesh with cylinder geometry with right position", () => {
     const service: Form3DService = TestBed.get(Form3DService);
     const dummyPyramid: IObject.IPyramid = {
       type: ObjectGeometry.pyramid,
@@ -125,7 +126,7 @@ describe("3DFormService", () => {
       scale: 1,
       gameType: Themes.Geometry,
     };
-    const pyramid: THREE.Mesh = service.createPyramid(dummyPyramid);
+    const pyramid: Mesh = service.createPyramid(dummyPyramid);
 
     expect(pyramid.geometry.type).toBe("CylinderGeometry");
 

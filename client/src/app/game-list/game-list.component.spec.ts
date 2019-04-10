@@ -4,7 +4,7 @@ import {CUSTOM_ELEMENTS_SCHEMA} from "@angular/core";
 import {ComponentFixture, TestBed} from "@angular/core/testing";
 import {FormsModule} from "@angular/forms";
 import {Observable} from "rxjs";
-import * as THREE from "three";
+import {Scene} from "three";
 import {IFreeGame} from "../../../../common/model/game/free-game";
 import {ISimpleGame} from "../../../../common/model/game/simple-game";
 import {GameService} from "../game.service";
@@ -53,7 +53,7 @@ describe("GameListComponent", () => {
     public createScenes(): IScene {
       this.isCalled = true;
 
-      return {scene: new THREE.Scene(), modifiedScene: new THREE.Scene()};
+      return {scene: new Scene(), modifiedScene: new Scene()};
     }
   }
 

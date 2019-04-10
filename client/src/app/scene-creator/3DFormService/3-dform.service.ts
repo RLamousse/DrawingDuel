@@ -1,80 +1,80 @@
 import { Injectable } from "@angular/core";
-import * as THREE from "three";
+import {BoxGeometry, ConeGeometry, CylinderGeometry, GLTF, Mesh, MeshPhongMaterial, SphereGeometry, Vector3} from "three";
 import * as IObject from "../../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
 import {IPoint3D, IVector3} from "../../../../../common/model/point";
 @Injectable()
 export class Form3DService {
 
-  private static toThreeVector3(vec: IVector3): THREE.Vector3 {
+  private static toThreeVector3(vec: IVector3): Vector3 {
     const {x, y, z}: IPoint3D = vec;
 
-    return new THREE.Vector3(x, y, z);
+    return new Vector3(x, y, z);
   }
 
-  private static setUpParameters(mesh: THREE.Mesh, obj: IObject.IJson3DObject): void {
+  private static setUpParameters(mesh: Mesh, obj: IObject.IJson3DObject): void {
     mesh.position.copy(Form3DService.toThreeVector3(obj.position));
     mesh.rotateX(obj.rotation.x);
     mesh.rotateY(obj.rotation.y);
     mesh.rotateZ(obj.rotation.z);
   }
 
-  public createCube(obj: IObject.ICube): THREE.Mesh {
-    const geometry: THREE.BoxGeometry = new THREE.BoxGeometry(obj.sideLength, obj.sideLength, obj.sideLength);
-    const material: THREE.MeshPhongMaterial = new THREE.MeshPhongMaterial({ color: obj.color });
-    const cube: THREE.Mesh = new THREE.Mesh(geometry, material);
+  public createCube(obj: IObject.ICube): Mesh {
+    const geometry: BoxGeometry = new BoxGeometry(obj.sideLength, obj.sideLength, obj.sideLength);
+    const material: MeshPhongMaterial = new MeshPhongMaterial({color: obj.color});
+    const cube: Mesh = new Mesh(geometry, material);
     Form3DService.setUpParameters(cube, obj);
 
     return cube;
   }
 
-  public createSphere(obj: IObject.ISphere): THREE.Mesh {
-    const geometry: THREE.SphereGeometry = new THREE.SphereGeometry(obj.radius, obj.widthSegments, obj.heightSegments);
-    const material: THREE.MeshPhongMaterial = new THREE.MeshPhongMaterial({ color: obj.color });
-    const sphere: THREE.Mesh = new THREE.Mesh(geometry, material);
+  public createSphere(obj: IObject.ISphere): Mesh {
+    const geometry: SphereGeometry = new SphereGeometry(obj.radius, obj.widthSegments, obj.heightSegments);
+    const material: MeshPhongMaterial = new MeshPhongMaterial({color: obj.color});
+    const sphere: Mesh = new Mesh(geometry, material);
     Form3DService.setUpParameters(sphere, obj);
 
     return sphere;
   }
 
-  public createCone(obj: IObject.ICone): THREE.Mesh {
-    const geometry: THREE.ConeGeometry = new THREE.ConeGeometry(obj.radius, obj.height, obj.radialSegment);
-    const material: THREE.MeshPhongMaterial = new THREE.MeshPhongMaterial({ color: obj.color });
-    const cone: THREE.Mesh = new THREE.Mesh(geometry, material);
+  public createCone(obj: IObject.ICone): Mesh {
+    const geometry: ConeGeometry = new ConeGeometry(obj.radius, obj.height, obj.radialSegment);
+    const material: MeshPhongMaterial = new MeshPhongMaterial({color: obj.color});
+    const cone: Mesh = new Mesh(geometry, material);
     Form3DService.setUpParameters(cone, obj);
 
     return cone;
   }
 
-  public createCylinder(obj: IObject.ICylinder): THREE.Mesh {
-    const geometry: THREE.CylinderGeometry = new THREE.CylinderGeometry(
+  public createCylinder(obj: IObject.ICylinder): Mesh {
+    const geometry: CylinderGeometry = new CylinderGeometry(
       obj.topRadius,
       obj.botRadius,
       obj.height,
       obj.radiusSegment,
     );
-    const material: THREE.MeshPhongMaterial = new THREE.MeshPhongMaterial({ color: obj.color });
-    const cylinder: THREE.Mesh = new THREE.Mesh(geometry, material);
+    const material: MeshPhongMaterial = new MeshPhongMaterial({color: obj.color});
+    const cylinder: Mesh = new Mesh(geometry, material);
     Form3DService.setUpParameters(cylinder, obj);
 
     return cylinder;
   }
 
-  public createPyramid(obj: IObject.IPyramid): THREE.Mesh {
-    const geometry: THREE.CylinderGeometry = new THREE.CylinderGeometry(
+  public createPyramid(obj: IObject.IPyramid): Mesh {
+    const geometry: CylinderGeometry = new CylinderGeometry(
       obj.topRadius,
       obj.botRadius,
       obj.height,
       obj.radiusSegment,
       obj.heightSegment,
     );
-    const material: THREE.MeshPhongMaterial = new THREE.MeshPhongMaterial({ color: obj.color });
-    const pyramid: THREE.Mesh = new THREE.Mesh(geometry, material);
+    const material: MeshPhongMaterial = new MeshPhongMaterial({color: obj.color});
+    const pyramid: Mesh = new Mesh(geometry, material);
     Form3DService.setUpParameters(pyramid, obj);
 
     return pyramid;
   }
 
-  public setUpThematicParameters(object: IObject.IJson3DObject, gltf: THREE.GLTF): void {
+  public setUpThematicParameters(object: IObject.IJson3DObject, gltf: GLTF): void {
     const scaleFactor: number = object.scale;
     gltf.scene.scale.set(scaleFactor, scaleFactor, scaleFactor);
     gltf.scene.rotateX(object.rotation.x);
