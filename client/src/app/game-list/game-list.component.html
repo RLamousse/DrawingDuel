@@ -2,9 +2,7 @@
   *ngIf="pushedGames; then listView; else loading">
 </ng-container>
 <ng-template #loading>
-  <body class = "blackBackground">
   <img class="bottomright" src="assets\images\loadingScreen.gif">
-  </body>
 </ng-template>
 <ng-template #listView>
   <div class="popup">
@@ -32,7 +30,7 @@
               [bestMultiTimes]= "instance.bestMultiTimes"
               [rightButton]= "rightButton"
               [leftButton]= "leftButton"
-              [isSimpleGame]= false
+              [gameType]= "freeGameTag"
               [thumbnail]= "instance.thumbnail">
           </app-game>
       </div>
