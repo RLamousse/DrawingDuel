@@ -42,6 +42,10 @@
   margin: auto;
 }
 
+.errorMessage{
+  color: darkred;
+}
+
 .username{
   min-width: 250px;
 }
