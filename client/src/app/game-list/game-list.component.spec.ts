@@ -1,9 +1,10 @@
-import {HttpClientModule} from "@angular/common/http";
+// Empty blocks are present in mock functions that prevent real ones to be called
+/* tslint:disable:no-empty */
 import {CUSTOM_ELEMENTS_SCHEMA} from "@angular/core";
 import {ComponentFixture, TestBed} from "@angular/core/testing";
 import {FormsModule} from "@angular/forms";
 import {Observable} from "rxjs";
-import * as THREE from "three";
+import {Scene} from "three";
 import {IFreeGame} from "../../../../common/model/game/free-game";
 import {ISimpleGame} from "../../../../common/model/game/simple-game";
 import {GameService} from "../game.service";
@@ -21,11 +22,26 @@ describe("GameListComponent", () => {
     private mockedFreeGames: IFreeGame[] = [];
 
     public getSimpleGames(): Observable<ISimpleGame[]> {
-      return Observable.create(this.mockedSimpleGames);
+      return new Observable((subscriber) => {
+        subscriber.next(this.mockedSimpleGames);
+        subscriber.complete();
+      });
     }
 
     public getFreeGames(): Observable<IFreeGame[]> {
-      return Observable.create(this.mockedFreeGames);
+      return new Observable((subscriber) => {
+        subscriber.next(this.mockedFreeGames);
+        subscriber.complete();
+      });
+    }
+
+    public pushSimpleGames(games: ISimpleGame[]): void {
+    }
+
+    public async pushFreeGames(games: IFreeGame[]): Promise<void> {
+    }
+
+    public async updateFreeGameImages(): Promise<void> {
     }
   }
 
@@ -37,7 +53,7 @@ describe("GameListComponent", () => {
     public createScenes(): IScene {
       this.isCalled = true;
 
-      return {scene: new THREE.Scene(), modifiedScene: new THREE.Scene()};
+      return {scene: new Scene(), modifiedScene: new Scene()};
     }
   }
 
@@ -47,7 +63,7 @@ describe("GameListComponent", () => {
     TestBed.configureTestingModule(
       {
         declarations: [GameListComponent],
-        imports: [HttpClientModule, FormsModule],
+        imports: [FormsModule],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
           {provide: GameService, useValue: mockedGameService},

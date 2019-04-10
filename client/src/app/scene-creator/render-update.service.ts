@@ -1,6 +1,5 @@
 import { Injectable } from "@angular/core";
-import * as THREE from "three";
-import {Coordinate} from "../../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
+import {Camera, Euler, Mesh, MeshPhongMaterial, Object3D, Scene, Vector3} from "three";
 
 @Injectable({
   providedIn: "root",
@@ -8,7 +7,7 @@ import {Coordinate} from "../../../../common/free-game-json-interface/FreeGameCr
 export class RenderUpdateService {
   private readonly decelerationFactor: number = 10;
   private readonly accelerationFactor: number = 600;
-  private readonly camRotationSpeedFactor: number = 4000;
+  private readonly camRotationSpeedFactor: number = 800;
   private readonly ORIGINAL_NAME: string = "original";
   private readonly MODIFIED_NAME: string = "modified";
 
@@ -34,7 +33,7 @@ export class RenderUpdateService {
     this.deltaY = 0;
   }
 
-  public updateVelocity(velocity: THREE.Vector3, delta: number): void {
+  public updateVelocity(velocity: Vector3, delta: number): void {
     velocity.z -= velocity.z * this.decelerationFactor * delta;
     velocity.x -= velocity.x * this.decelerationFactor * delta;
     if ( this.up ) {
@@ -51,12 +50,14 @@ export class RenderUpdateService {
     }
   }
 
-  public updateCamera(camera: THREE.Camera, delta: number, velocity: THREE.Vector3): void {
+  public updateCamera(camera: Camera, delta: number, velocity: Vector3): void {
     camera.translateZ( velocity.z * delta );
     camera.translateX( velocity.x * delta );
     if ( this.rightClick ) {
-      camera.rotateX(this.deltaX);
-      camera.rotateY(this.deltaY);
+      const eulerRotation: Euler = new Euler(0, 0, 0, "YXZ");
+      eulerRotation.x = this.deltaX;
+      eulerRotation.y = this.deltaY;
+      camera.quaternion.setFromEuler(eulerRotation);
     }
   }
   public moveForward(isMoving: boolean): void {
@@ -76,36 +77,34 @@ export class RenderUpdateService {
     if (this.rightClick) {
       this.oldX = xPos;
       this.oldY = yPos;
-      this.deltaX = 0;
-      this.deltaY = 0;
     }
   }
 
   public rotationCamera(xPos: number, yPos: number): void {
-    this.deltaY = (this.oldX - xPos) / this.camRotationSpeedFactor;
-    this.deltaX = (this.oldY - yPos) / this.camRotationSpeedFactor;
+    this.deltaY += (this.oldX - xPos) * Math.PI / this.camRotationSpeedFactor;
+    this.deltaX += (this.oldY - yPos) * Math.PI / this.camRotationSpeedFactor;
   }
 
-  public updateDifference(object: THREE.Object3D, scene: THREE.Scene, modifiedScene: THREE.Scene): void {
-    let originalObj: THREE.Object3D = new THREE.Object3D();
-    let modifObj: THREE.Object3D = new THREE.Object3D();
+  public updateDifference(object: Object3D, scene: Scene, modifiedScene: Scene): void {
+    let originalObj: Object3D = new Object3D();
+    let modifObj: Object3D = new Object3D();
     for (const obj of modifiedScene.children) {
-      if (this.isSameCenter(obj.position, object.position)) {
+      if (obj.position.equals(object.position)) {
         modifObj = obj;
         modifObj.name = this.MODIFIED_NAME;
       }
     }
     for (const obj of scene.children) {
-      if (this.isSameCenter(obj.position, object.position)) {
+      if (obj.position.equals(object.position)) {
         originalObj = obj.clone();
         originalObj.name = this.ORIGINAL_NAME;
       }
     }
     if (originalObj.name && modifObj.name) {
-      const modifMaterial: THREE.MeshPhongMaterial = (modifObj as THREE.Mesh).material as THREE.MeshPhongMaterial;
+      const modifMaterial: MeshPhongMaterial = (modifObj as Mesh).material as MeshPhongMaterial;
       if (modifMaterial) {
         (modifMaterial).color =
-          ((originalObj as THREE.Mesh).material as THREE.MeshPhongMaterial).color;
+          ((originalObj as Mesh).material as MeshPhongMaterial).color;
       } else {
         modifObj.visible = false;
         modifiedScene.add(originalObj);
@@ -115,17 +114,5 @@ export class RenderUpdateService {
     } else {
       modifiedScene.add(originalObj);
     }
-  }
-
-  private isSameCenter(center1: THREE.Vector3, center2: THREE.Vector3): boolean {
-    return (center1.x === center2.x &&
-      center1.y === center2.y &&
-      center1.z === center2.z);
-  }
-
-  public isSameObject(obj1: number[], obj2: number[]): boolean {
-    return (obj1[Coordinate.X] === obj2[Coordinate.X] &&
-      obj1[Coordinate.Y] === obj2[Coordinate.Y] &&
-      obj1[Coordinate.Z] === obj2[Coordinate.Z]);
   }
 }

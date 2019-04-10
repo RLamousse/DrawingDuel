@@ -1,14 +1,14 @@
 import {Component, Input, ViewChild} from "@angular/core";
 import {
   ChatMessage,
-  ChatMessagePlayerCount,
   ChatMessagePosition,
   ChatMessageType, WebsocketMessage
 } from "../../../../../common/communication/messages/message";
 import {SocketEvent} from "../../../../../common/communication/socket-events";
 import {AlreadyFoundDifferenceError, NoDifferenceAtPointError} from "../../../../../common/errors/services.errors";
+import {OnlineType} from "../../../../../common/model/game/game";
 import {DifferenceCluster, DIFFERENCE_CLUSTER_POINTS_INDEX} from "../../../../../common/model/game/simple-game";
-import {tansformOrigin, IPoint} from "../../../../../common/model/point";
+import {inverseY, IPoint} from "../../../../../common/model/point";
 import {SocketService} from "../../socket.service";
 import {UNListService} from "../../username.service";
 import {playRandomSound, NO_DIFFERENCE_SOUNDS} from "../game-sounds";
@@ -55,7 +55,7 @@ export class SimpleGameContainerComponent {
       .then((differenceCluster: DifferenceCluster) => {
         this.notifyClickToWebsocket(true);
         const differencePoints: IPoint[] = differenceCluster[DIFFERENCE_CLUSTER_POINTS_INDEX]
-          .map((point: IPoint) => tansformOrigin(point, this.originalImageComponent.height));
+          .map((point: IPoint) => inverseY(point, this.originalImageComponent.height));
         const pixels: PixelData[] = this.originalImageComponent.getPixels(differencePoints);
         this.modifiedImageComponent.drawPixels(pixels);
         this.clickEnabled = true;
@@ -75,7 +75,7 @@ export class SimpleGameContainerComponent {
       title: SocketEvent.CHAT,
       body: {
         gameName: "",
-        playerCount: ChatMessagePlayerCount.SOLO,
+        playerCount: OnlineType.SOLO,
         playerName: UNListService.username,
         position: ChatMessagePosition.NA,
         timestamp: new Date(),
@@ -89,7 +89,7 @@ export class SimpleGameContainerComponent {
     const pixelsBackup: Uint8ClampedArray = clickedComponent.getRawPixelData();
     clickedComponent.drawText(
       IDENTIFICATION_ERROR_TEXT,
-      tansformOrigin(clickEvent, clickedComponent.height),
+      inverseY(clickEvent, clickedComponent.height),
       TextType.ERROR);
 
     setTimeout(

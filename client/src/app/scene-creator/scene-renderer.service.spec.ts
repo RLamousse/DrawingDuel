@@ -6,12 +6,13 @@ import MockAdapter from "axios-mock-adapter";
 // tslint:disable-next-line:no-duplicate-imports Weird interaction between singletons and interface (olivier st-o approved)
 import AxiosAdapter from "axios-mock-adapter";
 import * as HttpStatus from "http-status-codes";
-import * as THREE from "three";
+import {BoxGeometry, Material, Mesh, MeshPhongMaterial, Scene} from "three";
 import {DIFF_VALIDATOR_3D_BASE, SERVER_BASE_URL} from "../../../../common/communication/routes";
 import { ComponentNotLoadedError } from "../../../../common/errors/component.errors";
 import {NoDifferenceAtPointError} from "../../../../common/errors/services.errors";
 import {IJson3DObject} from "../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
 import {SocketService} from "../socket.service";
+import {ObjectCollisionService} from "./objectCollisionService/object-collision.service";
 import {RenderUpdateService} from "./render-update.service";
 import { SceneRendererService } from "./scene-renderer.service";
 describe("SceneRendererService", () => {
@@ -30,6 +31,14 @@ describe("SceneRendererService", () => {
       this.messageVel = "updateVelocity was called";
     }
   }
+
+  class MockCollisionService {
+    public raycastCollision(): void {
+      return;
+    }
+  }
+  const mockCollisionService: MockCollisionService = new MockCollisionService();
+
   let mockUpdateRender: MockRenderUpdate;
   beforeEach(() => {
     axiosMock = new AxiosAdapter(Axios);
@@ -39,6 +48,7 @@ describe("SceneRendererService", () => {
       providers: [
         SceneRendererService,
         {provide: RenderUpdateService, useValue: mockUpdateRender},
+        {provide: ObjectCollisionService, useValue: mockCollisionService},
         SocketService,
       ],
     });
@@ -52,8 +62,8 @@ describe("SceneRendererService", () => {
   // Test loadScenes
   it("should throw an error if loadScenes is called before init(...)", () => {
     const service: SceneRendererService = TestBed.get(SceneRendererService);
-    const original: THREE.Scene = new THREE.Scene();
-    const modified: THREE.Scene = new THREE.Scene();
+    const original: Scene = new Scene();
+    const modified: Scene = new Scene();
 
     expect(() => service.loadScenes(original, modified, "gameName"))
       .toThrowError(ComponentNotLoadedError.COMPONENT_NOT_LOADED_MESSAGE_ERROR);
@@ -61,8 +71,8 @@ describe("SceneRendererService", () => {
 
   it("should asign scenes at first call", () => {
     const service: SceneRendererService = TestBed.get(SceneRendererService);
-    const original: THREE.Scene = new THREE.Scene();
-    const modified: THREE.Scene = new THREE.Scene();
+    const original: Scene = new Scene();
+    const modified: Scene = new Scene();
     const oriCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
     const modCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
     service.init(oriCont, modCont);
@@ -77,11 +87,11 @@ describe("SceneRendererService", () => {
     jasmine.clock().install();
     const service: SceneRendererService = TestBed.get(SceneRendererService);
 
-    const original: THREE.Scene = new THREE.Scene();
-    const modified: THREE.Scene = new THREE.Scene();
+    const original: Scene = new Scene();
+    const modified: Scene = new Scene();
 
-    const diffObject: THREE.Mesh = new THREE.Mesh();
-    const notDiffObject: THREE.Mesh = new THREE.Mesh();
+    const diffObject: Mesh = new Mesh();
+    const notDiffObject: Mesh = new Mesh();
     diffObject.translateX(12);
     original.add(diffObject);
     original.add(notDiffObject);
@@ -92,12 +102,12 @@ describe("SceneRendererService", () => {
     service.loadScenes(original, modified, "someGame");
     await service.modifyCheatState(async () => {
       return new Promise<IJson3DObject[]>((resolve) => {
-        resolve([{position: [12, 0, 0]} as IJson3DObject]);
+        resolve([{position: {x: 12, y: 0, z: 0}} as IJson3DObject]);
       });
     });
     jasmine.clock().tick(300);
-    if (!((original.children[0] as THREE.Mesh).material as THREE.Material).visible &&
-      ((original.children[1] as THREE.Mesh).material as THREE.Material).visible) {
+    if (!((original.children[0] as Mesh).material as Material).visible &&
+      ((original.children[1] as Mesh).material as Material).visible) {
       done();
     } else {
       done.fail();
@@ -107,10 +117,10 @@ describe("SceneRendererService", () => {
 
   it("should reasign the new scenes at second call", () => {
     const service: SceneRendererService = TestBed.get(SceneRendererService);
-    const original1: THREE.Scene = new THREE.Scene();
-    const modified1: THREE.Scene = new THREE.Scene();
-    const original2: THREE.Scene = new THREE.Scene();
-    const modified2: THREE.Scene = new THREE.Scene();
+    const original1: Scene = new Scene();
+    const modified1: Scene = new Scene();
+    const original2: Scene = new Scene();
+    const modified2: Scene = new Scene();
     const oriCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
     const modCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
     service.init(oriCont, modCont);
@@ -122,8 +132,8 @@ describe("SceneRendererService", () => {
 
   it("should have called updateCamera and velocity after loadScenes is called", () => {
     const service: SceneRendererService = TestBed.get(SceneRendererService);
-    const original: THREE.Scene = new THREE.Scene();
-    const modified: THREE.Scene = new THREE.Scene();
+    const original: Scene = new Scene();
+    const modified: Scene = new Scene();
     const oriCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
     const modCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
     service.init(oriCont, modCont);
@@ -134,8 +144,8 @@ describe("SceneRendererService", () => {
 
   it("should update the gameName after loadScenes is called", () => {
     const service: SceneRendererService = TestBed.get(SceneRendererService);
-    const original: THREE.Scene = new THREE.Scene();
-    const modified: THREE.Scene = new THREE.Scene();
+    const original: Scene = new Scene();
+    const modified: Scene = new Scene();
     const oriCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
     const modCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
     service.init(oriCont, modCont);
@@ -149,8 +159,8 @@ describe("SceneRendererService", () => {
     axiosMock.onGet(ALL_GET_CALLS_REGEX)
       .reply(HttpStatus.NOT_FOUND);
 
-    const original: THREE.Scene = new THREE.Scene();
-    const modified: THREE.Scene = new THREE.Scene();
+    const original: Scene = new Scene();
+    const modified: Scene = new Scene();
     const oriCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
     const modCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
     service.init(oriCont, modCont);
@@ -166,8 +176,8 @@ describe("SceneRendererService", () => {
     const service: SceneRendererService = TestBed.get(SceneRendererService);
     axiosMock.onGet(ALL_GET_CALLS_REGEX)
       .reply(HttpStatus.NOT_FOUND);
-    const original: THREE.Scene = new THREE.Scene();
-    const modified: THREE.Scene = new THREE.Scene();
+    const original: Scene = new Scene();
+    const modified: Scene = new Scene();
     const oriCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
     const modCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
     service.init(oriCont, modCont);
@@ -185,13 +195,13 @@ describe("SceneRendererService", () => {
     axiosMock.onGet(ALL_GET_CALLS_REGEX)
       .reply(HttpStatus.NOT_FOUND);
 
-    const original: THREE.Scene = new THREE.Scene();
-    const modified: THREE.Scene = new THREE.Scene();
+    const original: Scene = new Scene();
+    const modified: Scene = new Scene();
     const oriCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
     const modCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
-    const material: THREE.MeshPhongMaterial = new THREE.MeshPhongMaterial();
-    const geo: THREE.BoxGeometry = new THREE.BoxGeometry();
-    const mesh: THREE.Mesh = new THREE.Mesh(geo, material);
+    const material: MeshPhongMaterial = new MeshPhongMaterial();
+    const geo: BoxGeometry = new BoxGeometry();
+    const mesh: Mesh = new Mesh(geo, material);
     mesh.position.set(0, 0, 97);
     original.add(mesh);
     modified.add(mesh.clone());
@@ -210,8 +220,8 @@ describe("SceneRendererService", () => {
     axiosMock.onGet(ALL_GET_CALLS_REGEX)
       .reply(HttpStatus.INTERNAL_SERVER_ERROR);
 
-    const original: THREE.Scene = new THREE.Scene();
-    const modified: THREE.Scene = new THREE.Scene();
+    const original: Scene = new Scene();
+    const modified: Scene = new Scene();
     const oriCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
     const modCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
     service.init(oriCont, modCont);

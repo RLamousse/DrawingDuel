@@ -1,26 +1,27 @@
-import Axios from "axios";
-import * as Httpstatus from "http-status-codes";
-import {injectable} from "inversify";
-import {DB_FREE_GAME, DB_SIMPLE_GAME, SERVER_BASE_URL} from "../../../common/communication/routes";
+import {inject, injectable} from "inversify";
 import {AbstractDataBaseError, NonExistentGameError} from "../../../common/errors/database.errors";
 import {ScoreNotGoodEnough} from "../../../common/errors/services.errors";
-import {IFreeGame} from "../../../common/model/game/free-game";
-import {IGame} from "../../../common/model/game/game";
+import {GameType, IGame, OnlineType} from "../../../common/model/game/game";
 import {IRecordTime} from "../../../common/model/game/record-time";
-import {ISimpleGame} from "../../../common/model/game/simple-game";
+import Types from "../types";
+import {DataBaseService} from "./data-base.service";
 import {createRandomScores} from "./service-utils";
 
 interface IScoreResponse {
     table: IRecordTime[];
-    isSimple: boolean;
+    gameType: GameType;
 }
 
 @injectable()
 export class ScoreTableService {
 
+    private static readonly LAST_POSITION_INDEX: number = 2;
+
+    public constructor(@inject(Types.DataBaseService) private databaseService: DataBaseService) {}
+
     private static insertTime(tableToInsert: IRecordTime[], newTime: IRecordTime): number {
-        if (newTime.time < tableToInsert[2].time) {
-            tableToInsert[2] = newTime;
+        if (newTime.time < tableToInsert[this.LAST_POSITION_INDEX].time) {
+            tableToInsert[this.LAST_POSITION_INDEX] = newTime;
             this.sortTable(tableToInsert);
 
             return tableToInsert.indexOf(newTime) + 1;
@@ -32,60 +33,75 @@ export class ScoreTableService {
         tableToSort.sort((a: IRecordTime, b: IRecordTime) => a.time - b.time);
     }
 
-    public async updateTableScore(gameName: string, newScore: IRecordTime, isSolo: boolean): Promise<number> {
+    public async updateTableScore(gameName: string, newScore: IRecordTime, onlineType: OnlineType): Promise<number> {
 
-        const responseFromDB: IScoreResponse = await this.tryGetTableFromDB(gameName, isSolo) as IScoreResponse;
+        const responseFromDB: IScoreResponse = await this.getGameScores(gameName, onlineType);
         const position: number = ScoreTableService.insertTime(responseFromDB.table, newScore);
-        await this.putTableInDB(gameName, responseFromDB, isSolo);
+        await this.putTableInDB(gameName, responseFromDB, onlineType);
 
         return position;
     }
 
-    private async tryGetTableFromDB (gameName: string, isSolo?: boolean): Promise<IScoreResponse|boolean> {
-        let gameToModify: IGame;
-        let isSimple: boolean = false;
+    private async getGameScores (gameName: string, onlineType: OnlineType): Promise<IScoreResponse> {
+        const gameType: GameType = await this.getGameType(gameName);
         try {
-            gameToModify = (await Axios.get<IFreeGame>(SERVER_BASE_URL + DB_FREE_GAME + gameName)).data;
+            const gameToModify: IGame =  gameType === GameType.SIMPLE ? await this.databaseService.simpleGames.getFromId(gameName) :
+                await this.databaseService.freeGames.getFromId(gameName);
+
+            return {table: onlineType === OnlineType.SOLO ? gameToModify.bestSoloTimes : gameToModify.bestMultiTimes, gameType: gameType};
         } catch (error) {
-            try {
-                if (error.response.status !== Httpstatus.NOT_FOUND) {
-                    throw new AbstractDataBaseError(error.response.data.message);
-                }
-                gameToModify = (await Axios.get<ISimpleGame>(SERVER_BASE_URL + DB_SIMPLE_GAME + gameName)).data;
-                isSimple = true;
-            } catch (error2) {
-                if (error.response.status !== Httpstatus.NOT_FOUND) {
-                    throw new AbstractDataBaseError(error.response.data.message);
-                }
-                throw new NonExistentGameError();
-            }
+            throw new AbstractDataBaseError(error.message);
         }
-
-        if (isSolo === undefined) {
-            return isSimple;
-        }
-
-        return {table: isSolo ? gameToModify.bestSoloTimes : gameToModify.bestMultiTimes, isSimple: isSimple};
     }
 
-    private async putTableInDB(gameName: string, tableToPost: IScoreResponse, isSolo: boolean): Promise<void> {
-        const dataToSend: Partial<IGame> = isSolo ? {bestSoloTimes: tableToPost.table} : {bestMultiTimes: tableToPost.table};
-        await Axios.put<void>(SERVER_BASE_URL + (tableToPost.isSimple ? DB_SIMPLE_GAME : DB_FREE_GAME) + gameName, dataToSend)
-            // any is the default type of the required callback function
-            // tslint:disable-next-line:no-any Generic error response
-            .catch((reason: any) => {
-            throw new AbstractDataBaseError("Unable to modify game: " + reason.response.data.message);
-        });
+    private async getGameType (gameName: string): Promise<GameType> {
+
+        try {
+            const gameType: GameType = await this.databaseService.simpleGames.contains(gameName) ? GameType.SIMPLE : GameType.FREE;
+            if (gameType === GameType.FREE && !(await this.databaseService.freeGames.contains(gameName))) {
+                throw new NonExistentGameError();
+            }
+
+            return gameType;
+        } catch (error) {
+            throw error.message === NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE ? error : new AbstractDataBaseError(error.message);
+        }
+    }
+
+    private async putTableInDB(gameName: string, tableToPost: IScoreResponse, onlineType: OnlineType): Promise<void> {
+        const dataToSend: Partial<IGame> = onlineType === OnlineType.SOLO ? {bestSoloTimes: tableToPost.table} :
+            {bestMultiTimes: tableToPost.table};
+        try {
+            // default case is not possible with enums
+            // tslint:disable-next-line:switch-default
+            switch (tableToPost.gameType) {
+                case GameType.FREE:
+                    await this.databaseService.freeGames.update(gameName, dataToSend);
+                    break;
+                case GameType.SIMPLE:
+                    await this.databaseService.simpleGames.update(gameName, dataToSend);
+            }
+        } catch (error) {
+            throw new AbstractDataBaseError(error.message);
+        }
     }
 
     public async resetScores(gameName: string): Promise<void> {
-        const isSimple: boolean = await this.tryGetTableFromDB(gameName) as boolean;
-        await Axios.put<void>(SERVER_BASE_URL + (isSimple ? DB_SIMPLE_GAME : DB_FREE_GAME) + gameName,
-                              {bestSoloTimes: createRandomScores(), bestMultiTimes: createRandomScores()})
-        // any is the default type of the required callback function
-        // tslint:disable-next-line:no-any Generic error response
-            .catch((reason: any) => {
-                throw new AbstractDataBaseError("Unable to modify game: " + reason.response.data.message);
-            });
+        const gameType: GameType = await this.getGameType(gameName);
+        try {
+            // default case is not possible with enums
+            // tslint:disable-next-line:switch-default
+            switch (gameType) {
+                case GameType.SIMPLE:
+                    await this.databaseService.simpleGames.update(gameName, {bestSoloTimes: createRandomScores(),
+                                                                             bestMultiTimes: createRandomScores()});
+                    break;
+                case GameType.FREE:
+                    await this.databaseService.freeGames.update(gameName, {bestSoloTimes: createRandomScores(),
+                                                                           bestMultiTimes: createRandomScores()});
+            }
+        } catch (error) {
+            throw new AbstractDataBaseError(error.message);
+        }
     }
 }

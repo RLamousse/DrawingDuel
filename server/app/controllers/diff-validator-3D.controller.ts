@@ -3,6 +3,7 @@ import * as Httpstatus from "http-status-codes";
 import {inject, injectable} from "inversify";
 import {Object3DIsNotADifference} from "../../../common/errors/services.errors";
 import {IJson3DObject} from "../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
+import {IPoint3D} from "../../../common/model/point";
 import {DiffValidator3DService} from "../services/diff-validator-3D.service";
 import Types from "../types";
 import {assertParamsOfRequest, executePromiseSafely} from "./controller-utils";
@@ -18,26 +19,21 @@ export class DiffValidator3DController {
         router.get("/",
                    async (req: Request, res: Response, next: NextFunction) => {
                 executePromiseSafely(res, next, async () => {
-                    assertParamsOfRequest(req, "gameName", "center");
+                    assertParamsOfRequest(req, "gameName", "centerX", "centerY", "centerZ");
+                    const queryPoint: IPoint3D = {
+                        x: parseInt(req.query.centerX, 10),
+                        y: parseInt(req.query.centerY, 10),
+                        z: parseInt(req.query.centerZ, 10),
+                    };
 
-                    this.diffValidator3DService.getDifferentObjects(req.query.gameName, JSON.parse(req.query.center),
-                    ).then((diffObj: IJson3DObject) => {
-                        const response: IJson3DObject = {
-                            position: diffObj.position,
-                            color: diffObj.color,
-                            type: diffObj.type,
-                            rotation: diffObj.rotation,
-                            scale: diffObj.scale,
-                            gameType: diffObj.gameType,
-                        };
+                    this.diffValidator3DService.getDifferentObjects(req.query.gameName, queryPoint)
+                        .then((diffObj: IJson3DObject) => res.json(diffObj))
+                        .catch((error: Error) => {
+                            if (error.message === Object3DIsNotADifference.OBJ_3D_NOT_A_DIFFERENCE_ERROR_MESSAGE) {
+                                res.status(Httpstatus.NOT_FOUND);
+                            }
 
-                        return res.json(response);
-                    }).catch((error: Error) => {
-                        if (error.message === Object3DIsNotADifference.OBJ_3D_NOT_A_DIFFERENCE_ERROR_MESSAGE) {
-                            res.status(Httpstatus.NOT_FOUND);
-                        }
-
-                        return res.json(error);
+                            return res.json(error);
                     });
                 });
             });

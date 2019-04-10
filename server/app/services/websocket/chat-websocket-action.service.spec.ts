@@ -1,10 +1,11 @@
 import { expect } from "chai";
 import {
-    ChatMessage, ChatMessagePlayerCount,
+    ChatMessage,
     ChatMessagePosition, ChatMessageType,
     WebsocketMessage
 } from "../../../../common/communication/messages/message";
 import { SocketEvent } from "../../../../common/communication/socket-events";
+import {OnlineType} from "../../../../common/model/game/game";
 import { ChatWebsocketActionService } from "./chat-websocket-action.service";
 
 class Socket {
@@ -39,7 +40,7 @@ describe("ChatWebsocketActionService", () => {
             title: SocketEvent.CHAT,
             body: {
                 gameName: "",
-                playerCount: ChatMessagePlayerCount.SOLO,
+                playerCount: OnlineType.SOLO,
                 playerName: "Maxime",
                 position: ChatMessagePosition.NA,
                 timestamp: new Date("Sat Mar 23 2019 13:51:46 GMT-0400 (Eastern Daylight Time)"),
@@ -57,7 +58,7 @@ describe("ChatWebsocketActionService", () => {
             title: SocketEvent.CHAT,
             body: {
                 gameName: "",
-                playerCount: ChatMessagePlayerCount.SOLO,
+                playerCount: OnlineType.SOLO,
                 playerName: "Maxime",
                 position: ChatMessagePosition.NA,
                 timestamp: new Date("Sat Mar 23 2019 13:51:46 GMT-0400 (Eastern Daylight Time)"),
@@ -74,7 +75,7 @@ describe("ChatWebsocketActionService", () => {
             title: SocketEvent.CHAT,
             body: {
                 gameName: "",
-                playerCount: ChatMessagePlayerCount.SOLO,
+                playerCount: OnlineType.SOLO,
                 playerName: "Maxime",
                 position: ChatMessagePosition.NA,
                 timestamp: new Date("Sat Mar 23 2019 13:51:46 GMT-0400 (Eastern Daylight Time)"),
@@ -84,7 +85,7 @@ describe("ChatWebsocketActionService", () => {
         service.execute(message, socket as unknown as SocketIO.Socket);
         expect(socket.eventValue).to.equal(SocketEvent.CHAT);
         expect(socket.emitValue).to.equal("12:51:46 – Différence trouvée.");
-        message.body.playerCount = ChatMessagePlayerCount.MULTI;
+        message.body.playerCount = OnlineType.MULTIPLAYER;
         service.execute(message, socket as unknown as SocketIO.Socket);
         expect(socket.eventValue).to.equal(SocketEvent.CHAT);
         expect(socket.emitValue).to.equal("12:51:46 – Différence trouvée par Maxime.");
@@ -95,7 +96,7 @@ describe("ChatWebsocketActionService", () => {
             title: SocketEvent.CHAT,
             body: {
                 gameName: "",
-                playerCount: ChatMessagePlayerCount.SOLO,
+                playerCount: OnlineType.SOLO,
                 playerName: "Maxime",
                 position: ChatMessagePosition.NA,
                 timestamp: new Date("Sat Mar 23 2019 13:51:46 GMT-0400 (Eastern Daylight Time)"),
@@ -105,7 +106,7 @@ describe("ChatWebsocketActionService", () => {
         service.execute(message, socket as unknown as SocketIO.Socket);
         expect(socket.eventValue).to.equal(SocketEvent.CHAT);
         expect(socket.emitValue).to.equal("12:51:46 – Erreur.");
-        message.body.playerCount = ChatMessagePlayerCount.MULTI;
+        message.body.playerCount = OnlineType.MULTIPLAYER;
         service.execute(message, socket as unknown as SocketIO.Socket);
         expect(socket.eventValue).to.equal(SocketEvent.CHAT);
         expect(socket.emitValue).to.equal("12:51:46 – Erreur par Maxime.");
@@ -116,7 +117,7 @@ describe("ChatWebsocketActionService", () => {
             title: SocketEvent.CHAT,
             body: {
                 gameName: "MicheDePain",
-                playerCount: ChatMessagePlayerCount.SOLO,
+                playerCount: OnlineType.SOLO,
                 playerName: "Maxime",
                 position: ChatMessagePosition.FIRST,
                 timestamp: new Date("Sat Mar 23 2019 13:51:46 GMT-0400 (Eastern Daylight Time)"),
@@ -136,7 +137,7 @@ describe("ChatWebsocketActionService", () => {
             title: SocketEvent.CHAT,
             body: {
                 gameName: "MicheDePain",
-                playerCount: ChatMessagePlayerCount.SOLO,
+                playerCount: OnlineType.SOLO,
                 playerName: "Maxime",
                 position: ChatMessagePosition.FIRST,
                 timestamp: new Date("Sat Mar 23 2019 13:51:46 GMT-0400 (Eastern Daylight Time)"),

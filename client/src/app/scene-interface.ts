@@ -1,6 +1,6 @@
-import * as THREE from "three";
+import {Scene} from "three";
 
 export interface IScene {
-    scene: THREE.Scene;
-    modifiedScene: THREE.Scene;
+  scene: Scene;
+  modifiedScene: Scene;
 }

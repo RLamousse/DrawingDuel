@@ -5,7 +5,7 @@
       <canvas id="endGameMessage"></canvas>
       <h1 class = "gameName">{{gameName}}</h1>
       <div class="timer"><app-timer [gameName] = "gameName"
-                                    [isSimpleGame] = "isSimpleGame"></app-timer></div>
+                                    [gameType] = "FREE_GAME_TYPE"></app-timer></div>
       <div class = "row" [class.disabled]="!cursorEnabled">
         <div class= "scene" (click)="onDivContClick($event)" #originalView>
           <canvas id="originalCanvasMessage"></canvas>

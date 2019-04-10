@@ -4,7 +4,7 @@
       <h1 class="gameName">{{gameName}}</h1>
       <div class="centered">
         <app-timer class="timer" [gameName] = "gameName"
-        [isSimpleGame] = "isSimpleGame"></app-timer>
+                   [gameType]= "gameType"></app-timer>
       </div>
       <app-simple-game-container [originalImage]="originalImage"
       [modifiedImage]="modifiedImage"></app-simple-game-container>
