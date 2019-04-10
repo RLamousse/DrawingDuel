@@ -13,7 +13,9 @@ import {ResetGameFormComponent} from "./reset-game-form/reset-game-form.componen
   styleUrls: ["./game.component.css"],
 })
 
-export class GameComponent implements OnInit{
+export class GameComponent implements OnInit {
+
+  public constructor(private router: Router, private dialog: MatDialog) {}
 
   @Input() public gameName: string = "test";
   @Input() public bestSoloTimes: IRecordTime[];

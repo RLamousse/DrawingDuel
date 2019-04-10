@@ -52,12 +52,13 @@ mat-card-content{
 .buttonRow{
   display: flex;
   flex-direction: row;
-  margin-left: 27%;
+  margin-left: 22%;
 }
 
 button{
   width: 30%;
   text-align: center;
+  margin: 10px;
 }
 
 .card {
