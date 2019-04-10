@@ -214,20 +214,17 @@ describe("SceneRendererService", () => {
       });
   });
 
-  it("should throw an unexpected server response", async() => {
+  it("should throw an unexpected server response on diff validator call", async () => {
     const service: SceneRendererService = TestBed.get(SceneRendererService);
 
     axiosMock.onGet(ALL_GET_CALLS_REGEX)
       .reply(HttpStatus.INTERNAL_SERVER_ERROR);
 
-    const original: Scene = new Scene();
-    const modified: Scene = new Scene();
-    const oriCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
-    const modCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
-    service.init(oriCont, modCont);
-    service.loadScenes(original, modified, "gameName");
+    const material: MeshPhongMaterial = new MeshPhongMaterial();
+    const geo: BoxGeometry = new BoxGeometry();
+    const mesh: Mesh = new Mesh(geo, material);
 
-    return service.objDiffValidation(325, 430)
+    return service["differenceValidationAtPoint"](mesh)
       .catch((reason: Error) => {
         expect(reason.message).toContain("Request failed with status code 500");
       });

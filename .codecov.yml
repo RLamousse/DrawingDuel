@@ -16,7 +16,7 @@ coverage:
         paths:
           - server/app/**/*
       default:
-        threshold: 0
+        threshold: null
   range: 70..100
   round: down
   precision: 2
