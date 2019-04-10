@@ -6,14 +6,13 @@
   <img class="bottomright" src="assets\images\loadingScreen.gif">
   </body>
 </ng-template>
-<div class="popup">
-  <button mat-raised-button class="title">Parties Simples</button>
-  <button mat-raised-button class="title">Parties Libres</button>
-</div>
 <ng-template #listView>
+  <div class="popup">
+    <button mat-raised-button class="title">Parties Simples</button>
+    <button mat-raised-button class="title">Parties Libres</button>
+  </div>
   <div class= "gameList">
       <div class= "window">
-          <h1>Parties Simples</h1>
           <app-game *ngFor="let instance of gameService.simpleGames"
               [gameName]= "instance.gameName"
               [originalImage]= "instance.originalImage"
@@ -27,7 +26,6 @@
           </app-game>
       </div>
       <div class="window">
-          <h1>Parties Libres</h1>
           <app-game *ngFor= "let instance of gameService.extendedFreeGames"
               [gameName]= "instance.gameName"
               [bestSoloTimes]= "instance.bestSoloTimes"
