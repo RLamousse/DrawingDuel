@@ -4,6 +4,8 @@ import {Socket} from "socket.io";
 import * as uuid from "uuid/v4";
 import {
     createWebsocketMessage,
+    ChatMessagePosition,
+    ChatMessageType,
     RoomInteractionMessage,
     WebsocketMessage
 } from "../../../../../common/communication/messages/message";
@@ -15,6 +17,7 @@ import {IRoomInfo} from "../../../../../common/model/rooms/room-info";
 import {IGameRoom} from "../../../model/room/game-room";
 import types from "../../../types";
 import {DataBaseService} from "../../data-base.service";
+import {ChatWebsocketActionService} from "../chat-websocket-action.service";
 import {RadioTowerService} from "../radio-tower.service";
 import {FreeGameRoom} from "./free-game-room";
 import {SimpleGameRoom} from "./simple-game-room";
@@ -26,7 +29,8 @@ export class HotelRoomService {
     private readonly _sockets: Map<Socket, string>;
 
     public constructor(@inject(types.DataBaseService) private databaseService: DataBaseService,
-                       @inject(types.RadioTowerService) private radioTower: RadioTowerService) {
+                       @inject(types.RadioTowerService) private radioTower: RadioTowerService,
+                       @inject(types.ChatWebsocketActionService) private chatAction: ChatWebsocketActionService) {
         this._rooms = new Map<string, IGameRoom>();
         this._sockets = new Map<Socket, string>();
     }
@@ -36,6 +40,13 @@ export class HotelRoomService {
         const solo: number = 1;
 
         return playerCountMessage === OnlineType.SOLO ? solo : multi;
+    }
+
+    private static onlineTypeFromPlayerCapacity(playerCount: number): OnlineType {
+        const multi: OnlineType = OnlineType.MULTI;
+        const solo: OnlineType.SOLO = OnlineType.SOLO;
+
+        return playerCount === 1 ? solo : multi;
     }
 
     public async createGameRoom(socket: Socket, gameName: string, playerCount: OnlineType): Promise<void> {
@@ -123,14 +134,27 @@ export class HotelRoomService {
 
         // TODO test .in().on()
         socket.in(room.id).on(SocketEvent.INTERACT, <T>(message: WebsocketMessage<RoomInteractionMessage<T>>) => {
+            let good: boolean = false;
             room.interact(socket.id, message.body)
                 .then((interactionResponse: T) => {
+                    good = true;
                     this.radioTower.sendToRoom(SocketEvent.INTERACT, createWebsocketMessage(interactionResponse), room.id);
                 })
                 .catch((error: Error) => {
                     socket.emit(SocketEvent.INTERACT, createWebsocketMessage(error));
                     // TODO Send error to chat
                 });
+            this.chatAction.sendChat(
+                {
+                    gameName: room.gameName,
+                    playerCount: HotelRoomService.onlineTypeFromPlayerCapacity(room.playerCapacity),
+                    // TODO CHANGE THIS SHIT
+                    playerName: "Snoop Dogg",
+                    position: ChatMessagePosition.NA,
+                    timestamp: new Date(),
+                    type: good ? ChatMessageType.DIFF_FOUND : ChatMessageType.DIFF_ERROR,
+                },
+                room.id);
         });
         socket.in(room.id).on(SocketEvent.CHECK_OUT, () => {
             this.handleCheckout(room, socket);
@@ -143,6 +167,7 @@ export class HotelRoomService {
 
     private handleCheckout(room: IGameRoom, socket: Socket): void {
         socket.leave(room.id);
+        socket.removeAllListeners(SocketEvent.INTERACT);
         room.checkOut(socket.id);
         if (room.vacant && room.ongoing) {
             this.radioTower.sendToRoom(SocketEvent.KICK, undefined, room.id);
