@@ -55,7 +55,7 @@ export class SimpleGameContainerComponent implements OnDestroy{
     if ((value as ISimpleGameInteractionResponse).differenceCluster) {
       this.notifyClickToWebsocket(true);
       const differencePoints: IPoint[] = (value as ISimpleGameInteractionResponse).differenceCluster[DIFFERENCE_CLUSTER_POINTS_INDEX]
-        .map((point: IPoint) => tansformOrigin(point, this.originalImageComponent.height));
+        .map((point: IPoint) => inverseY(point, this.originalImageComponent.height));
       const pixels: PixelData[] = this.originalImageComponent.getPixels(differencePoints);
       this.modifiedImageComponent.drawPixels(pixels);
       playRandomSound(FOUND_DIFFERENCE_SOUNDS);
