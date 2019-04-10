@@ -3,6 +3,7 @@ import {IInteractionData, IInteractionResponse} from "../../../../common/model/r
 export interface IGameRoom {
     id: string;
     gameName: string;
+    playerCapacity: number;
     vacant: boolean;
     empty: boolean;
     ongoing: boolean;
