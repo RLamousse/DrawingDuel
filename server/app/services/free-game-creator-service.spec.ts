@@ -70,7 +70,7 @@ const mockedObject3DCreator = {
     },
 };
 
-describe("FreeGameCreatorService", () => {
+describe.only("FreeGameCreatorService", () => {
     const freeGameCreatorService: FreeGameCreatorService = new FreeGameCreatorService(new Object3DCreatorService());
     beforeEach(() => {
         container.rebind(types.Object3DCreatorService).toConstantValue(mockedObject3DCreator);
@@ -142,7 +142,7 @@ describe("FreeGameCreatorService", () => {
     });
 
     // test setAstronautCloseFromEarth
-    it.skip("should go through the collision and set a new position and scale", () => {
+    it("should go through the collision and set a new position and scale", () => {
         const object: IObject.IJson3DObject = mockedAstroObject;
         objects.push(mockedAstroObject2);
         freeGameCreatorService["setAstronautCloseFromEarth"](object, objects);

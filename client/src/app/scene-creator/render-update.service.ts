@@ -1,7 +1,5 @@
 import { Injectable } from "@angular/core";
 import * as THREE from "three";
-import {IVector3} from "../../../../common/model/point";
-import {deepCompare} from "../../../../common/util/util";
 
 @Injectable({
   providedIn: "root",
@@ -91,13 +89,13 @@ export class RenderUpdateService {
     let originalObj: THREE.Object3D = new THREE.Object3D();
     let modifObj: THREE.Object3D = new THREE.Object3D();
     for (const obj of modifiedScene.children) {
-      if (this.isSameCenter(obj.position, object.position)) {
+      if (obj.position.equals(object.position)) {
         modifObj = obj;
         modifObj.name = this.MODIFIED_NAME;
       }
     }
     for (const obj of scene.children) {
-      if (this.isSameCenter(obj.position, object.position)) {
+      if (obj.position.equals(object.position)) {
         originalObj = obj.clone();
         originalObj.name = this.ORIGINAL_NAME;
       }
@@ -116,15 +114,5 @@ export class RenderUpdateService {
     } else {
       modifiedScene.add(originalObj);
     }
-  }
-
-  private isSameCenter(center1: THREE.Vector3, center2: THREE.Vector3): boolean {
-    return (center1.x === center2.x &&
-      center1.y === center2.y &&
-      center1.z === center2.z);
-  }
-
-  public isSameObject(obj1: IVector3, obj2: IVector3): boolean {
-    return deepCompare(obj1, obj2);
   }
 }

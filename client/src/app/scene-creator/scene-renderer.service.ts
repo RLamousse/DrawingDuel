@@ -269,7 +269,7 @@ export class SceneRendererService {
   }
   private checkIfAlreadyFound(object: IJson3DObject): void {
     for (const obj of this.gameState.foundDifference) {
-      if (this.renderUpdateService.isSameObject(obj.position, object.position)) {
+      if (deepCompare(obj.position, object.position)) {
         playRandomSound(NO_DIFFERENCE_SOUNDS);
         throw new AlreadyFoundDifferenceError();
       }
