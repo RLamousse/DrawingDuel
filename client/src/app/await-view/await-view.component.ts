@@ -34,6 +34,7 @@ export class AwaitViewComponent implements OnInit, OnDestroy {
   public ngOnDestroy(): void {
     this.gameStartSub.unsubscribe();
     this.gameDeletionSub.unsubscribe();
+    this.roomService.checkOutRoom();
   }
 
   public ngOnInit(): void {
