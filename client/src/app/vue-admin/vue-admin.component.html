@@ -1,14 +1,18 @@
 <div class="adminOptions" unloadevent >
-  <div class = "Admin">
-    Administrateur
+  <div class="topInfo">
+    <div class = "Admin">
+      Administrateur
+    </div>
+    <div>
+      <button mat-raised-button class="gameCreationButton" (click) = "createSimpleGame()">Creation de jeu simple</button>
+      <button mat-raised-button class="gameCreationButton" (click) = "create3DGame()">Creation de jeu 3D</button>
+    </div>
   </div>
-  <div>
-    <button mat-raised-button class="gameCreationButton" (click) = "createSimpleGame()">Creation de jeu simple</button>
-    <button mat-raised-button class="gameCreationButton" (click) = "create3DGame()">Creation de jeu 3D</button>
+  <div class="liste">
+    <app-game-list [rightButton]="rightButton"
+                   [leftButton]="leftButton">
+
+    </app-game-list>
   </div>
 </div>
-<div class = "lineSkip">
-  <app-game-list [rightButton]="rightButton"
-                 [leftButton]="leftButton">
-  </app-game-list>
-</div>  
+

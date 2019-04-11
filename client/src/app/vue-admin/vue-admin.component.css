@@ -1,37 +1,42 @@
 .gameCreationButton{
-    background-color: #3F51B5;
+    background-color: #B8B8C6;
     border: none;
     width: 50%;
     height: 50px;
-    color: white;
+    color: black;
     display: inline-block;
     font-size: 25px;
     cursor: pointer;
 }
 
 .gameCreationButton:hover{
-    background-color: darkblue;
+    background-color: #373745;
+    color: white;
 }
 
+.topInfo{
+  z-index: 10;
+  position: fixed;
+  width: 100%;
+}
+
+.liste{
+  padding-top: 85px;
+}
 .Admin{
     font-size: 25px;
-    font-family: Roboto;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
     height: 35px;
     color: white;
+    background-color: black;
     padding-left: 10px;
     text-align : center;
 }
 
 .adminOptions{
-    position: fixed;
+    top:0;
     width: 100%;
-    padding-top: 10px;
-    background-color: darkblue;
-    z-index: 10;
 }
 
-.lineSkip{
-    padding-top: 6.2%;
-}
 
 
