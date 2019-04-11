@@ -1,4 +1,5 @@
 import { expect } from "chai";
+import {Server} from "socket.io";
 import {
     createWebsocketMessage, ChatMessage,
     ChatMessagePosition, ChatMessageType,
@@ -22,13 +23,63 @@ class Socket {
     }
 }
 
+class FakeServer {
+
+    public constructor() {
+        this.emitValue = "";
+        this.eventValue = "";
+    }
+
+    // tslint:disable-next-line:no-any
+    public sockets: any = {
+        emit: (event: string, message: WebsocketMessage<string>) => {
+            this.eventValue = event;
+            this.emitValue = message.body;
+        },
+    };
+
+    public eventValue: string;
+    public emitValue: string;
+
+    // tslint:disable-next-line:no-any
+    public in(room: string): any {
+        return {
+            emit: (event: string, message: WebsocketMessage<string>) => {
+                this.eventValue = event;
+                this.emitValue = message.body;
+            },
+        };
+    }
+
+    // tslint:disable-next-line:no-any
+    public to(succ: string): any {
+        return {
+            emit: (event: string, message: WebsocketMessage<string>) => {
+                this.eventValue = event;
+                this.emitValue = message.body;
+            },
+        };
+    }
+
+    public emit(event: string, message: WebsocketMessage<string>): void {
+        this.eventValue = event;
+        this.emitValue = message.body;
+    }
+}
+
 describe("ChatWebsocketActionService", () => {
 
     let service: ChatWebsocketActionService;
     let socket: Socket;
+    let radioTower: RadioTowerService;
+    let server: FakeServer;
     beforeEach(() => {
-        service = new ChatWebsocketActionService(new RadioTowerService());
+        server = new FakeServer();
+        radioTower = new RadioTowerService();
+        radioTower.server = server as unknown as Server;
+        service = new ChatWebsocketActionService(radioTower);
         socket = new Socket();
+
         // Private member access
         // tslint:disable-next-line: no-any
         (service as any).formatTime = () => {
@@ -36,7 +87,7 @@ describe("ChatWebsocketActionService", () => {
         };
     });
 
-    it.skip("should emit an appropriate connection message on socket connection", () => {
+    it("should emit an appropriate connection message on socket connection", () => {
         const message: WebsocketMessage<ChatMessage> = createWebsocketMessage(
             {
                 gameName: "",
@@ -46,13 +97,12 @@ describe("ChatWebsocketActionService", () => {
                 timestamp: new Date("Sat Mar 23 2019 13:51:46 GMT-0400 (Eastern Daylight Time)"),
                 type: ChatMessageType.CONNECTION,
             });
-
         service.execute(message, socket as unknown as SocketIO.Socket);
-        expect(socket.eventValue).to.equal(SocketEvent.CHAT);
-        expect(socket.emitValue).to.equal("12:51:46 – Maxime vient de se connecter.");
+        expect(server.eventValue).to.equal(SocketEvent.CHAT);
+        expect(server.emitValue).to.equal("12:51:46 – Maxime vient de se connecter.");
     });
 
-    it.skip("should emit an appropriate disconnection message on socket disconnection", () => {
+    it("should emit an appropriate disconnection message on socket disconnection", () => {
         const message: WebsocketMessage<ChatMessage> = createWebsocketMessage(
             {
                 gameName: "",
@@ -63,11 +113,11 @@ describe("ChatWebsocketActionService", () => {
                 type: ChatMessageType.DISCONNECTION,
             });
         service.execute(message, socket as unknown as SocketIO.Socket);
-        expect(socket.eventValue).to.equal(SocketEvent.CHAT);
-        expect(socket.emitValue).to.equal("12:51:46 – Maxime vient de se déconnecter.");
+        expect(server.eventValue).to.equal(SocketEvent.CHAT);
+        expect(server.emitValue).to.equal("12:51:46 – Maxime vient de se déconnecter.");
     });
 
-    it.skip("should emit an appropriate difference found message", () => {
+    it("should emit an appropriate difference found message", () => {
         const message: WebsocketMessage<ChatMessage> = createWebsocketMessage(
             {
                 gameName: "",
@@ -78,15 +128,15 @@ describe("ChatWebsocketActionService", () => {
                 type: ChatMessageType.DIFF_FOUND,
             });
         service.execute(message, socket as unknown as SocketIO.Socket);
-        expect(socket.eventValue).to.equal(SocketEvent.CHAT);
-        expect(socket.emitValue).to.equal("12:51:46 – Différence trouvée.");
+        expect(server.eventValue).to.equal(SocketEvent.CHAT);
+        expect(server.emitValue).to.equal("12:51:46 – Différence trouvée.");
         message.body.playerCount = OnlineType.MULTI;
         service.execute(message, socket as unknown as SocketIO.Socket);
-        expect(socket.eventValue).to.equal(SocketEvent.CHAT);
-        expect(socket.emitValue).to.equal("12:51:46 – Différence trouvée par Maxime.");
+        expect(server.eventValue).to.equal(SocketEvent.CHAT);
+        expect(server.emitValue).to.equal("12:51:46 – Différence trouvée par Maxime.");
     });
 
-    it.skip("should emit an appropriate difference error message", () => {
+    it("should emit an appropriate difference error message", () => {
         const message: WebsocketMessage<ChatMessage> = createWebsocketMessage({
                 gameName: "",
                 playerCount: OnlineType.SOLO,
@@ -96,15 +146,15 @@ describe("ChatWebsocketActionService", () => {
                 type: ChatMessageType.DIFF_ERROR,
                                                                               });
         service.execute(message, socket as unknown as SocketIO.Socket);
-        expect(socket.eventValue).to.equal(SocketEvent.CHAT);
-        expect(socket.emitValue).to.equal("12:51:46 – Erreur.");
+        expect(server.eventValue).to.equal(SocketEvent.CHAT);
+        expect(server.emitValue).to.equal("12:51:46 – Erreur.");
         message.body.playerCount = OnlineType.MULTI;
         service.execute(message, socket as unknown as SocketIO.Socket);
-        expect(socket.eventValue).to.equal(SocketEvent.CHAT);
-        expect(socket.emitValue).to.equal("12:51:46 – Erreur par Maxime.");
+        expect(server.eventValue).to.equal(SocketEvent.CHAT);
+        expect(server.emitValue).to.equal("12:51:46 – Erreur par Maxime.");
     });
 
-    it.skip("should emit an appropriate new time record message", () => {
+    it("should emit an appropriate new time record message", () => {
         const message: WebsocketMessage<ChatMessage> = createWebsocketMessage({
                 gameName: "MicheDePain",
                 playerCount: OnlineType.SOLO,
@@ -114,12 +164,12 @@ describe("ChatWebsocketActionService", () => {
                 type: ChatMessageType.BEST_TIME,
                                                                               });
         service.execute(message, socket as unknown as SocketIO.Socket);
-        expect(socket.eventValue).to.equal(SocketEvent.CHAT);
-        expect(socket.emitValue).to.equal("12:51:46 – Maxime obtient la première place dans"
+        expect(server.eventValue).to.equal(SocketEvent.CHAT);
+        expect(server.emitValue).to.equal("12:51:46 – Maxime obtient la première place dans"
                                         + " les meilleurs temps du jeu MicheDePain en solo.");
     });
 
-    it.skip("should emit a broken message when input was broken", () => {
+    it("should emit a broken message when input was broken", () => {
         // To test an impossible case
         // tslint:disable-next-line: no-any
         const message: WebsocketMessage<any> = createWebsocketMessage({
@@ -130,7 +180,49 @@ describe("ChatWebsocketActionService", () => {
                 timestamp: new Date("Sat Mar 23 2019 13:51:46 GMT-0400 (Eastern Daylight Time)"),
                                                                       });
         service.execute(message, socket as unknown as SocketIO.Socket);
-        expect(socket.eventValue).to.equal(SocketEvent.CHAT);
-        expect(socket.emitValue).to.equal("12:51:46 – Voici pourquoi les default existent dans les switchs.");
+        expect(server.eventValue).to.equal(SocketEvent.CHAT);
+        expect(server.emitValue).to.equal("12:51:46 – Voici pourquoi les default existent dans les switchs.");
+    });
+
+    it("should emit an appropriate difference found message (using sendChat)", () => {
+        const message: ChatMessage = {
+            gameName: "",
+            playerCount: OnlineType.SOLO,
+            playerName: "Maxime",
+            position: ChatMessagePosition.NA,
+            timestamp: new Date("Sat Mar 23 2019 13:51:46 GMT-0400 (Eastern Daylight Time)"),
+            type: ChatMessageType.DIFF_FOUND,
+        };
+        service.sendChat(message, "");
+        expect(server.eventValue).to.equal(SocketEvent.CHAT);
+        expect(server.emitValue).to.equal("12:51:46 – Différence trouvée.");
+        message.playerCount = OnlineType.MULTI;
+        service.sendChat(message, "");
+        expect(server.eventValue).to.equal(SocketEvent.CHAT);
+        expect(server.emitValue).to.equal("12:51:46 – Différence trouvée par Maxime.");
+    });
+
+    it("should emit an appropriate difference error message (using sendChat)", () => {
+        const message: ChatMessage = {
+            gameName: "",
+            playerCount: OnlineType.SOLO,
+            playerName: "Maxime",
+            position: ChatMessagePosition.NA,
+            timestamp: new Date("Sat Mar 23 2019 13:51:46 GMT-0400 (Eastern Daylight Time)"),
+            type: ChatMessageType.DIFF_ERROR,
+        };
+        service.sendChat(message, "");
+        expect(server.eventValue).to.equal(SocketEvent.CHAT);
+        expect(server.emitValue).to.equal("12:51:46 – Erreur.");
+        message.playerCount = OnlineType.MULTI;
+        service.sendChat(message, "");
+        expect(server.eventValue).to.equal(SocketEvent.CHAT);
+        expect(server.emitValue).to.equal("12:51:46 – Erreur par Maxime.");
+    });
+
+    it("should format time nicely", () => {
+        const result: string = service["formatTime"](new Date());
+
+        return expect(result.match("(\\d\\d:\\d\\d:\\d\\d)")).to.be.not.null;
     });
 });
