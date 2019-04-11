@@ -3,9 +3,10 @@ import "reflect-metadata";
 import {Socket} from "socket.io";
 import * as uuid from "uuid/v4";
 import {
-    createWebsocketMessage,
+    ChatMessage,
     ChatMessagePosition,
     ChatMessageType,
+    createWebsocketMessage,
     RoomInteractionMessage,
     WebsocketMessage
 } from "../../../../../common/communication/messages/message";
@@ -134,27 +135,27 @@ export class HotelRoomService {
 
         // TODO test .in().on()
         socket.in(room.id).on(SocketEvent.INTERACT, <T>(message: WebsocketMessage<RoomInteractionMessage<T>>) => {
-            let good: boolean = false;
+            const chatMessage: ChatMessage = {
+                gameName: room.gameName,
+                playerCount: HotelRoomService.onlineTypeFromPlayerCapacity(room.playerCapacity),
+                // TODO CHANGE THIS SHIT
+                playerName: "Snoop Dogg",
+                position: ChatMessagePosition.NA,
+                timestamp: new Date(),
+                type: ChatMessageType.DIFF_FOUND,
+            };
             room.interact(socket.id, message.body)
                 .then((interactionResponse: T) => {
-                    good = true;
                     this.radioTower.sendToRoom(SocketEvent.INTERACT, createWebsocketMessage(interactionResponse), room.id);
+                    this.chatAction.sendChat(chatMessage, room.id);
                 })
                 .catch((error: Error) => {
-                    socket.emit(SocketEvent.INTERACT, createWebsocketMessage(error));
+                    // socket.emit(SocketEvent.INTERACT, createWebsocketMessage(error));
+                    this.radioTower.privateSend(SocketEvent.INTERACT, createWebsocketMessage(error.message), socket.id);
                     // TODO Send error to chat
+                    chatMessage.type = ChatMessageType.DIFF_ERROR;
+                    this.chatAction.sendChat(chatMessage, room.id);
                 });
-            this.chatAction.sendChat(
-                {
-                    gameName: room.gameName,
-                    playerCount: HotelRoomService.onlineTypeFromPlayerCapacity(room.playerCapacity),
-                    // TODO CHANGE THIS SHIT
-                    playerName: "Snoop Dogg",
-                    position: ChatMessagePosition.NA,
-                    timestamp: new Date(),
-                    type: good ? ChatMessageType.DIFF_FOUND : ChatMessageType.DIFF_ERROR,
-                },
-                room.id);
         });
         socket.in(room.id).on(SocketEvent.CHECK_OUT, () => {
             this.handleCheckout(room, socket);
