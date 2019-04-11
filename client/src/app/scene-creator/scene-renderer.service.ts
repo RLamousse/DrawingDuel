@@ -18,7 +18,7 @@ import {AbstractServiceError, AlreadyFoundDifferenceError, NoDifferenceAtPointEr
 import {IJson3DObject} from "../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
 import {OnlineType} from "../../../../common/model/game/game";
 import {IFreeGameState} from "../../../../common/model/game/game-state";
-import {getOrigin3D, IVector3} from "../../../../common/model/point";
+import {IVector3} from "../../../../common/model/point";
 import {deepCompare, sleep, X_FACTOR} from "../../../../common/util/util";
 import {playRandomSound, FOUND_DIFFERENCE_SOUNDS, NO_DIFFERENCE_SOUNDS, STAR_THEME_SOUND} from "../simple-game/game-sounds";
 import {SocketService} from "../socket.service";
