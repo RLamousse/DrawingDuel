@@ -19,10 +19,17 @@ img{
 
 .window {
    width: 50%;
-   margin-left: 9.2%;
+   padding-left: 0 !important;
    top: 0;
    min-height: 480px;
  }
+
+.centeredCard{
+  width: 500px;
+  height: auto;
+  margin: 0 auto;
+  position: relative;
+}
 
 .blue{
   background-color: #3F51B5;
@@ -36,12 +43,18 @@ img{
   width: 50%;
   height: 80px;
   color: white;
-  margin: auto;
-  text-align: center;
-  display: inline-block;
   font-size: 25px;
   border: 1px #272731 solid;
   border-radius: 7px;
+  white-space: nowrap;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-weight: 500;
+}
+
+.write{
+  text-align: center;
+  margin-top: 22px;
+
 }
 
 .game:hover{
@@ -52,5 +65,7 @@ img{
   position: fixed;
   width: 100%;
   z-index: 10;
+  display: flex;
+  flex-direction: row;
 }
 

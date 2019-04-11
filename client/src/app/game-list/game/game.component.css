@@ -68,6 +68,7 @@ button{
 }
 
 .card {
+  width: 400px;
   max-width: 400px;
   height: 568px;
   margin: 24px;
