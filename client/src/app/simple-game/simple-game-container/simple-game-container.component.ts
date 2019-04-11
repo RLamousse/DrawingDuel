@@ -36,9 +36,10 @@ export class SimpleGameContainerComponent implements OnDestroy{
 
   protected clickEnabled: boolean = true;
   private callbackSub: Subscription;
+  private lastClick: IPoint;
+  private lastClickOrigin: SimpleGameCanvasComponent;
 
-  public constructor(private simpleGameService: SimpleGameService,
-                     private socket: SocketService) {
+  public constructor(private simpleGameService: SimpleGameService) {
     this.handleValidationResponse = this.handleValidationResponse.bind(this);
     this.callbackSub = this.simpleGameService.registerDifferenceCallback(this.handleValidationResponse);
   }
@@ -51,9 +52,8 @@ export class SimpleGameContainerComponent implements OnDestroy{
     return this.onCanvasClick(clickEvent, this.modifiedImageComponent);
   }
 
-  private handleValidationResponse (value: ISimpleGameInteractionResponse | Error): void {
+  private handleValidationResponse (value: ISimpleGameInteractionResponse | string): void {
     if ((value as ISimpleGameInteractionResponse).differenceCluster) {
-      this.notifyClickToWebsocket(true);
       const differencePoints: IPoint[] = (value as ISimpleGameInteractionResponse).differenceCluster[DIFFERENCE_CLUSTER_POINTS_INDEX]
         .map((point: IPoint) => inverseY(point, this.originalImageComponent.height));
       const pixels: PixelData[] = this.originalImageComponent.getPixels(differencePoints);
@@ -61,14 +61,13 @@ export class SimpleGameContainerComponent implements OnDestroy{
       playRandomSound(FOUND_DIFFERENCE_SOUNDS);
       this.clickEnabled = true;
     } else {
-      if ((value as Error).message === AlreadyFoundDifferenceError.ALREADY_FOUND_DIFFERENCE_ERROR_MESSAGE ||
-        (value as Error).message === NoDifferenceAtPointError.NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE) {
+      if ((value) === AlreadyFoundDifferenceError.ALREADY_FOUND_DIFFERENCE_ERROR_MESSAGE ||
+        (value) === NoDifferenceAtPointError.NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE) {
         playRandomSound(NO_DIFFERENCE_SOUNDS);
-        // this.handleIdentificationError(clickEvent, clickedComponent);
+        this.handleIdentificationError();
       }
       // todo remove next line
-      this.clickEnabled = true;
-      this.notifyClickToWebsocket(false);
+      // this.clickEnabled = true;
     }
     this.callbackSub.unsubscribe();
   }
@@ -80,6 +79,8 @@ export class SimpleGameContainerComponent implements OnDestroy{
     this.clickEnabled = false;
     this.callbackSub.unsubscribe();
     this.callbackSub = this.simpleGameService.registerDifferenceCallback(this.handleValidationResponse);
+    this.lastClick = clickEvent;
+    this.lastClickOrigin = clickedComponent;
 
     return this.simpleGameService.validateDifferenceAtPoint(clickEvent);
       // .then((differenceCluster: DifferenceCluster) => {
