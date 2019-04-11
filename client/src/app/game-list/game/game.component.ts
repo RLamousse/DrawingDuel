@@ -34,9 +34,9 @@ export class GameComponent implements OnInit {
   }
 
   protected leftButtonClick(): void {
-    if (this.leftButton === "jouer") {
+    if (this.leftButton === "Jouer") {
       this.gameType === GameType.SIMPLE ? this.navigatePlayView() : this.navigateFreeView();
-    } else if (this.leftButton === "supprimer") {
+    } else if (this.leftButton === "Supprimer") {
       const dialogConfig: MatDialogConfig = new MatDialogConfig();
       dialogConfig.autoFocus = true;
       dialogConfig.data = {gameName: this.gameName, gameType: this.gameType};
@@ -45,9 +45,9 @@ export class GameComponent implements OnInit {
   }
 
   protected rightButtonClick(): void {
-    if (this.rightButton === "joindre") {
+    if (this.rightButton === "Joindre") {
       this.navigateAwait();
-    } else if (this.rightButton === "reinitialiser") {
+    } else if (this.rightButton === "Reinitialiser") {
       const dialogConfig: MatDialogConfig = new MatDialogConfig();
       dialogConfig.autoFocus = true;
       dialogConfig.data = {gameName: this.gameName, gameType: this.gameType};

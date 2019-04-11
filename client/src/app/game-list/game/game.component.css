@@ -3,7 +3,7 @@ img{
     width: 400px;
     height: 300px;
     margin-top: 12px;
-    border: 1px grey solid;
+    border: 1px #272731 solid;
 }
 
 .scoreTable{
@@ -72,6 +72,7 @@ button{
   height: 568px;
   margin: 24px;
   border: 1px #DDDF92;
+  background-color: #B8B8C6;
 }
 
 .twoD {

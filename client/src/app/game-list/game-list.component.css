@@ -24,14 +24,23 @@ img{
    min-height: 480px;
  }
 
+.blue{
+  background-color: #3F51B5;
+}
+
+.pink{
+  background-color: #FF3C82;
+}
+
 .title{
-  background-color: #373745;
   width: 50%;
   height: 80px;
   color: white;
+  margin: auto;
+  text-align: center;
   display: inline-block;
   font-size: 25px;
-  border: 3px #272731 solid;
+  border: 1px #272731 solid;
   border-radius: 7px;
 }
 
