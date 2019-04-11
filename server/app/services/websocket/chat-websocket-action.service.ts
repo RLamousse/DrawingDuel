@@ -2,16 +2,16 @@ import {format} from "date-and-time";
 import {inject, injectable} from "inversify";
 import {Socket} from "socket.io";
 import {
+    createWebsocketMessage,
     ChatMessage,
     ChatMessageType,
-    createWebsocketMessage,
     WebsocketMessage
 } from "../../../../common/communication/messages/message";
 import {SocketEvent} from "../../../../common/communication/socket-events";
 import {OnlineType} from "../../../../common/model/game/game";
-import {WebsocketActionService} from "./websocket-action.service";
 import types from "../../types";
 import {RadioTowerService} from "./radio-tower.service";
+import {WebsocketActionService} from "./websocket-action.service";
 
 @injectable()
 export class ChatWebsocketActionService extends WebsocketActionService {
