@@ -18,7 +18,7 @@ import {AbstractServiceError, AlreadyFoundDifferenceError, NoDifferenceAtPointEr
 import {IJson3DObject} from "../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
 import {OnlineType} from "../../../../common/model/game/game";
 import {IFreeGameState} from "../../../../common/model/game/game-state";
-import {getOrigin3D, IVector3} from "../../../../common/model/point";
+import {IVector3} from "../../../../common/model/point";
 import {deepCompare, sleep, X_FACTOR} from "../../../../common/util/util";
 import {playRandomSound, FOUND_DIFFERENCE_SOUNDS, NO_DIFFERENCE_SOUNDS, STAR_THEME_SOUND} from "../simple-game/game-sounds";
 import {SocketService} from "../socket.service";
@@ -41,7 +41,7 @@ export class SceneRendererService {
                      private socket: SocketService,
                      private objectCollisionService: ObjectCollisionService,
   ) {
-    this.gameState = {isCheatModeActive: false, isWaitingInThread: false, foundDifference: []};
+    this.gameState = {isCheatModeActive: false, isWaitingInThread: false, foundObjects: []};
   }
   public get foundDifferenceCount(): Observable<number> {
     return this.differenceCountSubject;
@@ -130,7 +130,7 @@ export class SceneRendererService {
     this.prevTime = performance.now();
     this.velocity = new Vector3();
     this.gameName = gameName;
-    this.gameState.foundDifference = [];
+    this.gameState.foundObjects = [];
     this.renderLoop();
   }
   private async blink(): Promise<void> {
@@ -145,7 +145,7 @@ export class SceneRendererService {
     if (this.gameState.isCheatModeActive) {
       STAR_THEME_SOUND.play();
       await this.loadCheatData(loadCheatData);
-      await this.updateCheateDiffData(this.gameState.foundDifference);
+      await this.updateCheateDiffData(this.gameState.foundObjects);
       this.gameState.blinkThread = setInterval(async () => this.blink(),
                                                this.BLINK_INTERVAL_MS);
     } else {
@@ -240,7 +240,7 @@ export class SceneRendererService {
 
     return Axios.get<IJson3DObject>(SERVER_BASE_URL + DIFF_VALIDATOR_3D_BASE, {params: queryParams})
       .then(async (value: AxiosResponse<IJson3DObject>) => {
-        if (this.gameState.foundDifference.length !== 0 || this.gameState.foundDifference !== undefined) {
+        if (this.gameState.foundObjects.length !== 0 || this.gameState.foundObjects !== undefined) {
           this.checkIfAlreadyFound(value.data);
         }
         this.notifyClickToWebsocket(true);
@@ -268,7 +268,7 @@ export class SceneRendererService {
     this.socket.send(SocketEvent.CHAT, message);
   }
   private checkIfAlreadyFound(object: IJson3DObject): void {
-    for (const obj of this.gameState.foundDifference) {
+    for (const obj of this.gameState.foundObjects) {
       if (deepCompare(obj.position, object.position)) {
         playRandomSound(NO_DIFFERENCE_SOUNDS);
         throw new AlreadyFoundDifferenceError();
@@ -276,9 +276,9 @@ export class SceneRendererService {
     }
   }
   private updateRoutine(jsonObj: IJson3DObject, obj: Object3D): void {
-    this.gameState.foundDifference.push(jsonObj);
+    this.gameState.foundObjects.push(jsonObj);
     this.renderUpdateService.updateDifference(obj, this.scene, this.modifiedScene);
-    this.differenceCountSubject.next(this.gameState.foundDifference.length);
+    this.differenceCountSubject.next(this.gameState.foundObjects.length);
     playRandomSound(FOUND_DIFFERENCE_SOUNDS);
   }
   private changeVisibility(value: Mesh | Scene): void {

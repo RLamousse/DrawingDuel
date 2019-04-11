@@ -9,5 +9,5 @@ export interface ISimpleGameState extends IGameState {
 }
 
 export interface IFreeGameState extends IGameState {
-    foundDifference: IJson3DObject[];
+    foundObjects: IJson3DObject[];
 }

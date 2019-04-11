@@ -99,7 +99,7 @@ export class SceneCreatorComponent implements OnInit, OnDestroy {
         .then(() => {
           const VICTORY_COUNT: number = 7;
           this.clickEnabled = true;
-          if (this.renderService.gameState.foundDifference.length === VICTORY_COUNT) {
+          if (this.renderService.gameState.foundObjects.length === VICTORY_COUNT) {
             this.canvasVictoryDraw();
             this.clickEnabled = false;
           }

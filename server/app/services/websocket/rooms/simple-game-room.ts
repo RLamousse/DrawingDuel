@@ -32,13 +32,13 @@ export class SimpleGameRoom extends AbstractGameRoom<ISimpleGame, ISimpleGameSta
             clientId,
             {
                 foundDifferenceClusters: [],
-            });
+            } as ISimpleGameState);
     }
 
     public async interact(clientId: string, interactionData: ISimpleGameInteractionData): Promise<ISimpleGameInteractionResponse> {
         return this.validateDifference(clientId, interactionData.coord)
             .then((foundDifferenceCluster: DifferenceCluster) => {
-                return {differenceCluster: foundDifferenceCluster};
+                return {differenceCluster: foundDifferenceCluster} as ISimpleGameInteractionResponse;
             })
             .catch((error: Error) => {
                 throw error;
