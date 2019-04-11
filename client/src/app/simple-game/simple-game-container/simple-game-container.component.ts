@@ -16,7 +16,7 @@ export const IDENTIFICATION_ERROR_TEXT: string = "Erreur";
              templateUrl: "./simple-game-container.component.html",
              styleUrls: ["./simple-game-container.component.css"],
            })
-export class SimpleGameContainerComponent implements OnDestroy{
+export class SimpleGameContainerComponent implements OnDestroy {
 
   @Input() public originalImage: string;
   @Input() public modifiedImage: string;
@@ -50,19 +50,18 @@ export class SimpleGameContainerComponent implements OnDestroy{
       this.modifiedImageComponent.drawPixels(pixels);
       playRandomSound(FOUND_DIFFERENCE_SOUNDS);
       this.clickEnabled = true;
+      this.simpleGameService.updateCounter();
     } else {
-      if ((value) === AlreadyFoundDifferenceError.ALREADY_FOUND_DIFFERENCE_ERROR_MESSAGE ||
-        (value) === NoDifferenceAtPointError.NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE) {
+      if (value === AlreadyFoundDifferenceError.ALREADY_FOUND_DIFFERENCE_ERROR_MESSAGE ||
+          value === NoDifferenceAtPointError.NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE) {
         playRandomSound(NO_DIFFERENCE_SOUNDS);
         this.handleIdentificationError();
       }
-      // todo remove next line
-      // this.clickEnabled = true;
     }
     this.callbackSub.unsubscribe();
   }
 
-  private async onCanvasClick(clickEvent: IPoint, clickedComponent: SimpleGameCanvasComponent): Promise<void> {
+  private onCanvasClick(clickEvent: IPoint, clickedComponent: SimpleGameCanvasComponent): void {
     if (!this.clickEnabled) {
       return;
     }
@@ -72,23 +71,7 @@ export class SimpleGameContainerComponent implements OnDestroy{
     this.lastClick = clickEvent;
     this.lastClickOrigin = clickedComponent;
 
-    return this.simpleGameService.validateDifferenceAtPoint(clickEvent);
-      // .then((differenceCluster: DifferenceCluster) => {
-      //   this.notifyClickToWebsocket(true);
-      //   const differencePoints: IPoint[] = differenceCluster[DIFFERENCE_CLUSTER_POINTS_INDEX]
-      //     .map((point: IPoint) => inverseY(point, this.originalImageComponent.height));
-      //   const pixels: PixelData[] = this.originalImageComponent.getPixels(differencePoints);
-      //   this.modifiedImageComponent.drawPixels(pixels);
-      //   this.clickEnabled = true;
-      // })
-      // .catch((reason: Error) => {
-      //   if (reason.message === AlreadyFoundDifferenceError.ALREADY_FOUND_DIFFERENCE_ERROR_MESSAGE ||
-      //     reason.message === NoDifferenceAtPointError.NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE) {
-      //     playRandomSound(NO_DIFFERENCE_SOUNDS);
-      //     this.handleIdentificationError(clickEvent, clickedComponent);
-      //   }
-      //   this.notifyClickToWebsocket(false);
-      // });
+    this.simpleGameService.validateDifferenceAtPoint(clickEvent);
   }
 
   public ngOnDestroy(): void {
