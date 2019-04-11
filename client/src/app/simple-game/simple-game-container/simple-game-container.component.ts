@@ -1,21 +1,11 @@
 import {Component, Input, OnDestroy, ViewChild} from "@angular/core";
 import {Subscription} from "rxjs";
-import {
-  createWebsocketMessage,
-  ChatMessage,
-  ChatMessagePosition,
-  ChatMessageType, WebsocketMessage
-} from "../../../../../common/communication/messages/message";
-import {SocketEvent} from "../../../../../common/communication/socket-events";
 import {AlreadyFoundDifferenceError, NoDifferenceAtPointError} from "../../../../../common/errors/services.errors";
-import {OnlineType} from "../../../../../common/model/game/game";
 import {DIFFERENCE_CLUSTER_POINTS_INDEX} from "../../../../../common/model/game/simple-game";
 import {inverseY, IPoint} from "../../../../../common/model/point";
 import {ISimpleGameInteractionResponse} from "../../../../../common/model/rooms/interaction";
-import {SocketService} from "../../socket.service";
-import {UNListService} from "../../username.service";
 import {playRandomSound, FOUND_DIFFERENCE_SOUNDS, NO_DIFFERENCE_SOUNDS} from "../game-sounds";
-import {PixelData, SimpleGameCanvasComponent} from "../simple-game-canvas/simple-game-canvas.component";
+import {PixelData, SimpleGameCanvasComponent, TextType} from "../simple-game-canvas/simple-game-canvas.component";
 import {SimpleGameService} from "../simple-game.service";
 
 export const IDENTIFICATION_ERROR_TIMOUT_MS: number = 1000;
@@ -101,36 +91,23 @@ export class SimpleGameContainerComponent implements OnDestroy{
       // });
   }
 
-  private notifyClickToWebsocket(good: boolean): void {
-    const message: WebsocketMessage<ChatMessage> = createWebsocketMessage<ChatMessage>(
-      {
-        gameName: "",
-        playerCount: OnlineType.SOLO,
-        playerName: UNListService.username,
-        position: ChatMessagePosition.NA,
-        timestamp: new Date(),
-        type: good ? ChatMessageType.DIFF_FOUND : ChatMessageType.DIFF_ERROR,
-      });
-    this.socket.send(SocketEvent.CHAT, message);
-  }
-
   public ngOnDestroy(): void {
     this.callbackSub.unsubscribe();
   }
 
-  // private handleIdentificationError(clickEvent: IPoint, clickedComponent: SimpleGameCanvasComponent): void {
-  //   const pixelsBackup: Uint8ClampedArray = clickedComponent.getRawPixelData();
-  //   clickedComponent.drawText(
-  //     IDENTIFICATION_ERROR_TEXT,
-  //     inverseY(clickEvent, clickedComponent.height),
-  //     TextType.ERROR);
-  //
-  //   setTimeout(
-  //     () => {
-  //       clickedComponent.setRawPixelData(pixelsBackup);
-  //       this.clickEnabled = true;
-  //     },
-  //     IDENTIFICATION_ERROR_TIMOUT_MS,
-  //   );
-  // }
+  private handleIdentificationError(): void {
+    const pixelsBackup: Uint8ClampedArray = this.lastClickOrigin.getRawPixelData();
+    this.lastClickOrigin.drawText(
+      IDENTIFICATION_ERROR_TEXT,
+      inverseY(this.lastClick, this.lastClickOrigin.height),
+      TextType.ERROR);
+
+    setTimeout(
+      () => {
+        this.lastClickOrigin.setRawPixelData(pixelsBackup);
+        this.clickEnabled = true;
+      },
+      IDENTIFICATION_ERROR_TIMOUT_MS,
+    );
+  }
 }
