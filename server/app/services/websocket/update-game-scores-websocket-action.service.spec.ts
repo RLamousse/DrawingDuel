@@ -11,9 +11,9 @@ import {anything, instance, mock, when} from "ts-mockito";
 import {
     createWebsocketMessage,
     ChatMessage, ChatMessagePosition,
+    ChatMessageType,
     UpdateScoreMessage,
-    WebsocketMessage,
-    ChatMessageType
+    WebsocketMessage
 } from "../../../../common/communication/messages/message";
 import {MODIFY_SCORES, SERVER_BASE_URL} from "../../../../common/communication/routes";
 import {IllegalArgumentError, ScoreNotGoodEnough} from "../../../../common/errors/services.errors";

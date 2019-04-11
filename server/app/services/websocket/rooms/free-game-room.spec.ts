@@ -2,7 +2,7 @@ import Axios from "axios";
 import MockAdapter from "axios-mock-adapter";
 // tslint:disable-next-line:no-duplicate-imports Weird interaction between singletons and interface (olivier st-o approved)
 import AxiosAdapter from "axios-mock-adapter";
-import {expect, assert} from "chai";
+import {assert, expect} from "chai";
 import * as HttpStatus from "http-status-codes";
 import {IMock, Mock} from "typemoq";
 import {DIFF_VALIDATOR_3D_BASE, SERVER_BASE_URL} from "../../../../../common/communication/routes";
