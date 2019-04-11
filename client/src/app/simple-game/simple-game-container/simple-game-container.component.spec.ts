@@ -3,7 +3,6 @@ import {async, ComponentFixture, TestBed} from "@angular/core/testing";
 import {AlreadyFoundDifferenceError, NoDifferenceAtPointError} from "../../../../../common/errors/services.errors";
 import {DifferenceCluster} from "../../../../../common/model/game/simple-game";
 import {getOrigin, IPoint} from "../../../../../common/model/point";
-import {SocketService} from "../../socket.service";
 import {PixelData, TextType} from "../simple-game-canvas/simple-game-canvas.component";
 import {SimpleGameService} from "../simple-game.service";
 import {IDENTIFICATION_ERROR_TEXT, IDENTIFICATION_ERROR_TIMOUT_MS, SimpleGameContainerComponent} from "./simple-game-container.component";
@@ -49,7 +48,8 @@ describe("SimpleGameContainerComponent", () => {
   beforeEach(async(() => {
     mockedSimpleGameService = jasmine.createSpyObj(
       "SimpleGameService",
-      ["validateDifferenceAtPoint"],
+      ["validateDifferenceAtPoint", "registerDifferenceCallback",
+       "updateCounter"],
     );
 
     TestBed.configureTestingModule(
@@ -57,7 +57,6 @@ describe("SimpleGameContainerComponent", () => {
         declarations: [SimpleGameContainerComponent, SimpleGameCanvasStubComponent],
         providers: [
           {provide: SimpleGameService, useValue: mockedSimpleGameService},
-          SocketService,
         ],
         schemas: [NO_ERRORS_SCHEMA],
       });
