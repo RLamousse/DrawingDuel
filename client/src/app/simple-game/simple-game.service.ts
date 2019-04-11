@@ -55,9 +55,9 @@ export class SimpleGameService {
     this._differenceCountSubject = new Subject();
   }
 
-  public registerDifferenceCallback(callback: (message: ISimpleGameInteractionResponse | Error) => void): Subscription {
-    return this.socket.onEvent<ISimpleGameInteractionResponse | Error>(SocketEvent.INTERACT)
-      .subscribe((value: WebsocketMessage<ISimpleGameInteractionResponse | Error>) => {
+  public registerDifferenceCallback(callback: (message: ISimpleGameInteractionResponse | string) => void): Subscription {
+    return this.socket.onEvent<ISimpleGameInteractionResponse | string>(SocketEvent.INTERACT)
+      .subscribe((value: WebsocketMessage<ISimpleGameInteractionResponse | string>) => {
         callback(value.body);
     });
   }
