@@ -14,4 +14,8 @@ export class RadioTowerService {
     public sendToRoom<T>(event: SocketEvent, args: T, roomId: string): void {
         this.server.in(roomId).emit(event, args);
     }
+
+    public privateSend<T>(event: SocketEvent, args: T, socketId: string): void {
+        this.server.to(socketId).emit(event, args);
+    }
 }
