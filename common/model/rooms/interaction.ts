@@ -1,5 +1,6 @@
+import {IJson3DObject} from "../../free-game-json-interface/JSONInterface/IScenesJSON";
 import {DifferenceCluster} from "../game/simple-game";
-import {IPoint} from "../point";
+import {IPoint, IPoint3D} from "../point";
 
 export interface IInteractionData {
 }
@@ -9,7 +10,7 @@ export interface ISimpleGameInteractionData extends IInteractionData {
 }
 
 export interface IFreeGameInteractionData extends IInteractionData {
-    coord: number[];
+    coord: IPoint3D;
 }
 
 export interface IInteractionResponse {
@@ -20,5 +21,5 @@ export interface ISimpleGameInteractionResponse extends IInteractionResponse {
 }
 
 export interface IFreeGameInteractionResponse extends IInteractionData {
-    // TODO
+    object: IJson3DObject;
 }

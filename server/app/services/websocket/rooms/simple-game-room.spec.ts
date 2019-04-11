@@ -1,9 +1,8 @@
-import * as assert from "assert";
 import Axios from "axios";
 import MockAdapter from "axios-mock-adapter";
 // tslint:disable-next-line:no-duplicate-imports Weird interaction between singletons and interface (olivier st-o approved)
 import AxiosAdapter from "axios-mock-adapter";
-import {expect} from "chai";
+import {assert, expect} from "chai";
 import * as HttpStatus from "http-status-codes";
 import {IMock, Mock} from "typemoq";
 import {DIFF_VALIDATOR_BASE, SERVER_BASE_URL} from "../../../../../common/communication/routes";
@@ -14,8 +13,9 @@ import {
     NoVacancyGameRoomError
 } from "../../../../../common/errors/services.errors";
 import {DIFFERENCE_CLUSTER_POINTS_INDEX, ISimpleGame} from "../../../../../common/model/game/simple-game";
-import {getOrigin} from "../../../../../common/model/point";
+import {getOrigin, IPoint} from "../../../../../common/model/point";
 import {ISimpleGameInteractionResponse} from "../../../../../common/model/rooms/interaction";
+import {deepCompare} from "../../../../../common/util/util";
 import {SimpleGameRoom} from "./simple-game-room";
 
 describe("A simple game room", () => {
@@ -166,7 +166,10 @@ describe("A simple game room", () => {
 
             return simpleGameRoom.interact("client", {coord: getOrigin()})
                 .then((response: ISimpleGameInteractionResponse) => {
-                    expect(response.differenceCluster[DIFFERENCE_CLUSTER_POINTS_INDEX]).to.contain(getOrigin());
+                    assert.isTrue(
+                        response.differenceCluster[DIFFERENCE_CLUSTER_POINTS_INDEX]
+                            .every((point: IPoint) => deepCompare(point, getOrigin())),
+                    );
                 });
         });
 
