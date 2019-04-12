@@ -48,21 +48,23 @@ export class DiffCounterComponent implements OnInit, OnDestroy {
   }
 
   private checkDiffSimpleGame(): void {
-    this.simpleGameService.foundDifferencesCount.subscribe((differenceCount: number) => {
+    const sub: Subscription = this.simpleGameService.foundDifferencesCount.subscribe((differenceCount: number) => {
       if (this.diffNumber === this.MAX_DIFF_NUM - 1 && this.diffNumber !== differenceCount) {
         this.endGame();
       }
       this.diffNumber++;
     });
+    this.subscriptions.push(sub);
   }
 
   private checkDiffFreeGame(): void {
-    this.sceneRendererService.foundDifferenceCount.subscribe((differenceCount: number) => {
+    const sub: Subscription = this.sceneRendererService.foundDifferenceCount.subscribe((differenceCount: number) => {
       if (this.diffNumber === this.MAX_DIFF_NUM - 1 && this.diffNumber !== differenceCount) {
         this.endGame();
       }
       this.diffNumber++;
     });
+    this.subscriptions.push(sub);
   }
 
   private openCongratDialog(): void {
@@ -91,6 +93,7 @@ export class DiffCounterComponent implements OnInit, OnDestroy {
 
   public ngOnDestroy(): void {
     this.subscriptions.forEach((elem: Subscription) => elem.unsubscribe());
+    this.diffNumber = 0;
   }
 
 }
