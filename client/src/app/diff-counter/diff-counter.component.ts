@@ -10,6 +10,7 @@ import {SimpleGameService} from "../simple-game/simple-game.service";
 import {SocketService} from "../socket.service";
 import {UNListService} from "../username.service";
 import {EndGameNotifComponent} from "./end-game-notif/end-game-notif.component";
+import {openDialog} from "../dialog-utils";
 
 @Component({
              selector: "app-diff-counter",
@@ -67,12 +68,13 @@ export class DiffCounterComponent implements OnInit {
     const dialogConfig: MatDialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = true;
     dialogConfig.data = {gameName: this.gameName, gameType: this.gameType, };
-    this.dialog.open(EndGameNotifComponent, dialogConfig).afterClosed().subscribe(() => {
-      this.router.navigate(["/game-list/"]) // tslint:disable-next-line:no-any Generic error response
-      .catch((reason: any) => {
-        throw new ComponentNavigationError();
-      });
-    });
+    openDialog(this.dialog, EndGameNotifComponent, {callback: () => {
+      this.router.navigate(["/game-list/"])
+      // tslint:disable-next-line:no-any Generic error response
+        .catch((reason: any) => {
+          throw new ComponentNavigationError();
+        });
+    }});
   }
 
   private postTime(): void {

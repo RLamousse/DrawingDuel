@@ -1,5 +1,5 @@
 import {Component} from "@angular/core";
-import {MatDialog, MatDialogConfig} from "@angular/material";
+import {MatDialog} from "@angular/material";
 import {Create3DGameComponent} from "../create3-dgame/create3-dgame.component";
 import {SimpleGameCreatorFormComponent} from "../simple-game-creator-form/simple-game-creator-form.component";
 import {openDialog} from "../dialog-utils";
@@ -17,10 +17,10 @@ export class VueAdminComponent {
   protected readonly leftButton: string = "Supprimer";
 
   protected createSimpleGame(): void {
-    openDialog(this.dialog, SimpleGameCreatorFormComponent, false);
+    openDialog(this.dialog, SimpleGameCreatorFormComponent, {});
   }
 
   protected create3DGame(): void {
-    openDialog(this.dialog, Create3DGameComponent, false);
+    openDialog(this.dialog, Create3DGameComponent, {});
   }
 }

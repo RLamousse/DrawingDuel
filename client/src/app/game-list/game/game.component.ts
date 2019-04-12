@@ -38,7 +38,8 @@ export class GameComponent implements OnInit {
     if (this.leftButton === "Jouer") {
       this.gameType === GameType.SIMPLE ? this.navigatePlayView() : this.navigateFreeView();
     } else if (this.leftButton === "Supprimer") {
-      openDialog(this.dialog, DeleteGameFormComponent, true, {gameName: this.gameName, gameType: this.gameType});
+      openDialog(this.dialog, DeleteGameFormComponent, {callback: window.location.reload.bind(window.location),
+                                                        data: {gameName: this.gameName, gameType: this.gameType}});
     }
   }
 
@@ -46,7 +47,8 @@ export class GameComponent implements OnInit {
     if (this.rightButton === "Joindre") {
       this.navigateAwait();
     } else if (this.rightButton === "Reinitialiser") {
-      openDialog(this.dialog, ResetGameFormComponent, true,  {gameName: this.gameName, gameType: this.gameType});
+      openDialog(this.dialog, ResetGameFormComponent, {callback: window.location.reload.bind(window.location),
+                                                       data: {gameName: this.gameName, gameType: this.gameType}});
     }
   }
 

@@ -1,11 +1,16 @@
 import {ComponentType} from "@angular/cdk/portal";
 import {MatDialog, MatDialogConfig} from "@angular/material";
 
-export const openDialog: <T>(dialog: MatDialog, dialogComponent: ComponentType<T>, hasToRefresh: boolean, data?: Object) => void =
-  <T>(dialog: MatDialog, dialogComponent: ComponentType<T>, hasToRefresh: boolean, data?: Object, ) => {
+export interface OpenDialogOptionalParameters {
+  data?: Object;
+  callback?(): void;
+}
+
+export const openDialog: <T>(dialog: MatDialog, dialogComponent: ComponentType<T>, optionalParams: OpenDialogOptionalParameters) => void =
+  <T>(dialog: MatDialog, dialogComponent: ComponentType<T>, optionalParams: OpenDialogOptionalParameters) => {
   const dialogConfig: MatDialogConfig = new MatDialogConfig();
   dialogConfig.autoFocus = true;
-  if (data) { dialogConfig.data = data; }
-  hasToRefresh ? dialog.open(dialogComponent, dialogConfig).afterClosed().subscribe(() => window.location.reload()) :
-    dialog.open(dialogComponent, dialogConfig).afterClosed();
+  if (optionalParams.data) { dialogConfig.data = optionalParams.data; }
+  optionalParams.callback ? dialog.open(dialogComponent, dialogConfig).afterClosed().subscribe(optionalParams.callback) :
+    dialog.open(dialogComponent, dialogConfig);
 };

@@ -47,7 +47,7 @@ export class AwaitViewComponent implements OnInit {
 
   private notifyGameDeletion(message: WebsocketMessage<[string, boolean]>): void {
     if (message.body[this.indexString] === this.gameName) {
-      openDialog(this.dialog, GameDeletionNotifComponent, false, {gameName: this.gameName, gameType: this.gameType});
+      openDialog(this.dialog, GameDeletionNotifComponent, {data: {gameName: this.gameName, gameType: this.gameType}});
     }
   }
 }
