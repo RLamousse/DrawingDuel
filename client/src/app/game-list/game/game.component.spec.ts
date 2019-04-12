@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { MatDialog, } from "@angular/material";
+import { MatCardModule, MatDialog } from "@angular/material";
 import { Router } from "@angular/router";
 import {SocketService} from "../../socket.service";
 import {GameButtonOptions} from "./game-button-enum";
@@ -19,6 +19,7 @@ describe("GameComponent", () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [ GameComponent ],
+      imports: [MatCardModule],
       providers: [
          { provide: Router, useClass: class { public navigate: Function = navigateMock; } },
          { provide: MatDialog, useValue: {

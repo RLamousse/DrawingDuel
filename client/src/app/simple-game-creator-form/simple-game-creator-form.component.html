@@ -1,6 +1,6 @@
 <form name="creat-game-form" [formGroup]="formDoc" novalidate (ngSubmit)="onSubmit()">
 
-  <mat-form-field hintLabel="Max 15 charactères" id="name">
+  <mat-form-field color="primary" hintLabel="Max 15 charactères" id="name">
     <input required matInput #input maxlength="15" placeholder="Nom de la partie" formControlName="name">
     <mat-hint align="end">{{input.value?.length || 0}}/15</mat-hint>
     <mat-error *ngIf="formDoc.get('name').hasError('minlength')">
@@ -8,7 +8,7 @@
     </mat-error>
   </mat-form-field>
 
-  <mat-form-field id="originalImage">
+  <mat-form-field color="primary" id="originalImage">
     <ngx-mat-file-input accept="image/bmp" formControlName="originalImage" placeholder="Obligatoire" valuePlaceholder="Image Originale"
       required>
     </ngx-mat-file-input>
@@ -27,7 +27,7 @@
     </mat-error>
   </mat-form-field>
 
-  <mat-form-field id="modifiedImage">
+  <mat-form-field color="primary" id="modifiedImage">
     <ngx-mat-file-input accept="image/bmp" formControlName="modifiedImage" placeholder="Obligatoire" valuePlaceholder="Image Modifiée"
       required></ngx-mat-file-input>
     <mat-icon matSuffix>image</mat-icon>
@@ -45,7 +45,7 @@
     </mat-error>
   </mat-form-field>
   <div>
-    <button id="form-submit" type="form-submit" name="submit" mat-button [disabled]="!formDoc.valid || disableButton">Envoyer</button>
-    <button id="form-reset" type="reset" mat-button color="warn" (click)="exit()">Annuler</button>
+    <button mat-raised-button id="form-submit" type="form-submit" name="submit" color="primary" [disabled]="!formDoc.valid || disableButton">Envoyer</button>
+    <button mat-raised-button id="form-reset" type="reset" color="accent" class="button" (click)="exit()">Annuler</button>
   </div>
 </form>
