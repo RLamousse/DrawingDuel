@@ -32,6 +32,7 @@ export class SimpleGameContainerComponent implements OnDestroy {
 
   public constructor(private simpleGameService: SimpleGameService) {
     this.handleValidationSuccessResponse = this.handleValidationSuccessResponse.bind(this);
+    this.handleValidationErrorResponse = this.handleValidationErrorResponse.bind(this);
     this.successSubscription = this.simpleGameService.registerDifferenceSuccessCallback(this.handleValidationSuccessResponse);
     this.errorSubscription = this.simpleGameService.registerDifferenceErrorCallback(this.handleValidationErrorResponse);
   }
@@ -52,7 +53,6 @@ export class SimpleGameContainerComponent implements OnDestroy {
     playRandomSound(FOUND_DIFFERENCE_SOUNDS);
     this.clickEnabled = true;
     this.simpleGameService.updateCounter();
-    this.successSubscription.unsubscribe();
   }
 
   private handleValidationErrorResponse(errorMessage: string): void {
@@ -61,7 +61,6 @@ export class SimpleGameContainerComponent implements OnDestroy {
       playRandomSound(NO_DIFFERENCE_SOUNDS);
       this.handleIdentificationError();
     }
-    this.errorSubscription.unsubscribe();
   }
 
   private onCanvasClick(clickEvent: IPoint, clickedComponent: SimpleGameCanvasComponent): void {
@@ -69,10 +68,6 @@ export class SimpleGameContainerComponent implements OnDestroy {
       return;
     }
     this.clickEnabled = false;
-    this.successSubscription.unsubscribe();
-    this.errorSubscription.unsubscribe();
-    this.successSubscription = this.simpleGameService.registerDifferenceSuccessCallback(this.handleValidationSuccessResponse);
-    this.errorSubscription = this.simpleGameService.registerDifferenceErrorCallback(this.handleValidationErrorResponse);
     this.lastClick = clickEvent;
     this.lastClickOrigin = clickedComponent;
 
