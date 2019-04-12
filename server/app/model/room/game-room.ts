@@ -1,4 +1,5 @@
 import {IInteractionData, IInteractionResponse} from "../../../../common/model/rooms/interaction";
+import {ReadyInfo} from "../../../../common/model/rooms/ready-info";
 
 export interface IGameRoom {
     id: string;
@@ -7,6 +8,7 @@ export interface IGameRoom {
     vacant: boolean;
     empty: boolean;
     ongoing: boolean;
+    roomReadyEmitInformation: ReadyInfo;
 
     checkIn(clientId: string): void;
 
