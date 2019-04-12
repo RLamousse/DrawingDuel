@@ -17,6 +17,8 @@ coverage:
         threshold: null
         paths:
           - server/app/**/*
+      default:
+        threshold: null
     patch: no
   range: 70..100
   round: down

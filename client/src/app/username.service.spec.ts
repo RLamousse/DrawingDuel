@@ -32,7 +32,7 @@ describe("UNListService", () => {
     service = TestBed.get(UNListService);
     spyService.isAlphanumeric.and.callThrough();
     expect(service.isAlphanumeric("-Bubbles-")).toBe(false);
-    expect(service.message).toBe("Tu dois utiliser seulement des caractères alphanumériques!");
+    expect(service.message).toBe("Caractères alphanumériques seulement!");
   });
 
   it("should return true if a valid username is enter", async () => {

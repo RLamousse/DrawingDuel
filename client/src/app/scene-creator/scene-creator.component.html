@@ -1,27 +1,22 @@
 <link href="https://fonts.googleapis.com/css?family=Orbitron" rel="stylesheet">
-<body appFPControlEvent (contextmenu)="onRightClick($event)">
-  <canvas id="endGameMessage"></canvas>
-  <h1 class = "centered">{{gameName}}</h1>
-  <div class = "row" [class.disabled]="!cursorEnabled">
-    <div>
-      <h1>Scene Originale</h1>
-      <div class= "scene" (click)="onDivContClick($event)" #originalView>
-        <canvas id="originalCanvasMessage"></canvas>
-      </div>
-    </div>
-    <div class = "middleText">
-      <div>Vous</div>
-      <div>jouez</div>
-      <div>depuis</div>
+<div class="general" appFPControlEvent (contextmenu)="onRightClick($event)">
+  <div class="separation">
+    <div class="leftWindow">
+      <canvas id="endGameMessage"></canvas>
+      <h1 class = "gameName">{{gameName}}</h1>
       <div class="timer"><app-timer [gameName] = "gameName"
                                     [gameType] = "FREE_GAME_TYPE"></app-timer></div>
-    </div>
-    <div>
-      <h1>Scene Modifiée</h1>
-      <div class= "scene" (click)="onDivContClick($event)" #modifiedView>
-        <canvas id="modifiedCanvasMessage"></canvas>
+      <div class = "row" [class.disabled]="!cursorEnabled">
+        <div class= "scene" (click)="onDivContClick($event)" #originalView>
+          <canvas id="originalCanvasMessage"></canvas>
+        </div>
+        <div class= "scene" (click)="onDivContClick($event)" #modifiedView>
+          <canvas id="modifiedCanvasMessage"></canvas>
+        </div>
       </div>
     </div>
+    <div class="chat">
+      <app-message-box></app-message-box>
+    </div>
   </div>
-  <app-message-box></app-message-box>
-</body>
+</div>

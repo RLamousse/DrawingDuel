@@ -1,7 +1,8 @@
 import {NgModule, NO_ERRORS_SCHEMA} from "@angular/core";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {
-  MatButtonModule, MatCheckboxModule, MatFormFieldModule, MatIconModule, MatInputModule, MatListModule, MatSelectModule, MatSliderModule
+  MatButtonModule, MatCardModule, MatCheckboxModule, MatFormFieldModule, MatIconModule,
+  MatInputModule, MatListModule, MatSelectModule, MatSliderModule
 } from "@angular/material";
 import {MatDialogModule} from "@angular/material/dialog";
 import {BrowserModule} from "@angular/platform-browser";
@@ -73,6 +74,7 @@ import {VueAdminComponent} from "./vue-admin/vue-admin.component";
     BrowserAnimationsModule,
     AppRoutingModule,
     MaterialFileInputModule,
+    MatCardModule,
     MatDialogModule,
     MatSliderModule,
     MatCheckboxModule,
