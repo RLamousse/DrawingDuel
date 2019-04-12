@@ -13,8 +13,8 @@ export class VueAdminComponent {
 
   public constructor(private dialog: MatDialog) { }
 
-  protected readonly rightButton: string = "reinitialiser";
-  protected readonly leftButton: string = "supprimer";
+  protected readonly rightButton: string = "Reinitialiser";
+  protected readonly leftButton: string = "Supprimer";
 
   protected createSimpleGame(): void {
     openDialog(this.dialog, SimpleGameCreatorFormComponent, false);

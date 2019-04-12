@@ -1,6 +1,7 @@
-import {Component, Input} from "@angular/core";
+import {Component, Input, OnInit} from "@angular/core";
 import {MatDialog} from "@angular/material";
 import {Router} from "@angular/router";
+import {LOADING_GIF} from "../../../../../common/communication/routes";
 import {ComponentNavigationError} from "../../../../../common/errors/component.errors";
 import {GameType} from "../../../../../common/model/game/game";
 import {IRecordTime} from "../../../../../common/model/game/record-time";
@@ -14,9 +15,10 @@ import {ResetGameFormComponent} from "./reset-game-form/reset-game-form.componen
   styleUrls: ["./game.component.css"],
 })
 
-export class GameComponent {
+export class GameComponent implements OnInit {
 
   public constructor(private router: Router, private dialog: MatDialog) {}
+
   @Input() public gameName: string = "test";
   @Input() public bestSoloTimes: IRecordTime[];
   @Input() public bestMultiTimes: IRecordTime[];
@@ -28,18 +30,22 @@ export class GameComponent {
   @Input() public gameType: GameType;
   @Input() public simpleGameTag: GameType = GameType.SIMPLE;
 
+  public ngOnInit(): void {
+    this.thumbnail = LOADING_GIF;
+  }
+
   protected leftButtonClick(): void {
-    if (this.leftButton === "jouer") {
+    if (this.leftButton === "Jouer") {
       this.gameType === GameType.SIMPLE ? this.navigatePlayView() : this.navigateFreeView();
-    } else if (this.leftButton === "supprimer") {
+    } else if (this.leftButton === "Supprimer") {
       openDialog(this.dialog, DeleteGameFormComponent, true, {gameName: this.gameName, gameType: this.gameType});
     }
   }
 
   protected rightButtonClick(): void {
-    if (this.rightButton === "joindre") {
+    if (this.rightButton === "Joindre") {
       this.navigateAwait();
-    } else if (this.rightButton === "reinitialiser") {
+    } else if (this.rightButton === "Reinitialiser") {
       openDialog(this.dialog, ResetGameFormComponent, true,  {gameName: this.gameName, gameType: this.gameType});
     }
   }

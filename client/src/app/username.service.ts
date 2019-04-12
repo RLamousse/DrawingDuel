@@ -9,7 +9,7 @@ import { SocketService } from "./socket.service";
 export class UNListService {
 
   public static username: string = "";
-  private readonly NON_ALPHANUMERIC_MESSAGE: string = "Tu dois utiliser seulement des caractères alphanumériques!";
+  private readonly NON_ALPHANUMERIC_MESSAGE: string = "Caractères alphanumériques seulement!";
   private readonly USERNAME_TOO_SHORT_MESSAGE: string = "Ton identifiant est trop court!";
   private readonly USERNAME_TAKEN_MESSAGE: string = "Cet identifiant est deja pris! Essaie un nouvel identifiant";
   private readonly USERNAME_MIN_LENGTH: number = 4;
