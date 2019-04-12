@@ -1,9 +1,10 @@
 import {Component, Input} from "@angular/core";
-import {MatDialog, MatDialogConfig} from "@angular/material";
+import {MatDialog} from "@angular/material";
 import {Router} from "@angular/router";
 import {ComponentNavigationError} from "../../../../../common/errors/component.errors";
 import {GameType} from "../../../../../common/model/game/game";
 import {IRecordTime} from "../../../../../common/model/game/record-time";
+import {openDialog} from "../../dialog-utils";
 import {DeleteGameFormComponent} from "./delete-game-form/delete-game-form.component";
 import {ResetGameFormComponent} from "./reset-game-form/reset-game-form.component";
 
@@ -31,10 +32,7 @@ export class GameComponent {
     if (this.leftButton === "jouer") {
       this.gameType === GameType.SIMPLE ? this.navigatePlayView() : this.navigateFreeView();
     } else if (this.leftButton === "supprimer") {
-      const dialogConfig: MatDialogConfig = new MatDialogConfig();
-      dialogConfig.autoFocus = true;
-      dialogConfig.data = {gameName: this.gameName, gameType: this.gameType};
-      this.dialog.open(DeleteGameFormComponent, dialogConfig);
+      openDialog(this.dialog, DeleteGameFormComponent, true, {gameName: this.gameName, gameType: this.gameType});
     }
   }
 
@@ -42,10 +40,7 @@ export class GameComponent {
     if (this.rightButton === "joindre") {
       this.navigateAwait();
     } else if (this.rightButton === "reinitialiser") {
-      const dialogConfig: MatDialogConfig = new MatDialogConfig();
-      dialogConfig.autoFocus = true;
-      dialogConfig.data = {gameName: this.gameName, gameType: this.gameType};
-      this.dialog.open(ResetGameFormComponent, dialogConfig).afterClosed().subscribe(() => window.location.reload());
+      openDialog(this.dialog, ResetGameFormComponent, true,  {gameName: this.gameName, gameType: this.gameType});
     }
   }
 

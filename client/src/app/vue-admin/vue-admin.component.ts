@@ -2,6 +2,7 @@ import {Component} from "@angular/core";
 import {MatDialog, MatDialogConfig} from "@angular/material";
 import {Create3DGameComponent} from "../create3-dgame/create3-dgame.component";
 import {SimpleGameCreatorFormComponent} from "../simple-game-creator-form/simple-game-creator-form.component";
+import {openDialog} from "../dialog-utils";
 
 @Component({
   selector: "app-vue-admin",
@@ -16,14 +17,10 @@ export class VueAdminComponent {
   protected readonly leftButton: string = "supprimer";
 
   protected createSimpleGame(): void {
-    const dialogConfig: MatDialogConfig = new MatDialogConfig();
-    dialogConfig.autoFocus = true;
-    this.dialog.open(SimpleGameCreatorFormComponent, dialogConfig);
+    openDialog(this.dialog, SimpleGameCreatorFormComponent, false);
   }
 
   protected create3DGame(): void {
-    const dialogConfig: MatDialogConfig = new MatDialogConfig();
-    dialogConfig.autoFocus = true;
-    this.dialog.open(Create3DGameComponent, dialogConfig);
+    openDialog(this.dialog, Create3DGameComponent, false);
   }
 }
