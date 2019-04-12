@@ -386,7 +386,6 @@ describe("A service to manage game rooms", () => {
                 const gameName: string = "It's Mr. 305 checkin' in for the remix";
                 const interactionData: ISimpleGameInteractionData = {coord: getOrigin()};
                 const interactionMessage: RoomInteractionMessage<ISimpleGameInteractionData> = {
-                    gameName: gameName,
                     interactionData: interactionData,
                 };
                 const interactionResponse: ISimpleGameInteractionResponse = {differenceCluster: [0, [getOrigin()]]};
@@ -406,7 +405,6 @@ describe("A service to manage game rooms", () => {
                 const gameName: string = "It's Mr. 305 checkin' in for the remix";
                 const interactionData: ISimpleGameInteractionData = {coord: getOrigin()};
                 const interactionMessage: RoomInteractionMessage<ISimpleGameInteractionData> = {
-                    gameName: gameName,
                     interactionData: interactionData,
                 };
                 const roomMock: IMock<IGameRoom> = createRoomMock(gameName, true);

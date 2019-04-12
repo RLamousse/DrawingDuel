@@ -47,15 +47,16 @@ export interface UpdateScoreMessage {
 }
 
 export interface RoomMessage {
-    gameName: string;
 }
 
 export interface RoomCreationMessage extends RoomMessage {
+    gameName: string;
     playerCount: OnlineType;
     username: string;
 }
 
 export interface RoomCheckInMessage extends RoomMessage {
+    gameName: string;
     username: string;
 }
 

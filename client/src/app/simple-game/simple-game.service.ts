@@ -37,7 +37,6 @@ export class SimpleGameService {
 
   public validateDifferenceAtPoint(point: IPoint): void {
     const interactionMessage: RoomInteractionMessage<ISimpleGameInteractionData> = {
-      gameName: "Maxime",
       interactionData: {
         coord: point,
       },
