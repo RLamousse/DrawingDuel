@@ -41,37 +41,6 @@ export class InitialViewComponent implements OnInit {
   }
 
   public changeBackground(): void {
-    // const element: HTMLElement | null = document.getElementById(this.BUTTON_ID);
-    // if (document.body.style.backgroundImage === "") {
-    //   document.body.style.backgroundImage = BACKGROUND_IMAGE;
-    //   if (element !== null) {
-    //     element.style.backgroundImage = "";
-    //     element.style.backgroundColor = this.BACKGROUND_COLOR;
-    //   }
-    // } else {
-    //   document.body.style.backgroundImage = "";
-    //   document.body.style.backgroundColor = this.BACKGROUND_COLOR;
-    //   console.log(document.body.style.backgroundImage);
-    //   if (element !== null) {
-    //     element.style.backgroundImage = BACKGROUND_IMAGE;
-    //     element.style.backgroundPosition = this.BACKGROUND_CENTERED;
-    //   }
-    // }
-    // const element: HTMLElement | null = document.getElementById(this.BUTTON_ID);
-    // if (document.body.style.backgroundColor === this.BACKGROUND_COLOR) {
-    //   document.body.style.backgroundImage = BACKGROUND_IMAGE;
-    //   if (element !== null) {
-    //     element.style.backgroundImage = "";
-    //     element.style.backgroundColor = this.BACKGROUND_COLOR;
-    //   }
-    // } else {
-    //   document.body.style.backgroundImage = "";
-    //   document.body.style.backgroundColor = "";
-    //   if (element !== null) {
-    //     element.style.backgroundImage = BACKGROUND_IMAGE;
-    //     element.style.backgroundPosition = this.BACKGROUND_CENTERED;
-    //   }
-    // }
     const element: HTMLElement | null = document.getElementById(this.BUTTON_ID);
     if (document.body.style.backgroundImage === "none") {
       document.body.style.backgroundImage = BACKGROUND_IMAGE;
