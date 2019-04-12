@@ -394,7 +394,7 @@ describe("A service to manage game rooms", () => {
                 roomMock.setup(async (room: IGameRoom) => room.interact(serverSocket.id, interactionData))
                     .returns(async () => Promise.resolve(interactionResponse));
                 const hotelRoomService: HotelRoomService = initHotelRoomService(() => {
-                    when(radioTowerService.sendToRoom(SocketEvent.INTERACT, interactionResponse, roomMock.object.id))
+                    when(radioTowerService.sendToRoom(SocketEvent.INTERACT, anything(), roomMock.object.id))
                         .thenCall(() => done());
                 });
 
@@ -402,7 +402,7 @@ describe("A service to manage game rooms", () => {
                 socketClient.emit(SocketEvent.INTERACT, createWebsocketMessage(interactionMessage));
             });
 
-            it.skip("should emit an interaction error to client", (done: Callback) => {
+            it("should emit an interaction error to client", (done: Callback) => {
                 const gameName: string = "It's Mr. 305 checkin' in for the remix";
                 const interactionData: ISimpleGameInteractionData = {coord: getOrigin()};
                 const interactionMessage: RoomInteractionMessage<ISimpleGameInteractionData> = {
@@ -412,11 +412,12 @@ describe("A service to manage game rooms", () => {
                 const roomMock: IMock<IGameRoom> = createRoomMock(gameName, true);
                 roomMock.setup(async (room: IGameRoom) => room.interact(serverSocket.id, interactionData))
                     .returns(async () => Promise.reject(new NoDifferenceAtPointError()));
-                const hotelRoomService: HotelRoomService = initHotelRoomService();
-                hotelRoomService["checkInClient"](serverSocket, roomMock.object);
-                socketClient.once(SocketEvent.INTERACT, () => {
-                    done();
+                const hotelRoomService: HotelRoomService = initHotelRoomService(() => {
+                    when(radioTowerService.privateSend(SocketEvent.INTERACT, anything(), serverSocket.id))
+                        .thenCall(() => done());
                 });
+
+                hotelRoomService["checkInClient"](serverSocket, roomMock.object);
                 socketClient.emit(SocketEvent.INTERACT, createWebsocketMessage(interactionMessage));
 
             });
