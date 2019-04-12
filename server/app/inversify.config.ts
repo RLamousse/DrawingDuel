@@ -6,7 +6,6 @@ import {DiffValidatorController} from "./controllers/diff-validator.controller";
 import {GameCreatorController} from "./controllers/game-creator.controller";
 import {GameManagerController} from "./controllers/game-manager.controller";
 import {ScoreTableController} from "./controllers/score-table.controller";
-import {UserController} from "./controllers/username.controller";
 import {WebsocketController} from "./controllers/websocket.controller";
 import {BitmapWriter} from "./images/bitmap/bitmap-writer";
 import {Server} from "./server";
@@ -51,7 +50,6 @@ container.bind(Types.BitmapDiffService).to(BitmapDiffService);
 container.bind(Types.BitmapWriter).to(BitmapWriter);
 
 container.bind(Types.UserNameService).to(UsernameService).inSingletonScope();
-container.bind(Types.UserNameController).to(UserController);
 
 container.bind(Types.FreeGameCreatorService).to(FreeGameCreatorService);
 container.bind(Types.Object3DCreatorService).to(Object3DCreatorService);
