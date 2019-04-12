@@ -26,10 +26,6 @@ export class ChatWebsocketActionService extends WebsocketActionService {
     }
 
     /**
-     *
-     * @param data
-     * @param socket
-     * @param chatRoom
      * @deprecated
      */
     public execute(data: WebsocketMessage<ChatMessage>, socket: Socket, chatRoom?: string): void {
