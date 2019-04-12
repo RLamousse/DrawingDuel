@@ -1,49 +1,97 @@
-.window{
-    width:700px;
-    background-color: lightblue;
-    padding: 20px;
-    min-height: 365px;
-    max-height: 365px;
-    margin: auto;
-    margin-top: 20px;
-    border: 2px solid darkblue;
-    border-radius: 25px;
-}
-
-h1{
-    text-align: center;
-}
-
-.horizontalWindow{
-    display: flex;
-    flex-direction: row;
-}
-
-.image{
-    border: 5px solid darkblue;
-    width: 250px;
-    height: 170px;
+img{
+    border-radius: 5px;
+    width: 400px;
+    height: 300px;
+    margin-top: 12px;
+    border: 1px #272731 solid;
 }
 
 .scoreTable{
-    margin: 25px;
-    font-weight: bold;
+  padding-top: 8px;
 }
 
-td{
-    padding-left: 20px;
-    padding-top: 12px;
+.row{
+  padding-left: 16px;
+  color: white;
+  height: 30px;
+  border: 1px #272731 solid;
+}
+
+.smallRow{
+  width: 52px;
+  padding-left: 5px;
+}
+
+.bigRow{
+  width: 170px;
+}
+
+.grey{
+    background-color: #373745;
+}
+
+.black{
+    background-color: #272731;
+}
+
+.bold{
+  font-size: 18px;
+  text-align: center;
+}
+
+.title{
+  font-weight: bold;
+  font-size: 36px;
+  color: #272731;
+  margin-top: 12px;
+}
+
+mat-card-content{
+  margin-bottom: 0px;
 }
 
 .buttonRow{
-    margin-left: 40%;   
-    margin-right:35px;
-    display: flex;
-    flex-direction: row;
+  display: flex;
+  flex-direction: row;
+  margin-left: 22%;
 }
 
-.button{
-    display: inline-block;
-    margin-right: 35px;
-    border:1.3px darkblue solid;
+button{
+  width: 30%;
+  text-align: center;
+  margin: 10px;
+}
+
+
+.padd{
+  padding-left: 2%;
+}
+
+.card {
+  width: 400px;
+  max-width: 400px;
+  height: 568px;
+  margin: 24px;
+  border: 1px #DDDF92;
+  background-color: #B8B8C6;
+}
+
+.twoD {
+  background-color: #3F51B5;
+  background-size: cover;
+  width: 72px;
+  height: 72px;
+}
+
+.icon{
+  font-size: 40px;
+  color: white;
+  padding: 12px;
+}
+
+.threeD {
+    background-color: #FF3C82;
+    background-size: cover;
+    width: 72px;
+    height: 72px;
 }
