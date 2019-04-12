@@ -10,13 +10,14 @@ coverage:
   status:
     project:
       client:
+        threshold: null
         paths:
           - client/src/**/*
       server:
+        threshold: null
         paths:
           - server/app/**/*
-      default:
-        threshold: 0
+    patch: no
   range: 70..100
   round: down
   precision: 2
