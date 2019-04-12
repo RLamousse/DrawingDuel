@@ -9,8 +9,9 @@ export interface IGame {
 
 export const TIMES_ARRAY_SIZE : number = 3;
 
-export enum OnlineType {SOLO = "solo", MULTI = "un contr un"};
-export enum GameType {SIMPLE, FREE};
+export enum OnlineType {SOLO = "solo", MULTI = "un contr un"}
+
+export enum GameType {SIMPLE, FREE}
 
 export const instanceOfGame = (object: any): object is IGame =>
     'gameName' in object &&
