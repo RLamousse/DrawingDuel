@@ -14,12 +14,13 @@ export interface IFreeGameInteractionData extends IInteractionData {
 }
 
 export interface IInteractionResponse {
+    initiatedBy: string;
 }
 
 export interface ISimpleGameInteractionResponse extends IInteractionResponse {
     differenceCluster: DifferenceCluster;
 }
 
-export interface IFreeGameInteractionResponse extends IInteractionData {
+export interface IFreeGameInteractionResponse extends IInteractionResponse {
     object: IJson3DObject;
 }
