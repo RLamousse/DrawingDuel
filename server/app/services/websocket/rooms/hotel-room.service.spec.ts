@@ -413,7 +413,7 @@ describe("A service to manage game rooms", () => {
                 roomMock.setup(async (room: IGameRoom) => room.interact(serverSocket.id, interactionData))
                     .returns(async () => Promise.reject(new NoDifferenceAtPointError()));
                 const hotelRoomService: HotelRoomService = initHotelRoomService(() => {
-                    when(radioTowerService.privateSend(SocketEvent.INTERACT, anything(), serverSocket.id))
+                    when(radioTowerService.privateSend(SocketEvent.INTERACT_ERROR, anything(), serverSocket.id))
                         .thenCall(() => done());
                 });
 

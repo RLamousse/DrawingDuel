@@ -5,21 +5,13 @@ import {ISimpleGameInteractionResponse} from "../../../../common/model/rooms/int
 import {SocketService} from "../socket.service";
 import {SimpleGameService} from "./simple-game.service";
 
-const fakeCallback: (message: ISimpleGameInteractionResponse | string) => void = (message: ISimpleGameInteractionResponse | string) => {
+const fakeSuccessCallback: (message: ISimpleGameInteractionResponse | string) => void = (message: ISimpleGameInteractionResponse) => {
   //
 };
 
-const clone = (obj: Object) => {
-  if (obj == null || typeof obj !== "object") { return obj; }
-  const copy: Object = obj.constructor();
-  for (const attr in obj) {
-    if (obj.hasOwnProperty(attr)) {
-      // @ts-ignore
-      copy[attr] = obj[attr]; }
-  }
-
-  return copy;
-}
+const fakeErrorCallback: (message: string) => void = (message: string) => {
+  //
+};
 
 describe("SimpleGameService", () => {
   let service: SimpleGameService;
@@ -50,16 +42,26 @@ describe("SimpleGameService", () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  it("should return subscription to validation callback and be called", async () => {
-    const fake: jasmine.Spy = jasmine.createSpy("fakeCallback", fakeCallback);
-    const sub: Subscription = service.registerDifferenceCallback(fake);
+  it("should return subscription to validation success callback and be called", async () => {
+    const fake: jasmine.Spy = jasmine.createSpy("fakeSuccessCallback", fakeSuccessCallback);
+    const sub: Subscription = service.registerDifferenceSuccessCallback(fake);
+    expect(sub).toBeDefined();
+  });
+
+  it("should return subscription to validation error callback and be called", async () => {
+    const fake: jasmine.Spy = jasmine.createSpy("fakeErrorCallback", fakeErrorCallback);
+    const sub: Subscription = service.registerDifferenceErrorCallback(fake);
     expect(sub).toBeDefined();
   });
 
   it("should reset the Subject", async () => {
-    const old: Subject<number> = clone(service["_differenceCountSubject"]) as Subject<number>;
+    const old: Subject<number> = service["_differenceCountSubject"];
+    old.asObservable().subscribe(() => {
+      // Dummy subscriber
+    });
     service.resetDifferenceCount();
     expect(old).not.toEqual(service["_differenceCountSubject"]);
+    old.unsubscribe(); // Cleanup
   });
 
   it("should send the validation request", async () => {

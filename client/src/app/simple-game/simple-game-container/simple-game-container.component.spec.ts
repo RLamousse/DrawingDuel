@@ -1,8 +1,9 @@
 import {Component, NO_ERRORS_SCHEMA} from "@angular/core";
 import {async, ComponentFixture, TestBed} from "@angular/core/testing";
+import {Subscription} from "rxjs";
 import {AlreadyFoundDifferenceError, NoDifferenceAtPointError} from "../../../../../common/errors/services.errors";
-import {DifferenceCluster} from "../../../../../common/model/game/simple-game";
 import {getOrigin, IPoint} from "../../../../../common/model/point";
+import {ISimpleGameInteractionResponse} from "../../../../../common/model/rooms/interaction";
 import {PixelData, TextType} from "../simple-game-canvas/simple-game-canvas.component";
 import {SimpleGameService} from "../simple-game.service";
 import {IDENTIFICATION_ERROR_TEXT, IDENTIFICATION_ERROR_TIMOUT_MS, SimpleGameContainerComponent} from "./simple-game-container.component";
@@ -48,9 +49,19 @@ describe("SimpleGameContainerComponent", () => {
   beforeEach(async(() => {
     mockedSimpleGameService = jasmine.createSpyObj(
       "SimpleGameService",
-      ["validateDifferenceAtPoint", "registerDifferenceCallback",
-       "updateCounter"],
+      [
+        "validateDifferenceAtPoint",
+        "registerDifferenceSuccessCallback",
+        "registerDifferenceErrorCallback",
+        "updateCounter",
+      ],
     );
+
+    mockedSimpleGameService.registerDifferenceSuccessCallback
+      .and.returnValue(new Subscription());
+
+    mockedSimpleGameService.registerDifferenceErrorCallback
+      .and.returnValue(new Subscription());
 
     TestBed.configureTestingModule(
       {
@@ -70,6 +81,11 @@ describe("SimpleGameContainerComponent", () => {
     jasmine.clock().install();
   });
 
+  beforeEach(() => {
+    component["successSubscription"] = new Subscription();
+    component["errorSubscription"] = new Subscription();
+  });
+
   it("should create", () => {
     expect(component).toBeTruthy();
   });
@@ -78,7 +94,7 @@ describe("SimpleGameContainerComponent", () => {
 
     it("should handle already found difference errors on original canvas", async () => {
       mockedSimpleGameService.validateDifferenceAtPoint
-        .and.callFake(async () => Promise.reject(new AlreadyFoundDifferenceError()));
+        .and.callFake(() => component["handleValidationErrorResponse"](AlreadyFoundDifferenceError.ALREADY_FOUND_DIFFERENCE_ERROR_MESSAGE));
 
       spyOn(component["originalImageComponent"], "getRawPixelData")
         .and.returnValue([]);
@@ -107,7 +123,7 @@ describe("SimpleGameContainerComponent", () => {
 
     it("should handle already found difference errors on modified canvas", async () => {
       mockedSimpleGameService.validateDifferenceAtPoint
-        .and.callFake(async () => Promise.reject(new AlreadyFoundDifferenceError()));
+        .and.callFake(() => component["handleValidationErrorResponse"](AlreadyFoundDifferenceError.ALREADY_FOUND_DIFFERENCE_ERROR_MESSAGE));
 
       spyOn(component["modifiedImageComponent"], "getRawPixelData")
         .and.returnValue([]);
@@ -139,7 +155,7 @@ describe("SimpleGameContainerComponent", () => {
 
     it("should handle no difference found error on original canvas", async () => {
       mockedSimpleGameService.validateDifferenceAtPoint
-        .and.callFake(async () => Promise.reject(new NoDifferenceAtPointError()));
+        .and.callFake(() => component["handleValidationErrorResponse"](NoDifferenceAtPointError.NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE));
 
       spyOn(component["originalImageComponent"], "getRawPixelData")
         .and.returnValue([]);
@@ -168,7 +184,7 @@ describe("SimpleGameContainerComponent", () => {
 
     it("should handle no difference found error on modified canvas", async () => {
       mockedSimpleGameService.validateDifferenceAtPoint
-        .and.callFake(async () => Promise.reject(new NoDifferenceAtPointError()));
+        .and.callFake(() => component["handleValidationErrorResponse"](NoDifferenceAtPointError.NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE));
 
       spyOn(component["modifiedImageComponent"], "getRawPixelData")
         .and.returnValue([]);
@@ -202,9 +218,13 @@ describe("SimpleGameContainerComponent", () => {
 
     it("should copy pixel from the original canvas to the modified on original canvas click", async () => {
       const expectedValue: PixelData[] = [{coords: getOrigin(), data: new Uint8ClampedArray(0)}];
+      const interactionResponse: ISimpleGameInteractionResponse = {
+        differenceCluster: [0, [getOrigin()]],
+      };
 
       mockedSimpleGameService.validateDifferenceAtPoint
-        .and.callFake(async () => Promise.resolve([0, [getOrigin()]] as DifferenceCluster));
+        .and.callFake(() => component["handleValidationSuccessResponse"](interactionResponse));
+
       spyOn(component["originalImageComponent"], "getPixels")
         .and.returnValue(expectedValue);
       spyOn(component["modifiedImageComponent"], "drawPixels");
@@ -221,9 +241,13 @@ describe("SimpleGameContainerComponent", () => {
 
     it("should copy pixel from the original canvas to the modified on modified canvas click", async () => {
       const expectedValue: PixelData[] = [{coords: getOrigin(), data: new Uint8ClampedArray(0)}];
+      const interactionResponse: ISimpleGameInteractionResponse = {
+        differenceCluster: [0, [getOrigin()]],
+      };
 
       mockedSimpleGameService.validateDifferenceAtPoint
-        .and.callFake(async () => Promise.resolve([0, [getOrigin()]] as DifferenceCluster));
+        .and.callFake(() => component["handleValidationSuccessResponse"](interactionResponse));
+
       spyOn(component["originalImageComponent"], "getPixels")
         .and.returnValue(expectedValue);
       spyOn(component["modifiedImageComponent"], "drawPixels");
@@ -242,7 +266,7 @@ describe("SimpleGameContainerComponent", () => {
 
   it("should not allow a user to click for a second after another click where there was no differences", (done) => {
     mockedSimpleGameService.validateDifferenceAtPoint
-      .and.callFake(async () => Promise.reject(new NoDifferenceAtPointError()));
+      .and.callFake(() => component["handleValidationErrorResponse"](NoDifferenceAtPointError.NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE));
 
     component["onModifiedCanvasClick"](getOrigin())
       .then(() => {
