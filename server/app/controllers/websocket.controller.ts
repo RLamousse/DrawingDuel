@@ -2,10 +2,9 @@ import {format} from "date-and-time";
 import {inject, injectable} from "inversify";
 import {Socket} from "socket.io";
 import {
-    createWebsocketMessage, ChatMessage, RoomCreationMessage,
-    RoomMessage,
-    UpdateScoreMessage,
-    WebsocketMessage
+    createWebsocketMessage, ChatMessage, RoomCheckInMessage,
+    RoomCreationMessage,
+    UpdateScoreMessage, WebsocketMessage
 } from "../../../common/communication/messages/message";
 import {SocketEvent} from "../../../common/communication/socket-events";
 import {IRoomInfo} from "../../../common/model/rooms/room-info";
@@ -83,7 +82,7 @@ export class WebsocketController {
             socket.emit(SocketEvent.FETCH, response);
         });
 
-        socket.on(SocketEvent.CHECK_IN, (message: WebsocketMessage<RoomMessage>) => {
+        socket.on(SocketEvent.CHECK_IN, (message: WebsocketMessage<RoomCheckInMessage>) => {
             this.hotelRoomService.checkInGameRoom(socket, message.body.gameName);
         });
     }

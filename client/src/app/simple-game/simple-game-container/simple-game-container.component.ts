@@ -25,13 +25,15 @@ export class SimpleGameContainerComponent implements OnDestroy {
   @ViewChild("modifiedImageComponent") private modifiedImageComponent: SimpleGameCanvasComponent;
 
   protected clickEnabled: boolean = true;
-  private callbackSub: Subscription;
+  private successSubscription: Subscription;
+  private errorSubscription: Subscription;
   private lastClick: IPoint;
   private lastClickOrigin: SimpleGameCanvasComponent;
 
   public constructor(private simpleGameService: SimpleGameService) {
-    this.handleValidationResponse = this.handleValidationResponse.bind(this);
-    this.callbackSub = this.simpleGameService.registerDifferenceCallback(this.handleValidationResponse);
+    this.handleValidationSuccessResponse = this.handleValidationSuccessResponse.bind(this);
+    this.successSubscription = this.simpleGameService.registerDifferenceSuccessCallback(this.handleValidationSuccessResponse);
+    this.errorSubscription = this.simpleGameService.registerDifferenceErrorCallback(this.handleValidationErrorResponse);
   }
 
   protected async onOriginalCanvasClick(clickEvent: IPoint): Promise<void> {
@@ -42,23 +44,24 @@ export class SimpleGameContainerComponent implements OnDestroy {
     return this.onCanvasClick(clickEvent, this.modifiedImageComponent);
   }
 
-  private handleValidationResponse (value: ISimpleGameInteractionResponse | string): void {
-    if ((value as ISimpleGameInteractionResponse).differenceCluster) {
-      const differencePoints: IPoint[] = (value as ISimpleGameInteractionResponse).differenceCluster[DIFFERENCE_CLUSTER_POINTS_INDEX]
-        .map((point: IPoint) => inverseY(point, this.originalImageComponent.height));
-      const pixels: PixelData[] = this.originalImageComponent.getPixels(differencePoints);
-      this.modifiedImageComponent.drawPixels(pixels);
-      playRandomSound(FOUND_DIFFERENCE_SOUNDS);
-      this.clickEnabled = true;
-      this.simpleGameService.updateCounter();
-    } else {
-      if (value === AlreadyFoundDifferenceError.ALREADY_FOUND_DIFFERENCE_ERROR_MESSAGE ||
-          value === NoDifferenceAtPointError.NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE) {
-        playRandomSound(NO_DIFFERENCE_SOUNDS);
-        this.handleIdentificationError();
-      }
+  private handleValidationSuccessResponse(interactionResponse: ISimpleGameInteractionResponse): void {
+    const differencePoints: IPoint[] = interactionResponse.differenceCluster[DIFFERENCE_CLUSTER_POINTS_INDEX]
+      .map((point: IPoint) => inverseY(point, this.originalImageComponent.height));
+    const pixels: PixelData[] = this.originalImageComponent.getPixels(differencePoints);
+    this.modifiedImageComponent.drawPixels(pixels);
+    playRandomSound(FOUND_DIFFERENCE_SOUNDS);
+    this.clickEnabled = true;
+    this.simpleGameService.updateCounter();
+    this.successSubscription.unsubscribe();
+  }
+
+  private handleValidationErrorResponse(errorMessage: string): void {
+    if (errorMessage === AlreadyFoundDifferenceError.ALREADY_FOUND_DIFFERENCE_ERROR_MESSAGE ||
+      errorMessage === NoDifferenceAtPointError.NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE) {
+      playRandomSound(NO_DIFFERENCE_SOUNDS);
+      this.handleIdentificationError();
     }
-    this.callbackSub.unsubscribe();
+    this.errorSubscription.unsubscribe();
   }
 
   private onCanvasClick(clickEvent: IPoint, clickedComponent: SimpleGameCanvasComponent): void {
@@ -66,8 +69,10 @@ export class SimpleGameContainerComponent implements OnDestroy {
       return;
     }
     this.clickEnabled = false;
-    this.callbackSub.unsubscribe();
-    this.callbackSub = this.simpleGameService.registerDifferenceCallback(this.handleValidationResponse);
+    this.successSubscription.unsubscribe();
+    this.errorSubscription.unsubscribe();
+    this.successSubscription = this.simpleGameService.registerDifferenceSuccessCallback(this.handleValidationSuccessResponse);
+    this.errorSubscription = this.simpleGameService.registerDifferenceErrorCallback(this.handleValidationErrorResponse);
     this.lastClick = clickEvent;
     this.lastClickOrigin = clickedComponent;
 
@@ -75,7 +80,8 @@ export class SimpleGameContainerComponent implements OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    this.callbackSub.unsubscribe();
+    this.successSubscription.unsubscribe();
+    this.errorSubscription.unsubscribe();
   }
 
   private handleIdentificationError(): void {
