@@ -18,6 +18,7 @@ export enum SocketEvent {
     FETCH = "room-fetch",
     CHECK_IN = "room-check-in",
     INTERACT = "room-interact",
+    INTERACT_ERROR = "room-interact-error",
     CHECK_OUT = "room-check-out",
     // Server events
     READY = "room-ready",

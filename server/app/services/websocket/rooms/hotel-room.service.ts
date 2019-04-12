@@ -150,7 +150,7 @@ export class HotelRoomService {
                     this.chatAction.sendChat(chatMessage, room.id);
                 })
                 .catch((error: Error) => {
-                    this.radioTower.privateSend(SocketEvent.INTERACT, createWebsocketMessage(error.message), socket.id);
+                    this.radioTower.privateSend(SocketEvent.INTERACT_ERROR, createWebsocketMessage(error.message), socket.id);
                     chatMessage.type = ChatMessageType.DIFF_ERROR;
                     this.chatAction.sendChat(chatMessage, room.id);
                 });

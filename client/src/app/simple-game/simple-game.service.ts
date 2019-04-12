@@ -10,9 +10,7 @@ import {IPoint} from "../../../../common/model/point";
 import {ISimpleGameInteractionData, ISimpleGameInteractionResponse} from "../../../../common/model/rooms/interaction";
 import {SocketService} from "../socket.service";
 
-@Injectable({
-              providedIn: "root",
-            })
+@Injectable({providedIn: "root"})
 export class SimpleGameService {
 
   private _differenceCountSubject: Subject<number> = new Subject();
@@ -27,11 +25,14 @@ export class SimpleGameService {
     this._differenceCountSubject = new Subject();
   }
 
-  public registerDifferenceCallback(callback: (message: ISimpleGameInteractionResponse | string) => void): Subscription {
-    return this.socket.onEvent<ISimpleGameInteractionResponse | string>(SocketEvent.INTERACT)
-      .subscribe((value: WebsocketMessage<ISimpleGameInteractionResponse | string>) => {
-        callback(value.body);
-    });
+  public registerDifferenceSuccessCallback(callback: (message: ISimpleGameInteractionResponse) => void): Subscription {
+    return this.socket.onEvent<ISimpleGameInteractionResponse>(SocketEvent.INTERACT)
+      .subscribe((message: WebsocketMessage<ISimpleGameInteractionResponse>) => callback(message.body));
+  }
+
+  public registerDifferenceErrorCallback(callback: (message: string) => void): Subscription {
+    return this.socket.onEvent<string>(SocketEvent.INTERACT_ERROR)
+      .subscribe((message: WebsocketMessage<string>) => callback(message.body));
   }
 
   public validateDifferenceAtPoint(point: IPoint): void {
