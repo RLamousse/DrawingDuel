@@ -11,6 +11,7 @@ import {OnlineType} from "../../../common/model/game/game";
 import {IRoomInfo} from "../../../common/model/rooms/room-info";
 import {SocketService} from "./socket.service";
 import {UNListService} from "./username.service";
+import {ReadyInfo} from "../../../common/model/rooms/ready-info";
 
 @Injectable({
               providedIn: "root",
@@ -80,8 +81,8 @@ export class RoomService implements OnDestroy {
     this.socket.send(SocketEvent.READY, createWebsocketMessage());
   }
 
-  public subscribeToGameStart(callback: () => void): Subscription {
-    return this.socket.onEvent(SocketEvent.READY).subscribe(callback);
+  public subscribeToGameStart(callback: (info: ReadyInfo) => void): Subscription {
+    return this.socket.onEvent<IRoomInfo>(SocketEvent.READY).subscribe((message: WebsocketMessage<IRoomInfo>) => callback(message.body));
   }
 
   public ngOnDestroy(): void {
