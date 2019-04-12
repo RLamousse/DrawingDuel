@@ -22,6 +22,7 @@ import {ChatWebsocketActionService} from "../chat-websocket-action.service";
 import {RadioTowerService} from "../radio-tower.service";
 import {FreeGameRoom} from "./free-game-room";
 import {SimpleGameRoom} from "./simple-game-room";
+import {ReadyInfo} from "../../../../../common/model/rooms/ready-info";
 
 @injectable()
 export class HotelRoomService {
@@ -126,7 +127,7 @@ export class HotelRoomService {
 
     private registerGameRoomHandlers(socket: Socket, room: IGameRoom): void {
         room.setOnReadyCallBack(() => {
-            this.radioTower.sendToRoom(SocketEvent.READY, undefined, room.id);
+            this.radioTower.sendToRoom(SocketEvent.READY, createWebsocketMessage<ReadyInfo>(room.roomReadyEmitInformation), room.id);
         });
 
         socket.in(room.id).on(SocketEvent.READY, () => {
