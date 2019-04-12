@@ -11,14 +11,14 @@ describe("UserNameService", () => {
 
     // Test checkAvailability
     it("should return the entry user with available at true when new user", async () => {
-        const response: UserValidationMessage =  service.checkAvailability({ username: "zack1", available: false });
+        const response: UserValidationMessage = service.checkAvailability({username: "zack1", available: false}, "max");
         expect(response).to.eql({ username: "zack1", available: true });
     });
 
     it("should return the entry user with available at false when username already taken", async () => {
-        service.checkAvailability({ username: "cody2", available: false });
+        service.checkAvailability({username: "cody2", available: false}, "max");
 
-        const response: UserValidationMessage =  service.checkAvailability({ username: "cody2", available: false });
+        const response: UserValidationMessage = service.checkAvailability({username: "cody2", available: false}, "max");
         expect(response).to.deep.equal({ username: "cody2", available: false });
     });
 
@@ -29,17 +29,22 @@ describe("UserNameService", () => {
     });
 
     it("should send a UserValidationMessage with false as available (not in the list)", async () => {
-        service.checkAvailability({ username: "Maddie", available: false });
+        service.checkAvailability({username: "Maddie", available: false}, "max");
 
         const response: UserValidationMessage =  service.releaseUsername("Maddie");
         expect(response).to.eql({ username: "Maddie", available: true });
     });
 
     it("should send a UserValidationMessage with true as available (succesfully release)", async () => {
-        service.checkAvailability({ username: "Moseby3", available: false });
+        service.checkAvailability({username: "Moseby3", available: false}, "max");
 
         const response: UserValidationMessage = service.releaseUsername("Moseby3");
         expect(response).to.eql({ username: "Moseby3", available: true });
+    });
+
+    it("should return the entry user with available at true when new user", async () => {
+        service.checkAvailability({username: "zack1", available: false}, "max");
+        expect(service.getUsernameBySocketId("max")).to.eql("zack1");
     });
 
 });

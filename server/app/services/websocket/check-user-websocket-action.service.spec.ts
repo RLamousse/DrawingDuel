@@ -10,6 +10,7 @@ class Socket {
     }
     public eventValue: string;
     public emitValue: boolean;
+    public id: string = "Max";
     public emit(event: string, message: WebsocketMessage<boolean>): void {
         this.eventValue = event;
         this.emitValue = message.body;

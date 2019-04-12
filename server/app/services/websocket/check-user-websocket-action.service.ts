@@ -21,7 +21,7 @@ export class CheckUserWebsocketActionService extends WebsocketActionService {
             username: data.body,
             available: false,
         };
-        const value: UserValidationMessage = this.usernameService.checkAvailability(userValid);
+        const value: UserValidationMessage = this.usernameService.checkAvailability(userValid, socket.id);
         const message: WebsocketMessage<boolean> = createWebsocketMessage(value.available);
         socket.emit(this._EVENT_TYPE, message);
 
