@@ -1,6 +1,10 @@
 import {Injectable} from "@angular/core";
 import {Observable, Subject, Subscription} from "rxjs";
-import {createWebsocketMessage, WebsocketMessage} from "../../../../common/communication/messages/message";
+import {
+  createWebsocketMessage,
+  RoomInteractionMessage,
+  WebsocketMessage
+} from "../../../../common/communication/messages/message";
 import {SocketEvent} from "../../../../common/communication/socket-events";
 import {IPoint} from "../../../../common/model/point";
 import {ISimpleGameInteractionData, ISimpleGameInteractionResponse} from "../../../../common/model/rooms/interaction";
@@ -31,9 +35,13 @@ export class SimpleGameService {
   }
 
   public validateDifferenceAtPoint(point: IPoint): void {
-    this.socket.send(SocketEvent.INTERACT, createWebsocketMessage<ISimpleGameInteractionData>({
-      coord: point,
-    }));
+    const interactionMessage: RoomInteractionMessage<ISimpleGameInteractionData> = {
+      gameName: "Maxime",
+      interactionData: {
+        coord: point,
+      },
+    };
+    this.socket.send(SocketEvent.INTERACT, createWebsocketMessage<RoomInteractionMessage<ISimpleGameInteractionData>>(interactionMessage));
   }
 
   public updateCounter(): void {
