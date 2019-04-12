@@ -77,9 +77,9 @@ describe("Initial View Component tests", () => {
   it("should update the background when changeBackground() is called", () => {
     expect(document.body.style.backgroundImage).toBe("");
     component["changeBackground"]();
-    expect(document.body.style.backgroundImage).toBe(BACKGROUND_IMAGE_TEST);
+    expect(document.body.style.backgroundImage).toBe("none");
     component["changeBackground"]();
-    expect(document.body.style.backgroundImage).toBe("");
+    expect(document.body.style.backgroundImage).toBe(BACKGROUND_IMAGE_TEST);
   });
 
   it("should updates message and username according to username availability", () => {
