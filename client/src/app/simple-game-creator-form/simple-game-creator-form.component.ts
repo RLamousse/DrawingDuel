@@ -51,7 +51,6 @@ export class SimpleGameCreatorFormComponent extends AbstractForm implements OnIn
     this.formPost.submitForm(SIMPLE_GAME_CREATION_ROUTE, fd).subscribe(
       (data) => {
         this.exit();
-        window.location.reload();
       },
       (error: Error) => {
         console.error(`${error.name} : ${error.message}`);
