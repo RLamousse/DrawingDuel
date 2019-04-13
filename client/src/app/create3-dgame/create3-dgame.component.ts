@@ -90,7 +90,8 @@ export class Create3DGameComponent extends AbstractForm implements OnInit {
     };
     this.formPost.submitForm(FREE_GAME_CREATION_ROUTE, requestData).subscribe(
       (data) => {
-        this.exit(data);
+        this.exit();
+        window.location.reload();
       },
       (error: Error) => {
         console.error(`${error.name} : ${error.message}`);
