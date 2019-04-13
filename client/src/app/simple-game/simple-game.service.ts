@@ -52,6 +52,7 @@ export class SimpleGameService {
   }
 
   public resetDifferenceCount(): void {
+    this._differenceCountSubject.unsubscribe();
     this._differenceCountSubject = new Subject();
   }
 
