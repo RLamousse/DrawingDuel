@@ -35,7 +35,7 @@
     "http-status-codes": "latest",
     "keycode-js": "^1.0.4",
     "ngx-material-file-input": "^1.1.0",
-    "rxjs": "~6.3.3",
+    "rxjs": "^6.3.3",
     "socket.io": "^2.2.0",
     "socket.io-client": "^2.2.0",
     "three": "^0.100.0",
