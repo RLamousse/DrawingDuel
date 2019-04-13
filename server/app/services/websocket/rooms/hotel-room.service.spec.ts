@@ -21,11 +21,11 @@ import {IGameRoom} from "../../../model/room/game-room";
 import {DataBaseService} from "../../data-base.service";
 import {FreeGamesCollectionService} from "../../db/free-games.collection.service";
 import {SimpleGamesCollectionService} from "../../db/simple-games.collection.service";
+import {UsernameService} from "../../username.service";
+import {ChatWebsocketActionService} from "../chat-websocket-action.service";
 import {RadioTowerService} from "../radio-tower.service";
 import {HotelRoomService} from "./hotel-room.service";
 import {SimpleGameRoom} from "./simple-game-room";
-import {ChatWebsocketActionService} from "../chat-websocket-action.service";
-import {UsernameService} from "../../username.service";
 
 describe("A service to manage game rooms", () => {
 
@@ -398,7 +398,7 @@ describe("A service to manage game rooms", () => {
                 };
                 const interactionResponse: ISimpleGameInteractionResponse = {
                     initiatedBy: "Max",
-                    differenceCluster: [0, [getOrigin()]]
+                    differenceCluster: [0, [getOrigin()]],
                 };
                 const roomMock: IMock<IGameRoom> = createRoomMock(gameName, true);
                 roomMock.setup(async (room: IGameRoom) => room.interact(serverSocket.id, interactionData))

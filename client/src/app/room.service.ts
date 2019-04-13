@@ -8,10 +8,10 @@ import {
 } from "../../../common/communication/messages/message";
 import {SocketEvent} from "../../../common/communication/socket-events";
 import {OnlineType} from "../../../common/model/game/game";
+import {ReadyInfo} from "../../../common/model/rooms/ready-info";
 import {IRoomInfo} from "../../../common/model/rooms/room-info";
 import {SocketService} from "./socket.service";
 import {UNListService} from "./username.service";
-import {ReadyInfo} from "../../../common/model/rooms/ready-info";
 
 @Injectable({
               providedIn: "root",

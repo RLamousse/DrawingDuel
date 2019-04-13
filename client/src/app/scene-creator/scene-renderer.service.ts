@@ -4,10 +4,10 @@ import * as Httpstatus from "http-status-codes";
 import {Observable, Subject} from "rxjs";
 import {Intersection, Mesh, Object3D, PerspectiveCamera, Raycaster, Scene, Vector2, Vector3, WebGLRenderer} from "three";
 import {
+  createWebsocketMessage,
   ChatMessage,
   ChatMessagePosition,
   ChatMessageType,
-  createWebsocketMessage,
   WebsocketMessage
 } from "../../../../common/communication/messages/message";
 import {I3DDiffValidatorControllerRequest} from "../../../../common/communication/requests/diff-validator-controller.request";
