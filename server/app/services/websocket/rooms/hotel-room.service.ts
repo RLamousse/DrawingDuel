@@ -14,6 +14,7 @@ import {SocketEvent} from "../../../../../common/communication/socket-events";
 import {NonExistentGameError} from "../../../../../common/errors/database.errors";
 import {GameRoomCreationError, NonExistentRoomError} from "../../../../../common/errors/services.errors";
 import {OnlineType} from "../../../../../common/model/game/game";
+import {IInteractionResponse} from "../../../../../common/model/rooms/interaction";
 import {ReadyInfo} from "../../../../../common/model/rooms/ready-info";
 import {IRoomInfo} from "../../../../../common/model/rooms/room-info";
 import {IGameRoom} from "../../../model/room/game-room";
@@ -24,7 +25,6 @@ import {ChatWebsocketActionService} from "../chat-websocket-action.service";
 import {RadioTowerService} from "../radio-tower.service";
 import {FreeGameRoom} from "./free-game-room";
 import {SimpleGameRoom} from "./simple-game-room";
-import {IInteractionResponse} from "../../../../../common/model/rooms/interaction";
 
 @injectable()
 export class HotelRoomService {

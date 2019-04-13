@@ -1,11 +1,11 @@
 import {ComponentFixture, TestBed } from "@angular/core/testing";
 import {MatDialogModule} from "@angular/material";
 import {ActivatedRoute, Router} from "@angular/router";
+import {createWebsocketMessage} from "../../../../common/communication/messages/message";
 import {RoomService} from "../room.service";
 import {SocketService} from "../socket.service";
 import { AwaitViewComponent } from "./await-view.component";
 import {GameDeletionNotifComponent} from "./game-deletion-notif/game-deletion-notif.component";
-import {createWebsocketMessage} from "../../../../common/communication/messages/message";
 
 describe("AwaitViewComponent", () => {
   let component: AwaitViewComponent;
