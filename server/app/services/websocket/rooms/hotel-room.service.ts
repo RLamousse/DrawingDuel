@@ -5,9 +5,7 @@ import * as uuid from "uuid/v4";
 import {
     createWebsocketMessage,
     ChatMessage,
-    ChatMessagePosition,
-    ChatMessageType,
-    RoomInteractionMessage,
+    ChatMessagePosition, ChatMessageType, RoomInteractionMessage,
     WebsocketMessage
 } from "../../../../../common/communication/messages/message";
 import {SocketEvent} from "../../../../../common/communication/socket-events";
@@ -137,27 +135,8 @@ export class HotelRoomService {
             room.handleReady(socket.id);
         });
 
-        // TODO test .in().on()
         socket.in(room.id).on(SocketEvent.INTERACT, <T>(message: WebsocketMessage<RoomInteractionMessage<T>>) => {
-            const chatMessage: ChatMessage = {
-                gameName: room.gameName,
-                playerCount: HotelRoomService.onlineTypeFromPlayerCapacity(room.playerCapacity),
-                // TODO CHANGE THIS SHIT
-                playerName: this.userNameService.getUsernameBySocketId(socket.id),
-                position: ChatMessagePosition.NA,
-                timestamp: new Date(),
-                type: ChatMessageType.DIFF_FOUND,
-            };
-            room.interact(socket.id, message.body.interactionData)
-                .then((interactionResponse: IInteractionResponse) => {
-                    this.radioTower.sendToRoom(SocketEvent.INTERACT, createWebsocketMessage(interactionResponse), room.id);
-                    this.chatAction.sendChat(chatMessage, room.id);
-                })
-                .catch((error: Error) => {
-                    this.radioTower.privateSend(SocketEvent.INTERACT_ERROR, createWebsocketMessage(error.message), socket.id);
-                    chatMessage.type = ChatMessageType.DIFF_ERROR;
-                    this.chatAction.sendChat(chatMessage, room.id);
-                });
+            this.handleInteraction(room, socket, message);
         });
         socket.in(room.id).on(SocketEvent.CHECK_OUT, () => {
             this.handleCheckout(room, socket);
@@ -166,6 +145,27 @@ export class HotelRoomService {
         socket.in(room.id).on(SocketEvent.DISCONNECT, () => {
             this.handleCheckout(room, socket);
         });
+    }
+
+    private handleInteraction<T>(room: IGameRoom, socket: Socket, message: WebsocketMessage<RoomInteractionMessage<T>>): void {
+        const chatMessage: ChatMessage = {
+            gameName: room.gameName,
+            playerCount: HotelRoomService.onlineTypeFromPlayerCapacity(room.playerCapacity),
+            playerName: this.userNameService.getUsernameBySocketId(socket.id),
+            position: ChatMessagePosition.NA,
+            timestamp: new Date(),
+            type: ChatMessageType.DIFF_FOUND,
+        };
+        room.interact(socket.id, message.body.interactionData)
+            .then((interactionResponse: IInteractionResponse) => {
+                this.radioTower.sendToRoom(SocketEvent.INTERACT, createWebsocketMessage(interactionResponse), room.id);
+                this.chatAction.sendChat(chatMessage, room.id);
+            })
+            .catch((error: Error) => {
+                this.radioTower.privateSend(SocketEvent.INTERACT_ERROR, createWebsocketMessage(error.message), socket.id);
+                chatMessage.type = ChatMessageType.DIFF_ERROR;
+                this.chatAction.sendChat(chatMessage, room.id);
+            });
     }
 
     private handleCheckout(room: IGameRoom, socket: Socket): void {

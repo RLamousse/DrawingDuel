@@ -10,10 +10,11 @@ export abstract class AbstractGameRoom<T extends IGame, U extends IGameState> im
     private readonly _id: string;
     protected readonly _game: T;
     protected readonly _playerCapacity: number;
-    protected readonly _gameStates: Map<string, U>;
 
+    protected readonly _gameStates: Map<string, U>; // TODO Unique state per room
     private _onReady: () => void;
     protected _connectedPlayers: Map<string, boolean>;
+
     protected _ongoing: boolean;
 
     protected constructor(id: string, game: T, playerCapacity: number = 1) {
@@ -51,6 +52,25 @@ export abstract class AbstractGameRoom<T extends IGame, U extends IGameState> im
         }
     }
 
+    public setOnReadyCallBack(callback: () => void): void {
+        this._onReady = callback;
+    }
+
+    protected getGameStateForClient(clientId: string): U {
+        const clientGameState: U | undefined = this._gameStates.get(clientId);
+
+        if (clientGameState === undefined) {
+            throw new GameRoomError();
+        }
+
+        return clientGameState;
+    }
+
+    private isEveryClientReady(): boolean {
+        return Array.from(this._connectedPlayers.values())
+            .every((isClientReady: boolean) => isClientReady);
+    }
+
     public get gameName(): string {
         return this._game.gameName;
     }
@@ -71,30 +91,11 @@ export abstract class AbstractGameRoom<T extends IGame, U extends IGameState> im
         return this._ongoing;
     }
 
-    public setOnReadyCallBack(callback: () => void): void {
-        this._onReady = callback;
-    }
-
     public get playerCapacity(): number {
         return this._playerCapacity;
     }
 
-    protected getGameStateForClient(clientId: string): U {
-        const clientGameState: U | undefined = this._gameStates.get(clientId);
-
-        if (clientGameState === undefined) {
-            throw new GameRoomError();
-        }
-
-        return clientGameState;
-    }
-
-    private isEveryClientReady(): boolean {
-        return Array.from(this._connectedPlayers.values())
-            .every((isClientReady: boolean) => isClientReady);
-    }
-
     public get roomReadyEmitInformation(): ReadyInfo {
-        return "";
+        return {};
     }
 }
