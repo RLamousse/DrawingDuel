@@ -18,6 +18,7 @@ import {
     ISimpleGameInteractionData,
     ISimpleGameInteractionResponse
 } from "../../../../../common/model/rooms/interaction";
+import {SimpleReadyInfo} from "../../../../../common/model/rooms/ready-info";
 import {AbstractGameRoom} from "./abstract-game-room";
 
 export class SimpleGameRoom extends AbstractGameRoom<ISimpleGame, ISimpleGameState> {
@@ -90,5 +91,13 @@ export class SimpleGameRoom extends AbstractGameRoom<ISimpleGame, ISimpleGameSta
         clientGameState.foundDifferenceClusters.push(differenceCluster);
 
         return differenceCluster;
+    }
+
+    // TODO Change this name to something still relevant got dammit
+    public get roomReadyEmitInformation(): SimpleReadyInfo {
+        return {
+            originalImage: this._game.originalImage,
+            modifiedImage: this._game.modifiedImage,
+        };
     }
 }

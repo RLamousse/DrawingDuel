@@ -2,6 +2,7 @@ import {GameRoomError, NoVacancyGameRoomError} from "../../../../../common/error
 import {IGame} from "../../../../../common/model/game/game";
 import {IGameState} from "../../../../../common/model/game/game-state";
 import {IInteractionData, IInteractionResponse} from "../../../../../common/model/rooms/interaction";
+import {ReadyInfo} from "../../../../../common/model/rooms/ready-info";
 import {IGameRoom} from "../../../model/room/game-room";
 
 export abstract class AbstractGameRoom<T extends IGame, U extends IGameState> implements IGameRoom {
@@ -91,5 +92,9 @@ export abstract class AbstractGameRoom<T extends IGame, U extends IGameState> im
     private isEveryClientReady(): boolean {
         return Array.from(this._connectedPlayers.values())
             .every((isClientReady: boolean) => isClientReady);
+    }
+
+    public get roomReadyEmitInformation(): ReadyInfo {
+        return "";
     }
 }
