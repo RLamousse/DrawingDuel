@@ -13,7 +13,7 @@ const routes: Routes = [
     { path: "admin", component: VueAdminComponent },
     { path: "play-view", component: PlayViewComponent },
     { path: "3d-view", component: SceneCreatorComponent },
-    { path: "await-view", component: AwaitViewComponent },
+    { path: "loading", component: AwaitViewComponent },
 ];
 
 @NgModule({

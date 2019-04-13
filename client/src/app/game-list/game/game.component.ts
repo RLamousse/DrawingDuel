@@ -80,7 +80,7 @@ export class GameComponent implements OnInit {
   }
 
   private navigateAwait(): void {
-    this.router.navigate(["/await-view/"], {queryParams: {
+    this.router.navigate(["/loading/"], {queryParams: {
       gameName: this.gameName, gameType: this.gameType},
     })
       // tslint:disable-next-line:no-any Generic error response
