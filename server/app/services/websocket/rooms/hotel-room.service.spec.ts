@@ -388,7 +388,10 @@ describe("A service to manage game rooms", () => {
                 const interactionMessage: RoomInteractionMessage<ISimpleGameInteractionData> = {
                     interactionData: interactionData,
                 };
-                const interactionResponse: ISimpleGameInteractionResponse = {differenceCluster: [0, [getOrigin()]]};
+                const interactionResponse: ISimpleGameInteractionResponse = {
+                    initiatedBy: "Max",
+                    differenceCluster: [0, [getOrigin()]]
+                };
                 const roomMock: IMock<IGameRoom> = createRoomMock(gameName, true);
                 roomMock.setup(async (room: IGameRoom) => room.interact(serverSocket.id, interactionData))
                     .returns(async () => Promise.resolve(interactionResponse));

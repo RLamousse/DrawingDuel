@@ -219,6 +219,7 @@ describe("SimpleGameContainerComponent", () => {
     it("should copy pixel from the original canvas to the modified on original canvas click", async () => {
       const expectedValue: PixelData[] = [{coords: getOrigin(), data: new Uint8ClampedArray(0)}];
       const interactionResponse: ISimpleGameInteractionResponse = {
+        initiatedBy: "Max",
         differenceCluster: [0, [getOrigin()]],
       };
 
@@ -242,6 +243,7 @@ describe("SimpleGameContainerComponent", () => {
     it("should copy pixel from the original canvas to the modified on modified canvas click", async () => {
       const expectedValue: PixelData[] = [{coords: getOrigin(), data: new Uint8ClampedArray(0)}];
       const interactionResponse: ISimpleGameInteractionResponse = {
+        initiatedBy: "Max",
         differenceCluster: [0, [getOrigin()]],
       };
 
