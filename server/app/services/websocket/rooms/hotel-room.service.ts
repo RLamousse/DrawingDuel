@@ -14,15 +14,17 @@ import {SocketEvent} from "../../../../../common/communication/socket-events";
 import {NonExistentGameError} from "../../../../../common/errors/database.errors";
 import {GameRoomCreationError, NonExistentRoomError} from "../../../../../common/errors/services.errors";
 import {OnlineType} from "../../../../../common/model/game/game";
+import {ReadyInfo} from "../../../../../common/model/rooms/ready-info";
 import {IRoomInfo} from "../../../../../common/model/rooms/room-info";
 import {IGameRoom} from "../../../model/room/game-room";
 import types from "../../../types";
 import {DataBaseService} from "../../data-base.service";
+import {UsernameService} from "../../username.service";
 import {ChatWebsocketActionService} from "../chat-websocket-action.service";
 import {RadioTowerService} from "../radio-tower.service";
 import {FreeGameRoom} from "./free-game-room";
 import {SimpleGameRoom} from "./simple-game-room";
-import {ReadyInfo} from "../../../../../common/model/rooms/ready-info";
+import {IInteractionResponse} from "../../../../../common/model/rooms/interaction";
 
 @injectable()
 export class HotelRoomService {
@@ -32,7 +34,8 @@ export class HotelRoomService {
 
     public constructor(@inject(types.DataBaseService) private databaseService: DataBaseService,
                        @inject(types.RadioTowerService) private radioTower: RadioTowerService,
-                       @inject(types.ChatWebsocketActionService) private chatAction: ChatWebsocketActionService) {
+                       @inject(types.ChatWebsocketActionService) private chatAction: ChatWebsocketActionService,
+                       @inject(types.UserNameService) protected userNameService: UsernameService) {
         this._rooms = new Map<string, IGameRoom>();
         this._sockets = new Map<Socket, string>();
     }
@@ -140,13 +143,13 @@ export class HotelRoomService {
                 gameName: room.gameName,
                 playerCount: HotelRoomService.onlineTypeFromPlayerCapacity(room.playerCapacity),
                 // TODO CHANGE THIS SHIT
-                playerName: "Snoop Dogg",
+                playerName: this.userNameService.getUsernameBySocketId(socket.id),
                 position: ChatMessagePosition.NA,
                 timestamp: new Date(),
                 type: ChatMessageType.DIFF_FOUND,
             };
             room.interact(socket.id, message.body.interactionData)
-                .then((interactionResponse: T) => {
+                .then((interactionResponse: IInteractionResponse) => {
                     this.radioTower.sendToRoom(SocketEvent.INTERACT, createWebsocketMessage(interactionResponse), room.id);
                     this.chatAction.sendChat(chatMessage, room.id);
                 })
