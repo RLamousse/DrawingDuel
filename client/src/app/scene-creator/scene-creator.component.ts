@@ -1,5 +1,5 @@
 import {Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild} from "@angular/core";
-import {ActivatedRoute, Router} from "@angular/router";
+import {ActivatedRoute} from "@angular/router";
 import {FreeViewGamesRenderingError} from "../../../../common/errors/component.errors";
 import {IFreeGame} from "../../../../common/model/game/free-game";
 import {GameType} from "../../../../common/model/game/game";
@@ -7,7 +7,6 @@ import {IPoint} from "../../../../common/model/point";
 import {X_FACTOR, Y_FACTOR} from "../../../../common/util/util";
 import {GameService} from "../game.service";
 import {IScene} from "../scene-interface";
-import {UNListService} from "../username.service";
 import {FreeGameCreatorService} from "./FreeGameCreator/free-game-creator.service";
 import {SceneRendererService} from "./scene-renderer.service";
 
@@ -32,13 +31,7 @@ export class SceneCreatorComponent implements OnInit, OnDestroy {
   private clickEnabled: boolean;
   protected finishedLoad: boolean;
   public constructor(private renderService: SceneRendererService, private route: ActivatedRoute,
-                     private freeGameCreator: FreeGameCreatorService, private gameService: GameService,
-                     private router: Router) {
-    if ( !UNListService.username ) {
-      this.router.navigate([""]).catch(( error: Error) => {
-        throw error;
-      });
-    }
+                     private freeGameCreator: FreeGameCreatorService, private gameService: GameService) {
     this.clickEnabled = true;
   }
 

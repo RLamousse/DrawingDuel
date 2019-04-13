@@ -1,8 +1,7 @@
 import {Component, OnInit} from "@angular/core";
-import {ActivatedRoute, Router} from "@angular/router";
+import {ActivatedRoute} from "@angular/router";
 import {GameType} from "../../../../common/model/game/game";
 import {SimpleGameService} from "../simple-game/simple-game.service";
-import {UNListService} from "../username.service";
 
 @Component({
              selector: "app-play-view",
@@ -16,14 +15,9 @@ export class PlayViewComponent implements OnInit {
   protected modifiedImage: string;
   protected gameType: GameType;
 
-  public constructor(private route: ActivatedRoute, private simpleGameService: SimpleGameService, private router: Router) {}
+  public constructor(private route: ActivatedRoute, private simpleGameService: SimpleGameService) {}
 
   public ngOnInit(): void {
-    if ( !UNListService.username ) {
-      this.router.navigate([""]).catch(( error: Error) => {
-        throw error;
-      });
-    }
     this.route.queryParams.subscribe((params) => {
       this.gameName = params["gameName"];
       this.originalImage = params["originalImage"];

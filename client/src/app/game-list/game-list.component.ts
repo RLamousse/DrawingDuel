@@ -1,9 +1,7 @@
 import { Component, Input, OnInit } from "@angular/core";
-import {Router} from "@angular/router";
 import { forkJoin } from "rxjs";
 import {GameType} from "../../../../common/model/game/game";
 import { GameService } from "../game.service";
-import {UNListService} from "../username.service";
 
 @Component({
   selector: "app-game-list",
@@ -19,16 +17,11 @@ export class GameListComponent implements OnInit {
   @Input() protected readonly leftButton: string = "Jouer";
   protected pushedGames: boolean;
 
-  public constructor(private gameService: GameService, private router: Router) {
+  public constructor(private gameService: GameService) {
     this.pushedGames = false;
   }
 
   public ngOnInit(): void {
-    if ( !UNListService.username ) {
-      this.router.navigate([""]).catch(( error: Error) => {
-        throw error;
-      });
-    }
     forkJoin(this.gameService.getSimpleGames(), this.gameService.getFreeGames()).subscribe(([simpleGames, freeGames]) => {
       this.gameService.pushSimpleGames(simpleGames);
       this.gameService.pushFreeGames(freeGames);
