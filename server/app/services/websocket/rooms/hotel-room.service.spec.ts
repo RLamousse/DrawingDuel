@@ -25,6 +25,7 @@ import {RadioTowerService} from "../radio-tower.service";
 import {HotelRoomService} from "./hotel-room.service";
 import {SimpleGameRoom} from "./simple-game-room";
 import {ChatWebsocketActionService} from "../chat-websocket-action.service";
+import {UsernameService} from "../../username.service";
 
 describe("A service to manage game rooms", () => {
 
@@ -42,6 +43,7 @@ describe("A service to manage game rooms", () => {
     let freeGamesCollectionService: FreeGamesCollectionService;
     let radioTowerService: RadioTowerService;
     let chatActionService: ChatWebsocketActionService;
+    let usernameService: UsernameService;
 
     const initHotelRoomService:
         (mockConfigurator?: Callback) => HotelRoomService =
@@ -51,6 +53,7 @@ describe("A service to manage game rooms", () => {
             freeGamesCollectionService = mock(FreeGamesCollectionService);
             radioTowerService = mock(RadioTowerService);
             chatActionService = mock(ChatWebsocketActionService);
+            usernameService = mock(UsernameService);
 
             if (mockConfigurator !== undefined) {
                 mockConfigurator();
@@ -61,7 +64,12 @@ describe("A service to manage game rooms", () => {
             when(mockedDatabaseService.freeGames)
                 .thenReturn(instance(freeGamesCollectionService));
 
-            return new HotelRoomService(instance(mockedDatabaseService), instance(radioTowerService), instance(chatActionService));
+            return new HotelRoomService(
+                instance(mockedDatabaseService),
+                instance(radioTowerService),
+                instance(chatActionService),
+                instance(usernameService),
+            );
         };
 
     const createSimpleGameMock:
@@ -306,7 +314,7 @@ describe("A service to manage game rooms", () => {
                 const gameName: string = "It's going down, I'm yelling timber!";
                 const simpleGameRoom: SimpleGameRoom = new SimpleGameRoom("room", createSimpleGameMock(gameName));
                 const hotelRoomService: HotelRoomService = initHotelRoomService(() => {
-                    when(radioTowerService.sendToRoom(SocketEvent.READY, undefined, simpleGameRoom.id))
+                    when(radioTowerService.sendToRoom(SocketEvent.READY, anything(), simpleGameRoom.id))
                         .thenCall(() => done());
                 });
 
