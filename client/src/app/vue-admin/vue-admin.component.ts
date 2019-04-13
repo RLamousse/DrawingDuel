@@ -18,12 +18,12 @@ export class VueAdminComponent {
   protected createSimpleGame(): void {
     const dialogConfig: MatDialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = true;
-    this.dialog.open(SimpleGameCreatorFormComponent, dialogConfig);
+    this.dialog.open(SimpleGameCreatorFormComponent, dialogConfig).afterClosed().subscribe(() => window.location.reload());
   }
 
   protected create3DGame(): void {
     const dialogConfig: MatDialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = true;
-    this.dialog.open(Create3DGameComponent, dialogConfig);
+    this.dialog.open(Create3DGameComponent, dialogConfig).afterClosed().subscribe(() => window.location.reload());
   }
 }
