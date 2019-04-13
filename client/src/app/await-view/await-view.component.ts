@@ -5,7 +5,8 @@ import {Subscription} from "rxjs";
 import {WebsocketMessage} from "../../../../common/communication/messages/message";
 import {SocketEvent} from "../../../../common/communication/socket-events";
 import {ComponentNavigationError} from "../../../../common/errors/component.errors";
-import {GameType} from "../../../../common/model/game/game";
+import {GameType, OnlineType} from "../../../../common/model/game/game";
+import {SimpleReadyInfo} from "../../../../common/model/rooms/ready-info";
 import {RoomService} from "../room.service";
 import {SocketService} from "../socket.service";
 import {GameDeletionNotifComponent} from "./game-deletion-notif/game-deletion-notif.component";
@@ -34,7 +35,7 @@ export class AwaitViewComponent implements OnInit, OnDestroy {
   public ngOnDestroy(): void {
     this.gameStartSub.unsubscribe();
     this.gameDeletionSub.unsubscribe();
-    this.roomService.checkOutRoom();
+    // this.roomService.checkOutRoom();
   }
 
   public ngOnInit(): void {
@@ -47,8 +48,9 @@ export class AwaitViewComponent implements OnInit, OnDestroy {
     this.gameDeletionSub = this.socket.onEvent(SocketEvent.DELETE).subscribe(this.executeGameDeletionRoutine);
   }
 
-  private handleGameStart(): void {
-    console.log("GAME IS STARTING");
+  private handleGameStart(roomInfo: SimpleReadyInfo): void {
+    // this.gameType === GameType.SIMPLE ? this.navigateToSimpleGame(roomInfo) : this.navigateToFreeGame();
+    this.navigateToSimpleGame(roomInfo);
   }
 
   private executeGameDeletionRoutine(message: WebsocketMessage<[string, boolean]>): void {
@@ -62,6 +64,30 @@ export class AwaitViewComponent implements OnInit, OnDestroy {
       throw new ComponentNavigationError();
     });
   }
+
+  private navigateToSimpleGame(readyInfo: SimpleReadyInfo): void {
+    this.route.navigate(["/play-view/"], {
+      queryParams: {
+        gameName: this.gameName,
+        originalImage: readyInfo.originalImage,
+        modifiedImage: readyInfo.modifiedImage,
+        gameType: this.gameType,
+        onlineType: OnlineType.MULTI,
+      },
+    }).catch(() => {
+      throw new ComponentNavigationError();
+    });
+  }
+
+  // private navigateToFreeGame(): void {
+  //   this.route.navigate(["/3d-view/"], {
+  //     queryParams: {
+  //       gameName: this.gameName,
+  //     },
+  //   }).catch(() => {
+  //     throw new ComponentNavigationError();
+  //   });
+  // }
 
   private notifyGameDeletion(message: WebsocketMessage<[string, boolean]>): void {
     if (message.body[this.indexString] === this.gameName) {
