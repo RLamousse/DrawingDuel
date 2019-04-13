@@ -68,7 +68,7 @@ export class DiffCounterComponent implements OnInit {
     dialogConfig.autoFocus = true;
     dialogConfig.data = {gameName: this.gameName, gameType: this.gameType, };
     this.dialog.open(EndGameNotifComponent, dialogConfig).afterClosed().subscribe(() => {
-      this.router.navigate(["/game-list/"]) // tslint:disable-next-line:no-any Generic error response
+      this.router.navigate(["/games/"]) // tslint:disable-next-line:no-any Generic error response
       .catch((reason: any) => {
         throw new ComponentNavigationError();
       });

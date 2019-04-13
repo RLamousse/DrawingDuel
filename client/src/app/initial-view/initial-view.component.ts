@@ -62,7 +62,7 @@ export class InitialViewComponent implements OnInit {
     if (answer) {
       this.username = this.newUsername;
       UNListService.username = this.username;
-      await this.router.navigate(["/game-list"]);
+      await this.router.navigate(["/games"]);
     } else {
       this.errorMessage = this.userService.message;
     }

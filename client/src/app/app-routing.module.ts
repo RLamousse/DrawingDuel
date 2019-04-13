@@ -9,7 +9,7 @@ import { VueAdminComponent } from "./vue-admin/vue-admin.component";
 
 const routes: Routes = [
     { path: "", component: InitialViewComponent },
-    { path: "game-list", component: GameListComponent },
+    { path: "games", component: GameListComponent },
     { path: "admin", component: VueAdminComponent },
     { path: "play-view", component: PlayViewComponent },
     { path: "3d-view", component: SceneCreatorComponent },
