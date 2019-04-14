@@ -72,34 +72,15 @@ export class SceneRendererService {
     return deepCompare(x, {x: y.x, y: y.y, z: y.z} as IVector3);
   }
 
-  private setRenderer(): void {
-    // TODO DUPLICATED CODE
-    this.rendererOri = new WebGLRenderer({preserveDrawingBuffer: true});
-    this.rendererOri.setClearColor(this.backGroundColor);
-    this.rendererOri.setPixelRatio(devicePixelRatio);
-    this.rendererOri.setSize(this.originalContainer.clientWidth, this.originalContainer.clientHeight);
-    this.originalContainer.appendChild(this.rendererOri.domElement);
+  // ╔═════════╗
+  // ║ 3D INIT ║
+  // ╚═════════╝
 
-    // TODO DUPLICATED CODE
-    this.rendererMod = new WebGLRenderer();
-    this.rendererMod.setClearColor(this.backGroundColor);
-    this.rendererMod.setPixelRatio(devicePixelRatio);
-    this.rendererMod.setSize(this.modifiedContainer.clientWidth, this.modifiedContainer.clientHeight);
-    this.modifiedContainer.appendChild(this.rendererMod.domElement);
-  }
-
-  private renderLoop(): void {
-    this.rendererOri.render(this.scene, this.camera);
-    this.rendererMod.render(this.modifiedScene, this.camera);
-    this.time = performance.now();
-    const delta: number = (this.time - this.prevTime) / this.timeFactor;
-    this.renderUpdateService.updateVelocity(this.velocity, delta);
-    this.velocity = this.objectCollisionService.raycastCollision(
-      this.camera, this.scene.children, this.modifiedScene.children, this.velocity,
-    );
-    this.renderUpdateService.updateCamera(this.camera, delta, this.velocity);
-    this.prevTime = this.time;
-    requestAnimationFrame(() => this.renderLoop());
+  public init(oriCont: HTMLDivElement, modCont: HTMLDivElement): void {
+    this.originalContainer = oriCont;
+    this.modifiedContainer = modCont;
+    this.initCamera();
+    this.initRenderer();
   }
 
   private initCamera(): void {
@@ -114,11 +95,20 @@ export class SceneRendererService {
     this.camera.position.z = this.cameraZ;
   }
 
-  public init(oriCont: HTMLDivElement, modCont: HTMLDivElement): void {
-    this.originalContainer = oriCont;
-    this.modifiedContainer = modCont;
-    this.initCamera();
-    this.setRenderer();
+  private initRenderer(): void {
+    this.rendererOri = this.createRenderer(this.originalContainer);
+    this.originalContainer.appendChild(this.rendererOri.domElement);
+    this.rendererMod = this.createRenderer(this.modifiedContainer);
+    this.modifiedContainer.appendChild(this.rendererMod.domElement);
+  }
+
+  private createRenderer(container: HTMLDivElement): WebGLRenderer {
+    const renderer: WebGLRenderer = new WebGLRenderer({preserveDrawingBuffer: true});
+    renderer.setClearColor(this.backGroundColor);
+    renderer.setPixelRatio(devicePixelRatio);
+    renderer.setSize(container.clientWidth, container.clientHeight);
+
+    return renderer;
   }
 
   public loadScenes(original: Scene, modified: Scene, gameName: string): void {
@@ -134,6 +124,10 @@ export class SceneRendererService {
     this.gameState.foundDifference = [];
     this.renderLoop();
   }
+
+  // ╔════════════╗
+  // ║ CHEAT MODE ║
+  // ╚════════════╝
 
   private async blink(): Promise<void> {
     (this.gameState.cheatDiffData as Set<Mesh>).forEach((value: Mesh) => changeVisibility(value));
@@ -198,6 +192,10 @@ export class SceneRendererService {
     }
   }
 
+  // ╔══════════════════╗
+  // ║ CLICK VALIDATION ║
+  // ╚══════════════════╝
+
   public async objDiffValidation(position: IPoint): Promise<IJson3DObject> {
     const rendererElem: HTMLCanvasElement = position.x < this.rendererMod.domElement.offsetLeft ?
       this.rendererOri.domElement :
@@ -235,7 +233,7 @@ export class SceneRendererService {
           this.checkIfAlreadyFound(value.data);
         }
         this.notifyClickToWebsocket(true);
-        this.updateRoutine(value.data, object as Object3D);
+        this.updateModifiedObject(value.data, object as Object3D);
         await this.updateCheatDiffData([value.data as IJson3DObject]);
 
         return value.data as IJson3DObject;
@@ -272,10 +270,28 @@ export class SceneRendererService {
     }
   }
 
-  private updateRoutine(jsonObj: IJson3DObject, obj: Object3D): void {
+  private updateModifiedObject(jsonObj: IJson3DObject, obj: Object3D): void {
     this.gameState.foundDifference.push(jsonObj);
     this.renderUpdateService.updateDifference(obj, this.scene, this.modifiedScene);
     this.differenceCountSubject.next(this.gameState.foundDifference.length);
     playRandomSound(FOUND_DIFFERENCE_SOUNDS);
+  }
+
+  // ╔════════╗
+  // ║ RENDER ║
+  // ╚════════╝
+
+  private renderLoop(): void {
+    this.rendererOri.render(this.scene, this.camera);
+    this.rendererMod.render(this.modifiedScene, this.camera);
+    this.time = performance.now();
+    const delta: number = (this.time - this.prevTime) / this.timeFactor;
+    this.renderUpdateService.updateVelocity(this.velocity, delta);
+    this.velocity = this.objectCollisionService.raycastCollision(
+      this.camera, this.scene.children, this.modifiedScene.children, this.velocity,
+    );
+    this.renderUpdateService.updateCamera(this.camera, delta, this.velocity);
+    this.prevTime = this.time;
+    requestAnimationFrame(() => this.renderLoop());
   }
 }
