@@ -11,11 +11,12 @@ import {ComponentNotLoadedError} from "../../../../common/errors/component.error
 import {AbstractServiceError, AlreadyFoundDifferenceError, NoDifferenceAtPointError} from "../../../../common/errors/services.errors";
 import {IJson3DObject} from "../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
 import {OnlineType} from "../../../../common/model/game/game";
-import {IPoint, IVector3} from "../../../../common/model/point";
+import {IPoint} from "../../../../common/model/point";
 import {deepCompare, sleep, X_FACTOR} from "../../../../common/util/util";
 import {playRandomSound, FOUND_DIFFERENCE_SOUNDS, NO_DIFFERENCE_SOUNDS, STAR_THEME_SOUND} from "../simple-game/game-sounds";
 import {SocketService} from "../socket.service";
 import {UNListService} from "../username.service";
+import {compareToThreeVector3} from "../util/client-utils";
 import {SKY_BOX_NAME} from "./FreeGameCreator/free-game-creator.service";
 import {ObjectCollisionService} from "./objectCollisionService/object-collision.service";
 import {RenderUpdateService} from "./render-update.service";
@@ -67,10 +68,6 @@ export class SceneRendererService {
   private readonly WATCH_THREAD_FINISH_INTERVAL: number = 30;
   private differenceCountSubject: Subject<number> = new Subject();
   public gameState: IFreeGameState;
-
-  private static compareToThreeVector3(x: IVector3, y: Vector3): boolean {
-    return deepCompare(x, {x: y.x, y: y.y, z: y.z} as IVector3);
-  }
 
   // ╔═════════╗
   // ║ 3D INIT ║
@@ -156,7 +153,7 @@ export class SceneRendererService {
 
       newData.forEach((jsonValue: IJson3DObject) => {
         (this.gameState.cheatDiffData as Set<Object3D>).forEach((objectValue: Object3D) => {
-          if (SceneRendererService.compareToThreeVector3(jsonValue.position, objectValue.position)) {
+          if (compareToThreeVector3(jsonValue.position, objectValue.position)) {
             (this.gameState.cheatDiffData as Set<Object3D>).delete(objectValue);
           }
         });
@@ -168,7 +165,7 @@ export class SceneRendererService {
     this.gameState.cheatDiffData = new Set<Object3D>();
     (await callBackFunction()).forEach((jsonValue: IJson3DObject) => {
       this.scene.children.concat(this.modifiedScene.children).forEach((objectValue: Object3D) => {
-        if (SceneRendererService.compareToThreeVector3(jsonValue.position, objectValue.position) &&
+        if (compareToThreeVector3(jsonValue.position, objectValue.position) &&
           (objectValue instanceof Mesh || objectValue instanceof Scene)) {
           (this.gameState.cheatDiffData as Set<Object3D>).add(objectValue);
         }

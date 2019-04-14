@@ -1,15 +1,10 @@
 import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from "@angular/core";
 import {inverseY, IPoint} from "../../../../../common/model/point";
-import {drawTextOnCanvas, getCanvasRenderingContext} from "../../client-utils";
+import {CanvasTextType, drawTextOnCanvas, getCanvasRenderingContext} from "../../util/canvas-utils";
 
 export interface PixelData {
   coords: IPoint;
   data: Uint8ClampedArray;
-}
-
-export enum TextType {
-  ERROR,
-  VICTORY,
 }
 
 export const IMAGE_DATA_PIXEL_LENGTH: number = 4;
@@ -93,8 +88,8 @@ export class SimpleGameCanvasComponent implements OnInit {
     this._canvasContext.putImageData(imageData, 0, 0);
   }
 
-  public drawText(text: string, position: IPoint, textType?: TextType): void {
-    drawTextOnCanvas(text, position, this._canvasContext, textType);
+  public drawText(text: string, position: IPoint, CanvasTextType?: CanvasTextType): void {
+    drawTextOnCanvas(text, position, this._canvasContext, CanvasTextType);
   }
 
   protected clickHandler(event: MouseEvent): void {

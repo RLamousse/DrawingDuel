@@ -5,16 +5,11 @@ import {IFreeGame} from "../../../../common/model/game/free-game";
 import {GameType} from "../../../../common/model/game/game";
 import {IPoint} from "../../../../common/model/point";
 import {X_FACTOR, Y_FACTOR} from "../../../../common/util/util";
-import {drawTextOnCanvas, getCanvasRenderingContext} from "../client-utils";
 import {GameService} from "../game.service";
 import {IScene} from "../scene-interface";
+import {drawTextOnCanvas, getCanvasRenderingContext, CanvasTextType} from "../util/canvas-utils";
 import {FreeGameCreatorService} from "./FreeGameCreator/free-game-creator.service";
 import {SceneRendererService} from "./scene-renderer.service";
-
-export enum TextType {
-  ERROR,
-  VICTORY,
-}
 
 export const TEXT_FONT: string = "20px Comic Sans MS";
 export const ERROR_TEXT_COLOR: string = "#ff0000";
@@ -28,29 +23,22 @@ export const IDENTIFICATION_ERROR_TEXT: string = "Erreur";
              styleUrls: ["./scene-creator.component.css"],
            })
 export class SceneCreatorComponent implements OnInit, OnDestroy {
-  private clickEnabled: boolean;
+  private readonly CHEAT_KEY_CODE: string = "KeyT";
 
+  private clickEnabled: boolean;
   private originalCanvasContext: CanvasRenderingContext2D;
   private modifiedCanvasContext: CanvasRenderingContext2D;
-
-  public constructor(private renderService: SceneRendererService, private route: ActivatedRoute,
-                     private freeGameCreator: FreeGameCreatorService, private gameService: GameService) {
-    this.clickEnabled = true;
-  }
 
   protected gameName: string;
   protected FREE_GAME_TYPE: GameType = GameType.FREE;
   protected cursorEnabled: boolean = true;
 
-  private get originalContainer(): HTMLDivElement {
-    return this.originalView.nativeElement;
+  public constructor(private renderService: SceneRendererService,
+                     private route: ActivatedRoute,
+                     private freeGameCreator: FreeGameCreatorService,
+                     private gameService: GameService) {
+    this.clickEnabled = true;
   }
-
-  private get modifiedContainer(): HTMLDivElement {
-    return this.modifiedView.nativeElement;
-  }
-
-  private readonly CHEAT_KEY_CODE: string = "KeyT";
 
   @ViewChild("originalView")
   private originalView: ElementRef;
@@ -72,7 +60,7 @@ export class SceneCreatorComponent implements OnInit, OnDestroy {
     this.route.queryParams.subscribe((params) => {
       this.gameName = params["gameName"];
     });
-    this.renderService.init(this.originalContainer, this.modifiedContainer);
+    this.renderService.init(this.originalView.nativeElement, this.modifiedView.nativeElement);
 
     this.originalCanvasContext = getCanvasRenderingContext(this.originalCanvas);
     this.modifiedCanvasContext = getCanvasRenderingContext(this.modifiedCanvas);
@@ -116,12 +104,13 @@ export class SceneCreatorComponent implements OnInit, OnDestroy {
         })
         .catch(() => {
           this.cursorEnabled = false;
-          this.resetRoutine(this.canvasErrorDraw(clickPosition));
+          const clickedCanvas: CanvasRenderingContext2D = this.canvasErrorDraw(clickPosition);
+          this.scheduleCanvasCleanup(clickedCanvas);
         });
     }
   }
 
-  private resetRoutine(renderingContext: CanvasRenderingContext2D): void {
+  private scheduleCanvasCleanup(renderingContext: CanvasRenderingContext2D): void {
     const TIMEOUT: number = 1000;
     setTimeout(
       () => {
@@ -145,7 +134,7 @@ export class SceneCreatorComponent implements OnInit, OnDestroy {
       y: Math.floor(clickPosition.y - canvasContext.canvas.offsetTop) / Y_FACTOR,
     };
 
-    drawTextOnCanvas(IDENTIFICATION_ERROR_TEXT, point, canvasContext, TextType.ERROR);
+    drawTextOnCanvas(IDENTIFICATION_ERROR_TEXT, point, canvasContext, CanvasTextType.ERROR);
 
     return canvasContext;
   }
