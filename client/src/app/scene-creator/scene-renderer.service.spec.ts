@@ -166,7 +166,7 @@ describe("SceneRendererService", () => {
     service.init(oriCont, modCont);
     service.loadScenes(original, modified, "gameName");
 
-    return service.objDiffValidation(325, 430)
+    return service.objDiffValidation({x: 325, y: 430})
       .catch((reason: Error) => {
         expect(reason.message).toEqual(NoDifferenceAtPointError.NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE);
       });
@@ -183,7 +183,7 @@ describe("SceneRendererService", () => {
     service.init(oriCont, modCont);
     service.loadScenes(original, modified, "gameName");
 
-    return service.objDiffValidation(1120, 430)
+    return service.objDiffValidation({x: 1120, y: 430})
       .catch((reason: Error) => {
         expect(reason.message).toEqual(NoDifferenceAtPointError.NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE);
       });
@@ -208,7 +208,7 @@ describe("SceneRendererService", () => {
     service.init(oriCont, modCont);
     service.loadScenes(original, modified, "gameName");
 
-    return service.objDiffValidation(325, 430)
+    return service.objDiffValidation({x: 325, y: 430})
       .catch((reason: Error) => {
         expect(reason.message).toEqual(NoDifferenceAtPointError.NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE);
       });

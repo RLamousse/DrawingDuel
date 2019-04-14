@@ -1,5 +1,6 @@
 import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from "@angular/core";
 import {inverseY, IPoint} from "../../../../../common/model/point";
+import {drawTextOnCanvas, getCanvasRenderingContext} from "../../client-utils";
 
 export interface PixelData {
   coords: IPoint;
@@ -47,12 +48,7 @@ export class SimpleGameCanvasComponent implements OnInit {
 
       canvasElement.width = this._width;
       canvasElement.height = this._height;
-
-      const canvasContext: CanvasRenderingContext2D | null = canvasElement.getContext("2d");
-      if (canvasContext === null) {
-        return;
-      }
-      this._canvasContext = canvasContext;
+      this._canvasContext = getCanvasRenderingContext(this.canvas);
       this._canvasContext.font = TEXT_FONT;
       this._canvasContext.textAlign = "center";
       this._canvasContext.strokeStyle = "black";
@@ -98,19 +94,7 @@ export class SimpleGameCanvasComponent implements OnInit {
   }
 
   public drawText(text: string, position: IPoint, textType?: TextType): void {
-    switch (textType) {
-      case TextType.ERROR:
-        this._canvasContext.fillStyle = ERROR_TEXT_COLOR;
-        this._canvasContext.strokeText(text, position.x, position.y);
-        break;
-      case TextType.VICTORY:
-        this._canvasContext.fillStyle = VICTORY_TEXT_COLOR;
-        break;
-      default:
-        this._canvasContext.fillStyle = DEFAULT_TEXT_COLOR;
-        break;
-    }
-    this._canvasContext.fillText(text, position.x, position.y);
+    drawTextOnCanvas(text, position, this._canvasContext, textType);
   }
 
   protected clickHandler(event: MouseEvent): void {

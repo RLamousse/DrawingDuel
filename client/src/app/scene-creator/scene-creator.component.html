@@ -2,16 +2,15 @@
 <div class="general" appFPControlEvent (contextmenu)="onRightClick($event)">
   <div class="separation">
     <div class="leftWindow">
-      <canvas id="endGameMessage"></canvas>
       <h1 class = "gameName">{{gameName}}</h1>
       <div class="timer"><app-timer [gameName] = "gameName"
                                     [gameType] = "FREE_GAME_TYPE"></app-timer></div>
       <div class = "row" [class.disabled]="!cursorEnabled">
         <div class= "scene" (click)="onDivContClick($event)" #originalView>
-          <canvas id="originalCanvasMessage"></canvas>
+          <canvas id="originalCanvasMessage" #originalCanvas></canvas>
         </div>
         <div class= "scene" (click)="onDivContClick($event)" #modifiedView>
-          <canvas id="modifiedCanvasMessage"></canvas>
+          <canvas id="modifiedCanvasMessage" #modifiedCanvas></canvas>
         </div>
       </div>
     </div>

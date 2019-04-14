@@ -11,7 +11,7 @@ import {ComponentNotLoadedError} from "../../../../common/errors/component.error
 import {AbstractServiceError, AlreadyFoundDifferenceError, NoDifferenceAtPointError} from "../../../../common/errors/services.errors";
 import {IJson3DObject} from "../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
 import {OnlineType} from "../../../../common/model/game/game";
-import {IVector3} from "../../../../common/model/point";
+import {IPoint, IVector3} from "../../../../common/model/point";
 import {deepCompare, sleep, X_FACTOR} from "../../../../common/util/util";
 import {playRandomSound, FOUND_DIFFERENCE_SOUNDS, NO_DIFFERENCE_SOUNDS, STAR_THEME_SOUND} from "../simple-game/game-sounds";
 import {SocketService} from "../socket.service";
@@ -198,17 +198,14 @@ export class SceneRendererService {
     }
   }
 
-  public async objDiffValidation(xPos: number, yPos: number): Promise<IJson3DObject> {
-    let x: number = 0;
-    let y: number = 0;
+  public async objDiffValidation(position: IPoint): Promise<IJson3DObject> {
+    const rendererElem: HTMLCanvasElement = position.x < this.rendererMod.domElement.offsetLeft ?
+      this.rendererOri.domElement :
+      this.rendererMod.domElement;
+
     const POS_FACT: number = 2;
-    if (xPos < this.rendererMod.domElement.offsetLeft) {
-      x = ((xPos - this.rendererOri.domElement.offsetLeft) / this.rendererOri.domElement.offsetWidth) * POS_FACT - 1;
-      y = -((yPos - this.rendererOri.domElement.offsetTop) / this.rendererOri.domElement.offsetHeight) * POS_FACT + 1;
-    } else {
-      x = ((xPos - this.rendererMod.domElement.offsetLeft) / this.rendererMod.domElement.offsetWidth) * POS_FACT - 1;
-      y = -((yPos - this.rendererMod.domElement.offsetTop) / this.rendererMod.domElement.offsetHeight) * POS_FACT + 1;
-    }
+    const x: number = ((position.x - rendererElem.offsetLeft) / rendererElem.offsetWidth) * POS_FACT - 1;
+    const y: number = -((position.y - rendererElem.offsetTop) / rendererElem.offsetHeight) * POS_FACT + 1;
     const direction: Vector2 = new Vector2(x, y);
     const rayCast: Raycaster = new Raycaster();
     rayCast.setFromCamera(direction, this.camera);
