@@ -21,7 +21,6 @@ export const ERROR_TEXT_COLOR: string = "#ff0000";
 export const VICTORY_TEXT_COLOR: string = "#008000";
 export const DEFAULT_TEXT_COLOR: string = "#000000";
 export const IDENTIFICATION_ERROR_TEXT: string = "Erreur";
-export const VICTORY_TEXT: string = "VICTOIRE";
 
 @Component({
              selector: "app-scene-creator",
@@ -79,9 +78,7 @@ export class SceneCreatorComponent implements OnInit, OnDestroy {
     this.modifiedCanvasContext = getCanvasRenderingContext(this.modifiedCanvas);
 
     this.verifyGame()
-      .then((scene: IScene) => {
-        return this.renderService.loadScenes(scene.scene, scene.modifiedScene, this.gameName);
-      })
+      .then((scene: IScene) => this.renderService.loadScenes(scene.scene, scene.modifiedScene, this.gameName))
       .catch(() => {
         throw new FreeViewGamesRenderingError();
     });
