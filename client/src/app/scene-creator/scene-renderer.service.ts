@@ -19,6 +19,7 @@ import {UNListService} from "../username.service";
 import {SKY_BOX_NAME} from "./FreeGameCreator/free-game-creator.service";
 import {ObjectCollisionService} from "./objectCollisionService/object-collision.service";
 import {RenderUpdateService} from "./render-update.service";
+import {changeVisibility, get3DObject} from "./renderer-utils";
 
 interface IFreeGameState {
   isCheatModeActive: boolean;
@@ -28,22 +29,22 @@ interface IFreeGameState {
   blinkThread?: NodeJS.Timeout;
 }
 
-export const SCENE_TYPE: string = "Scene";
-
 @Injectable({providedIn: "root"})
 export class SceneRendererService {
   public constructor(private renderUpdateService: RenderUpdateService,
                      private socket: SocketService,
-                     private objectCollisionService: ObjectCollisionService,
-  ) {
+                     private objectCollisionService: ObjectCollisionService) {
     this.gameState = {isCheatModeActive: false, isWaitingInThread: false, foundDifference: []};
   }
+
   public get foundDifferenceCount(): Observable<number> {
     return this.differenceCountSubject;
   }
 
+  // TODO: Remove DEP
   public originalContainer: HTMLDivElement;
   public modifiedContainer: HTMLDivElement;
+
   public scene: Scene;
   public modifiedScene: Scene;
   public gameName: string;
@@ -70,18 +71,23 @@ export class SceneRendererService {
   private static compareToThreeVector3(x: IVector3, y: Vector3): boolean {
     return deepCompare(x, {x: y.x, y: y.y, z: y.z} as IVector3);
   }
+
   private setRenderer(): void {
+    // TODO DUPLICATED CODE
     this.rendererOri = new WebGLRenderer({preserveDrawingBuffer: true});
     this.rendererOri.setClearColor(this.backGroundColor);
     this.rendererOri.setPixelRatio(devicePixelRatio);
     this.rendererOri.setSize(this.originalContainer.clientWidth, this.originalContainer.clientHeight);
     this.originalContainer.appendChild(this.rendererOri.domElement);
+
+    // TODO DUPLICATED CODE
     this.rendererMod = new WebGLRenderer();
     this.rendererMod.setClearColor(this.backGroundColor);
     this.rendererMod.setPixelRatio(devicePixelRatio);
     this.rendererMod.setSize(this.modifiedContainer.clientWidth, this.modifiedContainer.clientHeight);
     this.modifiedContainer.appendChild(this.rendererMod.domElement);
   }
+
   private renderLoop(): void {
     this.rendererOri.render(this.scene, this.camera);
     this.rendererMod.render(this.modifiedScene, this.camera);
@@ -95,11 +101,11 @@ export class SceneRendererService {
     this.prevTime = this.time;
     requestAnimationFrame(() => this.renderLoop());
   }
-  private setCamera(): void {
-    const aspectRatio: number = this.getAspectRatio();
+
+  private initCamera(): void {
     this.camera = new PerspectiveCamera(
       this.fieldOfView,
-      aspectRatio,
+      this.originalContainer.clientWidth / this.originalContainer.clientHeight,
       this.nearClippingPane,
       this.farClippingPane,
     );
@@ -107,15 +113,14 @@ export class SceneRendererService {
     this.camera.position.y = this.cameraY;
     this.camera.position.z = this.cameraZ;
   }
-  private getAspectRatio(): number {
-    return (this.originalContainer.clientWidth) / (this.originalContainer.clientHeight);
-  }
+
   public init(oriCont: HTMLDivElement, modCont: HTMLDivElement): void {
     this.originalContainer = oriCont;
     this.modifiedContainer = modCont;
-    this.setCamera();
+    this.initCamera();
     this.setRenderer();
   }
+
   public loadScenes(original: Scene, modified: Scene, gameName: string): void {
     if (this.originalContainer === undefined || this.modifiedContainer === undefined) {
       throw (new ComponentNotLoadedError());
@@ -129,26 +134,29 @@ export class SceneRendererService {
     this.gameState.foundDifference = [];
     this.renderLoop();
   }
+
   private async blink(): Promise<void> {
-    (this.gameState.cheatDiffData as Set<Mesh>).forEach((value: Mesh) => this.changeVisibility(value));
+    (this.gameState.cheatDiffData as Set<Mesh>).forEach((value: Mesh) => changeVisibility(value));
     this.gameState.isWaitingInThread = true;
     await sleep(this.INVISIBLE_INTERVAL_MS);
     this.gameState.isWaitingInThread = false;
-    (this.gameState.cheatDiffData as Set<Mesh>).forEach((value: Mesh) => this.changeVisibility(value));
+    (this.gameState.cheatDiffData as Set<Mesh>).forEach((value: Mesh) => changeVisibility(value));
   }
+
   public async modifyCheatState(loadCheatData: () => Promise<IJson3DObject[]>): Promise<void> {
     this.gameState.isCheatModeActive = !this.gameState.isCheatModeActive;
     if (this.gameState.isCheatModeActive) {
       STAR_THEME_SOUND.play();
       await this.loadCheatData(loadCheatData);
-      await this.updateCheateDiffData(this.gameState.foundDifference);
+      await this.updateCheatDiffData(this.gameState.foundDifference);
       this.gameState.blinkThread = setInterval(async () => this.blink(),
                                                this.BLINK_INTERVAL_MS);
     } else {
       await this.deactivateCheatMode();
     }
   }
-  private async updateCheateDiffData(newData: IJson3DObject[]): Promise<void> {
+
+  private async updateCheatDiffData(newData: IJson3DObject[]): Promise<void> {
     await this.threadFinish();
     if (this.gameState.isCheatModeActive) {
 
@@ -161,6 +169,7 @@ export class SceneRendererService {
       });
     }
   }
+
   private async loadCheatData(callBackFunction: () => Promise<IJson3DObject[]>): Promise<void> {
     this.gameState.cheatDiffData = new Set<Object3D>();
     (await callBackFunction()).forEach((jsonValue: IJson3DObject) => {
@@ -172,6 +181,7 @@ export class SceneRendererService {
       });
     });
   }
+
   public async deactivateCheatMode(): Promise<void> {
     STAR_THEME_SOUND.stop();
     if (this.gameState.blinkThread) {
@@ -181,11 +191,13 @@ export class SceneRendererService {
     this.gameState.isCheatModeActive = false;
     this.gameState.cheatDiffData = undefined;
   }
+
   private async threadFinish(): Promise<void> {
     while (this.gameState.isWaitingInThread) {
       await sleep(this.WATCH_THREAD_FINISH_INTERVAL);
     }
   }
+
   public async objDiffValidation(xPos: number, yPos: number): Promise<IJson3DObject> {
     let x: number = 0;
     let y: number = 0;
@@ -211,21 +223,7 @@ export class SceneRendererService {
     }
     const object: Intersection = intersectOri.length === 0 && intersectMod.length !== 0 ? intersectMod[0] : intersectOri[0];
 
-    return this.differenceValidationAtPoint(this.get3DObject(object));
-  }
-  private get3DObject(obj: Intersection): Object3D {
-    if ((obj.object.parent as Object3D).type === SCENE_TYPE) {
-      return obj.object;
-    } else {
-      return this.getRecursiveParent(obj.object);
-    }
-  }
-  private getRecursiveParent(obj: Object3D): Object3D {
-    if ((obj.parent as Object3D).type !== SCENE_TYPE) {
-      return this.getRecursiveParent(obj.parent as Object3D);
-    }
-
-    return (obj.parent as Object3D);
+    return this.differenceValidationAtPoint(get3DObject(object));
   }
 
   private async differenceValidationAtPoint(object: Object3D): Promise<IJson3DObject> {
@@ -241,7 +239,7 @@ export class SceneRendererService {
         }
         this.notifyClickToWebsocket(true);
         this.updateRoutine(value.data, object as Object3D);
-        await this.updateCheateDiffData([value.data as IJson3DObject]);
+        await this.updateCheatDiffData([value.data as IJson3DObject]);
 
         return value.data as IJson3DObject;
       })
@@ -255,6 +253,7 @@ export class SceneRendererService {
         throw new AbstractServiceError(reason.message);
       });
   }
+
   private notifyClickToWebsocket(good: boolean): void {
     const message: WebsocketMessage<ChatMessage> = {
       title: SocketEvent.CHAT,
@@ -266,6 +265,7 @@ export class SceneRendererService {
     };
     this.socket.send(SocketEvent.CHAT, message);
   }
+
   private checkIfAlreadyFound(object: IJson3DObject): void {
     for (const obj of this.gameState.foundDifference) {
       if (deepCompare(obj.position, object.position)) {
@@ -274,22 +274,11 @@ export class SceneRendererService {
       }
     }
   }
+
   private updateRoutine(jsonObj: IJson3DObject, obj: Object3D): void {
     this.gameState.foundDifference.push(jsonObj);
     this.renderUpdateService.updateDifference(obj, this.scene, this.modifiedScene);
     this.differenceCountSubject.next(this.gameState.foundDifference.length);
     playRandomSound(FOUND_DIFFERENCE_SOUNDS);
-  }
-  private changeVisibility(value: Mesh | Scene): void {
-    if (value instanceof Mesh) {
-      Array.isArray(value.material) ? value.material.forEach((material) => {
-          material.visible = !material.visible;
-        }) :
-        value.material.visible = !value.material.visible;
-    } else {
-      value.children.forEach((valueChild: Object3D) => {
-        this.changeVisibility(valueChild as Scene);
-      });
-    }
   }
 }
