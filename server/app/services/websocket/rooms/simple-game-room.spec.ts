@@ -42,16 +42,12 @@ describe("A simple game room", () => {
     };
 
     describe("Check-in", () => {
-        it("should create a game state when a player checks-in", () => {
+        it("should save the player's ID on check-in", () => {
             const simpleGameRoom: SimpleGameRoom = initSimpleGameRoom();
             const clientId: string = "Mr. Worldwide";
             simpleGameRoom.checkIn(clientId);
 
             assert(simpleGameRoom["_connectedPlayers"].has(clientId));
-            expect(simpleGameRoom["_gameStates"].size)
-                .to.equal(1);
-            expect(Array.from(simpleGameRoom["_gameStates"].keys()))
-                .to.contain(clientId);
         });
 
         it("should throw when a room has no vacancy", () => {
@@ -64,7 +60,7 @@ describe("A simple game room", () => {
                 .to.throw(NoVacancyGameRoomError.NO_VACANCY_GAME_ROOM_ERROR_MESSAGE);
         });
 
-        it("should contain a state for every player connected", () => {
+        it("should have the ID of every player connected", () => {
             // tslint:disable-next-line:no-magic-numbers Random room size
             const roomSize: number = Math.floor(Math.random() * 10) + 2;
             const simpleGameRoom: SimpleGameRoom = initSimpleGameRoom(undefined, roomSize);
@@ -73,13 +69,8 @@ describe("A simple game room", () => {
                 simpleGameRoom.checkIn(i.toString());
             }
 
-            expect(simpleGameRoom["_gameStates"].size)
-                .to.equal(roomSize);
-
             for (let i: number = 0; i < roomSize; i++) {
                 assert(simpleGameRoom["_connectedPlayers"].has(i.toString()));
-                expect(Array.from(simpleGameRoom["_gameStates"].keys()))
-                    .to.contain(i.toString());
             }
         });
     });
@@ -93,9 +84,6 @@ describe("A simple game room", () => {
             // Yes... I didn't extract the string only for the pun
             youCan.checkOut("any time you like but you can never leave... [Guitar solo]");
 
-            expect(Array.from(youCan["_gameStates"].keys()))
-                .not.to.contain(clientId);
-
             assert(youCan.empty);
 
             return expect(youCan["_connectedPlayers"]).to.be.empty;
@@ -107,9 +95,6 @@ describe("A simple game room", () => {
 
             simpleGameRoom.checkOut("client");
 
-            expect(Array.from(simpleGameRoom["_gameStates"].keys()))
-                .not.to.contain("client");
-
             expect(simpleGameRoom["_connectedPlayers"])
                 .not.to.contain("client");
         });
@@ -120,8 +105,6 @@ describe("A simple game room", () => {
 
             simpleGameRoom.checkOut("stranger");
 
-            expect(Array.from(simpleGameRoom["_gameStates"].keys()))
-                .to.contain("client");
             assert(!simpleGameRoom.empty);
 
             return expect(simpleGameRoom["_connectedPlayers"]).not.to.be.empty;
@@ -131,11 +114,12 @@ describe("A simple game room", () => {
     describe("Interact", () => {
         it("should throw when there's no difference at point", async () => {
             const simpleGameRoom: SimpleGameRoom = initSimpleGameRoom();
-            simpleGameRoom["_gameStates"].set("client", {foundDifferenceClusters: []});
+            // @ts-ignore Mock certain properties of object
+            simpleGameRoom["_gameState"] = {foundDifferenceClusters: []};
             axiosMock.onGet(DIFF_VALIDATOR_GET_CALLS_REGEX)
                 .reply(HttpStatus.NOT_FOUND);
 
-            return simpleGameRoom.interact("client", {coord: getOrigin()})
+            return simpleGameRoom.interact({coord: getOrigin()})
                 .catch((reason: Error) => {
                     expect(reason.message).to.eql(NoDifferenceAtPointError.NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE);
                 });
@@ -143,11 +127,12 @@ describe("A simple game room", () => {
 
         it("should throw on unexpected server response", async () => {
             const simpleGameRoom: SimpleGameRoom = initSimpleGameRoom(undefined);
-            simpleGameRoom["_gameStates"].set("client", {foundDifferenceClusters: []});
+            // @ts-ignore Mock certain properties of object
+            simpleGameRoom["_gameState"] = {foundDifferenceClusters: []};
             axiosMock.onGet(DIFF_VALIDATOR_GET_CALLS_REGEX)
                 .reply(HttpStatus.INTERNAL_SERVER_ERROR);
 
-            return simpleGameRoom.interact("client", {coord: getOrigin()})
+            return simpleGameRoom.interact({coord: getOrigin()})
                 .catch((reason: Error) => {
                     expect(reason.message).not.to.eql(NoDifferenceAtPointError.NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE);
                 });
@@ -159,12 +144,13 @@ describe("A simple game room", () => {
                     mockedSimpleGame.setup((game: ISimpleGame) => game.diffData)
                         .returns(() => [[0, [getOrigin()]]]);
                 });
-            simpleGameRoom["_gameStates"].set("client", {foundDifferenceClusters: []});
+            // @ts-ignore Mock certain properties of object
+            simpleGameRoom["_gameState"] = {foundDifferenceClusters: []};
 
             axiosMock.onGet(DIFF_VALIDATOR_GET_CALLS_REGEX)
                 .reply(HttpStatus.OK);
 
-            return simpleGameRoom.interact("client", {coord: getOrigin()})
+            return simpleGameRoom.interact({coord: getOrigin()})
                 .then((response: ISimpleGameInteractionResponse) => {
                     assert.isTrue(
                         response.differenceCluster[DIFFERENCE_CLUSTER_POINTS_INDEX]
@@ -175,12 +161,13 @@ describe("A simple game room", () => {
 
         it("should throw if a difference cluster was already found", async () => {
             const simpleGameRoom: SimpleGameRoom = initSimpleGameRoom();
-            simpleGameRoom["_gameStates"].set("client", {foundDifferenceClusters: [[0, [getOrigin()]]]});
+            // @ts-ignore Mock certain properties of object
+            simpleGameRoom["_gameState"] = {foundDifferenceClusters: [[0, [getOrigin()]]]};
 
             axiosMock.onGet(DIFF_VALIDATOR_GET_CALLS_REGEX)
                 .reply(HttpStatus.OK);
 
-            return simpleGameRoom.interact("client", {coord: getOrigin()})
+            return simpleGameRoom.interact({coord: getOrigin()})
                 .catch((reason: Error) => {
                     expect(reason.message).to.eql(AlreadyFoundDifferenceError.ALREADY_FOUND_DIFFERENCE_ERROR_MESSAGE);
                 });
@@ -192,7 +179,7 @@ describe("A simple game room", () => {
             axiosMock.onGet(DIFF_VALIDATOR_GET_CALLS_REGEX)
                 .reply(HttpStatus.OK);
 
-            return simpleGameRoom.interact("client", {coord: getOrigin()})
+            return simpleGameRoom.interact({coord: getOrigin()})
                 .catch((reason: Error) => {
                     expect(reason.message).to.eql(GameRoomError.GAME_ROOM_ERROR_MESSAGE);
                 });

@@ -401,7 +401,7 @@ describe("A service to manage game rooms", () => {
                     differenceCluster: [0, [getOrigin()]],
                 };
                 const roomMock: IMock<IGameRoom> = createRoomMock(gameName, true);
-                roomMock.setup(async (room: IGameRoom) => room.interact(serverSocket.id, interactionData))
+                roomMock.setup(async (room: IGameRoom) => room.interact(interactionData))
                     .returns(async () => Promise.resolve(interactionResponse));
                 const hotelRoomService: HotelRoomService = initHotelRoomService(() => {
                     when(radioTowerService.sendToRoom(SocketEvent.INTERACT, anything(), roomMock.object.id))
@@ -419,7 +419,7 @@ describe("A service to manage game rooms", () => {
                     interactionData: interactionData,
                 };
                 const roomMock: IMock<IGameRoom> = createRoomMock(gameName, true);
-                roomMock.setup(async (room: IGameRoom) => room.interact(serverSocket.id, interactionData))
+                roomMock.setup(async (room: IGameRoom) => room.interact(interactionData))
                     .returns(async () => Promise.reject(new NoDifferenceAtPointError()));
                 const hotelRoomService: HotelRoomService = initHotelRoomService(() => {
                     when(radioTowerService.privateSend(SocketEvent.INTERACT_ERROR, anything(), serverSocket.id))

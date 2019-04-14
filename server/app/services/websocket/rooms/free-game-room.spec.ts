@@ -2,7 +2,7 @@ import Axios from "axios";
 import MockAdapter from "axios-mock-adapter";
 // tslint:disable-next-line:no-duplicate-imports Weird interaction between singletons and interface (olivier st-o approved)
 import AxiosAdapter from "axios-mock-adapter";
-import {assert, expect} from "chai";
+import {expect} from "chai";
 import * as HttpStatus from "http-status-codes";
 import {IMock, Mock} from "typemoq";
 import {DIFF_VALIDATOR_3D_BASE, SERVER_BASE_URL} from "../../../../../common/communication/routes";
@@ -10,11 +10,9 @@ import {
     AlreadyFoundDifferenceError,
     GameRoomError,
     NoDifferenceAtPointError,
-    NoVacancyGameRoomError
 } from "../../../../../common/errors/services.errors";
 import {DEFAULT_OBJECT} from "../../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
 import {IFreeGame} from "../../../../../common/model/game/free-game";
-import {IFreeGameState} from "../../../../../common/model/game/game-state";
 import {getOrigin3D} from "../../../../../common/model/point";
 import {IFreeGameInteractionResponse} from "../../../../../common/model/rooms/interaction";
 import {FreeGameRoom} from "./free-game-room";
@@ -41,63 +39,15 @@ describe("A free game room", () => {
             return new FreeGameRoom(roomId, mockedFreeGame.object, playerCount);
         };
 
-    describe("Check-in", () => {
-        it("should create a game state when a player checks-in", () => {
-            const freeGameRoom: FreeGameRoom = initFreeGameRoom();
-            const clientId: string = "Mr. Worldwide";
-            freeGameRoom.checkIn(clientId);
-
-            assert(freeGameRoom["_connectedPlayers"].has(clientId));
-            expect(freeGameRoom["_gameStates"].size)
-                .to.equal(1);
-            expect(Array.from(freeGameRoom["_gameStates"].keys()))
-                .to.contain(clientId);
-        });
-
-        it("should throw when a room has no vacancy", () => {
-            const freeGameRoom: FreeGameRoom = initFreeGameRoom();
-            const clientId1: string = "Mr. Worldwide";
-            const clientId2: string = "Mr. 305";
-            freeGameRoom.checkIn(clientId1);
-
-            expect(() => freeGameRoom.checkIn(clientId2))
-                .to.throw(NoVacancyGameRoomError.NO_VACANCY_GAME_ROOM_ERROR_MESSAGE);
-        });
-
-        it("should contain a state for every player connected", () => {
-            // tslint:disable-next-line:no-magic-numbers Random room size
-            const roomSize: number = Math.floor(Math.random() * 10) + 2;
-            const freeGameRoom: FreeGameRoom = initFreeGameRoom(undefined, roomSize);
-            const emptyGameState: IFreeGameState = {
-                foundObjects: [],
-            };
-
-            for (let i: number = 0; i < roomSize; i++) {
-                freeGameRoom.checkIn(i.toString());
-            }
-
-            expect(freeGameRoom["_gameStates"].size)
-                .to.equal(roomSize);
-
-            for (let i: number = 0; i < roomSize; i++) {
-                assert(freeGameRoom["_connectedPlayers"].has(i.toString()));
-                expect(Array.from(freeGameRoom["_gameStates"].keys()))
-                    .to.contain(i.toString());
-
-                expect(freeGameRoom["_gameStates"].get(i.toString()))
-                    .to.eql(emptyGameState);
-            }
-        });
-    });
-
     describe("Interact", () => {
         it("should throw when there's no difference at point", async () => {
             const freeGameRoom: FreeGameRoom = initFreeGameRoom();
-            freeGameRoom["_gameStates"].set("client", {foundObjects: []});
+            // @ts-ignore Mock certain properties of object
+            freeGameRoom["_gameState"] = {foundObjects: []};
             axiosMock.onGet(DIFF_VALIDATOR_GET_CALLS_REGEX)
                 .reply(HttpStatus.NOT_FOUND);
 
-            return freeGameRoom.interact("client", {coord: getOrigin3D()})
+            return freeGameRoom.interact({coord: getOrigin3D()})
                 .catch((reason: Error) => {
                     expect(reason.message).to.eql(NoDifferenceAtPointError.NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE);
                 });
@@ -105,11 +55,12 @@ describe("A free game room", () => {
 
         it("should throw on unexpected server response", async () => {
             const freeGameRoom: FreeGameRoom = initFreeGameRoom();
-            freeGameRoom["_gameStates"].set("client", {foundObjects: []});
+            // @ts-ignore Mock certain properties of object
+            freeGameRoom["_gameState"] = {foundObjects: []};
             axiosMock.onGet(DIFF_VALIDATOR_GET_CALLS_REGEX)
                 .reply(HttpStatus.INTERNAL_SERVER_ERROR);
 
-            return freeGameRoom.interact("client", {coord: getOrigin3D()})
+            return freeGameRoom.interact({coord: getOrigin3D()})
                 .catch((reason: Error) => {
                     expect(reason.message).not.to.eql(NoDifferenceAtPointError.NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE);
                 });
@@ -119,12 +70,13 @@ describe("A free game room", () => {
             const freeGameRoom: FreeGameRoom = initFreeGameRoom();
             // @ts-ignore Mock certain properties of object
             freeGameRoom["_game"] = DEFAULT_OBJECT;
-            freeGameRoom["_gameStates"].set("client", {foundObjects: []});
+            // @ts-ignore Mock certain properties of object
+            freeGameRoom["_gameState"] = {foundObjects: []};
 
             axiosMock.onGet(DIFF_VALIDATOR_GET_CALLS_REGEX)
                 .reply(HttpStatus.OK, DEFAULT_OBJECT);
 
-            return freeGameRoom.interact("client", {coord: getOrigin3D()})
+            return freeGameRoom.interact({coord: getOrigin3D()})
                 .then((response: IFreeGameInteractionResponse) => {
                     expect(response.object).to.eql(DEFAULT_OBJECT);
                 });
@@ -132,12 +84,12 @@ describe("A free game room", () => {
 
         it("should throw if an object was already found", async () => {
             const freeGameRoom: FreeGameRoom = initFreeGameRoom();
-            freeGameRoom["_gameStates"].set("client", {foundObjects: [DEFAULT_OBJECT]});
-
+            // @ts-ignore Mock certain properties of object
+            freeGameRoom["_gameState"] = {foundObjects: [DEFAULT_OBJECT]};
             axiosMock.onGet(DIFF_VALIDATOR_GET_CALLS_REGEX)
                 .reply(HttpStatus.OK, DEFAULT_OBJECT);
 
-            return freeGameRoom.interact("client", {coord: getOrigin3D()})
+            return freeGameRoom.interact({coord: getOrigin3D()})
                 .catch((reason: Error) => {
                     expect(reason.message).to.eql(AlreadyFoundDifferenceError.ALREADY_FOUND_DIFFERENCE_ERROR_MESSAGE);
                 });
@@ -149,7 +101,7 @@ describe("A free game room", () => {
             axiosMock.onGet(DIFF_VALIDATOR_GET_CALLS_REGEX)
                 .reply(HttpStatus.OK, DEFAULT_OBJECT);
 
-            return freeGameRoom.interact("client", {coord: getOrigin3D()})
+            return freeGameRoom.interact({coord: getOrigin3D()})
                 .catch((reason: Error) => {
                     expect(reason.message).to.eql(GameRoomError.GAME_ROOM_ERROR_MESSAGE);
                 });
