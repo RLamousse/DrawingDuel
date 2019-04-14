@@ -16,7 +16,7 @@ export interface IGameRoom {
 
     setOnReadyCallBack(callback: () => void): void;
 
-    interact(clientId: string, interactionData: IInteractionData): Promise<IInteractionResponse>;
+    interact(interactionData: IInteractionData): Promise<IInteractionResponse>;
 
     checkOut(clientId: string): void;
 }

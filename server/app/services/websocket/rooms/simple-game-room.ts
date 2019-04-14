@@ -24,20 +24,13 @@ import {AbstractGameRoom} from "./abstract-game-room";
 export class SimpleGameRoom extends AbstractGameRoom<ISimpleGame, ISimpleGameState> {
 
     public constructor(id: string, game: ISimpleGame, playerCount: number = 1) {
-        super(id, game, playerCount);
+        super(id, game, playerCount, {
+            foundDifferenceClusters: [],
+        });
     }
 
-    public checkIn(clientId: string): void {
-        super.checkIn(clientId);
-        this._gameStates.set(
-            clientId,
-            {
-                foundDifferenceClusters: [],
-            } as ISimpleGameState);
-    }
-
-    public async interact(clientId: string, interactionData: ISimpleGameInteractionData): Promise<ISimpleGameInteractionResponse> {
-        return this.validateDifference(clientId, interactionData.coord)
+    public async interact(interactionData: ISimpleGameInteractionData): Promise<ISimpleGameInteractionResponse> {
+        return this.validateDifference(interactionData.coord)
             .then((foundDifferenceCluster: DifferenceCluster) => {
                 return {differenceCluster: foundDifferenceCluster} as ISimpleGameInteractionResponse;
             })
@@ -46,8 +39,8 @@ export class SimpleGameRoom extends AbstractGameRoom<ISimpleGame, ISimpleGameSta
             });
     }
 
-    private async validateDifference(clientId: string, point: IPoint): Promise<DifferenceCluster> {
-        this.assertAlreadyFoundDifference(clientId, point);
+    private async validateDifference(point: IPoint): Promise<DifferenceCluster> {
+        this.assertAlreadyFoundDifference(point);
 
         return Axios.get(
             SERVER_BASE_URL + DIFF_VALIDATOR_BASE,
@@ -58,7 +51,7 @@ export class SimpleGameRoom extends AbstractGameRoom<ISimpleGame, ISimpleGameSta
                     gameName: this._game.gameName,
                 } as IDiffValidatorControllerRequest,
             })
-            .then(() => this.updateGameState(clientId, point))
+            .then(() => this.updateGameState(point))
             // tslint:disable-next-line:no-any Generic error response
             .catch((reason: any) => {
                 if (reason.response && reason.response.status === Httpstatus.NOT_FOUND) {
@@ -69,26 +62,21 @@ export class SimpleGameRoom extends AbstractGameRoom<ISimpleGame, ISimpleGameSta
             });
     }
 
-    private assertAlreadyFoundDifference(clientId: string, point: IPoint): void {
-        const clientGameState: ISimpleGameState = this.getGameStateForClient(clientId);
-
+    private assertAlreadyFoundDifference(point: IPoint): void {
         try {
-            getClusterFromPoint(point, clientGameState.foundDifferenceClusters);
+            getClusterFromPoint(point, this._gameState.foundDifferenceClusters);
         } catch (e) {
             if (e.message === NoDifferenceAtPointError.NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE) {
                 return;
             }
-
-            throw e;
         }
 
         throw new AlreadyFoundDifferenceError();
     }
 
-    private updateGameState(clientId: string, clickedPoint: IPoint): DifferenceCluster {
+    private updateGameState(clickedPoint: IPoint): DifferenceCluster {
         const differenceCluster: DifferenceCluster = getClusterFromPoint(clickedPoint, this._game.diffData);
-        const clientGameState: ISimpleGameState = this.getGameStateForClient(clientId);
-        clientGameState.foundDifferenceClusters.push(differenceCluster);
+        this._gameState.foundDifferenceClusters.push(differenceCluster);
 
         return differenceCluster;
     }

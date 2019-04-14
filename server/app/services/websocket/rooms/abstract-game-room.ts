@@ -1,4 +1,4 @@
-import {GameRoomError, NoVacancyGameRoomError} from "../../../../../common/errors/services.errors";
+import {NoVacancyGameRoomError} from "../../../../../common/errors/services.errors";
 import {IGame} from "../../../../../common/model/game/game";
 import {IGameState} from "../../../../../common/model/game/game-state";
 import {IInteractionData, IInteractionResponse} from "../../../../../common/model/rooms/interaction";
@@ -11,22 +11,22 @@ export abstract class AbstractGameRoom<T extends IGame, U extends IGameState> im
     protected readonly _game: T;
     protected readonly _playerCapacity: number;
 
-    protected readonly _gameStates: Map<string, U>; // TODO Unique state per room
+    protected readonly _gameState: U;
     private _onReady: () => void;
     protected _connectedPlayers: Map<string, boolean>;
 
     protected _ongoing: boolean;
 
-    protected constructor(id: string, game: T, playerCapacity: number = 1) {
+    protected constructor(id: string, game: T, playerCapacity: number = 1, gameState: U) {
         this._id = id;
         this._game = game;
         this._playerCapacity = playerCapacity;
-        this._gameStates = new Map();
+        this._gameState = gameState;
         this._connectedPlayers = new Map();
         this._ongoing = false;
     }
 
-    public async abstract interact(clientId: string, interactionData: IInteractionData): Promise<IInteractionResponse>;
+    public async abstract interact(interactionData: IInteractionData): Promise<IInteractionResponse>;
 
     public checkIn(clientId: string): void {
         if (!this.vacant) {
@@ -38,7 +38,6 @@ export abstract class AbstractGameRoom<T extends IGame, U extends IGameState> im
 
     public checkOut(clientId: string): void {
         this._connectedPlayers.delete(clientId);
-        this._gameStates.delete(clientId);
     }
 
     public handleReady(clientId: string): void {
@@ -54,16 +53,6 @@ export abstract class AbstractGameRoom<T extends IGame, U extends IGameState> im
 
     public setOnReadyCallBack(callback: () => void): void {
         this._onReady = callback;
-    }
-
-    protected getGameStateForClient(clientId: string): U {
-        const clientGameState: U | undefined = this._gameStates.get(clientId);
-
-        if (clientGameState === undefined) {
-            throw new GameRoomError();
-        }
-
-        return clientGameState;
     }
 
     private isEveryClientReady(): boolean {

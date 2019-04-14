@@ -156,7 +156,7 @@ export class HotelRoomService {
             timestamp: new Date(),
             type: ChatMessageType.DIFF_FOUND,
         };
-        room.interact(socket.id, message.body.interactionData)
+        room.interact(message.body.interactionData)
             .then((interactionResponse: IInteractionResponse) => {
                 this.radioTower.sendToRoom(SocketEvent.INTERACT, createWebsocketMessage(interactionResponse), room.id);
                 this.chatAction.sendChat(chatMessage, room.id);
