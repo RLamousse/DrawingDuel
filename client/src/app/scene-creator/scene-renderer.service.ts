@@ -212,9 +212,7 @@ export class SceneRendererService {
     const intersectMod: Intersection[] = rayCast.intersectObjects(this.modifiedScene.children, true)
       .filter((intersection: Intersection) => intersection.object.name !== SKY_BOX_NAME);
     if (intersectOri.length === 0 && intersectMod.length === 0) {
-      playRandomSound(NO_DIFFERENCE_SOUNDS);
-      this.notifyClickToWebsocket(false);
-      throw new NoDifferenceAtPointError();
+      this.handleNoDifferenceFound();
     }
     const object: Intersection = intersectOri.length === 0 && intersectMod.length !== 0 ? intersectMod[0] : intersectOri[0];
 
@@ -229,9 +227,7 @@ export class SceneRendererService {
 
     return Axios.get<IJson3DObject>(SERVER_BASE_URL + DIFF_VALIDATOR_3D_BASE, {params: queryParams})
       .then(async (value: AxiosResponse<IJson3DObject>) => {
-        if (this.gameState.foundDifference.length !== 0 || this.gameState.foundDifference !== undefined) {
-          this.checkIfAlreadyFound(value.data);
-        }
+        this.assertAlreadyFound(value.data);
         this.notifyClickToWebsocket(true);
         this.updateModifiedObject(value.data, object as Object3D);
         await this.updateCheatDiffData([value.data as IJson3DObject]);
@@ -240,15 +236,14 @@ export class SceneRendererService {
       })
       // tslint:disable-next-line:no-any Generic error response
       .catch((reason: any) => {
-        this.notifyClickToWebsocket(false);
         if (reason.response && reason.response.status === Httpstatus.NOT_FOUND) {
-          playRandomSound(NO_DIFFERENCE_SOUNDS);
-          throw new NoDifferenceAtPointError();
+          this.handleNoDifferenceFound();
         }
         throw new AbstractServiceError(reason.message);
       });
   }
 
+  // TODO Deprecated with rooms
   private notifyClickToWebsocket(good: boolean): void {
     const message: WebsocketMessage<ChatMessage> = {
       title: SocketEvent.CHAT,
@@ -261,7 +256,7 @@ export class SceneRendererService {
     this.socket.send(SocketEvent.CHAT, message);
   }
 
-  private checkIfAlreadyFound(object: IJson3DObject): void {
+  private assertAlreadyFound(object: IJson3DObject): void {
     for (const obj of this.gameState.foundDifference) {
       if (deepCompare(obj.position, object.position)) {
         playRandomSound(NO_DIFFERENCE_SOUNDS);
@@ -275,6 +270,12 @@ export class SceneRendererService {
     this.renderUpdateService.updateDifference(obj, this.scene, this.modifiedScene);
     this.differenceCountSubject.next(this.gameState.foundDifference.length);
     playRandomSound(FOUND_DIFFERENCE_SOUNDS);
+  }
+
+  private handleNoDifferenceFound(): void {
+    playRandomSound(NO_DIFFERENCE_SOUNDS);
+    this.notifyClickToWebsocket(false);
+    throw new NoDifferenceAtPointError();
   }
 
   // ╔════════╗
