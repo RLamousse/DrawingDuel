@@ -98,9 +98,9 @@ export class SceneCreatorComponent implements OnInit, OnDestroy {
       const clickPosition: IPoint = {x: clickEvent.clientX, y: clickEvent.clientY};
       this.clickEnabled = false;
       this.renderService.objDiffValidation(clickPosition)
-        .then(() => {
+        .then((foundDifferences: number) => {
           const VICTORY_COUNT: number = 7;
-          this.clickEnabled = this.renderService.gameState.foundDifference.length !== VICTORY_COUNT;
+          this.clickEnabled = foundDifferences !== VICTORY_COUNT;
         })
         .catch(() => {
           this.cursorEnabled = false;

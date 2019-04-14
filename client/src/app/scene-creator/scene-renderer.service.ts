@@ -38,23 +38,6 @@ export class SceneRendererService {
     this.gameState = {isCheatModeActive: false, isWaitingInThread: false, foundDifference: []};
   }
 
-  public get foundDifferenceCount(): Observable<number> {
-    return this.differenceCountSubject;
-  }
-
-  // TODO: Remove DEP
-  public originalContainer: HTMLDivElement;
-  public modifiedContainer: HTMLDivElement;
-
-  public scene: Scene;
-  public modifiedScene: Scene;
-  public gameName: string;
-  private camera: PerspectiveCamera;
-  private rendererOri: WebGLRenderer;
-  private rendererMod: WebGLRenderer;
-  protected time: number;
-  protected prevTime: number;
-  protected velocity: Vector3;
   private readonly fieldOfView: number = 90;
   private readonly nearClippingPane: number = 1;
   private readonly farClippingPane: number = 2900;
@@ -66,8 +49,24 @@ export class SceneRendererService {
   private readonly BLINK_INTERVAL_MS: number = 250;
   private readonly INVISIBLE_INTERVAL_MS: number = this.BLINK_INTERVAL_MS / X_FACTOR;
   private readonly WATCH_THREAD_FINISH_INTERVAL: number = 30;
+
+  private time: number;
+  private prevTime: number;
+  private velocity: Vector3;
+  private originalContainer: HTMLDivElement;
+  private modifiedContainer: HTMLDivElement;
+  private scene: Scene;
+  private modifiedScene: Scene;
+  private gameName: string;
+  private gameState: IFreeGameState;
+  private camera: PerspectiveCamera;
+  private rendererOri: WebGLRenderer;
+  private rendererMod: WebGLRenderer;
   private differenceCountSubject: Subject<number> = new Subject();
-  public gameState: IFreeGameState;
+
+  public get foundDifferenceCount(): Observable<number> {
+    return this.differenceCountSubject;
+  }
 
   // ╔═════════╗
   // ║ 3D INIT ║
@@ -193,7 +192,7 @@ export class SceneRendererService {
   // ║ CLICK VALIDATION ║
   // ╚══════════════════╝
 
-  public async objDiffValidation(position: IPoint): Promise<IJson3DObject> {
+  public async objDiffValidation(position: IPoint): Promise<number> {
     const rendererElem: HTMLCanvasElement = position.x < this.rendererMod.domElement.offsetLeft ?
       this.rendererOri.domElement :
       this.rendererMod.domElement;
@@ -213,10 +212,12 @@ export class SceneRendererService {
     }
     const object: Intersection = intersectOri.length === 0 && intersectMod.length !== 0 ? intersectMod[0] : intersectOri[0];
 
-    return this.differenceValidationAtPoint(get3DObject(object));
+    await this.differenceValidationAtPoint(get3DObject(object));
+
+    return this.gameState.foundDifference.length;
   }
 
-  private async differenceValidationAtPoint(object: Object3D): Promise<IJson3DObject> {
+  private async differenceValidationAtPoint(object: Object3D): Promise<void> {
     const {x, y, z} = object.position;
     const queryParams: I3DDiffValidatorControllerRequest = {
       gameName: this.gameName, centerX: x, centerY: y, centerZ: z,
@@ -228,8 +229,6 @@ export class SceneRendererService {
         this.notifyClickToWebsocket(true);
         this.updateModifiedObject(value.data, object as Object3D);
         await this.updateCheatDiffData([value.data as IJson3DObject]);
-
-        return value.data as IJson3DObject;
       })
       // tslint:disable-next-line:no-any Generic error response
       .catch((reason: any) => {
@@ -240,7 +239,6 @@ export class SceneRendererService {
       });
   }
 
-  // TODO Deprecated with rooms
   private notifyClickToWebsocket(good: boolean): void {
     const message: WebsocketMessage<ChatMessage> = {
       title: SocketEvent.CHAT,

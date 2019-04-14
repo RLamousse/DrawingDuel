@@ -77,8 +77,8 @@ describe("SceneRendererService", () => {
     const modCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
     service.init(oriCont, modCont);
     service.loadScenes(original, modified, "gameName");
-    expect(service.scene).toBe(original);
-    expect(service.modifiedScene).toBe(modified);
+    expect(service["scene"]).toBe(original);
+    expect(service["modifiedScene"]).toBe(modified);
   });
 
   // disabling the max function length for this test because it is complex thus long
@@ -126,8 +126,8 @@ describe("SceneRendererService", () => {
     service.init(oriCont, modCont);
     service.loadScenes(original1, modified1, "gameName");
     service.loadScenes(original2, modified2, "gameName");
-    expect(service.scene).toBe(original2);
-    expect(service.modifiedScene).toBe(modified2);
+    expect(service["scene"]).toBe(original2);
+    expect(service["modifiedScene"]).toBe(modified2);
   });
 
   it("should have called updateCamera and velocity after loadScenes is called", () => {
@@ -150,7 +150,7 @@ describe("SceneRendererService", () => {
     const modCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
     service.init(oriCont, modCont);
     service.loadScenes(original, modified, "gameNameExpected");
-    expect(service.gameName).toEqual("gameNameExpected");
+    expect(service["gameName"]).toEqual("gameNameExpected");
   });
 
   // Test objDiffValidation
