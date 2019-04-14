@@ -38,7 +38,7 @@ describe("SimpleGameContainerComponent", () => {
       return;
     }
 
-    public drawText(text: string, position: IPoint, CanvasTextType?: CanvasTextType): void {
+    public drawText(text: string, position: IPoint, textType?: CanvasTextType): void {
       return;
     }
 

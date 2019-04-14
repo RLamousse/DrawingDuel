@@ -2,16 +2,6 @@ import {Intersection, Mesh, Object3D, Scene} from "three";
 
 export const SCENE_TYPE: string = "Scene";
 
-export const get3DObject:
-  (obj: Intersection) => Object3D =
-  (obj: Intersection): Object3D => {
-    if ((obj.object.parent as Object3D).type === SCENE_TYPE) {
-      return obj.object;
-    } else {
-      return getRecursiveParent(obj.object);
-    }
-  };
-
 export const getRecursiveParent:
   (obj: Object3D) => Object3D =
   (obj: Object3D): Object3D => {
@@ -20,6 +10,16 @@ export const getRecursiveParent:
     }
 
     return (obj.parent as Object3D);
+  };
+
+export const get3DObject:
+  (obj: Intersection) => Object3D =
+  (obj: Intersection): Object3D => {
+    if ((obj.object.parent as Object3D).type === SCENE_TYPE) {
+      return obj.object;
+    } else {
+      return getRecursiveParent(obj.object);
+    }
   };
 
 export const changeVisibility:
