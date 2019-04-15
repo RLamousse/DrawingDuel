@@ -4,7 +4,8 @@ import {AlreadyFoundDifferenceError, NoDifferenceAtPointError} from "../../../..
 import {DifferenceCluster} from "../../../../../common/model/game/simple-game";
 import {getOrigin, IPoint} from "../../../../../common/model/point";
 import {SocketService} from "../../socket.service";
-import {PixelData, TextType} from "../simple-game-canvas/simple-game-canvas.component";
+import {CanvasTextType} from "../../util/canvas-utils";
+import {PixelData} from "../simple-game-canvas/simple-game-canvas.component";
 import {SimpleGameService} from "../simple-game.service";
 import {IDENTIFICATION_ERROR_TEXT, IDENTIFICATION_ERROR_TIMOUT_MS, SimpleGameContainerComponent} from "./simple-game-container.component";
 
@@ -37,7 +38,7 @@ describe("SimpleGameContainerComponent", () => {
       return;
     }
 
-    public drawText(text: string, position: IPoint, textType?: TextType): void {
+    public drawText(text: string, position: IPoint, textType?: CanvasTextType): void {
       return;
     }
 
@@ -92,7 +93,7 @@ describe("SimpleGameContainerComponent", () => {
             .toHaveBeenCalled();
 
           expect(component["originalImageComponent"].drawText)
-            .toHaveBeenCalledWith(IDENTIFICATION_ERROR_TEXT, getOrigin(), TextType.ERROR);
+            .toHaveBeenCalledWith(IDENTIFICATION_ERROR_TEXT, getOrigin(), CanvasTextType.ERROR);
 
           expect(component["clickEnabled"]).toBeFalsy();
 
@@ -121,7 +122,7 @@ describe("SimpleGameContainerComponent", () => {
             .toHaveBeenCalled();
 
           expect(component["modifiedImageComponent"].drawText)
-            .toHaveBeenCalledWith(IDENTIFICATION_ERROR_TEXT, getOrigin(), TextType.ERROR);
+            .toHaveBeenCalledWith(IDENTIFICATION_ERROR_TEXT, getOrigin(), CanvasTextType.ERROR);
 
           expect(component["clickEnabled"]).toBeFalsy();
 
@@ -153,7 +154,7 @@ describe("SimpleGameContainerComponent", () => {
             .toHaveBeenCalled();
 
           expect(component["originalImageComponent"].drawText)
-            .toHaveBeenCalledWith(IDENTIFICATION_ERROR_TEXT, getOrigin(), TextType.ERROR);
+            .toHaveBeenCalledWith(IDENTIFICATION_ERROR_TEXT, getOrigin(), CanvasTextType.ERROR);
 
           expect(component["clickEnabled"]).toBeFalsy();
 
@@ -182,7 +183,7 @@ describe("SimpleGameContainerComponent", () => {
             .toHaveBeenCalled();
 
           expect(component["modifiedImageComponent"].drawText)
-            .toHaveBeenCalledWith(IDENTIFICATION_ERROR_TEXT, getOrigin(), TextType.ERROR);
+            .toHaveBeenCalledWith(IDENTIFICATION_ERROR_TEXT, getOrigin(), CanvasTextType.ERROR);
 
           expect(component["clickEnabled"]).toBeFalsy();
 
