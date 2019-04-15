@@ -3,10 +3,9 @@ import {async, ComponentFixture, TestBed} from "@angular/core/testing";
 import {Subscription} from "rxjs";
 import {AlreadyFoundDifferenceError, NoDifferenceAtPointError} from "../../../../../common/errors/services.errors";
 import {getOrigin, IPoint} from "../../../../../common/model/point";
-import {SocketService} from "../../socket.service";
-import {CanvasTextType} from "../../util/canvas-utils";
 import {ISimpleGameInteractionResponse} from "../../../../../common/model/rooms/interaction";
-import {PixelData, TextType} from "../simple-game-canvas/simple-game-canvas.component";
+import {CanvasTextType} from "../../util/canvas-utils";
+import {PixelData} from "../simple-game-canvas/simple-game-canvas.component";
 import {SimpleGameService} from "../simple-game.service";
 import {IDENTIFICATION_ERROR_TEXT, IDENTIFICATION_ERROR_TIMOUT_MS, SimpleGameContainerComponent} from "./simple-game-container.component";
 

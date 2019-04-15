@@ -3,7 +3,13 @@ import Axios, {AxiosResponse} from "axios";
 import * as Httpstatus from "http-status-codes";
 import {Observable, Subject} from "rxjs";
 import {Intersection, Mesh, Object3D, PerspectiveCamera, Raycaster, Scene, Vector2, Vector3, WebGLRenderer} from "three";
-import {ChatMessage, ChatMessagePosition, ChatMessageType, WebsocketMessage} from "../../../../common/communication/messages/message";
+import {
+  createWebsocketMessage,
+  ChatMessage,
+  ChatMessagePosition,
+  ChatMessageType,
+  WebsocketMessage
+} from "../../../../common/communication/messages/message";
 import {I3DDiffValidatorControllerRequest} from "../../../../common/communication/requests/diff-validator-controller.request";
 import {DIFF_VALIDATOR_3D_BASE, SERVER_BASE_URL} from "../../../../common/communication/routes";
 import {SocketEvent} from "../../../../common/communication/socket-events";
@@ -11,6 +17,7 @@ import {ComponentNotLoadedError} from "../../../../common/errors/component.error
 import {AbstractServiceError, AlreadyFoundDifferenceError, NoDifferenceAtPointError} from "../../../../common/errors/services.errors";
 import {IJson3DObject} from "../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
 import {OnlineType} from "../../../../common/model/game/game";
+import {IFreeGameState} from "../../../../common/model/game/game-state";
 import {IPoint} from "../../../../common/model/point";
 import {deepCompare, sleep, X_FACTOR} from "../../../../common/util/util";
 import {playRandomSound, FOUND_DIFFERENCE_SOUNDS, NO_DIFFERENCE_SOUNDS, STAR_THEME_SOUND} from "../simple-game/game-sounds";
@@ -57,12 +64,11 @@ export class SceneRendererService {
   private scene: Scene;
   private modifiedScene: Scene;
   private gameName: string;
-  private gameState: IFreeGameState;
   private camera: PerspectiveCamera;
   private rendererOri: WebGLRenderer;
   private rendererMod: WebGLRenderer;
   private differenceCountSubject: Subject<number> = new Subject();
-  public gameState: IFreeGameRendererState;
+  private gameState: IFreeGameRendererState;
 
   public get foundDifferenceCount(): Observable<number> {
     return this.differenceCountSubject;
@@ -214,7 +220,7 @@ export class SceneRendererService {
 
     await this.differenceValidationAtPoint(get3DObject(object));
 
-    return this.gameState.foundDifference.length;
+    return this.gameState.foundObjects.length;
   }
 
   private async differenceValidationAtPoint(object: Object3D): Promise<void> {
