@@ -66,10 +66,3 @@
   width: 640px;
   height: 480px;
 }
-#endGameMessage {
-  position: absolute;
-  top: 25%;
-  left: 25%;
-  width: 600px;
-  height: 400px;
-}
