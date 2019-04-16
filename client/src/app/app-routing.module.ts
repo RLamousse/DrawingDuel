@@ -18,11 +18,11 @@ import { VueAdminComponent } from "./vue-admin/vue-admin.component";
 
 const routes: Routes = [
     { path: HOME_ROUTE, component: InitialViewComponent },
-    { path: GAMES_ROUTE, component: GameListComponent, canActivate:[UNListService] },
+    { path: GAMES_ROUTE, component: GameListComponent, canActivate: [UNListService] },
     { path: ADMIN_ROUTE , component: VueAdminComponent },
-    { path: PLAY_ROUTE , component: PlayViewComponent, canActivate:[UNListService] },
-    { path: PLAY_3D_ROUTE , component: SceneCreatorComponent, canActivate:[UNListService] },
-    { path: LOADING_ROUTE , component: AwaitViewComponent, canActivate:[UNListService] },
+    { path: PLAY_ROUTE , component: PlayViewComponent, canActivate: [UNListService] },
+    { path: PLAY_3D_ROUTE , component: SceneCreatorComponent, canActivate: [UNListService] },
+    { path: LOADING_ROUTE , component: AwaitViewComponent, canActivate: [UNListService] },
 ];
 
 @NgModule({
