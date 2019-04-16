@@ -4,11 +4,11 @@ import { Subscription } from "rxjs";
 import { WebsocketMessage } from "../../../common/communication/messages/message";
 import { UserValidationMessage } from "../../../common/communication/messages/user-validation-message";
 import { SocketEvent } from "../../../common/communication/socket-events";
-import { SocketService } from "./socket.service";
 import {ComponentNavigationError} from "../../../common/errors/component.errors";
+import { SocketService } from "./socket.service";
 
 @Injectable()
-export class UNListService implements CanActivate{
+export class UNListService implements CanActivate {
 
   public static username: string = "";
   private readonly NON_ALPHANUMERIC_MESSAGE: string = "Caractères alphanumériques seulement!";

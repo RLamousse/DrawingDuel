@@ -5,12 +5,12 @@ import {UpdateScoreMessage, WebsocketMessage} from "../../../../common/communica
 import {SocketEvent} from "../../../../common/communication/socket-events";
 import {ComponentNavigationError} from "../../../../common/errors/component.errors";
 import {GameType, OnlineType} from "../../../../common/model/game/game";
+import {openDialog} from "../dialog-utils";
 import {SceneRendererService} from "../scene-creator/scene-renderer.service";
 import {SimpleGameService} from "../simple-game/simple-game.service";
 import {SocketService} from "../socket.service";
 import {UNListService} from "../username.service";
 import {EndGameNotifComponent} from "./end-game-notif/end-game-notif.component";
-import {openDialog} from "../dialog-utils";
 
 @Component({
              selector: "app-diff-counter",

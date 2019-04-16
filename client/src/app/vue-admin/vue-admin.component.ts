@@ -1,8 +1,8 @@
 import {Component} from "@angular/core";
 import {MatDialog} from "@angular/material";
 import {Create3DGameComponent} from "../create3-dgame/create3-dgame.component";
-import {SimpleGameCreatorFormComponent} from "../simple-game-creator-form/simple-game-creator-form.component";
 import {openDialog} from "../dialog-utils";
+import {SimpleGameCreatorFormComponent} from "../simple-game-creator-form/simple-game-creator-form.component";
 
 @Component({
   selector: "app-vue-admin",
