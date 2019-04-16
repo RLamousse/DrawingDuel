@@ -2,7 +2,10 @@
 <div class="general" appFPControlEvent (contextmenu)="onRightClick($event)">
   <div class="separation">
     <div class="leftWindow">
-      <h1 class = "gameName">{{gameName}}</h1>
+      <div>
+        <button mat-raised-button color="warn" class="button back-button" routerLink="/{{BACK_BUTTON_ROUTE}}">Retour à la Liste de jeux</button>
+        <h1 class = "gameName">{{gameName}}</h1>
+      </div>
       <div class="timer"><app-timer [gameName] = "gameName"
                                     [gameType] = "FREE_GAME_TYPE"></app-timer></div>
       <div class = "row" [class.disabled]="!cursorEnabled">
