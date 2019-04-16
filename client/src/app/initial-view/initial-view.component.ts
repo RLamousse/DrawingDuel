@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from "@angular/core";
 import { Router } from "@angular/router";
-import {BACKGROUND_IMAGE} from "../../../../common/communication/routes";
+import {BACKGROUND_IMAGE, GAMES_ROUTE} from "../../../../common/communication/routes";
 import { UNListService } from "../username.service";
 
 @Component({
@@ -62,7 +62,7 @@ export class InitialViewComponent implements OnInit {
     if (answer) {
       this.username = this.newUsername;
       UNListService.username = this.username;
-      await this.router.navigate(["/games"]);
+      await this.router.navigate([GAMES_ROUTE]);
     } else {
       this.errorMessage = this.userService.message;
     }

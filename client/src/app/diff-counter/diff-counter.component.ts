@@ -2,6 +2,7 @@ import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {MatDialog, MatDialogConfig} from "@angular/material";
 import {Router} from "@angular/router";
 import {UpdateScoreMessage, WebsocketMessage} from "../../../../common/communication/messages/message";
+import {GAMES_ROUTE} from "../../../../common/communication/routes";
 import {SocketEvent} from "../../../../common/communication/socket-events";
 import {ComponentNavigationError} from "../../../../common/errors/component.errors";
 import {GameType, OnlineType} from "../../../../common/model/game/game";
@@ -68,7 +69,7 @@ export class DiffCounterComponent implements OnInit {
     dialogConfig.autoFocus = true;
     dialogConfig.data = {gameName: this.gameName, gameType: this.gameType, };
     this.dialog.open(EndGameNotifComponent, dialogConfig).afterClosed().subscribe(() => {
-      this.router.navigate(["/games/"]) // tslint:disable-next-line:no-any Generic error response
+      this.router.navigate([GAMES_ROUTE]) // tslint:disable-next-line:no-any Generic error response
       .catch((reason: any) => {
         throw new ComponentNavigationError();
       });

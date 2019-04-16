@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from "@angular/core";
 import {MatDialog, MatDialogConfig} from "@angular/material";
 import {Router} from "@angular/router";
-import {LOADING_GIF} from "../../../../../common/communication/routes";
+import {LOADING_GIF, LOADING_ROUTE, PLAY_3D_ROUTE, PLAY_ROUTE} from "../../../../../common/communication/routes";
 import {ComponentNavigationError} from "../../../../../common/errors/component.errors";
 import {GameType} from "../../../../../common/model/game/game";
 import {IRecordTime} from "../../../../../common/model/game/record-time";
@@ -57,7 +57,7 @@ export class GameComponent implements OnInit {
 
   private navigatePlayView(): void {
 
-   this.router.navigate(["/play-view/"], {queryParams: {
+   this.router.navigate([PLAY_ROUTE], {queryParams: {
       gameName: this.gameName, originalImage: this.originalImage, modifiedImage: this.modifiedImage, gameType: this.gameType },
     })
       // tslint:disable-next-line:no-any Generic error response
@@ -67,7 +67,7 @@ export class GameComponent implements OnInit {
   }
 
   private navigateFreeView(): void {
-    this.router.navigate(["/3d-view/"], {
+    this.router.navigate([PLAY_3D_ROUTE], {
       queryParams: {
         gameName: this.gameName,
         gameType: this.gameType,
@@ -80,7 +80,7 @@ export class GameComponent implements OnInit {
   }
 
   private navigateAwait(): void {
-    this.router.navigate(["/loading/"], {queryParams: {
+    this.router.navigate([LOADING_ROUTE], {queryParams: {
       gameName: this.gameName, gameType: this.gameType},
     })
       // tslint:disable-next-line:no-any Generic error response
