@@ -12,9 +12,6 @@ import {FreeGameCreatorService} from "./FreeGameCreator/free-game-creator.servic
 import {SceneRendererService} from "./scene-renderer.service";
 
 export const TEXT_FONT: string = "20px Comic Sans MS";
-export const ERROR_TEXT_COLOR: string = "#ff0000";
-export const VICTORY_TEXT_COLOR: string = "#008000";
-export const DEFAULT_TEXT_COLOR: string = "#000000";
 export const IDENTIFICATION_ERROR_TEXT: string = "Erreur";
 
 @Component({
