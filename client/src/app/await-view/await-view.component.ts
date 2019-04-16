@@ -3,7 +3,7 @@ import {MatDialog, MatDialogConfig} from "@angular/material";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Subscription} from "rxjs";
 import {WebsocketMessage} from "../../../../common/communication/messages/message";
-import {GAMES_ROUTE} from "../../../../common/communication/routes";
+import {GAMES_ROUTE, PLAY_3D_ROUTE, PLAY_ROUTE} from "../../../../common/communication/routes";
 import {SocketEvent} from "../../../../common/communication/socket-events";
 import {ComponentNavigationError} from "../../../../common/errors/component.errors";
 import {GameType, OnlineType} from "../../../../common/model/game/game";
@@ -50,8 +50,7 @@ export class AwaitViewComponent implements OnInit, OnDestroy {
   }
 
   private handleGameStart(roomInfo: SimpleReadyInfo): void {
-    // this.gameType === GameType.SIMPLE ? this.navigateToSimpleGame(roomInfo) : this.navigateToFreeGame();
-    this.navigateToSimpleGame(roomInfo);
+    this.gameType === GameType.SIMPLE ? this.navigateToSimpleGame(roomInfo) : this.navigateToFreeGame();
   }
 
   private executeGameDeletionRoutine(message: WebsocketMessage<[string, boolean]>): void {
@@ -67,7 +66,7 @@ export class AwaitViewComponent implements OnInit, OnDestroy {
   }
 
   private navigateToSimpleGame(readyInfo: SimpleReadyInfo): void {
-    this.route.navigate(["/play-view/"], {
+    this.route.navigate([PLAY_ROUTE], {
       queryParams: {
         gameName: this.gameName,
         originalImage: readyInfo.originalImage,
@@ -80,15 +79,15 @@ export class AwaitViewComponent implements OnInit, OnDestroy {
     });
   }
 
-  // private navigateToFreeGame(): void {
-  //   this.route.navigate(["/3d-view/"], {
-  //     queryParams: {
-  //       gameName: this.gameName,
-  //     },
-  //   }).catch(() => {
-  //     throw new ComponentNavigationError();
-  //   });
-  // }
+  private navigateToFreeGame(): void {
+    this.route.navigate([PLAY_3D_ROUTE], {
+      queryParams: {
+        gameName: this.gameName,
+      },
+    }).catch(() => {
+      throw new ComponentNavigationError();
+    });
+  }
 
   private notifyGameDeletion(message: WebsocketMessage<[string, boolean]>): void {
     if (message.body[this.indexString] === this.gameName) {
