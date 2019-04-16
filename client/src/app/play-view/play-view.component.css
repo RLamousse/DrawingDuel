@@ -39,6 +39,11 @@ h1 {
   margin-top: 0;
 }
 
+.back-button {
+  position: absolute;
+  margin-left: 5px;
+}
+
 .timer {
   color: #FF3C82;
   font-size: 45px;
