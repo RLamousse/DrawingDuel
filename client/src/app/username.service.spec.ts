@@ -14,8 +14,7 @@ describe("UNListService", () => {
   let spyService: jasmine.SpyObj<UNListService>;
   beforeEach(() => {
     // @ts-ignore
-    mockRouter = {
-      navigate: jasmine.createSpy("navigate").and.returnValue(Promise.resolve())};
+    mockRouter = { navigate: null };
     spyService = jasmine.createSpyObj("UNListService", ["checkAvailability",
                                                         "sendUserRequest",
                                                         "isTooShort",
@@ -140,6 +139,7 @@ describe("UNListService", () => {
   describe("canActivate", () => {
 
     it("it should return true and not navigate to home if username is defined", () => {
+      mockRouter.navigate = jasmine.createSpy("navigate").and.returnValue(Promise.resolve());
       service = TestBed.get(UNListService);
       UNListService.username = "someUser";
       expect(service.canActivate()).toBe(true);
@@ -147,10 +147,18 @@ describe("UNListService", () => {
     });
 
     it("it should return false and navigate to home on canActivate if username is empty", () => {
+      mockRouter.navigate = jasmine.createSpy("navigate").and.returnValue(Promise.resolve());
       service = TestBed.get(UNListService);
       UNListService.username = "";
       expect(service.canActivate()).toBe(false);
       expect(mockRouter.navigate).toHaveBeenCalledWith([HOME_ROUTE]);
+    });
+
+    it("it should throw if there is a userName error", () => {
+      mockRouter.navigate = jasmine.createSpy("navigate").and.throwError("error");
+      service = TestBed.get(UNListService);
+      UNListService.username = "";
+      expect(service.canActivate).toThrow();
     });
   });
 });
