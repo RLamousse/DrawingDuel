@@ -1,26 +1,16 @@
 // disabling magic numbers in tests
 /* tslint:disable:no-magic-numbers */
-import { TestBed } from "@angular/core/testing";
-import Axios from "axios";
-import MockAdapter from "axios-mock-adapter";
-// tslint:disable-next-line:no-duplicate-imports Weird interaction between singletons and interface (olivier st-o approved)
-import AxiosAdapter from "axios-mock-adapter";
-import * as HttpStatus from "http-status-codes";
+import {TestBed} from "@angular/core/testing";
 import {BoxGeometry, Material, Mesh, MeshPhongMaterial, Scene} from "three";
-import {DIFF_VALIDATOR_3D_BASE, SERVER_BASE_URL} from "../../../../common/communication/routes";
-import { ComponentNotLoadedError } from "../../../../common/errors/component.errors";
+import {ComponentNotLoadedError} from "../../../../common/errors/component.errors";
 import {NoDifferenceAtPointError} from "../../../../common/errors/services.errors";
 import {IJson3DObject} from "../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
-import {SocketService} from "../socket.service";
 import {ObjectCollisionService} from "./objectCollisionService/object-collision.service";
 import {RenderUpdateService} from "./render-update.service";
-import { SceneRendererService } from "./scene-renderer.service";
+import {SceneDiffValidator} from "./scene-diff-validator.service";
+import {SceneRendererService} from "./scene-renderer.service";
 describe("SceneRendererService", () => {
-  let axiosMock: MockAdapter;
-  const CONTROLLER_BASE_URL: string = SERVER_BASE_URL + DIFF_VALIDATOR_3D_BASE;
-  const ALL_GET_CALLS_REGEX: RegExp = new RegExp(`${CONTROLLER_BASE_URL}/*`);
 
-  // tslint:disable-next-line:typedef
   class MockRenderUpdate extends RenderUpdateService {
     public messageCam: string = "";
     public messageVel: string = "";
@@ -40,16 +30,17 @@ describe("SceneRendererService", () => {
   const mockCollisionService: MockCollisionService = new MockCollisionService();
 
   let mockUpdateRender: MockRenderUpdate;
+  let sceneDiffValidatorSpy: jasmine.SpyObj<SceneDiffValidator>;
   beforeEach(() => {
-    axiosMock = new AxiosAdapter(Axios);
     mockUpdateRender = new MockRenderUpdate();
+    sceneDiffValidatorSpy = jasmine.createSpyObj("SceneDiffValidator", ["validateDiffObject"]);
 
     return TestBed.configureTestingModule({
       providers: [
         SceneRendererService,
         {provide: RenderUpdateService, useValue: mockUpdateRender},
         {provide: ObjectCollisionService, useValue: mockCollisionService},
-        SocketService,
+        {provide: SceneDiffValidator, useValue: sceneDiffValidatorSpy},
       ],
     });
   });
@@ -154,12 +145,11 @@ describe("SceneRendererService", () => {
 
   // Test objDiffValidation
   describe("Difference validation", () => {
-    afterEach(() => fail()); // FIXME
 
     it("should throw if no object at clicked point on original scene", async () => {
       const service: SceneRendererService = TestBed.get(SceneRendererService);
-      axiosMock.onGet(ALL_GET_CALLS_REGEX)
-        .reply(HttpStatus.NOT_FOUND);
+      sceneDiffValidatorSpy.validateDiffObject
+        .and.returnValue(Promise.reject(NoDifferenceAtPointError.NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE));
 
       const original: Scene = new Scene();
       const modified: Scene = new Scene();
@@ -176,8 +166,9 @@ describe("SceneRendererService", () => {
 
     it("should throw if no object at clicked point on modified scene", async () => {
       const service: SceneRendererService = TestBed.get(SceneRendererService);
-      axiosMock.onGet(ALL_GET_CALLS_REGEX)
-        .reply(HttpStatus.NOT_FOUND);
+      sceneDiffValidatorSpy.validateDiffObject
+        .and.returnValue(Promise.reject(NoDifferenceAtPointError.NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE));
+
       const original: Scene = new Scene();
       const modified: Scene = new Scene();
       const oriCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
@@ -191,11 +182,11 @@ describe("SceneRendererService", () => {
         });
     });
 
-    it("should throw if no difference at point", async () => {
+    it("should throw if no intersection at point", async () => {
       const service: SceneRendererService = TestBed.get(SceneRendererService);
 
-      axiosMock.onGet(ALL_GET_CALLS_REGEX)
-        .reply(HttpStatus.NOT_FOUND);
+      sceneDiffValidatorSpy.validateDiffObject
+        .and.returnValue(Promise.reject(NoDifferenceAtPointError.NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE));
 
       const original: Scene = new Scene();
       const modified: Scene = new Scene();
@@ -219,8 +210,8 @@ describe("SceneRendererService", () => {
     it("should throw an unexpected server response on diff validator call", async () => {
       const service: SceneRendererService = TestBed.get(SceneRendererService);
 
-      axiosMock.onGet(ALL_GET_CALLS_REGEX)
-        .reply(HttpStatus.INTERNAL_SERVER_ERROR);
+      sceneDiffValidatorSpy.validateDiffObject
+        .and.returnValue(Promise.reject("Error Message"));
 
       const material: MeshPhongMaterial = new MeshPhongMaterial();
       const geo: BoxGeometry = new BoxGeometry();
@@ -228,7 +219,7 @@ describe("SceneRendererService", () => {
 
       return service["differenceValidationAtPoint"](mesh)
         .catch((reason: Error) => {
-          expect(reason.message).toContain("Request failed with status code 500");
+          expect(reason.message).toContain("Error Message");
         });
     });
   });
