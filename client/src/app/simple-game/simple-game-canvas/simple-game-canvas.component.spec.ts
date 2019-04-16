@@ -3,13 +3,14 @@ import {By} from "@angular/platform-browser";
 import {ComponentCanvasError} from "../../../../../common/errors/component.errors";
 import {getOrigin, inverseY, IPoint} from "../../../../../common/model/point";
 import {createArray} from "../../../../../common/util/util";
+import {CanvasTextType} from "../../util/canvas-utils";
 
 import {
   DEFAULT_CANVAS_HEIGHT, DEFAULT_TEXT_COLOR, ERROR_TEXT_COLOR,
   IMAGE_DATA_PIXEL_LENGTH,
   PixelData,
   SimpleGameCanvasComponent,
-  TextType, VICTORY_TEXT_COLOR
+  VICTORY_TEXT_COLOR
 } from "./simple-game-canvas.component";
 
 describe("SimpleGameCanvasComponent", () => {
@@ -174,7 +175,7 @@ describe("SimpleGameCanvasComponent", () => {
     spyOn(component["_canvasContext"], "strokeText");
     spyOn(component["_canvasContext"], "fillText");
 
-    component.drawText(expectedText, getOrigin(), TextType.ERROR);
+    component.drawText(expectedText, getOrigin(), CanvasTextType.ERROR);
 
     expect(component["_canvasContext"].fillStyle).toEqual(ERROR_TEXT_COLOR);
     expect(component["_canvasContext"].strokeText).toHaveBeenCalledWith(expectedText, getOrigin().x, getOrigin().y);
@@ -193,13 +194,13 @@ describe("SimpleGameCanvasComponent", () => {
     component["_canvasContext"] = context;
     spyOn(context, "fillText");
 
-    component.drawText(expectedText, getOrigin(), TextType.VICTORY);
+    component.drawText(expectedText, getOrigin(), CanvasTextType.VICTORY);
 
     expect(context.fillStyle).toEqual(VICTORY_TEXT_COLOR);
     expect(context.fillText).toHaveBeenCalledWith(expectedText, getOrigin().x, getOrigin().y);
   });
 
-  it("should draw black text when textType is not defined", () => {
+  it("should draw black text when CanvasTextType is not defined", () => {
     const sideLength: number = 10;
     const expectedText: string = "epic victory royale";
     const context: CanvasRenderingContext2D = getCanvasContext();

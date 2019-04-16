@@ -2,6 +2,7 @@ import {Component, OnInit} from "@angular/core";
 import {MatDialog} from "@angular/material";
 import {ActivatedRoute, Router} from "@angular/router";
 import {WebsocketMessage} from "../../../../common/communication/messages/message";
+import {GAMES_ROUTE} from "../../../../common/communication/routes";
 import {SocketEvent} from "../../../../common/communication/socket-events";
 import {ComponentNavigationError} from "../../../../common/errors/component.errors";
 import {GameType} from "../../../../common/model/game/game";
@@ -39,7 +40,7 @@ export class AwaitViewComponent implements OnInit {
   }
 
   private navigateGameList (): void {
-    this.route.navigate(["/game-list/"]) // tslint:disable-next-line:no-any Generic error response
+    this.route.navigate([GAMES_ROUTE]) // tslint:disable-next-line:no-any Generic error response
     .catch((reason: any) => {
       throw new ComponentNavigationError();
     });

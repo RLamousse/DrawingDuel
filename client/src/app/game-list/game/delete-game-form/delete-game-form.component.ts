@@ -2,6 +2,7 @@ import {Component, Inject} from "@angular/core";
 import {MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
 import {Router} from "@angular/router";
 import {WebsocketMessage} from "../../../../../../common/communication/messages/message";
+import {ADMIN_ROUTE} from "../../../../../../common/communication/routes";
 import {SocketEvent} from "../../../../../../common/communication/socket-events";
 import {IDialogData} from "../../../../../../common/dialog-data-interface/IDialogData";
 import {ComponentNavigationError} from "../../../../../../common/errors/component.errors";
@@ -33,7 +34,7 @@ export class DeleteGameFormComponent  {
     this.sendDeleteMessage();
     this.deleteGameByType(this.data.gameName, this.data.gameType);
     this.dialogRef.close();
-    this.router.navigate(["/admin/"])
+    this.router.navigate([ADMIN_ROUTE])
       .catch(() => {
         throw new ComponentNavigationError();
     });

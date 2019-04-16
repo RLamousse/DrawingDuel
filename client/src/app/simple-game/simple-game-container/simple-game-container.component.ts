@@ -11,8 +11,9 @@ import {DifferenceCluster, DIFFERENCE_CLUSTER_POINTS_INDEX} from "../../../../..
 import {inverseY, IPoint} from "../../../../../common/model/point";
 import {SocketService} from "../../socket.service";
 import {UNListService} from "../../username.service";
+import {CanvasTextType} from "../../util/canvas-utils";
 import {playRandomSound, NO_DIFFERENCE_SOUNDS} from "../game-sounds";
-import {PixelData, SimpleGameCanvasComponent, TextType} from "../simple-game-canvas/simple-game-canvas.component";
+import {PixelData, SimpleGameCanvasComponent} from "../simple-game-canvas/simple-game-canvas.component";
 import {SimpleGameService} from "../simple-game.service";
 
 export const IDENTIFICATION_ERROR_TIMOUT_MS: number = 1000;
@@ -90,7 +91,7 @@ export class SimpleGameContainerComponent {
     clickedComponent.drawText(
       IDENTIFICATION_ERROR_TEXT,
       inverseY(clickEvent, clickedComponent.height),
-      TextType.ERROR);
+      CanvasTextType.ERROR);
 
     setTimeout(
       () => {
