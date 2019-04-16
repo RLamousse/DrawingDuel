@@ -39,7 +39,7 @@ export class SceneDiffValidator {
           const errorMessage: string = message.body;
           if (errorMessage === AlreadyFoundDifferenceError.ALREADY_FOUND_DIFFERENCE_ERROR_MESSAGE ||
             errorMessage === NoDifferenceAtPointError.NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE) {
-            reject(new NoDifferenceAtPointError());
+            return reject(new NoDifferenceAtPointError());
           }
 
           reject(new AbstractServiceError(errorMessage));
