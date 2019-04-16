@@ -65,7 +65,7 @@ describe("SceneRendererService", () => {
     const original: Scene = new Scene();
     const modified: Scene = new Scene();
 
-    expect(() => service.loadScenes(original, modified, "gameName"))
+    expect(() => service.loadScenes(original, modified))
       .toThrowError(ComponentNotLoadedError.COMPONENT_NOT_LOADED_MESSAGE_ERROR);
   });
 
@@ -76,7 +76,7 @@ describe("SceneRendererService", () => {
     const oriCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
     const modCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
     service.init(oriCont, modCont);
-    service.loadScenes(original, modified, "gameName");
+    service.loadScenes(original, modified);
     expect(service["scene"]).toBe(original);
     expect(service["modifiedScene"]).toBe(modified);
   });
@@ -99,7 +99,7 @@ describe("SceneRendererService", () => {
     const oriCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
     const modCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
     service.init(oriCont, modCont);
-    service.loadScenes(original, modified, "someGame");
+    service.loadScenes(original, modified);
     await service.modifyCheatState(async () => {
       return new Promise<IJson3DObject[]>((resolve) => {
         resolve([{position: {x: 12, y: 0, z: 0}} as IJson3DObject]);
@@ -124,8 +124,8 @@ describe("SceneRendererService", () => {
     const oriCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
     const modCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
     service.init(oriCont, modCont);
-    service.loadScenes(original1, modified1, "gameName");
-    service.loadScenes(original2, modified2, "gameName");
+    service.loadScenes(original1, modified1);
+    service.loadScenes(original2, modified2);
     expect(service["scene"]).toBe(original2);
     expect(service["modifiedScene"]).toBe(modified2);
   });
@@ -137,7 +137,7 @@ describe("SceneRendererService", () => {
     const oriCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
     const modCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
     service.init(oriCont, modCont);
-    service.loadScenes(original, modified, "gameName");
+    service.loadScenes(original, modified);
     expect(mockUpdateRender.messageVel).toEqual("updateVelocity was called");
     expect(mockUpdateRender.messageCam).toEqual("updateCamera was called");
   });
@@ -149,8 +149,7 @@ describe("SceneRendererService", () => {
     const oriCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
     const modCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
     service.init(oriCont, modCont);
-    service.loadScenes(original, modified, "gameNameExpected");
-    expect(service["gameName"]).toEqual("gameNameExpected");
+    service.loadScenes(original, modified);
   });
 
   // Test objDiffValidation
@@ -164,7 +163,7 @@ describe("SceneRendererService", () => {
     const oriCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
     const modCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
     service.init(oriCont, modCont);
-    service.loadScenes(original, modified, "gameName");
+    service.loadScenes(original, modified);
 
     return service.objDiffValidation({x: 325, y: 430})
       .catch((reason: Error) => {
@@ -181,7 +180,7 @@ describe("SceneRendererService", () => {
     const oriCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
     const modCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
     service.init(oriCont, modCont);
-    service.loadScenes(original, modified, "gameName");
+    service.loadScenes(original, modified);
 
     return service.objDiffValidation({x: 1120, y: 430})
       .catch((reason: Error) => {
@@ -206,7 +205,7 @@ describe("SceneRendererService", () => {
     original.add(mesh);
     modified.add(mesh.clone());
     service.init(oriCont, modCont);
-    service.loadScenes(original, modified, "gameName");
+    service.loadScenes(original, modified);
 
     return service.objDiffValidation({x: 325, y: 430})
       .catch((reason: Error) => {

@@ -63,7 +63,7 @@ export class SceneCreatorComponent implements OnInit, OnDestroy {
     this.modifiedCanvasContext = getCanvasRenderingContext(this.modifiedCanvas);
 
     this.verifyGame()
-      .then((scene: IScene) => this.renderService.loadScenes(scene.scene, scene.modifiedScene, this.gameName))
+      .then((scene: IScene) => this.renderService.loadScenes(scene.scene, scene.modifiedScene))
       .catch(() => {
         throw new FreeViewGamesRenderingError();
     });

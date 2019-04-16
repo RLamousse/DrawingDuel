@@ -98,7 +98,7 @@ export class SceneRendererService {
     return renderer;
   }
 
-  public loadScenes(original: Scene, modified: Scene, gameName: string): void {
+  public loadScenes(original: Scene, modified: Scene): void {
     if (this.originalContainer === undefined || this.modifiedContainer === undefined) {
       throw (new ComponentNotLoadedError());
     }
