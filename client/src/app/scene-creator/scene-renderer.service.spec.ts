@@ -148,8 +148,6 @@ describe("SceneRendererService", () => {
 
     it("should throw if no object at clicked point on original scene", async () => {
       const service: SceneRendererService = TestBed.get(SceneRendererService);
-      sceneDiffValidatorSpy.validateDiffObject
-        .and.returnValue(Promise.reject(NoDifferenceAtPointError.NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE));
 
       const original: Scene = new Scene();
       const modified: Scene = new Scene();
@@ -166,8 +164,6 @@ describe("SceneRendererService", () => {
 
     it("should throw if no object at clicked point on modified scene", async () => {
       const service: SceneRendererService = TestBed.get(SceneRendererService);
-      sceneDiffValidatorSpy.validateDiffObject
-        .and.returnValue(Promise.reject(NoDifferenceAtPointError.NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE));
 
       const original: Scene = new Scene();
       const modified: Scene = new Scene();
@@ -184,10 +180,6 @@ describe("SceneRendererService", () => {
 
     it("should throw if no intersection at point", async () => {
       const service: SceneRendererService = TestBed.get(SceneRendererService);
-
-      sceneDiffValidatorSpy.validateDiffObject
-        .and.returnValue(Promise.reject(NoDifferenceAtPointError.NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE));
-
       const original: Scene = new Scene();
       const modified: Scene = new Scene();
       const oriCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
@@ -211,7 +203,7 @@ describe("SceneRendererService", () => {
       const service: SceneRendererService = TestBed.get(SceneRendererService);
 
       sceneDiffValidatorSpy.validateDiffObject
-        .and.returnValue(Promise.reject("Error Message"));
+        .and.throwError("Error Message");
 
       const material: MeshPhongMaterial = new MeshPhongMaterial();
       const geo: BoxGeometry = new BoxGeometry();
