@@ -1,6 +1,6 @@
 import {ComponentFixture, TestBed} from "@angular/core/testing";
 import {MatDialogModule, MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
-import { ActivatedRoute, Router } from "@angular/router";
+import {ActivatedRoute, Router, RouterModule} from "@angular/router";
 import {of, Observable, Subject} from "rxjs";
 import {Scene} from "three";
 import {IFreeGame} from "../../../../common/model/game/free-game";
@@ -113,7 +113,7 @@ describe("SceneCreatorComponent", () => {
           SocketService,
 
         ],
-        imports: [MatDialogModule],
+        imports: [MatDialogModule,  RouterModule],
         declarations: [SceneCreatorComponent, TimerComponent, DiffCounterComponent, EndGameNotifComponent, MessageBoxComponent],
 
       });

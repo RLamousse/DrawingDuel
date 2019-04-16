@@ -1,7 +1,7 @@
 import {ComponentFixture, TestBed} from "@angular/core/testing";
 import { MatListModule } from "@angular/material";
 import {MatDialogModule, MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
-import {ActivatedRoute, Router} from "@angular/router";
+import {ActivatedRoute, Router, RouterModule} from "@angular/router";
 import {DiffCounterComponent} from "../diff-counter/diff-counter.component";
 import { MessageBoxComponent } from "../message-box/message-box.component";
 import {SimpleGameCanvasComponent} from "../simple-game/simple-game-canvas/simple-game-canvas.component";
@@ -28,7 +28,7 @@ describe("PlayViewComponent", () => {
           MessageBoxComponent,
         ],
         imports: [
-          MatListModule, MatDialogModule,
+          MatListModule, MatDialogModule, RouterModule,
         ],
         providers: [SocketService,
                     { provide: Router, useClass: class { public navigate: jasmine.Spy = jasmine.createSpy("navigate"); },   },
