@@ -2,7 +2,7 @@ import {TestBed} from "@angular/core/testing";
 import {SocketService} from "../socket.service";
 import {SceneDiffValidator} from "./scene-diff-validator.service";
 
-describe("SceneRendererService", () => {
+describe("A service to validate 3D differences", () => {
 
   beforeEach(() => {
 

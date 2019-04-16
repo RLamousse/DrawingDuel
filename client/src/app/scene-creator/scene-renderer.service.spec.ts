@@ -69,7 +69,7 @@ describe("SceneRendererService", () => {
       .toThrowError(ComponentNotLoadedError.COMPONENT_NOT_LOADED_MESSAGE_ERROR);
   });
 
-  it("should asign scenes at first call", () => {
+  it("should assign scenes at first call", () => {
     const service: SceneRendererService = TestBed.get(SceneRendererService);
     const original: Scene = new Scene();
     const modified: Scene = new Scene();
@@ -115,7 +115,7 @@ describe("SceneRendererService", () => {
     jasmine.clock().uninstall();
   });
 
-  it("should reasign the new scenes at second call", () => {
+  it("should reassign the new scenes at second call", () => {
     const service: SceneRendererService = TestBed.get(SceneRendererService);
     const original1: Scene = new Scene();
     const modified1: Scene = new Scene();
@@ -153,79 +153,83 @@ describe("SceneRendererService", () => {
   });
 
   // Test objDiffValidation
-  it("should throw if no object at clicked point on original scene", async() => {
-    const service: SceneRendererService = TestBed.get(SceneRendererService);
-    axiosMock.onGet(ALL_GET_CALLS_REGEX)
-      .reply(HttpStatus.NOT_FOUND);
+  describe("Difference validation", () => {
+    afterEach(() => fail()); // FIXME
 
-    const original: Scene = new Scene();
-    const modified: Scene = new Scene();
-    const oriCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
-    const modCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
-    service.init(oriCont, modCont);
-    service.loadScenes(original, modified);
+    it("should throw if no object at clicked point on original scene", async () => {
+      const service: SceneRendererService = TestBed.get(SceneRendererService);
+      axiosMock.onGet(ALL_GET_CALLS_REGEX)
+        .reply(HttpStatus.NOT_FOUND);
 
-    return service.objDiffValidation({x: 325, y: 430})
-      .catch((reason: Error) => {
-        expect(reason.message).toEqual(NoDifferenceAtPointError.NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE);
-      });
-  });
+      const original: Scene = new Scene();
+      const modified: Scene = new Scene();
+      const oriCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
+      const modCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
+      service.init(oriCont, modCont);
+      service.loadScenes(original, modified);
 
-  it("should throw if no object at clicked point on modified scene", async() => {
-    const service: SceneRendererService = TestBed.get(SceneRendererService);
-    axiosMock.onGet(ALL_GET_CALLS_REGEX)
-      .reply(HttpStatus.NOT_FOUND);
-    const original: Scene = new Scene();
-    const modified: Scene = new Scene();
-    const oriCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
-    const modCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
-    service.init(oriCont, modCont);
-    service.loadScenes(original, modified);
+      return service.objDiffValidation({x: 325, y: 430})
+        .catch((reason: Error) => {
+          expect(reason.message).toEqual(NoDifferenceAtPointError.NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE);
+        });
+    });
 
-    return service.objDiffValidation({x: 1120, y: 430})
-      .catch((reason: Error) => {
-        expect(reason.message).toEqual(NoDifferenceAtPointError.NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE);
-      });
-  });
+    it("should throw if no object at clicked point on modified scene", async () => {
+      const service: SceneRendererService = TestBed.get(SceneRendererService);
+      axiosMock.onGet(ALL_GET_CALLS_REGEX)
+        .reply(HttpStatus.NOT_FOUND);
+      const original: Scene = new Scene();
+      const modified: Scene = new Scene();
+      const oriCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
+      const modCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
+      service.init(oriCont, modCont);
+      service.loadScenes(original, modified);
 
-  it("should throw if no difference at point", async() => {
-    const service: SceneRendererService = TestBed.get(SceneRendererService);
+      return service.objDiffValidation({x: 1120, y: 430})
+        .catch((reason: Error) => {
+          expect(reason.message).toEqual(NoDifferenceAtPointError.NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE);
+        });
+    });
 
-    axiosMock.onGet(ALL_GET_CALLS_REGEX)
-      .reply(HttpStatus.NOT_FOUND);
+    it("should throw if no difference at point", async () => {
+      const service: SceneRendererService = TestBed.get(SceneRendererService);
 
-    const original: Scene = new Scene();
-    const modified: Scene = new Scene();
-    const oriCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
-    const modCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
-    const material: MeshPhongMaterial = new MeshPhongMaterial();
-    const geo: BoxGeometry = new BoxGeometry();
-    const mesh: Mesh = new Mesh(geo, material);
-    mesh.position.set(0, 0, 97);
-    original.add(mesh);
-    modified.add(mesh.clone());
-    service.init(oriCont, modCont);
-    service.loadScenes(original, modified);
+      axiosMock.onGet(ALL_GET_CALLS_REGEX)
+        .reply(HttpStatus.NOT_FOUND);
 
-    return service.objDiffValidation({x: 325, y: 430})
-      .catch((reason: Error) => {
-        expect(reason.message).toEqual(NoDifferenceAtPointError.NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE);
-      });
-  });
+      const original: Scene = new Scene();
+      const modified: Scene = new Scene();
+      const oriCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
+      const modCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
+      const material: MeshPhongMaterial = new MeshPhongMaterial();
+      const geo: BoxGeometry = new BoxGeometry();
+      const mesh: Mesh = new Mesh(geo, material);
+      mesh.position.set(0, 0, 97);
+      original.add(mesh);
+      modified.add(mesh.clone());
+      service.init(oriCont, modCont);
+      service.loadScenes(original, modified);
 
-  it("should throw an unexpected server response on diff validator call", async () => {
-    const service: SceneRendererService = TestBed.get(SceneRendererService);
+      return service.objDiffValidation({x: 325, y: 430})
+        .catch((reason: Error) => {
+          expect(reason.message).toEqual(NoDifferenceAtPointError.NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE);
+        });
+    });
 
-    axiosMock.onGet(ALL_GET_CALLS_REGEX)
-      .reply(HttpStatus.INTERNAL_SERVER_ERROR);
+    it("should throw an unexpected server response on diff validator call", async () => {
+      const service: SceneRendererService = TestBed.get(SceneRendererService);
 
-    const material: MeshPhongMaterial = new MeshPhongMaterial();
-    const geo: BoxGeometry = new BoxGeometry();
-    const mesh: Mesh = new Mesh(geo, material);
+      axiosMock.onGet(ALL_GET_CALLS_REGEX)
+        .reply(HttpStatus.INTERNAL_SERVER_ERROR);
 
-    return service["differenceValidationAtPoint"](mesh)
-      .catch((reason: Error) => {
-        expect(reason.message).toContain("Request failed with status code 500");
-      });
+      const material: MeshPhongMaterial = new MeshPhongMaterial();
+      const geo: BoxGeometry = new BoxGeometry();
+      const mesh: Mesh = new Mesh(geo, material);
+
+      return service["differenceValidationAtPoint"](mesh)
+        .catch((reason: Error) => {
+          expect(reason.message).toContain("Request failed with status code 500");
+        });
+    });
   });
 });
