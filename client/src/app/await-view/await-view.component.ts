@@ -3,6 +3,7 @@ import {MatDialog, MatDialogConfig} from "@angular/material";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Subscription} from "rxjs";
 import {WebsocketMessage} from "../../../../common/communication/messages/message";
+import {GAMES_ROUTE} from "../../../../common/communication/routes";
 import {SocketEvent} from "../../../../common/communication/socket-events";
 import {ComponentNavigationError} from "../../../../common/errors/component.errors";
 import {GameType, OnlineType} from "../../../../common/model/game/game";
@@ -59,7 +60,7 @@ export class AwaitViewComponent implements OnInit, OnDestroy {
   }
 
   private navigateGameList (): void {
-    this.route.navigate(["/game-list/"])
+    this.route.navigate([GAMES_ROUTE])
     .catch(() => {
       throw new ComponentNavigationError();
     });
