@@ -1,3 +1,14 @@
+
+// Client routes
+export const HOME_ROUTE: string = "";
+export const GAMES_ROUTE: string = "games";
+export const ADMIN_ROUTE: string = "admin";
+export const PLAY_ROUTE: string = "play";
+export const PLAY_3D_ROUTE: string = "3d-play";
+export const LOADING_ROUTE: string = "loading";
+
+
+// Server routes
 export const SERVER_BASE_URL: string = "http://localhost:3000";
 
 export const USERNAME_BASE: string = "/api/usernames/";
