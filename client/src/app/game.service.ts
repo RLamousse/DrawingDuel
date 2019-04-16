@@ -111,28 +111,28 @@ export class GameService {
 
   public getFreeGameByName(gameName: string): Observable<IFreeGame> {
     return from(
-      Axios.get<IFreeGame>(this.FREE_GAME_BASE_URL + gameName)
+      Axios.get<IFreeGame>(this.FREE_GAME_BASE_URL + encodeURIComponent(gameName))
         .then((value: AxiosResponse<IFreeGame>) => value.data)
         .catch((error) => { throw error; }),
     );
   }
 
   public hideSimpleByName(gameName: string): void {
-    Axios.put(this.SIMPLE_GAME_BASE_URL + gameName, {toBeDeleted: true})
+    Axios.put(this.SIMPLE_GAME_BASE_URL + encodeURIComponent(gameName), {toBeDeleted: true})
       .catch((error) => { throw error; });
   }
 
   public hideFreeByName(gameName: string): void {
-    Axios.put(this.FREE_GAME_BASE_URL + gameName, {toBeDeleted: true})
+    Axios.put(this.FREE_GAME_BASE_URL + encodeURIComponent(gameName), {toBeDeleted: true})
       .catch((error) => { throw error; });
   }
 
   public resetGameTime(gameName: string): void {
-    Axios.put(this.RESET_SCORES_URL + gameName, null)
+    Axios.put(this.RESET_SCORES_URL + encodeURIComponent(gameName), null)
       .catch((error) => { throw error; });
   }
   public async loadCheatData(gameName: string): Promise<IJson3DObject[]> {
-    return Axios.get<IFreeGame>(this.FREE_GAME_BASE_URL + gameName)
+    return Axios.get<IFreeGame>(this.FREE_GAME_BASE_URL + encodeURIComponent(gameName))
       .then((value) => value.data.scenes.differentObjects)
       .catch((error) => { throw error; });
   }
