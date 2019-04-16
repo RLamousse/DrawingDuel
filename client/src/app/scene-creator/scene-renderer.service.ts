@@ -1,29 +1,24 @@
 import {Injectable} from "@angular/core";
-import Axios, {AxiosResponse} from "axios";
-import * as Httpstatus from "http-status-codes";
-import {Observable, Subject} from "rxjs";
+import {Observable, Subject, Subscription} from "rxjs";
 import {Intersection, Mesh, Object3D, PerspectiveCamera, Raycaster, Scene, Vector2, Vector3, WebGLRenderer} from "three";
 import {
   createWebsocketMessage,
-  ChatMessage,
-  ChatMessagePosition,
-  ChatMessageType,
-  WebsocketMessage
+  RoomInteractionMessage, WebsocketMessage
 } from "../../../../common/communication/messages/message";
-import {I3DDiffValidatorControllerRequest} from "../../../../common/communication/requests/diff-validator-controller.request";
-import {DIFF_VALIDATOR_3D_BASE, SERVER_BASE_URL} from "../../../../common/communication/routes";
 import {SocketEvent} from "../../../../common/communication/socket-events";
 import {ComponentNotLoadedError} from "../../../../common/errors/component.errors";
 import {AbstractServiceError, AlreadyFoundDifferenceError, NoDifferenceAtPointError} from "../../../../common/errors/services.errors";
 import {IJson3DObject} from "../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
-import {OnlineType} from "../../../../common/model/game/game";
 import {IFreeGameState} from "../../../../common/model/game/game-state";
 import {IPoint} from "../../../../common/model/point";
+import {
+  IFreeGameInteractionData,
+  IFreeGameInteractionResponse,
+} from "../../../../common/model/rooms/interaction";
 import {deepCompare, sleep, X_FACTOR} from "../../../../common/util/util";
 import {playRandomSound, FOUND_DIFFERENCE_SOUNDS, NO_DIFFERENCE_SOUNDS, STAR_THEME_SOUND} from "../simple-game/game-sounds";
 import {SocketService} from "../socket.service";
-import {UNListService} from "../username.service";
-import {compareToThreeVector3} from "../util/client-utils";
+import {compareToThreeVector3, toIVector3} from "../util/client-utils";
 import {SKY_BOX_NAME} from "./FreeGameCreator/free-game-creator.service";
 import {ObjectCollisionService} from "./objectCollisionService/object-collision.service";
 import {RenderUpdateService} from "./render-update.service";
@@ -63,7 +58,6 @@ export class SceneRendererService {
   private modifiedContainer: HTMLDivElement;
   private scene: Scene;
   private modifiedScene: Scene;
-  private gameName: string;
   private camera: PerspectiveCamera;
   private rendererOri: WebGLRenderer;
   private rendererMod: WebGLRenderer;
@@ -122,7 +116,6 @@ export class SceneRendererService {
     this.time = 0;
     this.prevTime = performance.now();
     this.velocity = new Vector3();
-    this.gameName = gameName;
     this.gameState.foundObjects = [];
     this.renderLoop();
   }
@@ -214,7 +207,8 @@ export class SceneRendererService {
     const intersectMod: Intersection[] = rayCast.intersectObjects(this.modifiedScene.children, true)
       .filter((intersection: Intersection) => intersection.object.name !== SKY_BOX_NAME);
     if (intersectOri.length === 0 && intersectMod.length === 0) {
-      this.handleNoDifferenceFound();
+      playRandomSound(NO_DIFFERENCE_SOUNDS);
+      throw new NoDifferenceAtPointError();
     }
     const object: Intersection = intersectOri.length === 0 && intersectMod.length !== 0 ? intersectMod[0] : intersectOri[0];
 
@@ -224,34 +218,40 @@ export class SceneRendererService {
   }
 
   private async differenceValidationAtPoint(object: Object3D): Promise<void> {
-    const {x, y, z} = object.position;
-    const queryParams: I3DDiffValidatorControllerRequest = {
-      gameName: this.gameName, centerX: x, centerY: y, centerZ: z,
-    };
+    const promise: Promise<void> = new Promise<void>((resolve, reject) => {
+      const successSubscription: Subscription = this.socket.onEvent<IFreeGameInteractionResponse>(SocketEvent.INTERACT)
+        .subscribe(async (message: WebsocketMessage<IFreeGameInteractionResponse>) => {
+          successSubscription.unsubscribe();
+          const foundObject: IJson3DObject = message.body.object;
+          this.assertAlreadyFound(foundObject);
+          this.updateModifiedObject(foundObject, object as Object3D);
+          await this.updateCheatDiffData([foundObject as IJson3DObject]);
+          resolve();
+        });
+      const errorSubscription: Subscription = this.socket.onEvent<string>(SocketEvent.INTERACT_ERROR)
+        .subscribe((message: WebsocketMessage<string>) => {
+          errorSubscription.unsubscribe();
+          const errorMessage: string = message.body;
+          if (errorMessage === AlreadyFoundDifferenceError.ALREADY_FOUND_DIFFERENCE_ERROR_MESSAGE ||
+            errorMessage === NoDifferenceAtPointError.NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE) {
 
-    return Axios.get<IJson3DObject>(SERVER_BASE_URL + DIFF_VALIDATOR_3D_BASE, {params: queryParams})
-      .then(async (value: AxiosResponse<IJson3DObject>) => {
-        this.assertAlreadyFound(value.data);
-        this.notifyClickToWebsocket(true);
-        this.updateModifiedObject(value.data, object as Object3D);
-        await this.updateCheatDiffData([value.data as IJson3DObject]);
-      })
-      // tslint:disable-next-line:no-any Generic error response
-      .catch((reason: any) => {
-        if (reason.response && reason.response.status === Httpstatus.NOT_FOUND) {
-          this.handleNoDifferenceFound();
-        }
-        throw new AbstractServiceError(reason.message);
-      });
-  }
-
-  private notifyClickToWebsocket(good: boolean): void {
-    const message: WebsocketMessage<ChatMessage> = createWebsocketMessage<ChatMessage>({
-        gameName: "", playerCount: OnlineType.SOLO,
-        playerName: UNListService.username, position: ChatMessagePosition.NA,
-        timestamp: new Date(), type: good ? ChatMessageType.DIFF_FOUND : ChatMessageType.DIFF_ERROR,
+            playRandomSound(NO_DIFFERENCE_SOUNDS);
+            reject(new NoDifferenceAtPointError());
+          }
+          reject(new AbstractServiceError(errorMessage));
+        });
     });
-    this.socket.send(SocketEvent.CHAT, message);
+
+    this.socket.send(
+      SocketEvent.INTERACT,
+      createWebsocketMessage<RoomInteractionMessage<IFreeGameInteractionData>>(
+        {
+          interactionData: {
+            coord: toIVector3(object.position),
+          },
+        }));
+
+    return promise;
   }
 
   private assertAlreadyFound(object: IJson3DObject): void {
@@ -268,12 +268,6 @@ export class SceneRendererService {
     this.renderUpdateService.updateDifference(obj, this.scene, this.modifiedScene);
     this.differenceCountSubject.next(this.gameState.foundObjects.length);
     playRandomSound(FOUND_DIFFERENCE_SOUNDS);
-  }
-
-  private handleNoDifferenceFound(): void {
-    playRandomSound(NO_DIFFERENCE_SOUNDS);
-    this.notifyClickToWebsocket(false);
-    throw new NoDifferenceAtPointError();
   }
 
   // ╔════════╗
