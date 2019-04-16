@@ -21,7 +21,7 @@ export class SceneDiffValidator {
     return promise;
   }
 
-  private initPromise(): Promise<IJson3DObject> {
+  private async initPromise(): Promise<IJson3DObject> {
     return new Promise<IJson3DObject>((resolve, reject) => {
 
       const successSubscription: Subscription = this.socket.onEvent<IFreeGameInteractionResponse>(SocketEvent.INTERACT)
