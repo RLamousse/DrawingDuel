@@ -3,6 +3,7 @@ import { CanActivate, Router } from "@angular/router";
 import { Subscription } from "rxjs";
 import { WebsocketMessage } from "../../../common/communication/messages/message";
 import { UserValidationMessage } from "../../../common/communication/messages/user-validation-message";
+import {HOME_ROUTE} from "../../../common/communication/routes";
 import { SocketEvent } from "../../../common/communication/socket-events";
 import {ComponentNavigationError} from "../../../common/errors/component.errors";
 import { SocketService } from "./socket.service";
@@ -87,7 +88,7 @@ export class UNListService implements CanActivate {
     if (UNListService.username) {
       return true;
     } else {
-      this.router.navigate([""])
+      this.router.navigate([HOME_ROUTE])
         .then(() => {
           alert(this.NAVIGATION_MESSAGE);
         })
