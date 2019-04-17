@@ -7,6 +7,7 @@ import {GAMES_ROUTE} from "../../../../common/communication/routes";
 import {SocketEvent} from "../../../../common/communication/socket-events";
 import {ComponentNavigationError} from "../../../../common/errors/component.errors";
 import {GameType, OnlineType} from "../../../../common/model/game/game";
+import {openDialog} from "../dialog-utils";
 import {SceneRendererService} from "../scene-creator/scene-renderer.service";
 import {SimpleGameService} from "../simple-game/simple-game.service";
 import {SocketService} from "../socket.service";
@@ -72,12 +73,12 @@ export class DiffCounterComponent implements OnInit, OnDestroy {
     const dialogConfig: MatDialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = true;
     dialogConfig.data = {gameName: this.gameName, gameType: this.gameType, };
-    this.dialog.open(EndGameNotifComponent, dialogConfig).afterClosed().subscribe(() => {
-      this.router.navigate([GAMES_ROUTE]) // tslint:disable-next-line:no-any Generic error response
-      .catch(() => {
-        throw new ComponentNavigationError();
-      });
-    });
+    openDialog(this.dialog, EndGameNotifComponent, {callback: () => {
+      this.router.navigate([GAMES_ROUTE])
+        .catch(() => {
+          throw new ComponentNavigationError();
+        });
+    }});
   }
 
   private postTime(): void {

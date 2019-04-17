@@ -1,7 +1,8 @@
 import {Component} from "@angular/core";
-import {MatDialog, MatDialogConfig} from "@angular/material";
+import {MatDialog} from "@angular/material";
 import {Create3DGameComponent} from "../create3-dgame/create3-dgame.component";
 import {GameButtonOptions} from "../game-list/game/game-button-enum";
+import {openDialog} from "../dialog-utils";
 import {SimpleGameCreatorFormComponent} from "../simple-game-creator-form/simple-game-creator-form.component";
 
 @Component({
@@ -17,14 +18,10 @@ export class VueAdminComponent {
   protected readonly leftButton: string = GameButtonOptions.DELETE;
 
   protected createSimpleGame(): void {
-    const dialogConfig: MatDialogConfig = new MatDialogConfig();
-    dialogConfig.autoFocus = true;
-    this.dialog.open(SimpleGameCreatorFormComponent, dialogConfig);
+    openDialog(this.dialog, SimpleGameCreatorFormComponent, {});
   }
 
   protected create3DGame(): void {
-    const dialogConfig: MatDialogConfig = new MatDialogConfig();
-    dialogConfig.autoFocus = true;
-    this.dialog.open(Create3DGameComponent, dialogConfig);
+    openDialog(this.dialog, Create3DGameComponent, {});
   }
 }

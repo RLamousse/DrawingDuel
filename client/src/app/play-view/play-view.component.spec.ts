@@ -1,7 +1,7 @@
 import {ComponentFixture, TestBed} from "@angular/core/testing";
-import { MatListModule } from "@angular/material";
+import {MatIconModule, MatListModule} from "@angular/material";
 import {MatDialogModule, MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
-import {ActivatedRoute, Router} from "@angular/router";
+import {ActivatedRoute, Router, RouterModule} from "@angular/router";
 import {DiffCounterComponent} from "../diff-counter/diff-counter.component";
 import { MessageBoxComponent } from "../message-box/message-box.component";
 import {SceneDiffValidatorService} from "../scene-creator/scene-diff-validator.service";
@@ -29,7 +29,7 @@ describe("PlayViewComponent", () => {
           MessageBoxComponent,
         ],
         imports: [
-          MatListModule, MatDialogModule,
+          MatListModule, MatDialogModule, RouterModule, MatIconModule,
         ],
         providers: [
           SocketService,

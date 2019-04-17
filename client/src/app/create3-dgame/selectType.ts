@@ -12,7 +12,7 @@ export const AVAILABLE_THEMES: SelectType<Themes>[] = [
     viewValue: "Géométrie", value: Themes.Geometry,
   },
   {
-    viewValue: "Thème - Space", value: Themes.Space,
+    viewValue: "Espace", value: Themes.Space,
   },
 ];
 

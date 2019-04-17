@@ -1,5 +1,6 @@
 import {Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild} from "@angular/core";
 import {ActivatedRoute} from "@angular/router";
+import {GAMES_ROUTE} from "../../../../common/communication/routes";
 import {FreeViewGamesRenderingError} from "../../../../common/errors/component.errors";
 import {IFreeGame} from "../../../../common/model/game/free-game";
 import {GameType} from "../../../../common/model/game/game";
@@ -20,6 +21,8 @@ export const IDENTIFICATION_ERROR_TEXT: string = "Erreur";
              styleUrls: ["./scene-creator.component.css"],
            })
 export class SceneCreatorComponent implements OnInit, OnDestroy {
+  // @ts-ignore variable used in html
+  private readonly BACK_BUTTON_ROUTE: string = GAMES_ROUTE;
   private readonly CHEAT_KEY_CODE: string = "KeyT";
 
   private clickEnabled: boolean;

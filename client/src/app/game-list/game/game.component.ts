@@ -1,10 +1,12 @@
+import {Component, Input, OnInit} from "@angular/core";
+import {MatDialog} from "@angular/material";
 import {Component, Input, OnDestroy, OnInit} from "@angular/core";
-import {MatDialog, MatDialogConfig} from "@angular/material";
 import {Router} from "@angular/router";
 import {LOADING_GIF, LOADING_ROUTE, PLAY_3D_ROUTE, PLAY_ROUTE} from "../../../../../common/communication/routes";
 import {ComponentNavigationError} from "../../../../../common/errors/component.errors";
 import {GameType, OnlineType} from "../../../../../common/model/game/game";
 import {IRecordTime} from "../../../../../common/model/game/record-time";
+import {openDialog} from "../../dialog-utils";
 import {IRoomInfo} from "../../../../../common/model/rooms/room-info";
 import {RoomService} from "../../room.service";
 import {DeleteGameFormComponent} from "./delete-game-form/delete-game-form.component";
@@ -51,19 +53,15 @@ export class GameComponent implements OnInit, OnDestroy {
       this.roomService.createRoom(this.gameName, OnlineType.SOLO);
       this.gameType === GameType.SIMPLE ? this.navigatePlayView() : this.navigateFreeView();
     } else if (this.leftButton === GameButtonOptions.DELETE) {
-      const dialogConfig: MatDialogConfig = new MatDialogConfig();
-      dialogConfig.autoFocus = true;
-      dialogConfig.data = {gameName: this.gameName, gameType: this.gameType};
-      this.dialog.open(DeleteGameFormComponent, dialogConfig);
+      openDialog(this.dialog, DeleteGameFormComponent, {callback: window.location.reload.bind(window.location),
+                                                        data: {gameName: this.gameName, gameType: this.gameType}});
     }
   }
 
   protected rightButtonClick(): void {
     if (this.rightButton === GameButtonOptions.REINITIALIZE) {
-      const dialogConfig: MatDialogConfig = new MatDialogConfig();
-      dialogConfig.autoFocus = true;
-      dialogConfig.data = {gameName: this.gameName, gameType: this.gameType};
-      this.dialog.open(ResetGameFormComponent, dialogConfig).afterClosed().subscribe(() => window.location.reload());
+      openDialog(this.dialog, ResetGameFormComponent, {callback: window.location.reload.bind(window.location),
+        data: {gameName: this.gameName, gameType: this.gameType}});
     } else {
       this.handleGameJoin();
     }
