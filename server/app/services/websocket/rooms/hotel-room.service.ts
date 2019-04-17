@@ -119,6 +119,7 @@ export class HotelRoomService {
         this.radioTower.broadcast(SocketEvent.PUSH_ROOMS, createWebsocketMessage(this.fetchGameRooms()));
     }
 
+    // TODO REGISTER CALLBACK FOR KICK IN CLIENT
     private kickClients(roomId: string): void {
         Array.from(this._sockets.entries())
             .filter((entry: [Socket, string]) => entry[1] === roomId)
@@ -158,6 +159,7 @@ export class HotelRoomService {
         };
         room.interact(message.body.interactionData)
             .then((interactionResponse: IInteractionResponse) => {
+                interactionResponse.initiatedBy = chatMessage.playerName;
                 this.radioTower.sendToRoom(SocketEvent.INTERACT, createWebsocketMessage(interactionResponse), room.id);
                 this.chatAction.sendChat(chatMessage, room.id);
             })

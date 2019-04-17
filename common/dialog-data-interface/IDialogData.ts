@@ -6,4 +6,5 @@ export interface IDialogData {
   minutes: number;
   seconds: number;
   userName: string;
+  isWinner: boolean;
 }

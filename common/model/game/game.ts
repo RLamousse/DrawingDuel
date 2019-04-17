@@ -9,7 +9,7 @@ export interface IGame {
 
 export const TIMES_ARRAY_SIZE : number = 3;
 
-export enum OnlineType {SOLO = "solo", MULTI = "un contr un"}
+export enum OnlineType {SOLO = "solo", MULTI = "un contre un"}
 
 export enum GameType {SIMPLE, FREE}
 
