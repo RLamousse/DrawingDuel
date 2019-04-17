@@ -1,12 +1,15 @@
 import { Injectable } from "@angular/core";
+import { CanActivate, Router } from "@angular/router";
 import { Subscription } from "rxjs";
 import { WebsocketMessage } from "../../../common/communication/messages/message";
 import { UserValidationMessage } from "../../../common/communication/messages/user-validation-message";
+import {HOME_ROUTE} from "../../../common/communication/routes";
 import { SocketEvent } from "../../../common/communication/socket-events";
+import {ComponentNavigationError} from "../../../common/errors/component.errors";
 import { SocketService } from "./socket.service";
 
 @Injectable()
-export class UNListService {
+export class UNListService implements CanActivate {
 
   public static username: string = "";
   private readonly NON_ALPHANUMERIC_MESSAGE: string = "Caractères alphanumériques seulement!";
@@ -20,8 +23,10 @@ export class UNListService {
   public message: string;
   public username: string;
   public response: UserValidationMessage;
+  private readonly NAVIGATION_MESSAGE: string = "Un comportement de navigation suspect a été détecté," +
+    "vous serez ramené à la page d'acceuil pour des raisons de sécurité!";
 
-  public constructor(private websocket: SocketService) {
+  public constructor(private websocket: SocketService, private router: Router) {
     this.minLength = this.USERNAME_MIN_LENGTH;
     this.message = "";
     this.username = "";
@@ -83,5 +88,21 @@ export class UNListService {
     callback(answer.body);
 
     return answer.body;
+  }
+
+  public canActivate(): boolean  {
+    if (UNListService.username) {
+      return true;
+    } else {
+      this.router.navigate([HOME_ROUTE])
+        .then(() => {
+          alert(this.NAVIGATION_MESSAGE);
+        })
+        .catch(() => {
+          throw new ComponentNavigationError();
+        });
+
+      return false;
+    }
   }
 }
