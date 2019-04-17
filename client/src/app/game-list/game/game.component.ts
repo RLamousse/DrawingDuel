@@ -107,7 +107,8 @@ export class GameComponent implements OnInit, OnDestroy {
         gameType: this.gameType,
       },
     })
-      .catch(() => {
+      .catch((error: any) => {
+        console.log(error);
         throw new ComponentNavigationError();
       });
   }

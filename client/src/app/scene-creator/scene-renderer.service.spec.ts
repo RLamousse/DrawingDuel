@@ -7,7 +7,7 @@ import {NoDifferenceAtPointError} from "../../../../common/errors/services.error
 import {IJson3DObject} from "../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
 import {ObjectCollisionService} from "./objectCollisionService/object-collision.service";
 import {RenderUpdateService} from "./render-update.service";
-import {SceneDiffValidator} from "./scene-diff-validator.service";
+import {SceneDiffValidatorService} from "./scene-diff-validator.service";
 import {SceneRendererService} from "./scene-renderer.service";
 describe("SceneRendererService", () => {
 
@@ -30,7 +30,7 @@ describe("SceneRendererService", () => {
   const mockCollisionService: MockCollisionService = new MockCollisionService();
 
   let mockUpdateRender: MockRenderUpdate;
-  let sceneDiffValidatorSpy: jasmine.SpyObj<SceneDiffValidator>;
+  let sceneDiffValidatorSpy: jasmine.SpyObj<SceneDiffValidatorService>;
   beforeEach(() => {
     mockUpdateRender = new MockRenderUpdate();
     sceneDiffValidatorSpy = jasmine.createSpyObj("SceneDiffValidator", ["validateDiffObject"]);
@@ -40,7 +40,7 @@ describe("SceneRendererService", () => {
         SceneRendererService,
         {provide: RenderUpdateService, useValue: mockUpdateRender},
         {provide: ObjectCollisionService, useValue: mockCollisionService},
-        {provide: SceneDiffValidator, useValue: sceneDiffValidatorSpy},
+        {provide: SceneDiffValidatorService, useValue: sceneDiffValidatorSpy},
       ],
     });
   });

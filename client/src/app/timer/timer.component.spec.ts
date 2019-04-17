@@ -3,7 +3,7 @@ import {MatDialogModule, MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/
 import { Router } from "@angular/router";
 import { DiffCounterComponent } from "../diff-counter/diff-counter.component";
 import { EndGameNotifComponent } from "../diff-counter/end-game-notif/end-game-notif.component";
-import {SceneDiffValidator} from "../scene-creator/scene-diff-validator.service";
+import {SceneDiffValidatorService} from "../scene-creator/scene-diff-validator.service";
 import {SocketService} from "../socket.service";
 import { TimerComponent } from "./timer.component";
 
@@ -24,7 +24,7 @@ describe("TimerComponent", () => {
           },
           {provide: MatDialogRef, useValue: {}},
           {provide: MAT_DIALOG_DATA, useValue: {}},
-          {provide: SceneDiffValidator, useValue: {}},
+          {provide: SceneDiffValidatorService, useValue: {}},
           SocketService],
       })
       .compileComponents();

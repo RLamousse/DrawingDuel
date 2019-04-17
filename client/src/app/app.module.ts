@@ -29,6 +29,7 @@ import {FreeGameCreatorService} from "./scene-creator/FreeGameCreator/free-game-
 import {FreeGamePhotoService} from "./scene-creator/free-game-photo-service/free-game-photo.service";
 import {Game3DControlsDirective} from "./scene-creator/game-3D-controls/game-3D-controls.directive";
 import {SceneCreatorComponent} from "./scene-creator/scene-creator.component";
+import {SceneDiffValidatorService} from "./scene-creator/scene-diff-validator.service";
 import {SceneRendererService} from "./scene-creator/scene-renderer.service";
 import {SimpleGameCreatorFormComponent} from "./simple-game-creator-form/simple-game-creator-form.component";
 import {SimpleGameCanvasComponent} from "./simple-game/simple-game-canvas/simple-game-canvas.component";
@@ -91,6 +92,7 @@ import {VueAdminComponent} from "./vue-admin/vue-admin.component";
     FreeGameCreatorService,
     FreeGamePhotoService,
     SimpleGameService,
+    SceneDiffValidatorService,
   ],
   bootstrap: [AppComponent],
   entryComponents: [SimpleGameCreatorFormComponent, Create3DGameComponent, DeleteGameFormComponent,

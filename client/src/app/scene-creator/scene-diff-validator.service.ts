@@ -10,8 +10,8 @@ import {
 } from "../../../../common/model/rooms/interaction";
 import {SocketService} from "../socket.service";
 
-@Injectable()
-export class SceneDiffValidator implements OnDestroy {
+@Injectable({providedIn: "root"})
+export class SceneDiffValidatorService implements OnDestroy {
 
   private successSubscription: Subscription;
   private errorSubscription: Subscription;

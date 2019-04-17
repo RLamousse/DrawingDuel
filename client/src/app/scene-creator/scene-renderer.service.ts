@@ -14,7 +14,7 @@ import {SKY_BOX_NAME} from "./FreeGameCreator/free-game-creator.service";
 import {ObjectCollisionService} from "./objectCollisionService/object-collision.service";
 import {RenderUpdateService} from "./render-update.service";
 import {changeVisibility, get3DObject} from "./renderer-utils";
-import {SceneDiffValidator} from "./scene-diff-validator.service";
+import {SceneDiffValidatorService} from "./scene-diff-validator.service";
 
 interface IFreeGameRendererState extends IFreeGameState {
   isCheatModeActive: boolean;
@@ -26,7 +26,7 @@ interface IFreeGameRendererState extends IFreeGameState {
 @Injectable({providedIn: "root"})
 export class SceneRendererService {
   public constructor(private renderUpdateService: RenderUpdateService,
-                     private sceneDiffValidator: SceneDiffValidator,
+                     private sceneDiffValidator: SceneDiffValidatorService,
                      private objectCollisionService: ObjectCollisionService) {
     this.gameState = {isCheatModeActive: false, isWaitingInThread: false, foundObjects: []};
   }

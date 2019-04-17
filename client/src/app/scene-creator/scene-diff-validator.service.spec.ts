@@ -6,7 +6,7 @@ import {AbstractServiceError, AlreadyFoundDifferenceError, NoDifferenceAtPointEr
 import {getOrigin3D} from "../../../../common/model/point";
 import {IFreeGameInteractionResponse} from "../../../../common/model/rooms/interaction";
 import {SocketService} from "../socket.service";
-import {SceneDiffValidator} from "./scene-diff-validator.service";
+import {SceneDiffValidatorService} from "./scene-diff-validator.service";
 
 describe("A service to validate 3D differences", () => {
 
@@ -24,7 +24,7 @@ describe("A service to validate 3D differences", () => {
     }
   }
 
-  let service: SceneDiffValidator;
+  let service: SceneDiffValidatorService;
   const successSubject: Subject<WebsocketMessage<IFreeGameInteractionResponse>> = new Subject();
   const errorSubject: Subject<WebsocketMessage<string>> = new Subject();
   const mockSocketService: MockSocketService = new MockSocketService();
@@ -35,14 +35,14 @@ describe("A service to validate 3D differences", () => {
     return TestBed.configureTestingModule(
       {
         providers: [
-          SceneDiffValidator,
+          SceneDiffValidatorService,
           {provide: SocketService, useValue: mockSocketService},
         ],
       });
   });
 
   beforeEach(() => {
-    service = TestBed.get(SceneDiffValidator);
+    service = TestBed.get(SceneDiffValidatorService);
     mockSocketServiceSpy = spyOn(mockSocketService, "send");
   });
 
