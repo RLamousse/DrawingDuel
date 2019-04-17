@@ -27,6 +27,7 @@ describe("A db service for free games", () => {
         bestSoloTimes: [],
         gameName: "sampleGame",
         toBeDeleted: false,
+        thumbnail: "",
     };
 
     let freeGamesCollectionService: FreeGamesCollectionService;
@@ -55,6 +56,7 @@ describe("A db service for free games", () => {
                 bestSoloTimes: [],
                 gameName: "",
                 toBeDeleted: false,
+                thumbnail: "",
             };
 
             freeGamesCollectionService = new FreeGamesCollectionService(mockedCollection.object);

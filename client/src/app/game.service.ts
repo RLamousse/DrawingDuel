@@ -12,20 +12,13 @@ import {IExtendedFreeGame} from "../../../common/model/game/extended-free-game";
 import {IFreeGame} from "../../../common/model/game/free-game";
 import {IGame} from "../../../common/model/game/game";
 import {ISimpleGame} from "../../../common/model/game/simple-game";
-import {FreeGameCreatorService} from "./scene-creator/FreeGameCreator/free-game-creator.service";
-import {FreeGamePhotoService} from "./scene-creator/free-game-photo-service/free-game-photo.service";
-import {IScene} from "./scene-interface";
 
 @Injectable({
               providedIn: "root",
             })
 export class GameService {
 
-  public constructor(
-    private photoService: FreeGamePhotoService,
-    private freeGameCreatorService: FreeGameCreatorService,
-  ) {
-  }
+  public constructor() {/*empty*/}
   public simpleGames: ISimpleGame[] = [];
   public freeGames: IFreeGame[] = [];
   public extendedFreeGames: IExtendedFreeGame[] = [];
@@ -78,9 +71,8 @@ export class GameService {
     }
     for (const game of this.freeGames) {
       if (!game.toBeDeleted) {
-        const img: string = "";
         const extendedFreeGame: IExtendedFreeGame = {
-          thumbnail: img,
+          thumbnail: game.thumbnail,
           scenes: game.scenes,
           gameName: game.gameName,
           bestSoloTimes: game.bestSoloTimes,
@@ -135,13 +127,5 @@ export class GameService {
     return Axios.get<IFreeGame>(this.FREE_GAME_BASE_URL + encodeURIComponent(gameName))
       .then((value) => value.data.scenes.differentObjects)
       .catch((error) => { throw error; });
-  }
-
-  public async updateFreeGameImages(): Promise<void> {
-
-    for (const freeGame of this.extendedFreeGames) {
-      const scenes: IScene = this.freeGameCreatorService.createScenes(freeGame.scenes);
-      await this.photoService.takePhoto(scenes.scene).then((value) => {freeGame.thumbnail = value; });
-    }
   }
 }

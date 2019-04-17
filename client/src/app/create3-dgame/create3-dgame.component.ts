@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
+import { Component, OnInit} from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { MatCheckboxChange, MatDialogRef, MatSliderChange } from "@angular/material";
 import {ICreateFreeGameRequest} from "../../../../common/communication/requests/game-creator.controller.request";
@@ -18,12 +18,9 @@ import { AVAILABLE_MODIF_TYPES, AVAILABLE_THEMES, SelectType } from "./selectTyp
 export class Create3DGameComponent extends AbstractForm implements OnInit {
 
   private readonly MIN_NAME_LENGTH: number = 5;
-  @ViewChild("photoContainer") public divElemt: ElementRef;
   protected modTypes: SelectType<ModificationType>[] = AVAILABLE_MODIF_TYPES;
   protected themes: SelectType<Themes>[] = AVAILABLE_THEMES;
   protected sliderValue: number = 50;
-
-  private photoService: FreeGamePhotoService;
 
   public checkboxes: {
     modificationTypes: Set<ModificationType>,
@@ -33,14 +30,13 @@ export class Create3DGameComponent extends AbstractForm implements OnInit {
     _fb: FormBuilder,
     dialogRef: MatDialogRef<Create3DGameComponent>,
     formPost: FormPostService,
-    photoService: FreeGamePhotoService,
+    private photoService: FreeGamePhotoService,
   ) {
     super(_fb, dialogRef, formPost);
     this.checkboxes = {
       modificationTypes: new Set<ModificationType>(),
       valid: this.checboxesValid,
     };
-    this.photoService = photoService;
   }
 
   public ngOnInit(): void {
@@ -87,15 +83,16 @@ export class Create3DGameComponent extends AbstractForm implements OnInit {
   public onSubmit(): void {
     this.disableButton = true;
     const modificationTypes: ModificationType[] = Array.from(this.checkboxes.modificationTypes);
+    const gameName: string = this.formDoc.value.name;
     const requestData: ICreateFreeGameRequest = {
-      gameName : this.formDoc.value.name,
+      gameName : gameName,
       objectQuantity : this.sliderValue,
       theme : this.formDoc.value.theme,
       modificationTypes : modificationTypes,
     };
     this.formPost.submitForm(FREE_GAME_CREATION_ROUTE, requestData).subscribe(
       (data) => {
-        this.photoService.takePhoto(this.formDoc.value.name);
+        this.photoService.takePhoto(gameName);
         this.exit(data);
       },
       (error: Error) => {

@@ -142,6 +142,7 @@ export class GameCreatorService {
             bestMultiTimes: createRandomScores(),
             scenes: scenes,
             toBeDeleted: false,
+            thumbnail: "",
         };
         try {
             await this.dataBaseService.freeGames.create(game);

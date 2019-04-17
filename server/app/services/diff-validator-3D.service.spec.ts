@@ -29,6 +29,7 @@ describe("A service validating if there is a difference at a coord for a free ga
         bestSoloTimes: [],
         bestMultiTimes: [],
         toBeDeleted: false,
+        thumbnail: "",
     };
 
     let mockedDataBaseService: DataBaseService;
