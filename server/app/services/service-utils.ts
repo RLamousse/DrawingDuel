@@ -14,7 +14,7 @@ const GENERATED_NAMES: string[] = ["BotAnthony",
 const generateRandomNames: () => string[] = (): string[]  =>  {
     const randomNamesIndex: number[] = [];
     while (randomNamesIndex.length < TIMES_ARRAY_SIZE) {
-        const randomNumber: number = getRandomValue(0, GENERATED_NAMES.length);
+        const randomNumber: number = getRandomValue(0, GENERATED_NAMES.length - 1);
         if (randomNamesIndex.indexOf(randomNumber) < 0) {
             randomNamesIndex.push(randomNumber);
         }
