@@ -198,21 +198,5 @@ describe("SceneRendererService", () => {
           expect(reason.message).toEqual(NoDifferenceAtPointError.NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE);
         });
     });
-
-    it("should throw an unexpected server response on diff validator call", async () => {
-      const service: SceneRendererService = TestBed.get(SceneRendererService);
-
-      sceneDiffValidatorSpy.validateDiffObject
-        .and.throwError("Error Message");
-
-      const material: MeshPhongMaterial = new MeshPhongMaterial();
-      const geo: BoxGeometry = new BoxGeometry();
-      const mesh: Mesh = new Mesh(geo, material);
-
-      return service["differenceValidationAtPoint"](mesh)
-        .catch((reason: Error) => {
-          expect(reason.message).toContain("Error Message");
-        });
-    });
   });
 });

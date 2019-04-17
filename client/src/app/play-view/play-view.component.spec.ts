@@ -4,6 +4,7 @@ import {MatDialogModule, MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/
 import {ActivatedRoute, Router} from "@angular/router";
 import {DiffCounterComponent} from "../diff-counter/diff-counter.component";
 import { MessageBoxComponent } from "../message-box/message-box.component";
+import {SceneDiffValidator} from "../scene-creator/scene-diff-validator.service";
 import {SimpleGameCanvasComponent} from "../simple-game/simple-game-canvas/simple-game-canvas.component";
 import {SimpleGameContainerComponent} from "../simple-game/simple-game-container/simple-game-container.component";
 import { SocketService } from "../socket.service";
@@ -30,23 +31,32 @@ describe("PlayViewComponent", () => {
         imports: [
           MatListModule, MatDialogModule,
         ],
-        providers: [SocketService,
-                    { provide: Router, useClass: class { public navigate: jasmine.Spy = jasmine.createSpy("navigate"); },   },
-                    { provide: ActivatedRoute,
-                      useValue: {queryParams: {
-                          subscribe: (fn: (queryParams: object) => void) => fn(
-                          {
-                            gameName: "numbers",
-                            originalImage: "https:%2F%2Fi.imgur.com%2Fvc0cKmB.png",
-                            modifiedImage: "https:%2F%2Fi.imgur.com%2F5lei5Nb.png",
-                            gameType: "0"} ),
-                        },
-                      },
-                    },
-                    {provide: MatDialogRef, useValue: {}},
-                    {provide: MAT_DIALOG_DATA, useValue: {}, },
+        providers: [
+          SocketService,
+          {
+            provide: Router, useClass: class {
+              public navigate: jasmine.Spy = jasmine.createSpy("navigate");
+            },
+          },
+          {
+            provide: ActivatedRoute,
+            useValue: {
+              queryParams: {
+                subscribe: (fn: (queryParams: object) => void) => fn(
+                  {
+                    gameName: "numbers",
+                    originalImage: "https:%2F%2Fi.imgur.com%2Fvc0cKmB.png",
+                    modifiedImage: "https:%2F%2Fi.imgur.com%2F5lei5Nb.png",
+                    gameType: "0",
+                  }),
+              },
+            },
+          },
+          {provide: MatDialogRef, useValue: {}},
+          {provide: MAT_DIALOG_DATA, useValue: {}},
+          {provide: SceneDiffValidator, useValue: {}},
 
-      ],
+        ],
     });
     done();
   });
