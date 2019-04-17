@@ -1,12 +1,12 @@
 export class ComponentNotLoadedError extends Error {
-    public static readonly COMPONENT_NOT_LOADED_MESSAGE_ERROR: string = "Component non initialisé!";
+    public static readonly COMPONENT_NOT_LOADED_MESSAGE_ERROR: string = "ERREUR: Component non initialisé!";
     constructor() {
         super(ComponentNotLoadedError.COMPONENT_NOT_LOADED_MESSAGE_ERROR);
     }
 }
 
 export class ComponentNavigationError extends Error {
-    public static readonly COMPONENT_NAVIGATION_ERROR_MESSAGE: string = "Erreur de navigation!";
+    public static readonly COMPONENT_NAVIGATION_ERROR_MESSAGE: string = "ERREUR: Erreur de navigation!";
 
     constructor() {
         super(ComponentNavigationError.COMPONENT_NAVIGATION_ERROR_MESSAGE);
@@ -14,7 +14,7 @@ export class ComponentNavigationError extends Error {
 }
 
 export class ComponentCanvasError extends Error {
-    public static readonly COMPONENT_CANVAS_ERROR_MESSAGE: string = "Erreur de canvas!";
+    public static readonly COMPONENT_CANVAS_ERROR_MESSAGE: string = "ERREUR: Erreur de canvas!";
 
     constructor() {
         super(ComponentCanvasError.COMPONENT_CANVAS_ERROR_MESSAGE);
@@ -22,7 +22,7 @@ export class ComponentCanvasError extends Error {
 }
 
 export class FreeViewGamesRenderingError extends  Error {
-    public static readonly FREE_VIEW_GAMES_RENDERING_ERROR_MESSAGE: string = "Une erreur est subvenue en essayant d'afficher la scene libre";
+    public static readonly FREE_VIEW_GAMES_RENDERING_ERROR_MESSAGE: string = "ERREUR: Une erreur est subvenue en essayant d'afficher la scene libre";
     constructor() {
         super(FreeViewGamesRenderingError.FREE_VIEW_GAMES_RENDERING_ERROR_MESSAGE);
     }
