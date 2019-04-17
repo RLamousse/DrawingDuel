@@ -208,7 +208,7 @@ export class SceneRendererService {
   }
 
   private async differenceValidationAtPoint(object: Object3D): Promise<void> {
-    this.sceneDiffValidator.validateDiffObject(toIVector3(object.position))
+    return this.sceneDiffValidator.validateDiffObject(toIVector3(object.position))
       .then(async (foundObject: IJson3DObject) => {
         this.handleValidDifference(foundObject, object);
         await this.updateCheatDiffData(foundObject);
