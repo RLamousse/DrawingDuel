@@ -14,6 +14,7 @@ import {TimerComponent} from "../timer/timer.component";
 import {FreeGameCreatorService} from "./FreeGameCreator/free-game-creator.service";
 import {SceneCreatorComponent} from "./scene-creator.component";
 import {SceneRendererService} from "./scene-renderer.service";
+import {MatIconModule} from "@angular/material";
 
 describe("SceneCreatorComponent", () => {
   let component: SceneCreatorComponent;
@@ -113,7 +114,7 @@ describe("SceneCreatorComponent", () => {
           SocketService,
 
         ],
-        imports: [MatDialogModule,  RouterModule],
+        imports: [MatDialogModule,  RouterModule, MatIconModule],
         declarations: [SceneCreatorComponent, TimerComponent, DiffCounterComponent, EndGameNotifComponent, MessageBoxComponent],
 
       });
