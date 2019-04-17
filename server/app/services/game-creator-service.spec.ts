@@ -11,8 +11,7 @@ import {anything, instance, mock, when} from "ts-mockito";
 import {DIFF_CREATOR_BASE, SERVER_BASE_URL} from "../../../common/communication/routes";
 import {
     AbstractDataBaseError,
-    AlreadyExistentGameError,
-    NonExistentThemeError
+    AlreadyExistentGameError
 } from "../../../common/errors/database.errors";
 import {AbstractServiceError, DifferenceCountError} from "../../../common/errors/services.errors";
 import {
@@ -296,20 +295,6 @@ describe("A service that creates a game", () => {
                                  [ModificationType.add, ModificationType.remove, ModificationType.changeColor])
                 .catch((reason: Error) => {
                     expect(reason.message).to.eql(new AbstractDataBaseError("error").message);
-                });
-        });
-
-        it("should throw error if the theme is other than Geometry", async () => {
-
-            when(mockedFreeGames.create(anything())).thenReject(new Error("error"));
-
-            return getMockedService()
-                .createFreeGame( "someGameTest",
-                                 100,
-                                 Themes.Sanic,
-                                 [ModificationType.add, ModificationType.remove, ModificationType.changeColor])
-                .catch((reason: Error) => {
-                    expect(reason.message).to.eql(NonExistentThemeError.NON_EXISTING_THEME_ERROR_MESSAGE);
                 });
         });
 
