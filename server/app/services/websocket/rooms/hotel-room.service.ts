@@ -158,6 +158,7 @@ export class HotelRoomService {
         };
         room.interact(message.body.interactionData)
             .then((interactionResponse: IInteractionResponse) => {
+                interactionResponse.initiatedBy = chatMessage.playerName;
                 this.radioTower.sendToRoom(SocketEvent.INTERACT, createWebsocketMessage(interactionResponse), room.id);
                 this.chatAction.sendChat(chatMessage, room.id);
             })
