@@ -55,6 +55,12 @@
   cursor: not-allowed;
 }
 
+.back-button {
+  position: absolute;
+  margin-left: 5px;
+  padding-left: 5px;
+}
+
 #originalCanvasMessage {
   position: absolute;
   width: 640px;

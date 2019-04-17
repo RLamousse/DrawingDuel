@@ -1,7 +1,9 @@
 import {Component, Input, OnInit} from "@angular/core";
-import { Router } from "@angular/router";
+import {Router} from "@angular/router";
 import {BACKGROUND_IMAGE, GAMES_ROUTE} from "../../../../common/communication/routes";
-import { UNListService } from "../username.service";
+import {SocketEvent} from "../../../../common/communication/socket-events";
+import {SocketService} from "../socket.service";
+import {UNListService} from "../username.service";
 
 @Component({
   selector: "app-initial-view",
@@ -21,11 +23,16 @@ export class InitialViewComponent implements OnInit {
   public constructor(
     public userService: UNListService,
     private router: Router,
+    private socketService: SocketService,
   ) {
     this.handleUsernameAvailability = this.handleUsernameAvailability.bind(this);
   }
 
   public ngOnInit(): void {
+    if (UNListService.username) {
+      UNListService.username = "";
+      this.socketService.send(SocketEvent.DISCONNECT_USER);
+    }
     this.setButtonBackGround();
   }
 

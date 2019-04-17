@@ -22,9 +22,13 @@ export class SocketService {
     return connect(SERVER_BASE_URL);
   }
 
-  public send(event: SocketEvent, message: WebsocketMessage): boolean {
+  public send(event: SocketEvent, message?: WebsocketMessage): boolean {
     if (this.isSocketConnected()) {
-      this.socket.emit(event, message);
+      if (message) {
+        this.socket.emit(event, message);
+      } else {
+        this.socket.emit(event);
+      }
 
       return true;
     }
