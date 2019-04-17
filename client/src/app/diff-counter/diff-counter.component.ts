@@ -1,8 +1,12 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from "@angular/core";
 import {MatDialog, MatDialogConfig} from "@angular/material";
-import {Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {Subscription} from "rxjs";
-import {createWebsocketMessage, UpdateScoreMessage, WebsocketMessage} from "../../../../common/communication/messages/message";
+import {
+  createWebsocketMessage,
+  UpdateScoreMessage,
+  WebsocketMessage
+} from "../../../../common/communication/messages/message";
 import {GAMES_ROUTE} from "../../../../common/communication/routes";
 import {SocketEvent} from "../../../../common/communication/socket-events";
 import {ComponentNavigationError} from "../../../../common/errors/component.errors";
@@ -13,6 +17,10 @@ import {SocketService} from "../socket.service";
 import {UNListService} from "../username.service";
 import {EndGameNotifComponent} from "./end-game-notif/end-game-notif.component";
 
+export interface EndGameInformation {
+  isWinner: boolean;
+}
+
 @Component({
              selector: "app-diff-counter",
              templateUrl: "./diff-counter.component.html",
@@ -22,23 +30,35 @@ export class DiffCounterComponent implements OnInit, OnDestroy {
 
   @Output() private stopTime: EventEmitter<undefined> = new EventEmitter();
 
-  protected diffNumber: number;
   @Input() private gameName: string;
   @Input() private minutes: number;
   @Input() private seconds: number;
   @Input() private gameType: GameType;
-  private readonly MAX_DIFF_NUM: number = 7;
+  private MAX_DIFF_NUM: number = 7;
   private readonly MINUTES_FACTOR: number = 60;
+  protected advDiffNumber: number;
+  private diffNumber: number;
+  private isMulti: boolean;
   private subscriptions: Subscription[];
 
-  public constructor(private simpleGameService: SimpleGameService, private dialog: MatDialog,
-                     protected socket: SocketService, private router: Router, private sceneRendererService: SceneRendererService) {
-    this.diffNumber = 0;
+  public constructor(private simpleGameService: SimpleGameService,
+                     private dialog: MatDialog,
+                     protected socket: SocketService,
+                     private router: Router,
+                     private sceneRendererService: SceneRendererService,
+                     private route: ActivatedRoute) {
     this.subscriptions = [];
+    this.diffNumber = 0;
+    this.advDiffNumber = 0;
+    this.countDiff = this.countDiff.bind(this);
   }
 
   public ngOnInit(): void {
-    this.gameType === GameType.SIMPLE ? this.checkDiffSimpleGame() : this.checkDiffFreeGame();
+    this.checkDiff();
+    this.subscriptions.push(this.route.queryParams.subscribe((params) => {
+      this.isMulti = params["onlineType"] === OnlineType.MULTI;
+      this.MAX_DIFF_NUM = this.isMulti ? 4 : 7;
+    }));
   }
 
   private endGame(): void {
@@ -48,42 +68,47 @@ export class DiffCounterComponent implements OnInit, OnDestroy {
     this.openCongratDialog();
   }
 
-  private checkDiffSimpleGame(): void {
-    const sub: Subscription = this.simpleGameService.foundDifferencesCount.subscribe((differenceCount: number) => {
-      if (this.diffNumber === this.MAX_DIFF_NUM - 1 && this.diffNumber !== differenceCount) {
-        this.endGame();
-      }
+  // TODO REMOVE THE | NUMBER PARAMETER
+  private countDiff(isMe: boolean | number): void {
+    if (isMe) {
       this.diffNumber++;
-    });
-    this.subscriptions.push(sub);
+    } else {
+      this.advDiffNumber++;
+    }
+    if (this.isGameFinished()) {
+      this.endGame();
+    }
   }
 
-  private checkDiffFreeGame(): void {
-    const sub: Subscription = this.sceneRendererService.foundDifferenceCount.subscribe((differenceCount: number) => {
-      if (this.diffNumber === this.MAX_DIFF_NUM - 1 && this.diffNumber !== differenceCount) {
-        this.endGame();
-      }
-      this.diffNumber++;
-    });
+  private isGameFinished(): boolean {
+    return this.diffNumber === this.MAX_DIFF_NUM || this.advDiffNumber === this.MAX_DIFF_NUM;
+  }
+
+  private checkDiff(): void {
+    const sub: Subscription = this.gameType === GameType.SIMPLE ?
+      this.simpleGameService.foundDifferencesCount.subscribe(this.countDiff) :
+      this.sceneRendererService.foundDifferenceCount.subscribe(this.countDiff);
     this.subscriptions.push(sub);
   }
 
   private openCongratDialog(): void {
-    const dialogConfig: MatDialogConfig = new MatDialogConfig();
+    const dialogConfig: MatDialogConfig<EndGameInformation> = new MatDialogConfig();
     dialogConfig.autoFocus = true;
-    dialogConfig.data = {gameName: this.gameName, gameType: this.gameType, };
-    this.dialog.open(EndGameNotifComponent, dialogConfig).afterClosed().subscribe(() => {
+    dialogConfig.data = {isWinner: this.diffNumber > this.advDiffNumber};
+    const sub: Subscription = this.dialog.open(EndGameNotifComponent, dialogConfig).afterClosed().subscribe(() => {
       this.router.navigate([GAMES_ROUTE]) // tslint:disable-next-line:no-any Generic error response
-      .catch(() => {
+        .catch((e) => {
+          console.log(e);
         throw new ComponentNavigationError();
       });
     });
+    this.subscriptions.push(sub);
   }
 
   private postTime(): void {
     const socketMessage: WebsocketMessage<UpdateScoreMessage> = createWebsocketMessage<UpdateScoreMessage>({
       gameName: this.gameName,
-      onlineType: OnlineType.SOLO,
+      onlineType: this.isMulti ? OnlineType.MULTI : OnlineType.SOLO,
       newTime: {
         name: UNListService.username,
         time: this.minutes * this.MINUTES_FACTOR + this.seconds,
@@ -93,7 +118,7 @@ export class DiffCounterComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    this.subscriptions.forEach((elem: Subscription) => elem.unsubscribe());
+    this.subscriptions.forEach((elem) => elem.unsubscribe());
     this.diffNumber = 0;
   }
 
