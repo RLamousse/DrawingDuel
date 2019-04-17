@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import {Camera, Euler, Mesh, MeshPhongMaterial, Object3D, Scene, Vector3} from "three";
+import {SKY_BOX_NAME} from "./FreeGameCreator/free-game-creator.service";
 
 @Injectable({
   providedIn: "root",
@@ -89,13 +90,13 @@ export class RenderUpdateService {
     let originalObj: Object3D = new Object3D();
     let modifObj: Object3D = new Object3D();
     for (const obj of modifiedScene.children) {
-      if (obj.position.equals(object.position)) {
+      if (obj.name !== SKY_BOX_NAME && obj.position.equals(object.position)) {
         modifObj = obj;
         modifObj.name = this.MODIFIED_NAME;
       }
     }
     for (const obj of scene.children) {
-      if (obj.position.equals(object.position)) {
+      if (obj.name !== SKY_BOX_NAME && obj.position.equals(object.position)) {
         originalObj = obj.clone();
         originalObj.name = this.ORIGINAL_NAME;
       }
