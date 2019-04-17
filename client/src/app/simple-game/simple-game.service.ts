@@ -13,11 +13,11 @@ import {SocketService} from "../socket.service";
 @Injectable({providedIn: "root"})
 export class SimpleGameService {
 
-  private _differenceCountSubject: Subject<number> = new Subject();
+  private _differenceCountSubject: Subject<boolean> = new Subject();
 
   public constructor(private socket: SocketService) {}
 
-  public get foundDifferencesCount(): Observable<number> {
+  public get foundDifferencesCount(): Observable<boolean> {
     return this._differenceCountSubject;
   }
 
@@ -44,7 +44,7 @@ export class SimpleGameService {
     this.socket.send(SocketEvent.INTERACT, createWebsocketMessage<RoomInteractionMessage<ISimpleGameInteractionData>>(interactionMessage));
   }
 
-  public updateCounter(): void {
-    this._differenceCountSubject.next();
+  public updateCounter(isMe: boolean): void {
+    this._differenceCountSubject.next(isMe);
   }
 }
