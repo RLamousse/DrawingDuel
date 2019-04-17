@@ -58,6 +58,7 @@
 .back-button {
   position: absolute;
   margin-left: 5px;
+  padding-left: 5px;
 }
 
 #originalCanvasMessage {

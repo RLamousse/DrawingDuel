@@ -2,7 +2,10 @@
   <div class="separation">
     <div class="leftWindow">
       <div>
-        <button mat-raised-button color="accent" class="button back-button" routerLink="/{{BACK_BUTTON_ROUTE}}">Retour à la liste de jeux</button>
+        <button mat-raised-button color="accent" class="button back-button" routerLink="/{{BACK_BUTTON_ROUTE}}">
+          <mat-icon>keyboard_arrow_left</mat-icon>
+          Retour à la liste de jeux
+        </button>
         <h1 class = "gameName">{{gameName}}</h1>
       </div>
       <div class="centered">
