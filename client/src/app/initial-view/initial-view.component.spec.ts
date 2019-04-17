@@ -3,9 +3,9 @@ import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormsModule } from "@angular/forms";
 import { Router } from "@angular/router";
 import {BACKGROUND_IMAGE_TEST} from "../../../../common/communication/routes";
+import {SocketService} from "../socket.service";
 import { UNListService } from "../username.service";
 import { InitialViewComponent } from "./initial-view.component";
-import {SocketService} from "../socket.service";
 
 describe("Initial View Component tests", () => {
   let component: InitialViewComponent;
@@ -13,7 +13,7 @@ describe("Initial View Component tests", () => {
   let unListSpyService: jasmine.SpyObj<UNListService>;
 
   // @ts-ignore
-  let mockSocketService: SocketService = {send: null};
+  const mockSocketService: SocketService = {send: null};
 
   const initComponent: () => void = (): void => {
     fixture = TestBed.createComponent(InitialViewComponent);
