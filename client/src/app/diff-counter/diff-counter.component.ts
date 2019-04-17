@@ -56,10 +56,10 @@ export class DiffCounterComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.checkDiff();
-    this.subscriptions.push(this.route.queryParams.subscribe((params) => {
+    this.route.queryParams.subscribe((params) => {
       this.isMulti = params["onlineType"] === OnlineType.MULTI;
       this.MAX_DIFF_NUM = this.isMulti ? 4 : 7;
-    }));
+    });
   }
 
   private endGame(): void {
@@ -86,9 +86,9 @@ export class DiffCounterComponent implements OnInit, OnDestroy {
   }
 
   private checkDiff(): void {
-    const sub: Subscription = this.gameType === GameType.SIMPLE ?
-      this.simpleGameService.foundDifferencesCount.subscribe(this.countDiff) :
-      this.sceneRendererService.foundDifferenceCount.subscribe(this.countDiff);
+    const sub: Subscription = this.gameType === GameType.SIMPLE
+      ? this.simpleGameService.foundDifferencesCount.subscribe(this.countDiff)
+      : this.sceneRendererService.foundDifferenceCount.subscribe(this.countDiff);
     this.subscriptions.push(sub);
   }
 
