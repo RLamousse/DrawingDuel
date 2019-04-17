@@ -184,10 +184,9 @@ export class GameCreatorService {
         if (theme === Themes.Geometry) {
 
             return this.freeGameCreatorService.generateIScenes(numberOfObjects, modTypes, Themes.Geometry);
-        } else if (theme === Themes.Space) {
+        } else {
 
             return this.freeGameCreatorService.generateIScenes(numberOfObjects, modTypes, Themes.Space);
         }
-        throw new NonExistentThemeError();
     }
 }
