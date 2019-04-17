@@ -117,3 +117,11 @@ export class NonExistentRoomError extends Error {
         super(NonExistentRoomError.NON_EXISTENT_GAME_ROOM_ERROR_MESSAGE);
     }
 }
+
+export class ObjectNotFoundError extends Error {
+    public static readonly OBJECT_NOT_FOUND_ERROR_MESSAGE: string = "There are no objects at the specified position!";
+
+    constructor() {
+        super(ObjectNotFoundError.OBJECT_NOT_FOUND_ERROR_MESSAGE);
+    }
+}

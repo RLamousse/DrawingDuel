@@ -3,6 +3,7 @@ import {MatDialogModule, MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/
 import { Router } from "@angular/router";
 import { DiffCounterComponent } from "../diff-counter/diff-counter.component";
 import { EndGameNotifComponent } from "../diff-counter/end-game-notif/end-game-notif.component";
+import {SceneDiffValidatorService} from "../scene-creator/scene-diff-validator.service";
 import {SocketService} from "../socket.service";
 import { TimerComponent } from "./timer.component";
 
@@ -11,15 +12,22 @@ describe("TimerComponent", () => {
   let fixture: ComponentFixture<TimerComponent>;
 
   beforeEach(async(async () => {
-    return TestBed.configureTestingModule({
-      declarations: [ TimerComponent, DiffCounterComponent, EndGameNotifComponent],
-      imports: [MatDialogModule],
-      providers: [{ provide: Router, useClass: class { public navigate: jasmine.Spy = jasmine.createSpy("navigate"); } },
-                  {provide: MatDialogRef, useValue: {}},
-                  {provide: MAT_DIALOG_DATA, useValue: {}, },
-                  SocketService ],
-    })
-    .compileComponents();
+    return TestBed.configureTestingModule(
+      {
+        declarations: [TimerComponent, DiffCounterComponent, EndGameNotifComponent],
+        imports: [MatDialogModule],
+        providers: [
+          {
+            provide: Router, useClass: class {
+              public navigate: jasmine.Spy = jasmine.createSpy("navigate");
+            },
+          },
+          {provide: MatDialogRef, useValue: {}},
+          {provide: MAT_DIALOG_DATA, useValue: {}},
+          {provide: SceneDiffValidatorService, useValue: {}},
+          SocketService],
+      })
+      .compileComponents();
   }));
 
   beforeEach(() => {

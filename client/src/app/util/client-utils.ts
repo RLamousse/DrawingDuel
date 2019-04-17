@@ -1,6 +1,8 @@
-import {Vector3} from "three";
+import {Object3D, Scene, Vector3} from "three";
+import {IJson3DObject} from "../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
 import {IVector3} from "../../../../common/model/point";
 import {deepCompare} from "../../../../common/util/util";
+import {SKY_BOX_NAME} from "../scene-creator/FreeGameCreator/free-game-creator.service";
 
 export const toIVector3:
   (vector: Vector3) => IVector3 =
@@ -12,4 +14,12 @@ export const compareToThreeVector3:
   (x: IVector3, y: Vector3) => boolean =
   (x: IVector3, y: Vector3) => {
     return deepCompare(x, toIVector3(y));
+  };
+
+export const getSceneObject:
+  (jsonObj: IJson3DObject, scene: Scene) => Object3D | undefined =
+  (jsonObj: IJson3DObject, scene: Scene): Object3D | undefined => {
+    return scene.children
+      .filter((object: Object3D) => object.name !== SKY_BOX_NAME)
+      .find((object: Object3D) => compareToThreeVector3(jsonObj.position, object.position));
   };

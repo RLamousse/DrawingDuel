@@ -2,18 +2,19 @@ import {Injectable} from "@angular/core";
 import {Observable, Subject} from "rxjs";
 import {Intersection, Mesh, Object3D, PerspectiveCamera, Raycaster, Scene, Vector2, Vector3, WebGLRenderer} from "three";
 import {ComponentNotLoadedError} from "../../../../common/errors/component.errors";
-import {NoDifferenceAtPointError} from "../../../../common/errors/services.errors";
+import {NoDifferenceAtPointError, ObjectNotFoundError} from "../../../../common/errors/services.errors";
 import {IJson3DObject} from "../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
 import {IFreeGameState} from "../../../../common/model/game/game-state";
 import {IPoint} from "../../../../common/model/point";
+import {IFreeGameInteractionResponse} from "../../../../common/model/rooms/interaction";
 import {sleep, X_FACTOR} from "../../../../common/util/util";
 import {playRandomSound, FOUND_DIFFERENCE_SOUNDS, NO_DIFFERENCE_SOUNDS, STAR_THEME_SOUND} from "../simple-game/game-sounds";
-import {compareToThreeVector3, toIVector3} from "../util/client-utils";
+import {compareToThreeVector3, getSceneObject} from "../util/client-utils";
 import {SKY_BOX_NAME} from "./FreeGameCreator/free-game-creator.service";
 import {ObjectCollisionService} from "./objectCollisionService/object-collision.service";
 import {RenderUpdateService} from "./render-update.service";
 import {changeVisibility, get3DObject} from "./renderer-utils";
-import {SceneDiffValidator} from "./scene-diff-validator.service";
+import {SceneDiffValidatorService} from "./scene-diff-validator.service";
 
 interface IFreeGameRendererState extends IFreeGameState {
   isCheatModeActive: boolean;
@@ -25,7 +26,7 @@ interface IFreeGameRendererState extends IFreeGameState {
 @Injectable({providedIn: "root"})
 export class SceneRendererService {
   public constructor(private renderUpdateService: RenderUpdateService,
-                     private sceneDiffValidator: SceneDiffValidator,
+                     private sceneDiffValidator: SceneDiffValidatorService,
                      private objectCollisionService: ObjectCollisionService) {
     this.gameState = {isCheatModeActive: false, isWaitingInThread: false, foundObjects: []};
   }
@@ -54,6 +55,7 @@ export class SceneRendererService {
   private rendererMod: WebGLRenderer;
   private differenceCountSubject: Subject<number> = new Subject();
   private gameState: IFreeGameRendererState;
+  private validationPromise: Promise<number>;
 
   public get foundDifferenceCount(): Observable<number> {
     return this.differenceCountSubject;
@@ -68,6 +70,7 @@ export class SceneRendererService {
     this.modifiedContainer = modCont;
     this.initCamera();
     this.initRenderer();
+    this.validationPromise = this.initValidationPromise();
   }
 
   private initCamera(): void {
@@ -182,9 +185,9 @@ export class SceneRendererService {
   // ╚══════════════════╝
 
   public async objDiffValidation(position: IPoint): Promise<number> {
-    const rendererElem: HTMLCanvasElement = position.x < this.rendererMod.domElement.offsetLeft ?
-      this.rendererOri.domElement :
-      this.rendererMod.domElement;
+    const rendererElem: HTMLCanvasElement = position.x < this.rendererMod.domElement.offsetLeft
+      ? this.rendererOri.domElement
+      : this.rendererMod.domElement;
 
     const POS_FACT: number = 2;
     const x: number = ((position.x - rendererElem.offsetLeft) / rendererElem.offsetWidth) * POS_FACT - 1;
@@ -200,30 +203,41 @@ export class SceneRendererService {
       playRandomSound(NO_DIFFERENCE_SOUNDS);
       throw new NoDifferenceAtPointError();
     }
-    const object: Intersection = intersectOri.length === 0 && intersectMod.length !== 0 ? intersectMod[0] : intersectOri[0];
+    const object: Object3D = get3DObject(intersectOri.length === 0 && intersectMod.length !== 0 ? intersectMod[0] : intersectOri[0]);
+    this.sceneDiffValidator.validateDiffObject(object.position);
 
-    await this.differenceValidationAtPoint(get3DObject(object));
-
-    return this.gameState.foundObjects.length;
+    return this.validationPromise;
   }
 
-  private async differenceValidationAtPoint(object: Object3D): Promise<void> {
-    return this.sceneDiffValidator.validateDiffObject(toIVector3(object.position))
-      .then(async (foundObject: IJson3DObject) => {
-        this.handleValidDifference(foundObject, object);
-        await this.updateCheatDiffData(foundObject);
-      })
-      .catch((reason: Error) => {
+  private initValidationPromise(): Promise<number> {
+    return new Promise<number>((resolve, reject) => {
+      this.sceneDiffValidator.registerDifferenceSuccessCallback(
+        async (interactionResponse: IFreeGameInteractionResponse) => {
+          resolve(await this.handleValidDifference(interactionResponse.object));
+        },
+      );
+      this.sceneDiffValidator.registerDifferenceErrorCallback((error: Error) => {
         playRandomSound(NO_DIFFERENCE_SOUNDS);
-        throw reason;
+        reject(error);
       });
+    });
   }
 
-  private handleValidDifference(jsonObj: IJson3DObject, obj: Object3D): void {
+  private async handleValidDifference(jsonObj: IJson3DObject): Promise<number> {
+    let object3D: Object3D | undefined = getSceneObject(jsonObj, this.scene);
+    if (object3D === undefined) {
+      object3D = getSceneObject(jsonObj, this.modifiedScene);
+      if (object3D === undefined) {
+        throw new ObjectNotFoundError();
+      }
+    }
     this.gameState.foundObjects.push(jsonObj);
-    this.renderUpdateService.updateDifference(obj, this.scene, this.modifiedScene);
+    this.renderUpdateService.updateDifference(object3D as Object3D, this.scene, this.modifiedScene);
     this.differenceCountSubject.next(this.gameState.foundObjects.length);
     playRandomSound(FOUND_DIFFERENCE_SOUNDS);
+    await this.updateCheatDiffData(jsonObj);
+
+    return this.gameState.foundObjects.length;
   }
 
   // ╔════════╗
