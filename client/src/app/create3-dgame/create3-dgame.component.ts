@@ -2,12 +2,13 @@ import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { MatCheckboxChange, MatDialogRef, MatSliderChange } from "@angular/material";
 import {ICreateFreeGameRequest} from "../../../../common/communication/requests/game-creator.controller.request";
-import { FREE_GAME_CREATION_ROUTE } from "../../../../common/communication/routes";
+import {FREE_GAME_CREATION_ROUTE} from "../../../../common/communication/routes";
 import {
   ModificationType, Themes
 } from "../../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
 import { AbstractForm } from "../abstract-form";
 import { FormPostService } from "../form-post.service";
+import {FreeGamePhotoService} from "../scene-creator/free-game-photo-service/free-game-photo.service";
 import { AVAILABLE_MODIF_TYPES, AVAILABLE_THEMES, SelectType } from "./selectType";
 @Component({
   selector: "app-create3-dgame",
@@ -22,6 +23,8 @@ export class Create3DGameComponent extends AbstractForm implements OnInit {
   protected themes: SelectType<Themes>[] = AVAILABLE_THEMES;
   protected sliderValue: number = 50;
 
+  private photoService: FreeGamePhotoService;
+
   public checkboxes: {
     modificationTypes: Set<ModificationType>,
     valid(): boolean,
@@ -30,12 +33,14 @@ export class Create3DGameComponent extends AbstractForm implements OnInit {
     _fb: FormBuilder,
     dialogRef: MatDialogRef<Create3DGameComponent>,
     formPost: FormPostService,
+    photoService: FreeGamePhotoService,
   ) {
     super(_fb, dialogRef, formPost);
     this.checkboxes = {
       modificationTypes: new Set<ModificationType>(),
       valid: this.checboxesValid,
     };
+    this.photoService = photoService;
   }
 
   public ngOnInit(): void {
@@ -90,6 +95,7 @@ export class Create3DGameComponent extends AbstractForm implements OnInit {
     };
     this.formPost.submitForm(FREE_GAME_CREATION_ROUTE, requestData).subscribe(
       (data) => {
+        this.photoService.takePhoto(this.formDoc.value.name);
         this.exit(data);
       },
       (error: Error) => {
