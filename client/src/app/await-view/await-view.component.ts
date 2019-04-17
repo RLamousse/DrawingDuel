@@ -42,7 +42,7 @@ export class AwaitViewComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.activatedRoute.queryParams.subscribe((params) => {
       this.gameName = params["gameName"];
-      this.gameType = params["gameType"];
+      this.gameType = parseInt(params["gameType"], 10);
     });
     this.roomService.signalReady();
     this.gameStartSub = this.roomService.subscribeToGameStart(this.handleGameStart);
