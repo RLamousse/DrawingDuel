@@ -38,12 +38,12 @@ export class SimpleGameContainerComponent implements OnDestroy {
     this.errorSubscription = this.simpleGameService.registerDifferenceErrorCallback(this.handleValidationErrorResponse);
   }
 
-  protected async onOriginalCanvasClick(clickEvent: IPoint): Promise<void> {
-    return this.onCanvasClick(clickEvent, this.originalImageComponent);
+  protected onOriginalCanvasClick(clickEvent: IPoint): void {
+    this.onCanvasClick(clickEvent, this.originalImageComponent);
   }
 
-  protected async onModifiedCanvasClick(clickEvent: IPoint): Promise<void> {
-    return this.onCanvasClick(clickEvent, this.modifiedImageComponent);
+  protected onModifiedCanvasClick(clickEvent: IPoint): void {
+    this.onCanvasClick(clickEvent, this.modifiedImageComponent);
   }
 
   private handleValidationSuccessResponse(interactionResponse: ISimpleGameInteractionResponse): void {
