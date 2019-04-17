@@ -97,7 +97,7 @@ export class SimpleGameService {
   }
 
   private async getGame(): Promise<ISimpleGame> {
-    return Axios.get<ISimpleGame>(SERVER_BASE_URL + GAME_MANAGER_SIMPLE + this._gameName)
+    return Axios.get<ISimpleGame>(SERVER_BASE_URL + GAME_MANAGER_SIMPLE + encodeURIComponent(this._gameName))
       .then((value: AxiosResponse<ISimpleGame>) => value.data)
       // tslint:disable-next-line:no-any Since Axios defines reason as `any`
       .catch(() => {
