@@ -3,3 +3,6 @@
   <span class="differences">{{diffNumber}}</span>
   {{diffNumber > 1 ? "différences" : "différence"}}
 </div>
+<div *ngIf="isMulti" class="count">Votre adversaire en a trouvé
+  <span class="differences">{{advDiffNumber}}</span>
+</div>
