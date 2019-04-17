@@ -38,7 +38,7 @@ describe("SimpleGameService", () => {
 
   it("should update the difference count", async () => {
     const spy: jasmine.Spy = spyOn(service["_differenceCountSubject"], "next");
-    service.updateCounter();
+    service.updateCounter(true);
     expect(spy).toHaveBeenCalled();
   });
 
@@ -55,7 +55,7 @@ describe("SimpleGameService", () => {
   });
 
   it("should reset the Subject", async () => {
-    const old: Subject<number> = service["_differenceCountSubject"];
+    const old: Subject<boolean> = service["_differenceCountSubject"];
     old.asObservable().subscribe(() => {
       // Dummy subscriber
     });
@@ -71,7 +71,7 @@ describe("SimpleGameService", () => {
   });
 
   it("should return a valid observable", async () => {
-    const obs: Observable<number> = service.foundDifferencesCount;
+    const obs: Observable<boolean> = service.foundDifferencesCount;
     expect(obs).toBeDefined();
   });
 });

@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import {MatDialogModule, MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
-import { Router } from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
+import {OnlineType} from "../../../../common/model/game/game";
 import { DiffCounterComponent } from "../diff-counter/diff-counter.component";
 import { EndGameNotifComponent } from "../diff-counter/end-game-notif/end-game-notif.component";
 import {SceneDiffValidatorService} from "../scene-creator/scene-diff-validator.service";
@@ -11,6 +12,7 @@ describe("TimerComponent", () => {
   let component: TimerComponent;
   let fixture: ComponentFixture<TimerComponent>;
 
+  // tslint:disable-next-line:max-func-body-length
   beforeEach(async(async () => {
     return TestBed.configureTestingModule(
       {
@@ -25,7 +27,19 @@ describe("TimerComponent", () => {
           {provide: MatDialogRef, useValue: {}},
           {provide: MAT_DIALOG_DATA, useValue: {}},
           {provide: SceneDiffValidatorService, useValue: {}},
-          SocketService],
+          SocketService,
+          {
+            provide: ActivatedRoute,
+            useValue: {
+              queryParams: {
+                subscribe: (fn: (queryParams: object) => void) => fn(
+                  {
+                    onlineType: OnlineType.SOLO,
+                  }),
+              },
+            },
+          },
+        ],
       })
       .compileComponents();
   }));

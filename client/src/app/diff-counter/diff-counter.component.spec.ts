@@ -1,9 +1,10 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import {MatDialogModule, MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
-import {Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {SceneDiffValidatorService} from "../scene-creator/scene-diff-validator.service";
 import {SocketService} from "../socket.service";
 import { DiffCounterComponent } from "./diff-counter.component";
+import {OnlineType} from "../../../../common/model/game/game";
 
 describe("DiffCounterComponent", () => {
   let component: DiffCounterComponent;
@@ -23,9 +24,21 @@ describe("DiffCounterComponent", () => {
               public navigate: jasmine.Spy = jasmine.createSpy("navigate");
             },
           },
-          SocketService],
+          SocketService,
+          {
+            provide: ActivatedRoute,
+            useValue: {
+              queryParams: {
+                subscribe: (fn: (queryParams: object) => void) => fn(
+                  {
+                    onlineType: OnlineType.SOLO,
+                  }),
+              },
+            },
+          },
+        ],
       })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
