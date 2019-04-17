@@ -1,16 +1,14 @@
-import {Component, OnInit} from "@angular/core";
-import {MatDialog} from "@angular/material";
 import {Component, OnDestroy, OnInit} from "@angular/core";
+import {MatDialog} from "@angular/material";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Subscription} from "rxjs";
 import {WebsocketMessage} from "../../../../common/communication/messages/message";
 import {GAMES_ROUTE, PLAY_3D_ROUTE, PLAY_ROUTE} from "../../../../common/communication/routes";
 import {SocketEvent} from "../../../../common/communication/socket-events";
 import {ComponentNavigationError} from "../../../../common/errors/component.errors";
-import {GameType} from "../../../../common/model/game/game";
-import {openDialog} from "../dialog-utils";
 import {GameType, OnlineType} from "../../../../common/model/game/game";
 import {SimpleReadyInfo} from "../../../../common/model/rooms/ready-info";
+import {openDialog} from "../dialog-utils";
 import {RoomService} from "../room.service";
 import {SocketService} from "../socket.service";
 import {GameDeletionNotifComponent} from "./game-deletion-notif/game-deletion-notif.component";

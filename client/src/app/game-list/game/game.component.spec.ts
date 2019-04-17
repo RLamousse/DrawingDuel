@@ -47,13 +47,6 @@ describe("GameComponent", () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  it("should open delete dialog", () => {
-    component.leftButton = GameButtonOptions.DELETE;
-    spyOn(component["dialog"], "open");
-    component["leftButtonClick"]();
-    expect(component["dialog"].open).toHaveBeenCalled();
-  });
-
   it("should open reinitialize dialog", () => {
     component.rightButton = GameButtonOptions.REINITIALIZE;
     spyOn(component["dialog"], "open").and.returnValue(

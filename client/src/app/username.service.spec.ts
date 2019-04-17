@@ -1,9 +1,8 @@
 // tslint:disable: no-floating-promises
 import {async, TestBed} from "@angular/core/testing";
 import {Router} from "@angular/router";
-import {HOME_ROUTE} from "../../../common/communication/routes";
-import {SocketEvent} from "../../../common/communication/socket-events";
 import {createWebsocketMessage, WebsocketMessage} from "../../../common/communication/messages/message";
+import {HOME_ROUTE} from "../../../common/communication/routes";
 import {SocketService} from "./socket.service";
 import {UNListService} from "./username.service";
 
