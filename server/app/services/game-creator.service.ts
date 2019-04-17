@@ -6,8 +6,7 @@ import {Message} from "../../../common/communication/messages/message";
 import {DIFF_CREATOR_BASE, SERVER_BASE_URL} from "../../../common/communication/routes";
 import {
     AbstractDataBaseError,
-    AlreadyExistentGameError,
-    NonExistentThemeError
+    AlreadyExistentGameError
 } from "../../../common/errors/database.errors";
 import {AbstractServiceError, DifferenceCountError} from "../../../common/errors/services.errors";
 import {
@@ -185,10 +184,9 @@ export class GameCreatorService {
         if (theme === Themes.Geometry) {
 
             return this.freeGameCreatorService.generateIScenes(numberOfObjects, modTypes, Themes.Geometry);
-        } else if (theme === Themes.Space) {
+        } else {
 
             return this.freeGameCreatorService.generateIScenes(numberOfObjects, modTypes, Themes.Space);
         }
-        throw new NonExistentThemeError();
     }
 }

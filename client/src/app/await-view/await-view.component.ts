@@ -1,11 +1,12 @@
 import {Component, OnInit} from "@angular/core";
-import {MatDialog, MatDialogConfig} from "@angular/material";
+import {MatDialog} from "@angular/material";
 import {ActivatedRoute, Router} from "@angular/router";
 import {WebsocketMessage} from "../../../../common/communication/messages/message";
 import {GAMES_ROUTE} from "../../../../common/communication/routes";
 import {SocketEvent} from "../../../../common/communication/socket-events";
 import {ComponentNavigationError} from "../../../../common/errors/component.errors";
 import {GameType} from "../../../../common/model/game/game";
+import {openDialog} from "../dialog-utils";
 import {SocketService} from "../socket.service";
 import {GameDeletionNotifComponent} from "./game-deletion-notif/game-deletion-notif.component";
 
@@ -47,10 +48,7 @@ export class AwaitViewComponent implements OnInit {
 
   private notifyGameDeletion(message: WebsocketMessage<[string, boolean]>): void {
     if (message.body[this.indexString] === this.gameName) {
-      const dialogConfig: MatDialogConfig = new MatDialogConfig();
-      dialogConfig.autoFocus = true;
-      dialogConfig.data = {gameName: this.gameName, gameType: this.gameType};
-      this.dialog.open(GameDeletionNotifComponent, dialogConfig);
+      openDialog(this.dialog, GameDeletionNotifComponent, {data: {gameName: this.gameName, gameType: this.gameType}});
     }
   }
 }
