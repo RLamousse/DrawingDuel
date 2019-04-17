@@ -8,6 +8,7 @@ import {CanvasTextType} from "../../util/canvas-utils";
 import {playRandomSound, FOUND_DIFFERENCE_SOUNDS, NO_DIFFERENCE_SOUNDS} from "../game-sounds";
 import {PixelData, SimpleGameCanvasComponent} from "../simple-game-canvas/simple-game-canvas.component";
 import {SimpleGameService} from "../simple-game.service";
+import {UNListService} from "../../username.service";
 
 export const IDENTIFICATION_ERROR_TIMOUT_MS: number = 1000;
 export const IDENTIFICATION_ERROR_TEXT: string = "Erreur";
@@ -51,9 +52,12 @@ export class SimpleGameContainerComponent implements OnDestroy {
       .map((point: IPoint) => inverseY(point, this.originalImageComponent.height));
     const pixels: PixelData[] = this.originalImageComponent.getPixels(differencePoints);
     this.modifiedImageComponent.drawPixels(pixels);
-    playRandomSound(FOUND_DIFFERENCE_SOUNDS);
     this.clickEnabled = true;
-    this.simpleGameService.updateCounter();
+    const isMe: boolean = interactionResponse.initiatedBy === UNListService.username;
+    this.simpleGameService.updateCounter(isMe);
+    if (isMe) {
+      playRandomSound(FOUND_DIFFERENCE_SOUNDS);
+    }
   }
 
   private handleValidationErrorResponse(errorMessage: string): void {
