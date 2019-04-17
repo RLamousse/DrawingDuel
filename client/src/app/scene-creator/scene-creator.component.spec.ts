@@ -1,4 +1,5 @@
 import {ComponentFixture, TestBed} from "@angular/core/testing";
+import {MatIconModule} from "@angular/material";
 import {MatDialogModule, MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
 import {ActivatedRoute, Router, RouterModule} from "@angular/router";
 import {of, Observable, Subject} from "rxjs";
@@ -14,7 +15,6 @@ import {TimerComponent} from "../timer/timer.component";
 import {FreeGameCreatorService} from "./FreeGameCreator/free-game-creator.service";
 import {SceneCreatorComponent} from "./scene-creator.component";
 import {SceneRendererService} from "./scene-renderer.service";
-import {MatIconModule} from "@angular/material";
 
 describe("SceneCreatorComponent", () => {
   let component: SceneCreatorComponent;
