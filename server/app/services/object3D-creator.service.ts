@@ -1,8 +1,8 @@
 import {injectable} from "inversify";
 import {
+    spaceObjects,
     IIndexObj,
     ObjectGeometry,
-    spaceObjects,
     Themes
 } from "../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
 import * as JsonScene from "../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
