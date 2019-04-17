@@ -117,7 +117,7 @@ export class DiffCounterComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    this.subscriptions.forEach((elem) => elem.unsubscribe());
+    this.subscriptions.forEach((elem: Subscription) => elem.unsubscribe());
     this.diffNumber = 0;
   }
 

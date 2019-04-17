@@ -9,14 +9,17 @@ import {ObjectCollisionService} from "./objectCollisionService/object-collision.
 import {RenderUpdateService} from "./render-update.service";
 import {SceneDiffValidatorService} from "./scene-diff-validator.service";
 import {SceneRendererService} from "./scene-renderer.service";
+
 describe("SceneRendererService", () => {
 
   class MockRenderUpdate extends RenderUpdateService {
     public messageCam: string = "";
     public messageVel: string = "";
+
     public updateCamera(): void {
       this.messageCam = "updateCamera was called";
     }
+
     public updateVelocity(): void {
       this.messageVel = "updateVelocity was called";
     }
@@ -27,22 +30,31 @@ describe("SceneRendererService", () => {
       return;
     }
   }
+
   const mockCollisionService: MockCollisionService = new MockCollisionService();
 
   let mockUpdateRender: MockRenderUpdate;
   let sceneDiffValidatorSpy: jasmine.SpyObj<SceneDiffValidatorService>;
   beforeEach(() => {
     mockUpdateRender = new MockRenderUpdate();
-    sceneDiffValidatorSpy = jasmine.createSpyObj("SceneDiffValidator", ["validateDiffObject"]);
+    sceneDiffValidatorSpy = jasmine.createSpyObj(
+      "SceneDiffValidatorService",
+      [
+        "validateDiffObject",
+        "registerDifferenceSuccessCallback",
+        "registerDifferenceErrorCallback",
+      ]
+    );
 
-    return TestBed.configureTestingModule({
-      providers: [
-        SceneRendererService,
-        {provide: RenderUpdateService, useValue: mockUpdateRender},
-        {provide: ObjectCollisionService, useValue: mockCollisionService},
-        {provide: SceneDiffValidatorService, useValue: sceneDiffValidatorSpy},
-      ],
-    });
+    return TestBed.configureTestingModule(
+      {
+        providers: [
+          SceneRendererService,
+          {provide: RenderUpdateService, useValue: mockUpdateRender},
+          {provide: ObjectCollisionService, useValue: mockCollisionService},
+          {provide: SceneDiffValidatorService, useValue: sceneDiffValidatorSpy},
+        ],
+      });
   });
 
   it("should create", () => {
