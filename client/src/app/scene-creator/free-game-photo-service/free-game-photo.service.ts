@@ -1,6 +1,10 @@
 import {Injectable} from "@angular/core";
 import {PerspectiveCamera, Scene, WebGLRenderer} from "three";
 import {sleep} from "../../../../../common/util/util";
+import Axios from "axios";
+import {GAME_MANAGER_BASE, GAME_MANAGER_FREE, SERVER_BASE_URL} from "../../../../../common/communication/routes";
+import {IJson3DObject, IScenesDB} from "../../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
+import {IScene} from "../../scene-interface";
 
 @Injectable({
   providedIn: "root",
@@ -34,5 +38,20 @@ export class FreeGamePhotoService {
     renderer.render(scene, camera);
 
     return (divElem.children[0] as HTMLCanvasElement).toDataURL();
+  }
+
+  private getFreeGame(): IJson3DObject[] {
+    let scenes: IScenesDB = {
+      differentObjects: [],
+      modifiedObjects: [],
+      originalObjects: [],
+    };
+    Axios.get(SERVER_BASE_URL + GAME_MANAGER_BASE + GAME_MANAGER_FREE + "").then((value) => {
+    scenes = value.data as IScenesDB;
+    }).catch((error) => {
+      throw error;
+    });
+
+    return scenes.originalObjects;
   }
 }
