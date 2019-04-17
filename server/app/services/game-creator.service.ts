@@ -6,8 +6,7 @@ import {Message} from "../../../common/communication/messages/message";
 import {DIFF_CREATOR_BASE, SERVER_BASE_URL} from "../../../common/communication/routes";
 import {
     AbstractDataBaseError,
-    AlreadyExistentGameError,
-    NonExistentThemeError
+    AlreadyExistentGameError
 } from "../../../common/errors/database.errors";
 import {AbstractServiceError, DifferenceCountError} from "../../../common/errors/services.errors";
 import {
