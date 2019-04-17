@@ -1,10 +1,11 @@
 import {Component, Input, OnInit} from "@angular/core";
-import {MatDialog, MatDialogConfig} from "@angular/material";
+import {MatDialog} from "@angular/material";
 import {Router} from "@angular/router";
 import {LOADING_GIF, LOADING_ROUTE, PLAY_3D_ROUTE, PLAY_ROUTE} from "../../../../../common/communication/routes";
 import {ComponentNavigationError} from "../../../../../common/errors/component.errors";
 import {GameType} from "../../../../../common/model/game/game";
 import {IRecordTime} from "../../../../../common/model/game/record-time";
+import {openDialog} from "../../dialog-utils";
 import {DeleteGameFormComponent} from "./delete-game-form/delete-game-form.component";
 import {ResetGameFormComponent} from "./reset-game-form/reset-game-form.component";
 
@@ -37,10 +38,8 @@ export class GameComponent implements OnInit {
     if (this.leftButton === "Jouer") {
       this.gameType === GameType.SIMPLE ? this.navigatePlayView() : this.navigateFreeView();
     } else if (this.leftButton === "Supprimer") {
-      const dialogConfig: MatDialogConfig = new MatDialogConfig();
-      dialogConfig.autoFocus = true;
-      dialogConfig.data = {gameName: this.gameName, gameType: this.gameType};
-      this.dialog.open(DeleteGameFormComponent, dialogConfig);
+      openDialog(this.dialog, DeleteGameFormComponent, {callback: window.location.reload.bind(window.location),
+                                                        data: {gameName: this.gameName, gameType: this.gameType}});
     }
   }
 
@@ -48,10 +47,8 @@ export class GameComponent implements OnInit {
     if (this.rightButton === "Joindre") {
       this.navigateAwait();
     } else if (this.rightButton === "Reinitialiser") {
-      const dialogConfig: MatDialogConfig = new MatDialogConfig();
-      dialogConfig.autoFocus = true;
-      dialogConfig.data = {gameName: this.gameName, gameType: this.gameType};
-      this.dialog.open(ResetGameFormComponent, dialogConfig).afterClosed().subscribe(() => window.location.reload());
+      openDialog(this.dialog, ResetGameFormComponent, {callback: window.location.reload.bind(window.location),
+                                                       data: {gameName: this.gameName, gameType: this.gameType}});
     }
   }
 
