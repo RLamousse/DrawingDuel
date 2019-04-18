@@ -10,7 +10,7 @@ import {
 import {GAMES_ROUTE} from "../../../../common/communication/routes";
 import {SocketEvent} from "../../../../common/communication/socket-events";
 import {ComponentNavigationError} from "../../../../common/errors/component.errors";
-import {GameType, OnlineType} from "../../../../common/model/game/game";
+import {GameType, MULTIPLAYER_GAME_DIFF_THRESHOLD, OnlineType, SINGLEPLAYER_GAME_DIFF_THRESHOLD} from "../../../../common/model/game/game";
 import {openDialog} from "../dialog-utils";
 import {SceneRendererService} from "../scene-creator/scene-renderer.service";
 import {SimpleGameService} from "../simple-game/simple-game.service";
@@ -58,7 +58,7 @@ export class DiffCounterComponent implements OnInit, OnDestroy {
     this.checkDiff();
     this.route.queryParams.subscribe((params) => {
       this.isMulti = params["onlineType"] === OnlineType.MULTI;
-      this.MAX_DIFF_NUM = this.isMulti ? 4 : 7;
+      this.MAX_DIFF_NUM = this.isMulti ? MULTIPLAYER_GAME_DIFF_THRESHOLD : SINGLEPLAYER_GAME_DIFF_THRESHOLD;
     });
   }
 

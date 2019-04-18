@@ -4,11 +4,11 @@ import {AlreadyFoundDifferenceError, NoDifferenceAtPointError} from "../../../..
 import {DIFFERENCE_CLUSTER_POINTS_INDEX} from "../../../../../common/model/game/simple-game";
 import {inverseY, IPoint} from "../../../../../common/model/point";
 import {ISimpleGameInteractionResponse} from "../../../../../common/model/rooms/interaction";
+import {UNListService} from "../../username.service";
 import {CanvasTextType} from "../../util/canvas-utils";
 import {playRandomSound, FOUND_DIFFERENCE_SOUNDS, NO_DIFFERENCE_SOUNDS} from "../game-sounds";
 import {PixelData, SimpleGameCanvasComponent} from "../simple-game-canvas/simple-game-canvas.component";
 import {SimpleGameService} from "../simple-game.service";
-import {UNListService} from "../../username.service";
 
 export const IDENTIFICATION_ERROR_TIMOUT_MS: number = 1000;
 export const IDENTIFICATION_ERROR_TEXT: string = "Erreur";

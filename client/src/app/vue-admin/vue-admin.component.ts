@@ -1,8 +1,8 @@
 import {Component} from "@angular/core";
 import {MatDialog} from "@angular/material";
 import {Create3DGameComponent} from "../create3-dgame/create3-dgame.component";
-import {GameButtonOptions} from "../game-list/game/game-button-enum";
 import {openDialog} from "../dialog-utils";
+import {GameButtonOptions} from "../game-list/game/game-button-enum";
 import {SimpleGameCreatorFormComponent} from "../simple-game-creator-form/simple-game-creator-form.component";
 
 @Component({

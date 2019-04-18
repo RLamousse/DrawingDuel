@@ -214,7 +214,7 @@ export class SceneRendererService {
     return this.validationPromise;
   }
 
-  private initValidationPromise(): Promise<number> {
+  private async initValidationPromise(): Promise<number> {
     return new Promise<number>((resolve, reject) => {
       this.sceneDiffValidator.registerDifferenceSuccessCallback(
         async (interactionResponse: IFreeGameInteractionResponse) => {

@@ -10,6 +10,9 @@ import {SceneDiffValidatorService} from "./scene-diff-validator.service";
 
 describe("A service to validate 3D differences", () => {
 
+  const successSubject: Subject<WebsocketMessage<IFreeGameInteractionResponse>> = new Subject();
+  const errorSubject: Subject<WebsocketMessage<string>> = new Subject();
+
   class MockSocketService {
     public onEvent(event: SocketEvent): Observable<WebsocketMessage> {
       if (event === SocketEvent.INTERACT) {
@@ -25,10 +28,7 @@ describe("A service to validate 3D differences", () => {
   }
 
   let service: SceneDiffValidatorService;
-  const successSubject: Subject<WebsocketMessage<IFreeGameInteractionResponse>> = new Subject();
-  const errorSubject: Subject<WebsocketMessage<string>> = new Subject();
   const mockSocketService: MockSocketService = new MockSocketService();
-
   let mockSocketServiceSpy: jasmine.Spy;
 
   beforeEach(() => {

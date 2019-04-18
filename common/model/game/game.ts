@@ -8,6 +8,8 @@ export interface IGame {
 }
 
 export const TIMES_ARRAY_SIZE : number = 3;
+export const SINGLEPLAYER_GAME_DIFF_THRESHOLD: number = 7;
+export const MULTIPLAYER_GAME_DIFF_THRESHOLD: number = 4;
 
 export enum OnlineType {SOLO = "solo", MULTI = "un contre un"}
 

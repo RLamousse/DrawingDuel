@@ -28,7 +28,7 @@ export const getSceneObject:
 export const getObjectFromScenes:
   (jsonObj: IJson3DObject, ...scenes: Scene[]) => Object3D =
   (jsonObj: IJson3DObject, ...scenes: Scene[]): Object3D => {
-    for (let scene of scenes) {
+    for (const scene of scenes) {
       const sceneObjectCandidate: Object3D | undefined = getSceneObject(jsonObj, scene);
       if (sceneObjectCandidate !== undefined) {
         return sceneObjectCandidate;
