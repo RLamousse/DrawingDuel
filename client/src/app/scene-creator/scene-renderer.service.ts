@@ -71,7 +71,7 @@ export class SceneRendererService {
     this.modifiedContainer = modCont;
     this.initCamera();
     this.initRenderer();
-    this.validationPromise = this.initValidationPromise();
+    this.validationPromise = this.getValidationPromise();
   }
 
   private initCamera(): void {
@@ -202,6 +202,8 @@ export class SceneRendererService {
     const intersectMod: Intersection[] = rayCast.intersectObjects(this.modifiedScene.children, true)
       .filter((intersection: Intersection) => intersection.object.name !== SKY_BOX_NAME);
 
+    this.validationPromise = this.getValidationPromise();
+
     if (intersectOri.length === 0 && intersectMod.length === 0) {
       playRandomSound(NO_DIFFERENCE_SOUNDS);
       this.sceneDiffValidator.notifyIdentificationError(new NoDifferenceAtPointError());
@@ -214,7 +216,7 @@ export class SceneRendererService {
     return this.validationPromise;
   }
 
-  private async initValidationPromise(): Promise<number> {
+  private async getValidationPromise(): Promise<number> {
     return new Promise<number>((resolve, reject) => {
       this.sceneDiffValidator.registerDifferenceSuccessCallback(
         async (interactionResponse: IFreeGameInteractionResponse) => {
