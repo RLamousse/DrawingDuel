@@ -77,6 +77,7 @@ export class SimpleGameRoom extends AbstractGameRoom<ISimpleGame, ISimpleGameSta
     private updateGameState(clickedPoint: IPoint): DifferenceCluster {
         const differenceCluster: DifferenceCluster = getClusterFromPoint(clickedPoint, this._game.diffData);
         this._gameState.foundDifferenceClusters.push(differenceCluster);
+        this._ongoing = this._gameState.foundDifferenceClusters.length < this.getDifferenceThreshold();
 
         return differenceCluster;
     }
