@@ -43,7 +43,8 @@ describe("SceneRendererService", () => {
         "validateDiffObject",
         "registerDifferenceSuccessCallback",
         "registerDifferenceErrorCallback",
-      ]
+        "notifyIdentificationError",
+      ],
     );
 
     return TestBed.configureTestingModule(
@@ -158,9 +159,8 @@ describe("SceneRendererService", () => {
   // Test objDiffValidation
   describe("Difference validation", () => {
 
-    it("should throw if no object at clicked point on original scene", async () => {
+    it("should throw if no object at clicked point on original scene", async (done) => {
       const service: SceneRendererService = TestBed.get(SceneRendererService);
-
       const original: Scene = new Scene();
       const modified: Scene = new Scene();
       const oriCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
@@ -168,15 +168,19 @@ describe("SceneRendererService", () => {
       service.init(oriCont, modCont);
       service.loadScenes(original, modified);
 
-      return service.objDiffValidation({x: 325, y: 430})
+      service.objDiffValidation({x: 325, y: 430})
         .catch((reason: Error) => {
           expect(reason.message).toEqual(NoDifferenceAtPointError.NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE);
+          expect(sceneDiffValidatorSpy.validateDiffObject).not.toHaveBeenCalled();
+          done();
         });
+
+      const callback: (error: Error) => void = sceneDiffValidatorSpy.registerDifferenceErrorCallback.calls.first().args[0];
+      callback(new NoDifferenceAtPointError());
     });
 
-    it("should throw if no object at clicked point on modified scene", async () => {
+    it("should throw if no object at clicked point on modified scene", async (done) => {
       const service: SceneRendererService = TestBed.get(SceneRendererService);
-
       const original: Scene = new Scene();
       const modified: Scene = new Scene();
       const oriCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
@@ -184,13 +188,18 @@ describe("SceneRendererService", () => {
       service.init(oriCont, modCont);
       service.loadScenes(original, modified);
 
-      return service.objDiffValidation({x: 1120, y: 430})
+      service.objDiffValidation({x: 1120, y: 430})
         .catch((reason: Error) => {
           expect(reason.message).toEqual(NoDifferenceAtPointError.NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE);
+          expect(sceneDiffValidatorSpy.validateDiffObject).not.toHaveBeenCalled();
+          done();
         });
+
+      const callback: (error: Error) => void = sceneDiffValidatorSpy.registerDifferenceErrorCallback.calls.first().args[0];
+      callback(new NoDifferenceAtPointError());
     });
 
-    it("should throw if no intersection at point", async () => {
+    it("should throw if no intersection at point", async (done) => {
       const service: SceneRendererService = TestBed.get(SceneRendererService);
       const original: Scene = new Scene();
       const modified: Scene = new Scene();
@@ -205,10 +214,15 @@ describe("SceneRendererService", () => {
       service.init(oriCont, modCont);
       service.loadScenes(original, modified);
 
-      return service.objDiffValidation({x: 325, y: 430})
+      service.objDiffValidation({x: 325, y: 430})
         .catch((reason: Error) => {
           expect(reason.message).toEqual(NoDifferenceAtPointError.NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE);
+          expect(sceneDiffValidatorSpy.validateDiffObject).not.toHaveBeenCalled();
+          done();
         });
+
+      const callback: (error: Error) => void = sceneDiffValidatorSpy.registerDifferenceErrorCallback.calls.first().args[0];
+      callback(new NoDifferenceAtPointError());
     });
   });
 });
