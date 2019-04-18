@@ -31,7 +31,7 @@ export class FreeGamePhotoService {
   private readonly nearClippingPane: number = 1;
   private readonly farClippingPane: number = 1000;
   private readonly backGroundColor: number = 0x001A33;
-  private readonly renderSize: number = 1000;
+  private readonly renderSize: number = 500;
   private readonly cameraZ: number = 200;
   private readonly WAIT_TIME: number = 3000;
   private readonly THUMBNAIL_QUALITY: number = 0.5;

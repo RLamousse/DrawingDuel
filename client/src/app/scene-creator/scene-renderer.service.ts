@@ -49,6 +49,7 @@ export class SceneRendererService {
   private readonly BLINK_INTERVAL_MS: number = 250;
   private readonly INVISIBLE_INTERVAL_MS: number = this.BLINK_INTERVAL_MS / X_FACTOR;
   private readonly WATCH_THREAD_FINISH_INTERVAL: number = 30;
+  private readonly FPS: number = 30;
 
   private time: number;
   private prevTime: number;
@@ -99,7 +100,10 @@ export class SceneRendererService {
   }
 
   private createRenderer(container: HTMLDivElement): WebGLRenderer {
-    const renderer: WebGLRenderer = new WebGLRenderer({preserveDrawingBuffer: true});
+    const renderer: WebGLRenderer = new WebGLRenderer({
+      precision: "lowp",
+      premultipliedAlpha: false,
+    });
     renderer.setClearColor(this.backGroundColor);
     renderer.setPixelRatio(devicePixelRatio);
     renderer.setSize(container.clientWidth, container.clientHeight);
@@ -107,7 +111,7 @@ export class SceneRendererService {
     return renderer;
   }
 
-  public loadScenes(original: Scene, modified: Scene, gameName: string): void {
+  public async loadScenes(original: Scene, modified: Scene, gameName: string): Promise<void> {
     if (this.originalContainer === undefined || this.modifiedContainer === undefined) {
       throw (new ComponentNotLoadedError());
     }
@@ -288,6 +292,8 @@ export class SceneRendererService {
     );
     this.renderUpdateService.updateCamera(this.camera, delta, this.velocity);
     this.prevTime = this.time;
-    requestAnimationFrame(() => this.renderLoop());
+    sleep(1 / this.FPS).then(() => {
+      this.renderLoop();
+    });
   }
 }
