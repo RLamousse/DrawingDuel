@@ -17,10 +17,10 @@ export class VueAdminComponent {
   protected readonly leftButton: string = "Supprimer";
 
   protected createSimpleGame(): void {
-    openDialog(this.dialog, SimpleGameCreatorFormComponent, {});
+    openDialog(this.dialog, SimpleGameCreatorFormComponent, {callback: window.location.reload.bind(window.location)});
   }
 
   protected create3DGame(): void {
-    openDialog(this.dialog, Create3DGameComponent, {});
+    openDialog(this.dialog, Create3DGameComponent, {callback: window.location.reload.bind(window.location)});
   }
 }
