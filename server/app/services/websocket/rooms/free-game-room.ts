@@ -60,6 +60,7 @@ export class FreeGameRoom extends AbstractGameRoom<IFreeGame, IFreeGameState> {
 
     private updateGameState(object: IJson3DObject): IJson3DObject {
         this._gameState.foundObjects.push(object);
+        this._ongoing = this._gameState.foundObjects.length < this.getDifferenceThreshold();
 
         return object;
     }

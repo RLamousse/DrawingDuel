@@ -1,5 +1,5 @@
 import {NoVacancyGameRoomError} from "../../../../../common/errors/services.errors";
-import {IGame} from "../../../../../common/model/game/game";
+import {IGame, MULTIPLAYER_GAME_DIFF_THRESHOLD, SINGLEPLAYER_GAME_DIFF_THRESHOLD} from "../../../../../common/model/game/game";
 import {IGameState} from "../../../../../common/model/game/game-state";
 import {IInteractionData, IInteractionResponse} from "../../../../../common/model/rooms/interaction";
 import {ReadyInfo} from "../../../../../common/model/rooms/ready-info";
@@ -48,6 +48,10 @@ export abstract class AbstractGameRoom<T extends IGame, U extends IGameState> im
             this._ongoing = true;
             this._onReady(this.roomReadyEmitInformation);
         }
+    }
+
+    protected getDifferenceThreshold(): number {
+        return this._playerCapacity !== 1 ? SINGLEPLAYER_GAME_DIFF_THRESHOLD : MULTIPLAYER_GAME_DIFF_THRESHOLD;
     }
 
     public setOnReadyCallBack(callback: (roomInfo: ReadyInfo) => void): void {
