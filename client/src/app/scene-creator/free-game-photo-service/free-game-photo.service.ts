@@ -60,14 +60,14 @@ export class FreeGamePhotoService {
     });
   }
 
-  private async putThumbnail(data: string, gameName: string): Promise<AxiosResponse<IFreeGame>> {
-   return new Promise<AxiosResponse<IFreeGame>>((resolve, reject) => {
-      Axios.put<IFreeGame>(SERVER_BASE_URL + GAME_MANAGER_FREE + encodeURIComponent(gameName), {thumbnail: data})
-        .then((response) => {
-          resolve(response);
-        }).catch((error: Error) => {
-          reject(error);
-        });
-    });
+  private async putThumbnail(data: string, gameName: string): Promise<IFreeGame> {
+    return Axios.put<IFreeGame>(SERVER_BASE_URL + GAME_MANAGER_FREE + encodeURIComponent(gameName), {thumbnail: data})
+      .then((response: AxiosResponse<IFreeGame>) => {
+        return response.data;
+      })
+      // tslint:disable-next-line:no-any Since Axios defines reason as `any`
+      .catch((reason: any) => {
+        throw reason;
+      });
   }
 }

@@ -21,6 +21,7 @@ export class Create3DGameComponent extends AbstractForm implements OnInit {
   protected modTypes: SelectType<ModificationType>[] = AVAILABLE_MODIF_TYPES;
   protected themes: SelectType<Themes>[] = AVAILABLE_THEMES;
   protected sliderValue: number = 50;
+  protected submissionPending: boolean = false;
 
   public checkboxes: {
     modificationTypes: Set<ModificationType>,
@@ -82,6 +83,7 @@ export class Create3DGameComponent extends AbstractForm implements OnInit {
 
   public onSubmit(): void {
     this.disableButton = true;
+    this.submissionPending = true;
     const modificationTypes: ModificationType[] = Array.from(this.checkboxes.modificationTypes);
     const gameName: string = this.formDoc.value.name;
     const requestData: ICreateFreeGameRequest = {
@@ -91,15 +93,19 @@ export class Create3DGameComponent extends AbstractForm implements OnInit {
       modificationTypes : modificationTypes,
     };
     this.formPost.submitForm(FREE_GAME_CREATION_ROUTE, requestData).subscribe(
-      (data) => {
-        this.photoService.takePhoto(gameName).catch((reason: Error) => { throw reason; });
-        this.exit(data);
+      async (data) => {
+        await this.photoService.takePhoto(gameName)
+          .then(() => {
+            this.exit(data);
+          })
+          .catch((reason: Error) => {
+            throw reason;
+          });
       },
       (error: Error) => {
         console.error(`${error.name} : ${error.message}`);
         alert(error.message);
         this.disableButton = false;
       });
-    this.exit();
   }
 }
