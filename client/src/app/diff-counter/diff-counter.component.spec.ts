@@ -18,7 +18,7 @@ describe("DiffCounterComponent", () => {
     }
   }
 
-  let mockedSceneDiffValidatorService: MockedSceneDiffValidatorService = new MockedSceneDiffValidatorService();
+  const mockedSceneDiffValidatorService: MockedSceneDiffValidatorService = new MockedSceneDiffValidatorService();
 
   beforeEach(async(async () => {
     return TestBed.configureTestingModule(

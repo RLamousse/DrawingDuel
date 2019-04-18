@@ -8,13 +8,13 @@ import {IPoint} from "../../../../common/model/point";
 import {IFreeGameInteractionResponse} from "../../../../common/model/rooms/interaction";
 import {sleep, X_FACTOR} from "../../../../common/util/util";
 import {playRandomSound, FOUND_DIFFERENCE_SOUNDS, NO_DIFFERENCE_SOUNDS, STAR_THEME_SOUND} from "../simple-game/game-sounds";
+import {UNListService} from "../username.service";
 import {compareToThreeVector3, getObjectFromScenes} from "../util/client-utils";
 import {SKY_BOX_NAME} from "./FreeGameCreator/free-game-creator.service";
 import {ObjectCollisionService} from "./objectCollisionService/object-collision.service";
 import {RenderUpdateService} from "./render-update.service";
 import {changeVisibility, get3DObject} from "./renderer-utils";
 import {SceneDiffValidatorService} from "./scene-diff-validator.service";
-import {UNListService} from "../username.service";
 
 interface IFreeGameRendererState extends IFreeGameState {
   isCheatModeActive: boolean;

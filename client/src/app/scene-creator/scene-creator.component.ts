@@ -13,7 +13,7 @@ import {GameService} from "../game.service";
 import {KickDialogComponent} from "../kick-dialog/kick-dialog.component";
 import {IScene} from "../scene-interface";
 import {SocketService} from "../socket.service";
-import {CanvasTextType, drawTextOnCanvas, getCanvasRenderingContext} from "../util/canvas-utils";
+import {drawTextOnCanvas, getCanvasRenderingContext, CanvasTextType} from "../util/canvas-utils";
 import {FreeGameCreatorService} from "./FreeGameCreator/free-game-creator.service";
 import {SceneRendererService} from "./scene-renderer.service";
 
