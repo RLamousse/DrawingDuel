@@ -1,4 +1,5 @@
 import {Object3D, Scene, Vector3} from "three";
+import {ObjectNotFoundError} from "../../../../common/errors/services.errors";
 import {IJson3DObject} from "../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
 import {IVector3} from "../../../../common/model/point";
 import {deepCompare} from "../../../../common/util/util";
@@ -22,4 +23,16 @@ export const getSceneObject:
     return scene.children
       .filter((object: Object3D) => object.name !== SKY_BOX_NAME)
       .find((object: Object3D) => compareToThreeVector3(jsonObj.position, object.position));
+  };
+
+export const getObjectFromScenes:
+  (jsonObj: IJson3DObject, ...scenes: Scene[]) => Object3D =
+  (jsonObj: IJson3DObject, ...scenes: Scene[]): Object3D => {
+    for (let scene of scenes) {
+      const sceneObjectCandidate: Object3D | undefined = getSceneObject(jsonObj, scene);
+      if (sceneObjectCandidate !== undefined) {
+        return sceneObjectCandidate;
+      }
+    }
+    throw new ObjectNotFoundError();
   };

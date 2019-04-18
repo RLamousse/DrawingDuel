@@ -2,14 +2,15 @@ import {Injectable} from "@angular/core";
 import {Observable, Subject} from "rxjs";
 import {Intersection, Mesh, Object3D, PerspectiveCamera, Raycaster, Scene, Vector2, Vector3, WebGLRenderer} from "three";
 import {ComponentNotLoadedError} from "../../../../common/errors/component.errors";
-import {NoDifferenceAtPointError, ObjectNotFoundError} from "../../../../common/errors/services.errors";
+import {NoDifferenceAtPointError} from "../../../../common/errors/services.errors";
 import {IJson3DObject} from "../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
 import {IFreeGameState} from "../../../../common/model/game/game-state";
 import {IPoint} from "../../../../common/model/point";
 import {IFreeGameInteractionResponse} from "../../../../common/model/rooms/interaction";
 import {sleep, X_FACTOR} from "../../../../common/util/util";
 import {playRandomSound, FOUND_DIFFERENCE_SOUNDS, NO_DIFFERENCE_SOUNDS, STAR_THEME_SOUND} from "../simple-game/game-sounds";
-import {compareToThreeVector3, getSceneObject} from "../util/client-utils";
+import {UNListService} from "../username.service";
+import {compareToThreeVector3, getObjectFromScenes} from "../util/client-utils";
 import {SKY_BOX_NAME} from "./FreeGameCreator/free-game-creator.service";
 import {ObjectCollisionService} from "./objectCollisionService/object-collision.service";
 import {RenderUpdateService} from "./render-update.service";
@@ -53,11 +54,11 @@ export class SceneRendererService {
   private camera: PerspectiveCamera;
   private rendererOri: WebGLRenderer;
   private rendererMod: WebGLRenderer;
-  private differenceCountSubject: Subject<number> = new Subject();
+  private differenceCountSubject: Subject<boolean> = new Subject();
   private gameState: IFreeGameRendererState;
   private validationPromise: Promise<number>;
 
-  public get foundDifferenceCount(): Observable<number> {
+  public get foundDifferenceCount(): Observable<boolean> {
     return this.differenceCountSubject;
   }
 
@@ -213,7 +214,7 @@ export class SceneRendererService {
     return new Promise<number>((resolve, reject) => {
       this.sceneDiffValidator.registerDifferenceSuccessCallback(
         async (interactionResponse: IFreeGameInteractionResponse) => {
-          resolve(await this.handleValidDifference(interactionResponse.object));
+          resolve(await this.handleValidDifference(interactionResponse));
         },
       );
       this.sceneDiffValidator.registerDifferenceErrorCallback((error: Error) => {
@@ -223,19 +224,16 @@ export class SceneRendererService {
     });
   }
 
-  private async handleValidDifference(jsonObj: IJson3DObject): Promise<number> {
-    let object3D: Object3D | undefined = getSceneObject(jsonObj, this.scene);
-    if (object3D === undefined) {
-      object3D = getSceneObject(jsonObj, this.modifiedScene);
-      if (object3D === undefined) {
-        throw new ObjectNotFoundError();
-      }
-    }
-    this.gameState.foundObjects.push(jsonObj);
-    this.renderUpdateService.updateDifference(object3D as Object3D, this.scene, this.modifiedScene);
-    this.differenceCountSubject.next(this.gameState.foundObjects.length);
+  private async handleValidDifference(interactionResponse: IFreeGameInteractionResponse): Promise<number> {
+    const diffObject: IJson3DObject = interactionResponse.object;
+    this.gameState.foundObjects.push(diffObject);
+
+    const sceneObjectToUpdate: Object3D = getObjectFromScenes(diffObject, this.scene, this.modifiedScene);
+    this.renderUpdateService.updateDifference(sceneObjectToUpdate, this.scene, this.modifiedScene);
+
+    this.differenceCountSubject.next(interactionResponse.initiatedBy === UNListService.username);
+    await this.updateCheatDiffData(diffObject);
     playRandomSound(FOUND_DIFFERENCE_SOUNDS);
-    await this.updateCheatDiffData(jsonObj);
 
     return this.gameState.foundObjects.length;
   }

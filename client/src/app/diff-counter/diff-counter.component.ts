@@ -69,8 +69,7 @@ export class DiffCounterComponent implements OnInit, OnDestroy {
     this.openCongratDialog();
   }
 
-  // TODO REMOVE THE | NUMBER PARAMETER
-  private countDiff(isMe: boolean | number): void {
+  private countDiff(isMe: boolean): void {
     if (isMe) {
       this.diffNumber++;
     } else {
