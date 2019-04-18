@@ -41,5 +41,6 @@
 .back-button {
   position: absolute;
   padding-left: 5px;
+  margin-left: 5px;
 }
 
