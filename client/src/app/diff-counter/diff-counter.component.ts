@@ -66,7 +66,7 @@ export class DiffCounterComponent implements OnInit, OnDestroy {
     this.stopTime.next();
     this.simpleGameService.resetDifferenceCount();
     this.postTime();
-    this.openCongratDialog();
+    this.openCongratulationDialog();
   }
 
   private countDiff(isMe: boolean): void {
@@ -91,16 +91,23 @@ export class DiffCounterComponent implements OnInit, OnDestroy {
     this.subscriptions.push(sub);
   }
 
-  private openCongratDialog(): void {
-    const dialogConfig: MatDialogConfig = new MatDialogConfig();
+  private openCongratulationDialog(): void {
+    const dialogConfig: MatDialogConfig<EndGameInformation> = new MatDialogConfig();
     dialogConfig.autoFocus = true;
     dialogConfig.data = {isWinner: this.diffNumber > this.advDiffNumber};
-    openDialog(this.dialog, EndGameNotifComponent, {callback: () => {
-      this.router.navigate([GAMES_ROUTE])
-        .catch(() => {
-          throw new ComponentNavigationError();
-        });
-    }});
+    openDialog(
+      this.dialog,
+      EndGameNotifComponent,
+      {
+        callback: () => {
+          this.router.navigate([GAMES_ROUTE])
+            .catch(() => {
+              throw new ComponentNavigationError();
+            });
+        },
+        data: {isWinner: this.diffNumber > this.advDiffNumber} as EndGameInformation,
+      },
+    );
   }
 
   private postTime(): void {
