@@ -68,7 +68,7 @@ describe("FreeGamePhotoService", () => {
   });
 
   // Test getFreeGameName
-  it("should throw an error when Axios.get catch an error on call of getFreeGameScene", () => {
+  it("should throw an error when Axios.get catch an error on call of getFreeGameScene", async() => {
     const service: FreeGamePhotoService = TestBed.get(FreeGamePhotoService);
     const axiosMock: MockAdapter = new AxiosAdapter(Axios);
     const CONTROLLER_BASE_URL: string = SERVER_BASE_URL + GAME_MANAGER_FREE;

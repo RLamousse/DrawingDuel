@@ -10,7 +10,15 @@ import "hammerjs";
 import { Observable } from "rxjs";
 import { ModificationType } from "../../.././../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
 import { FormPostService } from "../form-post.service";
+import { FreeGamePhotoService } from "../scene-creator/free-game-photo-service/free-game-photo.service";
 import { Create3DGameComponent } from "./create3-dgame.component";
+
+class MockPhotoService {
+  public takePhoto(): boolean {
+    return true;
+  }
+}
+const mockPhotoService: MockPhotoService = new MockPhotoService();
 
 // tslint:disable-next-line:typedef
 const fakeFormPost = {
@@ -50,6 +58,7 @@ describe("Create3DGameComponent", () => {
         MatSelectModule,
       ],
       providers: [
+        { provide: FreeGamePhotoService, useValue: mockPhotoService },
         { provide: FormPostService, useValue: fakeFormPost },
         {
           provide: MatDialogRef, useValue: {

@@ -92,7 +92,7 @@ export class Create3DGameComponent extends AbstractForm implements OnInit {
     };
     this.formPost.submitForm(FREE_GAME_CREATION_ROUTE, requestData).subscribe(
       (data) => {
-        this.photoService.takePhoto(gameName);
+        this.photoService.takePhoto(gameName).catch((reason: Error) => { throw reason; });
         this.exit(data);
       },
       (error: Error) => {
