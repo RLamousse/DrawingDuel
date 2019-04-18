@@ -16,7 +16,7 @@ export class FreeGamePhotoService {
 
   public constructor(private creatorService: FreeGameCreatorService) {
     this.takePhoto = this.takePhoto.bind(this);
-    FreeGamePhotoService.putThumbnail = FreeGamePhotoService.putThumbnail.bind(this);
+    this.putThumbnail = this.putThumbnail.bind(this);
     this.divElem = (document.createElement("div")) as HTMLDivElement;
     this.renderer = new WebGLRenderer({preserveDrawingBuffer: true});
     this.camera = new PerspectiveCamera(
@@ -36,13 +36,6 @@ export class FreeGamePhotoService {
   private readonly WAIT_TIME: number = 1000;
   private readonly THUMBNAIL_QUALITY: number = 0.5;
 
-  private static putThumbnail(data: string, gameName: string): void {
-    Axios.put<IFreeGame>(SERVER_BASE_URL + GAME_MANAGER_FREE + encodeURIComponent(gameName), {thumbnail: data})
-      .catch((err: Error) => {
-        throw err;
-    });
-  }
-
   public async takePhoto(gameName: string): Promise<void> {
     this.camera.position.set(0, 0, this.cameraZ);
     this.renderer.setClearColor(this.backGroundColor);
@@ -55,18 +48,21 @@ export class FreeGamePhotoService {
     this.renderer.render(scene, this.camera);
 
     const thumbnailData: string = (this.divElem.children[0] as HTMLCanvasElement).toDataURL("image/jpeg", this.THUMBNAIL_QUALITY);
-    FreeGamePhotoService.putThumbnail(thumbnailData, gameName);
+    this.putThumbnail(thumbnailData, gameName);
   }
 
   private async getFreeGameScene(name: string): Promise<Scene> {
-    let scenes: IScene = {
-      scene: new Scene(),
-      modifiedScene: new Scene(),
-    };
     const sceneDB: IFreeGame =
       (await Axios.get<IFreeGame>(SERVER_BASE_URL + GAME_MANAGER_FREE + encodeURIComponent(name))).data;
-    scenes = this.creatorService.createScenes(sceneDB.scenes);
+    const scenes: IScene = this.creatorService.createScenes(sceneDB.scenes);
 
     return scenes.scene;
+  }
+
+  private putThumbnail(data: string, gameName: string): void {
+    Axios.put<IFreeGame>(SERVER_BASE_URL + GAME_MANAGER_FREE + encodeURIComponent(gameName), {thumbnail: data})
+      .catch((err: Error) => {
+        throw err;
+      });
   }
 }
