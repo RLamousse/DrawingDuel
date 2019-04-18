@@ -1,7 +1,13 @@
 <div class="adminOptions" unloadevent >
   <div class="topInfo">
-    <div class = "Admin">
-      Administrateur
+    <div>
+      <button mat-raised-button color="accent" class="button back-button" routerLink="/{{HOME_BUTTON_ROUTE}}">
+        <mat-icon>home</mat-icon>
+        Acceuil
+      </button>
+      <div class = "Admin">
+        Administrateur
+      </div>
     </div>
     <div>
       <button mat-raised-button class="gameCreationButton" (click) = "createSimpleGame()">Creation de jeu simple</button>

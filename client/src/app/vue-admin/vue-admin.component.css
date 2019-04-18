@@ -38,5 +38,8 @@
     width: 100%;
 }
 
-
+.back-button {
+  position: absolute;
+  padding-left: 5px;
+}
 
