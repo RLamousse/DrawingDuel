@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material";
 
 import { KickDialogComponent } from './kick-dialog.component';
 
@@ -7,8 +8,13 @@ describe('KickDialogComponent', () => {
   let fixture: ComponentFixture<KickDialogComponent>;
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ KickDialogComponent ]
+    TestBed.configureTestingModule(
+      {
+        declarations: [KickDialogComponent],
+        providers: [
+          {provide: MatDialogRef, useValue: {}},
+          {provide: MAT_DIALOG_DATA, useValue: {}},
+        ],
     })
     .compileComponents();
   }));
