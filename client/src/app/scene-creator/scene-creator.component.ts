@@ -1,6 +1,7 @@
 import {Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild} from "@angular/core";
 import {MatDialog} from "@angular/material";
 import {ActivatedRoute, Router} from "@angular/router";
+import {Subscription} from "rxjs";
 import {GAMES_ROUTE} from "../../../../common/communication/routes";
 import {SocketEvent} from "../../../../common/communication/socket-events";
 import {ComponentNavigationError, FreeViewGamesRenderingError} from "../../../../common/errors/component.errors";
@@ -37,6 +38,7 @@ export class SceneCreatorComponent implements OnInit, OnDestroy {
   protected gameName: string;
   protected cursorEnabled: boolean = true;
   private onlineType: OnlineType;
+  private onKickSubscription: Subscription;
 
   public constructor(private renderService: SceneRendererService,
                      private route: ActivatedRoute,
@@ -62,6 +64,7 @@ export class SceneCreatorComponent implements OnInit, OnDestroy {
 
   public async ngOnDestroy(): Promise<void> {
     await this.renderService.deactivateCheatMode();
+    this.onKickSubscription.unsubscribe();
   }
 
   public ngOnInit(): void {
@@ -80,7 +83,7 @@ export class SceneCreatorComponent implements OnInit, OnDestroy {
         throw new FreeViewGamesRenderingError();
     });
 
-    this.socketService.onEvent(SocketEvent.KICK)
+    this.onKickSubscription = this.socketService.onEvent(SocketEvent.KICK)
       .subscribe(async () => this.onKick());
   }
 
