@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from "@angular/core";
-import {MatDialog, MatDialogConfig} from "@angular/material";
+import {MatDialog} from "@angular/material";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Subscription} from "rxjs";
 import {
@@ -92,9 +92,6 @@ export class DiffCounterComponent implements OnInit, OnDestroy {
   }
 
   private openCongratulationDialog(): void {
-    const dialogConfig: MatDialogConfig<EndGameInformation> = new MatDialogConfig();
-    dialogConfig.autoFocus = true;
-    dialogConfig.data = {isWinner: this.diffNumber > this.advDiffNumber};
     openDialog(
       this.dialog,
       EndGameNotifComponent,
