@@ -1,5 +1,5 @@
 import {Injectable, OnDestroy} from "@angular/core";
-import {Subscription} from "rxjs";
+import {Observable, Subject, Subscription} from "rxjs";
 import {
   createWebsocketMessage,
   RoomInteractionErrorMessage,
@@ -14,19 +14,24 @@ import {
   IFreeGameInteractionResponse,
 } from "../../../../common/model/rooms/interaction";
 import {SocketService} from "../socket.service";
+import {UNListService} from "../username.service";
 
 @Injectable({providedIn: "root"})
 export class SceneDiffValidatorService implements OnDestroy {
 
   private successSubscription: Subscription;
   private errorSubscription: Subscription;
+  private differenceCountSubject: Subject<boolean> = new Subject();
 
   private successCallback: (interactionResponse: IFreeGameInteractionResponse) => void;
   private errorCallback: (error: Error) => void;
 
   public constructor(private socket: SocketService) {
     this.successSubscription = this.socket.onEvent<IFreeGameInteractionResponse>(SocketEvent.INTERACT)
-      .subscribe(async (message: WebsocketMessage<IFreeGameInteractionResponse>) => this.successCallback(message.body));
+      .subscribe(async (message: WebsocketMessage<IFreeGameInteractionResponse>) => {
+        this.differenceCountSubject.next(message.body.initiatedBy === UNListService.username);
+        this.successCallback(message.body);
+      });
 
     this.errorSubscription = this.socket.onEvent<string>(SocketEvent.INTERACT_ERROR)
       .subscribe((message: WebsocketMessage<string>) => {
@@ -38,6 +43,12 @@ export class SceneDiffValidatorService implements OnDestroy {
 
         this.errorCallback(new AbstractServiceError(errorMessage));
       });
+
+    this.successCallback = () => {/*We need those to be non-undefined*/
+    };
+    this.errorCallback = () => {/*We need those to be non-undefined*/
+    };
+
   }
 
   public validateDiffObject(objectPosition: IVector3): void {
@@ -73,5 +84,9 @@ export class SceneDiffValidatorService implements OnDestroy {
   public ngOnDestroy(): void {
     this.successSubscription.unsubscribe();
     this.errorSubscription.unsubscribe();
+  }
+
+  public get foundDifferenceCount(): Observable<boolean> {
+    return this.differenceCountSubject;
   }
 }

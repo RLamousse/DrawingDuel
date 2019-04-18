@@ -1,5 +1,4 @@
 import {Injectable} from "@angular/core";
-import {Observable, Subject} from "rxjs";
 import {Intersection, Mesh, Object3D, PerspectiveCamera, Raycaster, Scene, Vector2, Vector3, WebGLRenderer} from "three";
 import {ComponentNotLoadedError} from "../../../../common/errors/component.errors";
 import {NoDifferenceAtPointError} from "../../../../common/errors/services.errors";
@@ -9,13 +8,13 @@ import {IPoint} from "../../../../common/model/point";
 import {IFreeGameInteractionResponse} from "../../../../common/model/rooms/interaction";
 import {sleep, X_FACTOR} from "../../../../common/util/util";
 import {playRandomSound, FOUND_DIFFERENCE_SOUNDS, NO_DIFFERENCE_SOUNDS, STAR_THEME_SOUND} from "../simple-game/game-sounds";
-import {UNListService} from "../username.service";
 import {compareToThreeVector3, getObjectFromScenes} from "../util/client-utils";
 import {SKY_BOX_NAME} from "./FreeGameCreator/free-game-creator.service";
 import {ObjectCollisionService} from "./objectCollisionService/object-collision.service";
 import {RenderUpdateService} from "./render-update.service";
 import {changeVisibility, get3DObject} from "./renderer-utils";
 import {SceneDiffValidatorService} from "./scene-diff-validator.service";
+import {UNListService} from "../username.service";
 
 interface IFreeGameRendererState extends IFreeGameState {
   isCheatModeActive: boolean;
@@ -54,13 +53,8 @@ export class SceneRendererService {
   private camera: PerspectiveCamera;
   private rendererOri: WebGLRenderer;
   private rendererMod: WebGLRenderer;
-  private differenceCountSubject: Subject<boolean> = new Subject();
   private gameState: IFreeGameRendererState;
   private validationPromise: Promise<number>;
-
-  public get foundDifferenceCount(): Observable<boolean> {
-    return this.differenceCountSubject;
-  }
 
   // ╔═════════╗
   // ║ 3D INIT ║
@@ -237,9 +231,10 @@ export class SceneRendererService {
     const sceneObjectToUpdate: Object3D = getObjectFromScenes(diffObject, this.scene, this.modifiedScene);
     this.renderUpdateService.updateDifference(sceneObjectToUpdate, this.scene, this.modifiedScene);
 
-    this.differenceCountSubject.next(interactionResponse.initiatedBy === UNListService.username);
     await this.updateCheatDiffData(diffObject);
-    playRandomSound(FOUND_DIFFERENCE_SOUNDS);
+    if (interactionResponse.initiatedBy === UNListService.username) {
+      playRandomSound(FOUND_DIFFERENCE_SOUNDS);
+    }
 
     return this.gameState.foundObjects.length;
   }
