@@ -1,10 +1,12 @@
-<ng-container
-  *ngIf="data.isWinner; then win; else TakeTheL">
+<ng-container *ngIf="data.isWinner; then win; else TakeTheL">
+  <h1>Oups!</h1>
 </ng-container>
 <ng-template #win>
-  <div>Bravo, vous avez gagné</div>
+  <h1>Bravo! 🎉</h1>
+  <div>Vous avez gagné!</div>
 </ng-template>
 <ng-template #TakeTheL>
-  <div>Vous avez perdu, réessayez pour obtenir la sweet victory royal</div>
+  <h1>Oh non! 😢</h1>
+  <div>Vous avez perdu, réessayez pour obtenir la sweet victory royale.</div>
 </ng-template>
 <button mat-button (click)="exit()">Ok</button>

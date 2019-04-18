@@ -1,14 +1,19 @@
 import {Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild} from "@angular/core";
-import {ActivatedRoute} from "@angular/router";
+import {MatDialog} from "@angular/material";
+import {ActivatedRoute, Router} from "@angular/router";
 import {GAMES_ROUTE} from "../../../../common/communication/routes";
-import {FreeViewGamesRenderingError} from "../../../../common/errors/component.errors";
+import {SocketEvent} from "../../../../common/communication/socket-events";
+import {ComponentNavigationError, FreeViewGamesRenderingError} from "../../../../common/errors/component.errors";
 import {IFreeGame} from "../../../../common/model/game/free-game";
 import {GameType} from "../../../../common/model/game/game";
 import {IPoint} from "../../../../common/model/point";
 import {X_FACTOR, Y_FACTOR} from "../../../../common/util/util";
+import {openDialog} from "../dialog-utils";
 import {GameService} from "../game.service";
+import {KickDialogComponent} from "../kick-dialog/kick-dialog.component";
 import {IScene} from "../scene-interface";
-import {drawTextOnCanvas, getCanvasRenderingContext, CanvasTextType} from "../util/canvas-utils";
+import {SocketService} from "../socket.service";
+import {CanvasTextType, drawTextOnCanvas, getCanvasRenderingContext} from "../util/canvas-utils";
 import {FreeGameCreatorService} from "./FreeGameCreator/free-game-creator.service";
 import {SceneRendererService} from "./scene-renderer.service";
 
@@ -36,7 +41,10 @@ export class SceneCreatorComponent implements OnInit, OnDestroy {
   public constructor(private renderService: SceneRendererService,
                      private route: ActivatedRoute,
                      private freeGameCreator: FreeGameCreatorService,
-                     private gameService: GameService) {
+                     private gameService: GameService,
+                     private socketService: SocketService,
+                     private router: Router,
+                     private dialog: MatDialog) {
     this.clickEnabled = true;
   }
 
@@ -70,6 +78,9 @@ export class SceneCreatorComponent implements OnInit, OnDestroy {
       .catch(() => {
         throw new FreeViewGamesRenderingError();
     });
+
+    this.socketService.onEvent(SocketEvent.KICK)
+      .subscribe(async () => this.onKick());
   }
 
   private async verifyGame(): Promise<IScene> {
@@ -136,5 +147,19 @@ export class SceneCreatorComponent implements OnInit, OnDestroy {
     drawTextOnCanvas(IDENTIFICATION_ERROR_TEXT, point, canvasContext, CanvasTextType.ERROR);
 
     return canvasContext;
+  }
+
+  protected onKick(): void {
+    openDialog(
+      this.dialog,
+      KickDialogComponent,
+      {
+        callback: () => {
+          this.router.navigate([GAMES_ROUTE])
+            .catch(() => {
+              throw new ComponentNavigationError();
+            });
+        },
+      });
   }
 }
