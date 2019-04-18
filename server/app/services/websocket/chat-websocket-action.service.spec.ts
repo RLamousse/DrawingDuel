@@ -6,10 +6,10 @@ import {
     WebsocketMessage
 } from "../../../../common/communication/messages/message";
 import { SocketEvent } from "../../../../common/communication/socket-events";
+import {RoomNotDefinedError} from "../../../../common/errors/services.errors";
 import {OnlineType} from "../../../../common/model/game/game";
 import { ChatWebsocketActionService } from "./chat-websocket-action.service";
 import {RadioTowerService} from "./radio-tower.service";
-import {RoomNotDefinedError} from "../../../../common/errors/services.errors";
 
 class FakeServer {
 
@@ -69,7 +69,7 @@ describe("ChatWebsocketActionService", () => {
         // Private member access
         // tslint:disable-next-line: no-any
         (service as any).formatTime = () => {
-            return "12:51:46";
+            return "13:51:46";
         };
     });
 
@@ -84,7 +84,7 @@ describe("ChatWebsocketActionService", () => {
         };
         service.sendChat(message);
         expect(server.eventValue).to.equal(SocketEvent.CHAT);
-        expect(server.emitValue).to.equal("12:51:46 – Maxime vient de se connecter.");
+        expect(server.emitValue).to.equal("13:51:46 – Maxime vient de se connecter.");
     });
 
     it("should emit an appropriate disconnection message on socket disconnection", () => {
@@ -98,7 +98,7 @@ describe("ChatWebsocketActionService", () => {
         };
         service.sendChat(message);
         expect(server.eventValue).to.equal(SocketEvent.CHAT);
-        expect(server.emitValue).to.equal("12:51:46 – Maxime vient de se déconnecter.");
+        expect(server.emitValue).to.equal("13:51:46 – Maxime vient de se déconnecter.");
     });
 
     it("should emit an appropriate difference found message", () => {
@@ -112,11 +112,11 @@ describe("ChatWebsocketActionService", () => {
         };
         service.sendChat(message, "id");
         expect(server.eventValue).to.equal(SocketEvent.CHAT);
-        expect(server.emitValue).to.equal("12:51:46 – Différence trouvée.");
+        expect(server.emitValue).to.equal("13:51:46 – Différence trouvée.");
         message.playerCount = OnlineType.MULTI;
         service.sendChat(message, "id");
         expect(server.eventValue).to.equal(SocketEvent.CHAT);
-        expect(server.emitValue).to.equal("12:51:46 – Différence trouvée par Maxime.");
+        expect(server.emitValue).to.equal("13:51:46 – Différence trouvée par Maxime.");
     });
 
     it("should emit an appropriate difference error message", () => {
@@ -130,11 +130,11 @@ describe("ChatWebsocketActionService", () => {
         };
         service.sendChat(message, "id");
         expect(server.eventValue).to.equal(SocketEvent.CHAT);
-        expect(server.emitValue).to.equal("12:51:46 – Erreur.");
+        expect(server.emitValue).to.equal("13:51:46 – Erreur.");
         message.playerCount = OnlineType.MULTI;
         service.sendChat(message, "id");
         expect(server.eventValue).to.equal(SocketEvent.CHAT);
-        expect(server.emitValue).to.equal("12:51:46 – Erreur par Maxime.");
+        expect(server.emitValue).to.equal("13:51:46 – Erreur par Maxime.");
     });
 
     it("should emit an appropriate new time record message", () => {
@@ -148,7 +148,7 @@ describe("ChatWebsocketActionService", () => {
         };
         service.sendChat(message);
         expect(server.eventValue).to.equal(SocketEvent.CHAT);
-        expect(server.emitValue).to.equal("12:51:46 – Maxime obtient la première place dans"
+        expect(server.emitValue).to.equal("13:51:46 – Maxime obtient la première place dans"
                                         + " les meilleurs temps du jeu MicheDePain en solo.");
     });
 
@@ -164,7 +164,7 @@ describe("ChatWebsocketActionService", () => {
         };
         service.sendChat(message);
         expect(server.eventValue).to.equal(SocketEvent.CHAT);
-        expect(server.emitValue).to.equal("12:51:46 – Voici pourquoi les default existent dans les switchs.");
+        expect(server.emitValue).to.equal("13:51:46 – Voici pourquoi les default existent dans les switchs.");
     });
 
     it("should throw if no room id specified and sending to a room", () => {
