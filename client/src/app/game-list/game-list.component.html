@@ -31,14 +31,14 @@
       </div>
       <div class="window">
         <div class="centeredCard">
-          <app-game *ngFor= "let instance of gameService.extendedFreeGames"
-              [gameName]= "instance.gameName"
-              [bestSoloTimes]= "instance.bestSoloTimes"
-              [bestMultiTimes]= "instance.bestMultiTimes"
-              [rightButton]= "rightButton"
-              [leftButton]= "leftButton"
-              [gameType]= "freeGameTag"
-              [thumbnail]= "instance.thumbnail">
+          <app-game *ngFor="let instance of gameService.freeGames"
+                    [gameName]= "instance.gameName"
+                    [bestSoloTimes]= "instance.bestSoloTimes"
+                    [bestMultiTimes]= "instance.bestMultiTimes"
+                    [rightButton]= "rightButton"
+                    [leftButton]= "leftButton"
+                    [gameType]= "freeGameTag"
+                    [thumbnail]= "instance.thumbnail">
           </app-game>
          </div>
       </div>
