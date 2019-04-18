@@ -2,8 +2,8 @@ import {Injectable} from "@angular/core";
 import Axios, {AxiosResponse} from "axios";
 import {from, Observable} from "rxjs";
 import {
-  GAME_MANAGER_FREE, GAME_MANAGER_GET_NOT_DELETED_REQUEST, GAME_MANAGER_GET_REQUEST,
-  GAME_MANAGER_SIMPLE, GAME_MANAGER_UPDATE_REQUEST,
+  GAME_MANAGER_FREE, GAME_MANAGER_GET_NOT_DELETED_REQUEST,
+  GAME_MANAGER_SIMPLE,
   RESET_SCORES,
   SERVER_BASE_URL
 } from "../../../common/communication/routes";
@@ -105,19 +105,19 @@ export class GameService {
 
   public getFreeGameByName(gameName: string): Observable<IFreeGame> {
     return from(
-      Axios.get<IFreeGame>(this.FREE_GAME_BASE_URL + GAME_MANAGER_GET_REQUEST + encodeURIComponent(gameName))
+      Axios.get<IFreeGame>(this.FREE_GAME_BASE_URL + encodeURIComponent(gameName))
         .then((value: AxiosResponse<IFreeGame>) => value.data)
         .catch((error) => { throw error; }),
     );
   }
 
   public hideSimpleByName(gameName: string): void {
-    Axios.put(this.SIMPLE_GAME_BASE_URL + GAME_MANAGER_UPDATE_REQUEST + encodeURIComponent(gameName), {toBeDeleted: true})
+    Axios.put(this.SIMPLE_GAME_BASE_URL + encodeURIComponent(gameName), {toBeDeleted: true})
       .catch((error) => { throw error; });
   }
 
   public hideFreeByName(gameName: string): void {
-    Axios.put(this.FREE_GAME_BASE_URL + GAME_MANAGER_UPDATE_REQUEST + encodeURIComponent(gameName), {toBeDeleted: true})
+    Axios.put(this.FREE_GAME_BASE_URL + encodeURIComponent(gameName), {toBeDeleted: true})
       .catch((error) => { throw error; });
   }
 
@@ -126,7 +126,7 @@ export class GameService {
       .catch((error) => { throw error; });
   }
   public async loadCheatData(gameName: string): Promise<IJson3DObject[]> {
-    return Axios.get<IFreeGame>(this.FREE_GAME_BASE_URL + GAME_MANAGER_GET_REQUEST + encodeURIComponent(gameName))
+    return Axios.get<IFreeGame>(this.FREE_GAME_BASE_URL + encodeURIComponent(gameName))
       .then((value) => value.data.scenes.differentObjects)
       .catch((error) => { throw error; });
   }

@@ -21,19 +21,19 @@ export class GameManagerController {
         // │  │ SIMPLE │  │
         // └──┴────────┴──┘
 
-        router.get("/simple/get-all", async (req: Request, res: Response, next: NextFunction) => {
+        router.get("/simple", async (req: Request, res: Response, next: NextFunction) => {
             executePromiseSafely(res, next, async () => {
                 res.json(await this.dataBaseService.simpleGames.getAll());
             });
         });
 
-        router.get("/simple/get-not-deleted", async (req: Request, res: Response, next: NextFunction) => {
+        router.get("/simple/non-deleted", async (req: Request, res: Response, next: NextFunction) => {
             executePromiseSafely(res, next, async () => {
                 res.json(await this.dataBaseService.simpleGames.getAllWithQuery(NOT_TO_BE_DELETED_FILTER_QUERY));
             });
         });
 
-        router.get("/simple/get/:id", async (req: Request, res: Response, next: NextFunction) => {
+        router.get("/simple/:id", async (req: Request, res: Response, next: NextFunction) => {
             executePromiseSafely(res, next, async () => {
                 this.dataBaseService.simpleGames
                     .getFromId(req.params["id"])
@@ -50,7 +50,7 @@ export class GameManagerController {
             });
         });
 
-        router.put("/simple/update/:id", async (req: Request, res: Response, next: NextFunction) => {
+        router.put("/simple/:id", async (req: Request, res: Response, next: NextFunction) => {
             executePromiseSafely(res, next, async () => {
                 res.json(await this.dataBaseService.simpleGames.update(req.params["id"], req.body));
             });
@@ -60,19 +60,19 @@ export class GameManagerController {
         // │  │ FREE │  │
         // └──┴──────┴──┘
 
-        router.get("/free/get-all", async (req: Request, res: Response, next: NextFunction) => {
+        router.get("/free", async (req: Request, res: Response, next: NextFunction) => {
             executePromiseSafely(res, next, async () => {
                 res.json(await this.dataBaseService.freeGames.getAll());
             });
         });
 
-        router.get("/free/get-not-deleted", async (req: Request, res: Response, next: NextFunction) => {
+        router.get("/free/non-deleted", async (req: Request, res: Response, next: NextFunction) => {
             executePromiseSafely(res, next, async () => {
                 res.json(await this.dataBaseService.freeGames.getAllWithQuery(NOT_TO_BE_DELETED_FILTER_QUERY));
             });
         });
 
-        router.get("/free/get/:id", async (req: Request, res: Response, next: NextFunction) => {
+        router.get("/free/:id", async (req: Request, res: Response, next: NextFunction) => {
             executePromiseSafely(res, next, async () => {
                 this.dataBaseService.freeGames
                     .getFromId(req.params["id"])
@@ -89,7 +89,7 @@ export class GameManagerController {
             });
         });
 
-        router.put("/free/update/:id", async (req: Request, res: Response, next: NextFunction) => {
+        router.put("/free/:id", async (req: Request, res: Response, next: NextFunction) => {
             executePromiseSafely(res, next, async () => {
                 res.json(await this.dataBaseService.freeGames.update(req.params["id"], req.body));
             });

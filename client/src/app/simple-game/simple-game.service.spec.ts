@@ -21,7 +21,7 @@ describe("SimpleGameService", () => {
   const DIFF_VALIDATOR_URL: string = SERVER_BASE_URL + DIFF_VALIDATOR_BASE;
   const DIFF_VALIDATOR_GET_CALLS_REGEX: RegExp = new RegExp(`${DIFF_VALIDATOR_URL}/*`);
   const DB_URL: string = SERVER_BASE_URL + GAME_MANAGER_SIMPLE;
-  const DB_GET_CALLS_REGEX: RegExp = new RegExp(`${DB_URL + GAME_MANAGER_GET_REQUEST}/*`);
+  const DB_GET_CALLS_REGEX: RegExp = new RegExp(`${DB_URL}/*`);
 
   beforeEach(() => {
     axiosMock = new AxiosAdapter(Axios);
