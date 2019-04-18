@@ -6,10 +6,10 @@ import {
     WebsocketMessage
 } from "../../../../common/communication/messages/message";
 import { SocketEvent } from "../../../../common/communication/socket-events";
+import {RoomNotDefinedError} from "../../../../common/errors/services.errors";
 import {OnlineType} from "../../../../common/model/game/game";
 import { ChatWebsocketActionService } from "./chat-websocket-action.service";
 import {RadioTowerService} from "./radio-tower.service";
-import {RoomNotDefinedError} from "../../../../common/errors/services.errors";
 
 class FakeServer {
 
@@ -69,7 +69,7 @@ describe("ChatWebsocketActionService", () => {
         // Private member access
         // tslint:disable-next-line: no-any
         (service as any).formatTime = () => {
-            return "12:51:46";
+            return "09:51:46";
         };
     });
 
@@ -79,12 +79,12 @@ describe("ChatWebsocketActionService", () => {
             playerCount: OnlineType.SOLO,
             playerName: "Maxime",
             position: ChatMessagePosition.NA,
-            timestamp: new Date("Sat Mar 23 2019 13:51:46 GMT-0400 (Eastern Daylight Time)"),
+            timestamp: new Date("April 4 2069 04:20:00"),
             type: ChatMessageType.CONNECTION,
         };
         service.sendChat(message);
         expect(server.eventValue).to.equal(SocketEvent.CHAT);
-        expect(server.emitValue).to.equal("12:51:46 – Maxime vient de se connecter.");
+        expect(server.emitValue).to.contain("Maxime vient de se connecter.");
     });
 
     it("should emit an appropriate disconnection message on socket disconnection", () => {
@@ -93,12 +93,12 @@ describe("ChatWebsocketActionService", () => {
             playerCount: OnlineType.SOLO,
             playerName: "Maxime",
             position: ChatMessagePosition.NA,
-            timestamp: new Date("Sat Mar 23 2019 13:51:46 GMT-0400 (Eastern Daylight Time)"),
+            timestamp: new Date("April 4 2069 04:20:00"),
             type: ChatMessageType.DISCONNECTION,
         };
         service.sendChat(message);
         expect(server.eventValue).to.equal(SocketEvent.CHAT);
-        expect(server.emitValue).to.equal("12:51:46 – Maxime vient de se déconnecter.");
+        expect(server.emitValue).to.contain("Maxime vient de se déconnecter.");
     });
 
     it("should emit an appropriate difference found message", () => {
@@ -107,16 +107,16 @@ describe("ChatWebsocketActionService", () => {
             playerCount: OnlineType.SOLO,
             playerName: "Maxime",
             position: ChatMessagePosition.NA,
-            timestamp: new Date("Sat Mar 23 2019 13:51:46 GMT-0400 (Eastern Daylight Time)"),
+            timestamp: new Date("April 4 2069 04:20:00"),
             type: ChatMessageType.DIFF_FOUND,
         };
         service.sendChat(message, "id");
         expect(server.eventValue).to.equal(SocketEvent.CHAT);
-        expect(server.emitValue).to.equal("12:51:46 – Différence trouvée.");
+        expect(server.emitValue).to.contain("Différence trouvée.");
         message.playerCount = OnlineType.MULTI;
         service.sendChat(message, "id");
         expect(server.eventValue).to.equal(SocketEvent.CHAT);
-        expect(server.emitValue).to.equal("12:51:46 – Différence trouvée par Maxime.");
+        expect(server.emitValue).to.contain("Différence trouvée par Maxime.");
     });
 
     it("should emit an appropriate difference error message", () => {
@@ -125,16 +125,16 @@ describe("ChatWebsocketActionService", () => {
             playerCount: OnlineType.SOLO,
             playerName: "Maxime",
             position: ChatMessagePosition.NA,
-            timestamp: new Date("Sat Mar 23 2019 13:51:46 GMT-0400 (Eastern Daylight Time)"),
+            timestamp: new Date("April 4 2069 04:20:00"),
             type: ChatMessageType.DIFF_ERROR,
         };
         service.sendChat(message, "id");
         expect(server.eventValue).to.equal(SocketEvent.CHAT);
-        expect(server.emitValue).to.equal("12:51:46 – Erreur.");
+        expect(server.emitValue).to.contain("Erreur.");
         message.playerCount = OnlineType.MULTI;
         service.sendChat(message, "id");
         expect(server.eventValue).to.equal(SocketEvent.CHAT);
-        expect(server.emitValue).to.equal("12:51:46 – Erreur par Maxime.");
+        expect(server.emitValue).to.contain("Erreur par Maxime.");
     });
 
     it("should emit an appropriate new time record message", () => {
@@ -143,12 +143,12 @@ describe("ChatWebsocketActionService", () => {
             playerCount: OnlineType.SOLO,
             playerName: "Maxime",
             position: ChatMessagePosition.FIRST,
-            timestamp: new Date("Sat Mar 23 2019 13:51:46 GMT-0400 (Eastern Daylight Time)"),
+            timestamp: new Date("April 4 2069 04:20:00"),
             type: ChatMessageType.BEST_TIME,
         };
         service.sendChat(message);
         expect(server.eventValue).to.equal(SocketEvent.CHAT);
-        expect(server.emitValue).to.equal("12:51:46 – Maxime obtient la première place dans"
+        expect(server.emitValue).to.contain("Maxime obtient la première place dans"
                                         + " les meilleurs temps du jeu MicheDePain en solo.");
     });
 
@@ -160,11 +160,11 @@ describe("ChatWebsocketActionService", () => {
             playerCount: OnlineType.SOLO,
             playerName: "Maxime",
             position: ChatMessagePosition.FIRST,
-            timestamp: new Date("Sat Mar 23 2019 13:51:46 GMT-0400 (Eastern Daylight Time)"),
+            timestamp: new Date("April 4 2069 04:20:00"),
         };
         service.sendChat(message);
         expect(server.eventValue).to.equal(SocketEvent.CHAT);
-        expect(server.emitValue).to.equal("12:51:46 – Voici pourquoi les default existent dans les switchs.");
+        expect(server.emitValue).to.contain("Voici pourquoi les default existent dans les switchs.");
     });
 
     it("should throw if no room id specified and sending to a room", () => {
@@ -173,7 +173,7 @@ describe("ChatWebsocketActionService", () => {
             playerCount: OnlineType.SOLO,
             playerName: "Maxime",
             position: ChatMessagePosition.NA,
-            timestamp: new Date("Sat Mar 23 2019 13:51:46 GMT-0400 (Eastern Daylight Time)"),
+            timestamp: new Date("April 4 2069 04:20:00"),
             type: ChatMessageType.DIFF_FOUND,
         };
         try {
