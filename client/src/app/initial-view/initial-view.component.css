@@ -67,3 +67,7 @@ img{
   padding-right: 30px;
   border-right: 1px black solid;
 }
+
+.back-button {
+  margin-top: 10px;
+}

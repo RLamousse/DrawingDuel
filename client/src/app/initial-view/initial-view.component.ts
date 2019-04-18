@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from "@angular/core";
 import {Router} from "@angular/router";
-import {BACKGROUND_IMAGE, GAMES_ROUTE} from "../../../../common/communication/routes";
+import {ADMIN_ROUTE, BACKGROUND_IMAGE, GAMES_ROUTE} from "../../../../common/communication/routes";
 import {SocketEvent} from "../../../../common/communication/socket-events";
 import {SocketService} from "../socket.service";
 import {UNListService} from "../username.service";
@@ -19,6 +19,7 @@ export class InitialViewComponent implements OnInit {
   private readonly BACKGROUND_COLOR: string = "#272731";
   private readonly BUTTON_ID: string = "#stars";
   private readonly BACKGROUND_CENTERED: string = "center";
+  private readonly ADMIN_BUTTON_ROUTE: string = ADMIN_ROUTE;
 
   public constructor(
     public userService: UNListService,
