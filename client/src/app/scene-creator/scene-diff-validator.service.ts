@@ -1,6 +1,11 @@
 import {Injectable, OnDestroy} from "@angular/core";
 import {Subscription} from "rxjs";
-import {createWebsocketMessage, RoomInteractionMessage, WebsocketMessage} from "../../../../common/communication/messages/message";
+import {
+  createWebsocketMessage,
+  RoomInteractionErrorMessage,
+  RoomInteractionMessage,
+  WebsocketMessage
+} from "../../../../common/communication/messages/message";
 import {SocketEvent} from "../../../../common/communication/socket-events";
 import {AbstractServiceError, AlreadyFoundDifferenceError, NoDifferenceAtPointError} from "../../../../common/errors/services.errors";
 import {IVector3} from "../../../../common/model/point";
@@ -43,6 +48,16 @@ export class SceneDiffValidatorService implements OnDestroy {
           interactionData: {
             coord: objectPosition,
           },
+        }),
+    );
+  }
+
+  public notifyIdentificationError(error: Error): void {
+    this.socket.send(
+      SocketEvent.INTERACT_ERROR,
+      createWebsocketMessage<RoomInteractionErrorMessage>(
+        {
+          error: error,
         }),
     );
   }

@@ -64,6 +64,10 @@ export interface RoomInteractionMessage<T extends IInteractionData> extends Room
     interactionData: T;
 }
 
+export interface RoomInteractionErrorMessage extends RoomMessage {
+    error: Error;
+}
+
 export const isAWebsocketMessage: (object: any) => boolean =
     (object: any) => (object.title !== undefined && object.body !== undefined);
 

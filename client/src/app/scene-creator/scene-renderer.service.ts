@@ -195,14 +195,18 @@ export class SceneRendererService {
     const y: number = -((position.y - rendererElem.offsetTop) / rendererElem.offsetHeight) * POS_FACT + 1;
     const direction: Vector2 = new Vector2(x, y);
     const rayCast: Raycaster = new Raycaster();
+
     rayCast.setFromCamera(direction, this.camera);
     const intersectOri: Intersection[] = rayCast.intersectObjects(this.scene.children, true)
       .filter((intersection: Intersection) => intersection.object.name !== SKY_BOX_NAME);
     const intersectMod: Intersection[] = rayCast.intersectObjects(this.modifiedScene.children, true)
       .filter((intersection: Intersection) => intersection.object.name !== SKY_BOX_NAME);
+
     if (intersectOri.length === 0 && intersectMod.length === 0) {
       playRandomSound(NO_DIFFERENCE_SOUNDS);
-      throw new NoDifferenceAtPointError();
+      this.sceneDiffValidator.notifyIdentificationError(new NoDifferenceAtPointError());
+
+      return this.validationPromise;
     }
     const object: Object3D = get3DObject(intersectOri.length === 0 && intersectMod.length !== 0 ? intersectMod[0] : intersectOri[0]);
     this.sceneDiffValidator.validateDiffObject(object.position);
