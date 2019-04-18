@@ -192,7 +192,7 @@ export class HotelRoomService {
         socket.removeAllListeners(SocketEvent.INTERACT);
         room.checkOut(socket.id);
         if (room.vacant && room.ongoing) {
-            this.radioTower.sendToRoom(SocketEvent.KICK, undefined, room.id);
+            this.radioTower.sendToRoom(SocketEvent.KICK, undefined, room.id); // TODO: Don't kick when the game is over
             this.kickClients(room.id);
         }
         this.deleteRoom(room);

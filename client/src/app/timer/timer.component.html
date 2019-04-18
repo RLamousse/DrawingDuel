@@ -2,7 +2,6 @@
   {{minutes < 10 ? "0" + minutes : minutes}}:{{seconds < 10 ? "0" + seconds : seconds}}
 </div>
 <app-diff-counter [gameName] = "gameName"
-                   [gameType] = "gameType"
                    (stopTime) = "stopTimer()"
                    [minutes] = "minutes"
                    [seconds] = "seconds"></app-diff-counter>
