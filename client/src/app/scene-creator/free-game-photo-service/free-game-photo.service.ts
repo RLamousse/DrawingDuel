@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import Axios from "axios";
+import Axios, {AxiosResponse} from "axios";
 import {PerspectiveCamera, Scene, WebGLRenderer} from "three";
 import {GAME_MANAGER_FREE, SERVER_BASE_URL} from "../../../../../common/communication/routes";
 import {IFreeGame} from "../../../../../common/model/game/free-game";
@@ -33,7 +33,7 @@ export class FreeGamePhotoService {
   private readonly backGroundColor: number = 0x001A33;
   private readonly renderSize: number = 1000;
   private readonly cameraZ: number = 200;
-  private readonly WAIT_TIME: number = 1000;
+  private readonly WAIT_TIME: number = 3000;
   private readonly THUMBNAIL_QUALITY: number = 0.5;
 
   public async takePhoto(gameName: string): Promise<void> {
@@ -48,21 +48,26 @@ export class FreeGamePhotoService {
     this.renderer.render(scene, this.camera);
 
     const thumbnailData: string = (this.divElem.children[0] as HTMLCanvasElement).toDataURL("image/jpeg", this.THUMBNAIL_QUALITY);
-    this.putThumbnail(thumbnailData, gameName);
+    await this.putThumbnail(thumbnailData, gameName);
   }
 
   private async getFreeGameScene(name: string): Promise<Scene> {
-    const sceneDB: IFreeGame =
-      (await Axios.get<IFreeGame>(SERVER_BASE_URL + GAME_MANAGER_FREE + encodeURIComponent(name))).data;
-    const scenes: IScene = this.creatorService.createScenes(sceneDB.scenes);
-
-    return scenes.scene;
+    return new Promise<Scene>((resolve, reject) => {
+      Axios.get<IFreeGame>(SERVER_BASE_URL + GAME_MANAGER_FREE + encodeURIComponent(name)).then((game) => {
+        const scenes: IScene = this.creatorService.createScenes(game.data.scenes);
+        resolve (scenes.scene);
+      }).catch((error: Error) => { reject(error); });
+    });
   }
 
-  private putThumbnail(data: string, gameName: string): void {
-    Axios.put<IFreeGame>(SERVER_BASE_URL + GAME_MANAGER_FREE + encodeURIComponent(gameName), {thumbnail: data})
-      .catch((err: Error) => {
-        throw err;
-      });
+  private async putThumbnail(data: string, gameName: string): Promise<AxiosResponse<IFreeGame>> {
+   return new Promise<AxiosResponse<IFreeGame>>((resolve, reject) => {
+      Axios.put<IFreeGame>(SERVER_BASE_URL + GAME_MANAGER_FREE + encodeURIComponent(gameName), {thumbnail: data})
+        .then((response) => {
+          resolve(response);
+        }).catch((error: Error) => {
+          reject(error);
+        });
+    });
   }
 }

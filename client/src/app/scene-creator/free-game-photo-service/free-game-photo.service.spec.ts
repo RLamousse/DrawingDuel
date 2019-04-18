@@ -57,14 +57,15 @@ describe("FreeGamePhotoService", () => {
   });
 
   // Test takePhoto
-  it("should set the camera to the right position and the renderer clear color", async(done) => {
+  it("should set the camera to the right position and the renderer clear color", async() => {
     const service: FreeGamePhotoService = TestBed.get(FreeGamePhotoService);
     spyOn(service as any, "putThumbnail").and.returnValue(true);
     spyOn(service as any, "getFreeGameScene").and.returnValue(new Scene());
-    await service.takePhoto("").catch((e: Error) => { throw  e; });
-    expect(service["camera"].position).toEqual(new Vector3(0, 0, service["cameraZ"]));
-    expect(service["renderer"].getClearColor().getHex()).toEqual(service["backGroundColor"]);
-    done();
+
+    return service.takePhoto("").then(() => {
+      expect(service["camera"].position).toEqual(new Vector3(0, 0, service["cameraZ"]));
+      expect(service["renderer"].getClearColor().getHex()).toEqual(service["backGroundColor"]);
+    });
   });
 
   // Test getFreeGameName
@@ -92,17 +93,15 @@ describe("FreeGamePhotoService", () => {
   });
 
   // Test putThumbnail
-  it("should throw an error when Axios.put catch an error on call of putThumbnail", () => {
+  it("should throw an error when Axios.put catch an error on call of putThumbnail", async() => {
     const service: FreeGamePhotoService = TestBed.get(FreeGamePhotoService);
     const axiosMock: MockAdapter = new AxiosAdapter(Axios);
     const CONTROLLER_BASE_URL: string = SERVER_BASE_URL + GAME_MANAGER_FREE;
     const ALL_GET_CALLS_REGEX: RegExp = new RegExp(`${CONTROLLER_BASE_URL}/*`);
     axiosMock.onPut(ALL_GET_CALLS_REGEX).reply(HttpStatus.NOT_FOUND);
 
-    try {
-      service["putThumbnail"]("data", "mock");
-    } catch (err) {
-      expect(err.message).toEqual("Request failed with status code 404");
-    }
+    return service["putThumbnail"]("data", "mock").catch((reason: Error) => {
+      expect(reason.message).toEqual("Request failed with status code 404");
+    });
   });
 });

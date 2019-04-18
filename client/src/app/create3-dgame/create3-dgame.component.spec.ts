@@ -14,8 +14,8 @@ import { FreeGamePhotoService } from "../scene-creator/free-game-photo-service/f
 import { Create3DGameComponent } from "./create3-dgame.component";
 
 class MockPhotoService {
-  public takePhoto(): boolean {
-    return true;
+  public async takePhoto(): Promise<void> {
+    return Promise.resolve();
   }
 }
 const mockPhotoService: MockPhotoService = new MockPhotoService();
