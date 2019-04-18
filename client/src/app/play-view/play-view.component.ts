@@ -1,6 +1,7 @@
-import {Component, OnInit} from "@angular/core";
+import {Component, OnDestroy, OnInit} from "@angular/core";
 import {MatDialog} from "@angular/material";
 import {ActivatedRoute, Router} from "@angular/router";
+import {Subscription} from "rxjs";
 import {GAMES_ROUTE} from "../../../../common/communication/routes";
 import {SocketEvent} from "../../../../common/communication/socket-events";
 import {ComponentNavigationError} from "../../../../common/errors/component.errors";
@@ -13,13 +14,14 @@ import {SocketService} from "../socket.service";
              templateUrl: "./play-view.component.html",
              styleUrls: ["./play-view.component.css"],
            })
-export class PlayViewComponent implements OnInit {
+export class PlayViewComponent implements OnInit, OnDestroy {
 
   // @ts-ignore variable used in html
   private readonly BACK_BUTTON_ROUTE: string = GAMES_ROUTE;
   protected gameName: string;
   protected originalImage: string;
   protected modifiedImage: string;
+  private kickSub: Subscription;
 
   public constructor(private route: ActivatedRoute,
                      private socketService: SocketService,
@@ -34,7 +36,7 @@ export class PlayViewComponent implements OnInit {
       this.modifiedImage = params["modifiedImage"];
     });
 
-    this.socketService.onEvent(SocketEvent.KICK)
+    this.kickSub = this.socketService.onEvent(SocketEvent.KICK)
       .subscribe(async () => this.onKick());
   }
 
@@ -50,5 +52,9 @@ export class PlayViewComponent implements OnInit {
             });
         },
       });
+  }
+
+  public ngOnDestroy(): void {
+    this.kickSub.unsubscribe();
   }
 }
