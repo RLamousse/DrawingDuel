@@ -8,7 +8,6 @@ import {
   SERVER_BASE_URL
 } from "../../../common/communication/routes";
 import {IJson3DObject} from "../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
-import {IExtendedFreeGame} from "../../../common/model/game/extended-free-game";
 import {IFreeGame} from "../../../common/model/game/free-game";
 import {IGame} from "../../../common/model/game/game";
 import {ISimpleGame} from "../../../common/model/game/simple-game";
@@ -21,7 +20,6 @@ export class GameService {
   public constructor() {/*empty*/}
   public simpleGames: ISimpleGame[] = [];
   public freeGames: IFreeGame[] = [];
-  public extendedFreeGames: IExtendedFreeGame[] = [];
   public readonly SIMPLE_GAME_BASE_URL: string = SERVER_BASE_URL + GAME_MANAGER_SIMPLE;
   public readonly FREE_GAME_BASE_URL: string = SERVER_BASE_URL + GAME_MANAGER_FREE;
   public readonly RESET_SCORES_URL: string = SERVER_BASE_URL + RESET_SCORES;
@@ -62,27 +60,12 @@ export class GameService {
 
   public pushFreeGames(freeGamesToModify: IFreeGame[]): void {
     this.freeGames = [];
-    this.extendedFreeGames = [];
     this.convertScoresObject(freeGamesToModify);
     for (const game of freeGamesToModify) {
       if (!game.toBeDeleted) {
         this.freeGames.push(game);
       }
     }
-    for (const game of this.freeGames) {
-      if (!game.toBeDeleted) {
-        const extendedFreeGame: IExtendedFreeGame = {
-          thumbnail: game.thumbnail,
-          scenes: game.scenes,
-          gameName: game.gameName,
-          bestSoloTimes: game.bestSoloTimes,
-          bestMultiTimes: game.bestMultiTimes,
-          toBeDeleted: game.toBeDeleted,
-        };
-        this.extendedFreeGames.push(extendedFreeGame);
-      }
-    }
-
   }
 
   public getSimpleGames(): Observable<ISimpleGame[]> {
