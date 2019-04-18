@@ -20,6 +20,12 @@
           <button mat-raised-button color="primary" class="button" (click)="updateUsername()">Commencer</button>
           <button mat-raised-button color="primary" class="button" id=#stars (click)="changeBackground()">Changer fond d'écran</button>
         </nav>
+        <nav>
+          <button mat-raised-button color="accent" class="button back-button" routerLink="/{{ADMIN_BUTTON_ROUTE}}">
+            <mat-icon>settings</mat-icon>
+            Session administrateur
+          </button>
+        </nav>
       </div>
     </div>
     <link rel="icon" type="image/x-icon" href="favicon.ico">
