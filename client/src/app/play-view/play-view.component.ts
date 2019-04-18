@@ -1,7 +1,6 @@
 import {Component, OnInit} from "@angular/core";
 import {ActivatedRoute} from "@angular/router";
 import {GAMES_ROUTE} from "../../../../common/communication/routes";
-import {GameType} from "../../../../common/model/game/game";
 
 @Component({
              selector: "app-play-view",
@@ -15,7 +14,6 @@ export class PlayViewComponent implements OnInit {
   protected gameName: string;
   protected originalImage: string;
   protected modifiedImage: string;
-  protected gameType: GameType;
 
   public constructor(private route: ActivatedRoute) {}
 
@@ -24,7 +22,6 @@ export class PlayViewComponent implements OnInit {
       this.gameName = params["gameName"];
       this.originalImage = params["originalImage"];
       this.modifiedImage = params["modifiedImage"];
-      this.gameType = JSON.parse(params["gameType"]);
     });
   }
 }

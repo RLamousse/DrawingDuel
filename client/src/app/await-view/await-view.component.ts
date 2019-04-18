@@ -70,9 +70,8 @@ export class AwaitViewComponent implements OnInit, OnDestroy {
     this.route.navigate([PLAY_ROUTE], {
       queryParams: {
         gameName: this.gameName,
-        originalImage: readyInfo.originalImage,
+        originalImage: readyInfo.originalImage, // TODO Remove me now that I have sockets!
         modifiedImage: readyInfo.modifiedImage,
-        gameType: this.gameType,
         onlineType: OnlineType.MULTI,
       },
     }).catch(() => {
@@ -84,6 +83,7 @@ export class AwaitViewComponent implements OnInit, OnDestroy {
     this.route.navigate([PLAY_3D_ROUTE], {
       queryParams: {
         gameName: this.gameName,
+        onlineType: OnlineType.MULTI,
       },
     }).catch(() => {
       throw new ComponentNavigationError();
