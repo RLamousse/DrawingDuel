@@ -70,7 +70,7 @@ export class AwaitViewComponent implements OnInit, OnDestroy {
     this.route.navigate([PLAY_ROUTE], {
       queryParams: {
         gameName: this.gameName,
-        originalImage: readyInfo.originalImage, // TODO Remove me now that I have sockets!
+        originalImage: readyInfo.originalImage,
         modifiedImage: readyInfo.modifiedImage,
         onlineType: OnlineType.MULTI,
       },
