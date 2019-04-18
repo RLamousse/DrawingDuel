@@ -3,10 +3,10 @@ import "reflect-metadata";
 import {Socket} from "socket.io";
 import * as uuid from "uuid/v4";
 import {
+    createWebsocketMessage,
     ChatMessage,
     ChatMessagePosition,
     ChatMessageType,
-    createWebsocketMessage,
     RoomInteractionErrorMessage,
     RoomInteractionMessage,
     WebsocketMessage
