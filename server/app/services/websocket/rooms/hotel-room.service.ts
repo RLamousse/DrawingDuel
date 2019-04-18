@@ -159,10 +159,10 @@ export class HotelRoomService {
     private handleInteraction<T>(room: IGameRoom, socket: Socket, message: WebsocketMessage<RoomInteractionMessage<T>>): void {
         room.interact(message.body.interactionData)
             .then((interactionResponse: IInteractionResponse) => {
-                this.radioTower.sendToRoom(SocketEvent.INTERACT, createWebsocketMessage(interactionResponse), room.id);
                 const chatMessage: ChatMessage = this.createInteractionChatMessage(room, socket);
                 interactionResponse.initiatedBy = chatMessage.playerName;
                 this.chatAction.sendChat(chatMessage, room.id);
+                this.radioTower.sendToRoom(SocketEvent.INTERACT, createWebsocketMessage(interactionResponse), room.id);
             })
             .catch((error: Error) => {
                 this.handleInteractionError(error, socket, room);
