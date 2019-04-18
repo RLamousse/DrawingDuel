@@ -56,7 +56,11 @@ export class ChatWebsocketActionService {
                 break;
             case ChatMessageType.DIFF_ERROR:
             case ChatMessageType.DIFF_FOUND:
-                this.radioTower.sendToRoom(this._EVENT_TYPE, message, chatRoom as string);
+                if (chatRoom) {
+                    this.radioTower.sendToRoom(this._EVENT_TYPE, message, chatRoom);
+                } else {
+                    throw new RoomNotDefinedError();
+                }
                 break;
             default:
                 this.radioTower.broadcast(this._EVENT_TYPE, message);
