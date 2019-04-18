@@ -38,6 +38,12 @@ export class SceneDiffValidatorService implements OnDestroy {
 
         this.errorCallback(new AbstractServiceError(errorMessage));
       });
+
+    this.successCallback = () => {/*We need those to be non-undefined*/
+    };
+    this.errorCallback = () => {/*We need those to be non-undefined*/
+    };
+
   }
 
   public validateDiffObject(objectPosition: IVector3): void {
