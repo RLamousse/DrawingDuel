@@ -7,7 +7,7 @@ import {ChatMessage, ChatMessagePosition, ChatMessageType, WebsocketMessage} fro
 import {I3DDiffValidatorControllerRequest} from "../../../../common/communication/requests/diff-validator-controller.request";
 import {DIFF_VALIDATOR_3D_BASE, SERVER_BASE_URL} from "../../../../common/communication/routes";
 import {SocketEvent} from "../../../../common/communication/socket-events";
-import {ComponentNotLoadedError} from "../../../../common/errors/component.errors";
+import {ComponentNotLoadedError, FreeViewGamesRenderingError} from "../../../../common/errors/component.errors";
 import {AbstractServiceError, AlreadyFoundDifferenceError, NoDifferenceAtPointError} from "../../../../common/errors/services.errors";
 import {IJson3DObject} from "../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
 import {OnlineType} from "../../../../common/model/game/game";
@@ -49,6 +49,7 @@ export class SceneRendererService {
   private readonly BLINK_INTERVAL_MS: number = 250;
   private readonly INVISIBLE_INTERVAL_MS: number = this.BLINK_INTERVAL_MS / X_FACTOR;
   private readonly WATCH_THREAD_FINISH_INTERVAL: number = 30;
+  private readonly FPS: number = 30;
 
   private time: number;
   private prevTime: number;
@@ -99,7 +100,10 @@ export class SceneRendererService {
   }
 
   private createRenderer(container: HTMLDivElement): WebGLRenderer {
-    const renderer: WebGLRenderer = new WebGLRenderer({preserveDrawingBuffer: true});
+    const renderer: WebGLRenderer = new WebGLRenderer({
+      precision: "lowp",
+      premultipliedAlpha: false,
+    });
     renderer.setClearColor(this.backGroundColor);
     renderer.setPixelRatio(devicePixelRatio);
     renderer.setSize(container.clientWidth, container.clientHeight);
@@ -109,7 +113,7 @@ export class SceneRendererService {
 
   public loadScenes(original: Scene, modified: Scene, gameName: string): void {
     if (this.originalContainer === undefined || this.modifiedContainer === undefined) {
-      throw (new ComponentNotLoadedError());
+      throw new ComponentNotLoadedError();
     }
     this.scene = original;
     this.modifiedScene = modified;
@@ -284,10 +288,12 @@ export class SceneRendererService {
     const delta: number = (this.time - this.prevTime) / this.timeFactor;
     this.renderUpdateService.updateVelocity(this.velocity, delta);
     this.velocity = this.objectCollisionService.raycastCollision(
-      this.camera, this.scene.children, this.modifiedScene.children, this.velocity,
-    );
+      this.camera, this.scene.children, this.modifiedScene.children, this.velocity);
     this.renderUpdateService.updateCamera(this.camera, delta, this.velocity);
     this.prevTime = this.time;
-    requestAnimationFrame(() => this.renderLoop());
+    sleep(1 / this.FPS).then(() => this.renderLoop())
+      .catch(() => {
+        throw new FreeViewGamesRenderingError();
+      });
   }
 }

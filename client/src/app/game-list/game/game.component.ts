@@ -1,7 +1,7 @@
-import {Component, Input, OnInit} from "@angular/core";
+import {Component, Input} from "@angular/core";
 import {MatDialog} from "@angular/material";
 import {Router} from "@angular/router";
-import {LOADING_GIF, LOADING_ROUTE, PLAY_3D_ROUTE, PLAY_ROUTE} from "../../../../../common/communication/routes";
+import {LOADING_ROUTE, PLAY_3D_ROUTE, PLAY_ROUTE} from "../../../../../common/communication/routes";
 import {ComponentNavigationError} from "../../../../../common/errors/component.errors";
 import {GameType} from "../../../../../common/model/game/game";
 import {IRecordTime} from "../../../../../common/model/game/record-time";
@@ -15,7 +15,7 @@ import {ResetGameFormComponent} from "./reset-game-form/reset-game-form.componen
   styleUrls: ["./game.component.css"],
 })
 
-export class GameComponent implements OnInit {
+export class GameComponent {
 
   public constructor(private router: Router, private dialog: MatDialog) {}
 
@@ -29,10 +29,6 @@ export class GameComponent implements OnInit {
   @Input() public leftButton: string;
   @Input() public gameType: GameType;
   @Input() public simpleGameTag: GameType = GameType.SIMPLE;
-
-  public ngOnInit(): void {
-    this.thumbnail = LOADING_GIF;
-  }
 
   protected leftButtonClick(): void {
     if (this.leftButton === "Jouer") {

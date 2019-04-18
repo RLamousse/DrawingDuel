@@ -27,6 +27,7 @@ export class FreeGamesCollectionService extends CollectionService<IFreeGame> {
         !!(game || ({} as Partial<IFreeGame>)).bestSoloTimes ||
         !!(game || ({} as Partial<IFreeGame>)).bestMultiTimes ||
         !!(game || ({} as Partial<IFreeGame>)).scenes ||
+        !!(game || ({} as Partial<IFreeGame>)).thumbnail ||
         typeof (game || ({} as Partial<IFreeGame>)).toBeDeleted !== "undefined";
     }
 

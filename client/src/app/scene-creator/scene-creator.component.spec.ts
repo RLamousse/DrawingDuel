@@ -73,6 +73,7 @@ describe("SceneCreatorComponent", () => {
       gameName: "TEST",
       scenes: {modifiedObjects: [], originalObjects: [], differentObjects: []},
       toBeDeleted: false,
+      thumbnail: "",
     };
 
     public getFreeGameByName(): Observable<IFreeGame> {

@@ -1,5 +1,4 @@
 import { async, TestBed } from "@angular/core/testing";
-import { IExtendedFreeGame } from "../../../common/model/game/extended-free-game";
 import { IFreeGame } from "../../../common/model/game/free-game";
 import { IGame } from "../../../common/model/game/game";
 import { ISimpleGame } from "../../../common/model/game/simple-game";
@@ -52,7 +51,7 @@ describe("GameService", () => {
     },
   ];
 
-  const mockExtendedFreeGameList: IExtendedFreeGame[] = [
+  const mockFreeGameList: IFreeGame[] = [
     {
       gameName: "mockedSimpleName",
       thumbnail: "",
@@ -128,10 +127,10 @@ describe("GameService", () => {
     expect(incompleteList[0].toBeDeleted).toBe(false);
   });
 
-  it ("pushFreeGames should push in extendedFreeGames", () => {
-    serviceGame.pushFreeGames(mockExtendedFreeGameList);
+  it("pushFreeGames should push in freeGames", () => {
+    serviceGame.pushFreeGames(mockFreeGameList);
 
-    return expect(serviceGame.extendedFreeGames).not.toBeNull;
+    return expect(serviceGame.freeGames).not.toBeNull;
   });
 
   it ("pushSimpleGames should push in simpleGames", () => {
