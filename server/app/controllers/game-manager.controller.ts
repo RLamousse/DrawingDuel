@@ -23,13 +23,12 @@ export class GameManagerController {
 
         router.get("/simple", async (req: Request, res: Response, next: NextFunction) => {
             executePromiseSafely(res, next, async () => {
-                res.json(await this.dataBaseService.simpleGames.getAll());
-            });
-        });
+                const filterDeleted: string = req.query["filterDeleted"];
+                const body: ISimpleGame[] = filterDeleted === "true"
+                    ? await this.dataBaseService.simpleGames.getAllWithQuery(NOT_TO_BE_DELETED_FILTER_QUERY)
+                    : await this.dataBaseService.simpleGames.getAll();
 
-        router.get("/simple/non-deleted", async (req: Request, res: Response, next: NextFunction) => {
-            executePromiseSafely(res, next, async () => {
-                res.json(await this.dataBaseService.simpleGames.getAllWithQuery(NOT_TO_BE_DELETED_FILTER_QUERY));
+                res.json(body);
             });
         });
 
@@ -62,13 +61,12 @@ export class GameManagerController {
 
         router.get("/free", async (req: Request, res: Response, next: NextFunction) => {
             executePromiseSafely(res, next, async () => {
-                res.json(await this.dataBaseService.freeGames.getAll());
-            });
-        });
+                const filterDeleted: string = req.query["filterDeleted"];
+                const body: IFreeGame[] = filterDeleted === "true"
+                    ? await this.dataBaseService.freeGames.getAllWithQuery(NOT_TO_BE_DELETED_FILTER_QUERY)
+                    : await this.dataBaseService.freeGames.getAll();
 
-        router.get("/free/non-deleted", async (req: Request, res: Response, next: NextFunction) => {
-            executePromiseSafely(res, next, async () => {
-                res.json(await this.dataBaseService.freeGames.getAllWithQuery(NOT_TO_BE_DELETED_FILTER_QUERY));
+                res.json(body);
             });
         });
 

@@ -3,10 +3,10 @@
 import {expect} from "chai";
 import * as HttpStatus from "http-status-codes";
 import * as request from "supertest";
-import {anything, instance, mock, when} from "ts-mockito";
+import {anything, instance, mock, verify, when} from "ts-mockito";
 import {Message} from "../../../common/communication/messages/message";
 import {
-    GAME_MANAGER_FREE, GAME_MANAGER_GET_NOT_DELETED_REQUEST,
+    GAME_MANAGER_FREE,
     GAME_MANAGER_SIMPLE,
 } from "../../../common/communication/routes";
 import {DatabaseError, NonExistentGameError} from "../../../common/errors/database.errors";
@@ -54,14 +54,17 @@ describe("Data-base controller", () => {
                 .get(GAME_MANAGER_SIMPLE)
                 .expect(HttpStatus.OK)
                 .then((response) => {
+                    verify(mockSimpleGames.getAll()).once();
                     expect(response.body).to.eql([]);
                 });
         });
         it("should send a empty array on get not deleted", async () => {
             return request(app)
-                .get(GAME_MANAGER_SIMPLE + GAME_MANAGER_GET_NOT_DELETED_REQUEST)
+                .get(GAME_MANAGER_SIMPLE)
+                .query({filterDeleted: true})
                 .expect(HttpStatus.OK)
                 .then((response) => {
+                    verify(mockSimpleGames.getAllWithQuery(anything())).once();
                     expect(response.body).to.eql([]);
                 });
         });
@@ -92,14 +95,17 @@ describe("Data-base controller", () => {
                 .get(GAME_MANAGER_FREE)
                 .expect(HttpStatus.OK)
                 .then((response) => {
+                    verify(mockFreeGames.getAll()).once();
                     expect(response.body).to.eql([]);
                 });
         });
         it("should send a empty array on get all", async () => {
             return request(app)
-                .get(GAME_MANAGER_FREE + GAME_MANAGER_GET_NOT_DELETED_REQUEST)
+                .get(GAME_MANAGER_FREE)
+                .query({filterDeleted: true})
                 .expect(HttpStatus.OK)
                 .then((response) => {
+                    verify(mockFreeGames.getAllWithQuery(anything())).once();
                     expect(response.body).to.eql([]);
                 });
         });

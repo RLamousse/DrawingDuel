@@ -2,7 +2,7 @@ import {Injectable} from "@angular/core";
 import Axios, {AxiosResponse} from "axios";
 import {from, Observable} from "rxjs";
 import {
-  GAME_MANAGER_FREE, GAME_MANAGER_GET_NOT_DELETED_REQUEST,
+  GAME_MANAGER_FREE,
   GAME_MANAGER_SIMPLE,
   RESET_SCORES,
   SERVER_BASE_URL
@@ -89,7 +89,7 @@ export class GameService {
 
   public getSimpleGames(): Observable<ISimpleGame[]> {
     return from(
-      Axios.get<ISimpleGame[]>(this.SIMPLE_GAME_BASE_URL + GAME_MANAGER_GET_NOT_DELETED_REQUEST)
+      Axios.get<ISimpleGame[]>(this.SIMPLE_GAME_BASE_URL, {params: {filterDeleted: true}})
         .then((value: AxiosResponse<ISimpleGame[]>) => value.data)
         .catch((error) => { throw error; }),
     );
@@ -97,7 +97,7 @@ export class GameService {
 
   public getFreeGames(): Observable<IFreeGame[]> {
     return from(
-      Axios.get<IFreeGame[]>(this.FREE_GAME_BASE_URL + GAME_MANAGER_GET_NOT_DELETED_REQUEST)
+      Axios.get<IFreeGame[]>(this.FREE_GAME_BASE_URL, {params: {filterDeleted: true}})
         .then((value: AxiosResponse<IFreeGame[]>) => value.data)
         .catch((error) => { throw error; }),
     );
