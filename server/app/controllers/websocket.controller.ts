@@ -23,7 +23,6 @@ export class WebsocketController {
     private sockets: Map<string, string>;
 
     public constructor (@inject(types.DummyWebsocketActionService) private dummyAction: DummyWebsocketActionService,
-                        @inject(types.ChatWebsocketActionService) private chatAction: ChatWebsocketActionService,
                         @inject(types.UpdateGameScoresWebsocketActionService)
                         private scoreUpdateAction: UpdateGameScoresWebsocketActionService,
                         @inject(types.CheckUserWebsocketActionService) private userNameService: CheckUserWebsocketActionService,
@@ -93,7 +92,7 @@ export class WebsocketController {
             this.userNameService.removeUsername(username as string);
             this.sockets.delete(socket.id);
             const message: WebsocketMessage<string> = createWebsocketMessage(
-                format(new Date(), "HH:mm:ss") + this.chatAction.getDisconnectionMessage(username as string),
+                format(new Date(), "HH:mm:ss") + ChatWebsocketActionService.getDisconnectionMessage(username as string),
             );
             this.radioTower.broadcast(SocketEvent.USER_DISCONNECTION, message);
         }
@@ -103,7 +102,7 @@ export class WebsocketController {
         if (username) {
             this.sockets.set(socket.id, username);
             const message: WebsocketMessage<string> = createWebsocketMessage(
-                format(new Date(), "HH:mm:ss") + this.chatAction.getConnectionMessage(username),
+                format(new Date(), "HH:mm:ss") + ChatWebsocketActionService.getConnectionMessage(username),
             );
             this.radioTower.broadcast(SocketEvent.USER_CONNECTION, message);
         }
