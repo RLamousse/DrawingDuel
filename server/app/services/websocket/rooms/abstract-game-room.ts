@@ -51,7 +51,7 @@ export abstract class AbstractGameRoom<T extends IGame, U extends IGameState> im
     }
 
     protected getDifferenceThreshold(): number {
-        return this._playerCapacity !== 1 ? SINGLEPLAYER_GAME_DIFF_THRESHOLD : MULTIPLAYER_GAME_DIFF_THRESHOLD;
+        return this._playerCapacity === 1 ? SINGLEPLAYER_GAME_DIFF_THRESHOLD : MULTIPLAYER_GAME_DIFF_THRESHOLD;
     }
 
     public setOnReadyCallBack(callback: (roomInfo: ReadyInfo) => void): void {
