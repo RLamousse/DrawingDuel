@@ -40,11 +40,19 @@
     </mat-checkbox>
   </section>
 
-
+  <section>
+    <div *ngIf="submissionPending">
+      <mat-hint align="end">
+        Envoi en cours...
+      </mat-hint>
+    </div>
+  </section>
 
   <div>
     <button mat-raised-button id="form-submit" type="form-submit" name="submit" color="primary"
             class="button" [disabled]="isFormInvalid()">Envoyer</button>
-    <button mat-raised-button id="form-reset" type="reset" color="accent" class="button" (click)="exit()">Annuler</button>
+    <button mat-raised-button id="form-reset" type="reset" color="accent" class="button"
+            [disabled]="submissionPending" (click)="exit()">Annuler
+    </button>
   </div>
 </form>

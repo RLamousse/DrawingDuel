@@ -1,5 +1,6 @@
 import {Component} from "@angular/core";
 import {MatDialog} from "@angular/material";
+import {HOME_ROUTE} from "../../../../common/communication/routes";
 import {Create3DGameComponent} from "../create3-dgame/create3-dgame.component";
 import {openDialog} from "../dialog-utils";
 import {GameButtonOptions} from "../game-list/game/game-button-enum";
@@ -11,6 +12,9 @@ import {SimpleGameCreatorFormComponent} from "../simple-game-creator-form/simple
   styleUrls: ["./vue-admin.component.css"],
 })
 export class VueAdminComponent {
+
+  // @ts-ignore variable used in html
+  private readonly HOME_BUTTON_ROUTE: string = HOME_ROUTE;
 
   public constructor(private dialog: MatDialog) { }
 

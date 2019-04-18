@@ -29,7 +29,6 @@ export class GameListComponent implements OnInit {
     forkJoin(this.gameService.getSimpleGames(), this.gameService.getFreeGames()).subscribe(([simpleGames, freeGames]) => {
       this.gameService.pushSimpleGames(simpleGames);
       this.gameService.pushFreeGames(freeGames);
-      this.gameService.updateFreeGameImages().catch((value: Error) => {throw value; });
       this.pushedGames = true;
     });
     this.roomService.checkOutRoom();

@@ -32,7 +32,7 @@ import {Form3DService} from "../3DFormService/3-dform.service";
 
 export const SKY_BOX_NAME: string = "skyBox";
 
-@Injectable()
+@Injectable({providedIn: "root"})
 export class FreeGameCreatorService {
 
   private scene: Scene;

@@ -1,5 +1,15 @@
 import { Injectable } from "@angular/core";
-import {BoxGeometry, ConeGeometry, CylinderGeometry, GLTF, Mesh, MeshPhongMaterial, SphereGeometry, Vector3} from "three";
+import {
+  BoxGeometry,
+  ConeGeometry,
+  CylinderGeometry,
+  GLTF,
+  Mesh,
+  MeshPhongMaterial,
+  Object3D,
+  SphereGeometry,
+  Vector3
+} from "three";
 import {
   ICone,
   ICube,
@@ -88,5 +98,19 @@ export class Form3DService {
     gltf.scene.rotateY(object.rotation.y);
     gltf.scene.rotateZ(object.rotation.z);
     gltf.scene.position.copy(Form3DService.toThreeVector3(object.position));
+    this.disableChildren(gltf.scene.children);
+  }
+
+  private disableChildren(objs: Object3D[]): void {
+    for (const obj of objs) {
+      obj.castShadow = false;
+      obj.receiveShadow = false;
+      obj.matrixAutoUpdate = false;
+      obj.updateMatrix();
+      obj.updateWorldMatrix(true, true);
+      if (obj.children.length !== 0) {
+        this.disableChildren(obj.children);
+      }
+    }
   }
 }

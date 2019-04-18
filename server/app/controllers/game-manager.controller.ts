@@ -4,7 +4,7 @@ import {inject, injectable} from "inversify";
 import {NonExistentGameError} from "../../../common/errors/database.errors";
 import {IFreeGame} from "../../../common/model/game/free-game";
 import {ISimpleGame} from "../../../common/model/game/simple-game";
-import {DataBaseService} from "../services/data-base.service";
+import {DataBaseService, NOT_TO_BE_DELETED_FILTER_QUERY} from "../services/data-base.service";
 import Types from "../types";
 import {executePromiseSafely} from "./controller-utils";
 
@@ -21,9 +21,14 @@ export class GameManagerController {
         // │  │ SIMPLE │  │
         // └──┴────────┴──┘
 
-        router.get("/simple/", async (req: Request, res: Response, next: NextFunction) => {
+        router.get("/simple", async (req: Request, res: Response, next: NextFunction) => {
             executePromiseSafely(res, next, async () => {
-                res.json(await this.dataBaseService.simpleGames.getAll());
+                const filterDeleted: string = req.query["filterDeleted"];
+                const body: ISimpleGame[] = filterDeleted === "true"
+                    ? await this.dataBaseService.simpleGames.getAllWithQuery(NOT_TO_BE_DELETED_FILTER_QUERY)
+                    : await this.dataBaseService.simpleGames.getAll();
+
+                res.json(body);
             });
         });
 
@@ -54,9 +59,14 @@ export class GameManagerController {
         // │  │ FREE │  │
         // └──┴──────┴──┘
 
-        router.get("/free/", async (req: Request, res: Response, next: NextFunction) => {
+        router.get("/free", async (req: Request, res: Response, next: NextFunction) => {
             executePromiseSafely(res, next, async () => {
-                res.json(await this.dataBaseService.freeGames.getAll());
+                const filterDeleted: string = req.query["filterDeleted"];
+                const body: IFreeGame[] = filterDeleted === "true"
+                    ? await this.dataBaseService.freeGames.getAllWithQuery(NOT_TO_BE_DELETED_FILTER_QUERY)
+                    : await this.dataBaseService.freeGames.getAll();
+
+                res.json(body);
             });
         });
 

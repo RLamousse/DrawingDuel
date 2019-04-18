@@ -1,7 +1,8 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormsModule } from "@angular/forms";
-import { Router } from "@angular/router";
+import {MatIconModule} from "@angular/material";
+import {ActivatedRoute, Router, RouterModule} from "@angular/router";
 import {BACKGROUND_IMAGE_TEST} from "../../../../common/communication/routes";
 import {SocketService} from "../socket.service";
 import { UNListService } from "../username.service";
@@ -25,9 +26,11 @@ describe("Initial View Component tests", () => {
     unListSpyService = jasmine.createSpyObj("UNListService", ["checkAvailability"]);
     TestBed.configureTestingModule({
       declarations: [InitialViewComponent],
-      imports: [FormsModule],
+      imports: [FormsModule, RouterModule, MatIconModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
+        {provide: Router, useValue: {}},
+        {provide: ActivatedRoute, useValue: {}},
         { provide: SocketService, useValue: mockSocketService },
         { provide: UNListService, useValue: unListSpyService },
         { provide: Router, useClass: class { public navigate: jasmine.Spy = jasmine.createSpy("navigate"); } },

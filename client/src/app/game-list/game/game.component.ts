@@ -1,7 +1,7 @@
 import {Component, Input, OnDestroy, OnInit} from "@angular/core";
 import {MatDialog} from "@angular/material";
 import {Router} from "@angular/router";
-import {LOADING_GIF, LOADING_ROUTE, PLAY_3D_ROUTE, PLAY_ROUTE} from "../../../../../common/communication/routes";
+import {LOADING_ROUTE, PLAY_3D_ROUTE, PLAY_ROUTE} from "../../../../../common/communication/routes";
 import {ComponentNavigationError} from "../../../../../common/errors/component.errors";
 import {GameType, OnlineType} from "../../../../../common/model/game/game";
 import {IRecordTime} from "../../../../../common/model/game/record-time";
@@ -40,7 +40,6 @@ export class GameComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.roomService.subscribeToFetchRooms(this.handleRoomAvailability);
     this.handleRoomAvailability = this.handleRoomAvailability.bind(this);
-    this.thumbnail = LOADING_GIF;
   }
 
   public ngOnDestroy(): void {
