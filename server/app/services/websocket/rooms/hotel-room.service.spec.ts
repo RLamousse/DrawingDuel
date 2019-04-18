@@ -100,6 +100,7 @@ describe("A service to manage game rooms", () => {
                     modifiedObjects: [],
                     originalObjects: [],
                 },
+                thumbnail: "",
             };
         };
 
