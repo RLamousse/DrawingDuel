@@ -125,3 +125,11 @@ export class ObjectNotFoundError extends Error {
         super(ObjectNotFoundError.OBJECT_NOT_FOUND_ERROR_MESSAGE);
     }
 }
+
+export class RoomNotDefinedError extends Error {
+    public static readonly ROOM_NOT_DEFINED_ERROR_MESSAGE: string = "Room ID was not specified in the sendChat call!";
+
+    constructor() {
+        super(RoomNotDefinedError.ROOM_NOT_DEFINED_ERROR_MESSAGE);
+    }
+}
