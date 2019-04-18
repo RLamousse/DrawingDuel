@@ -100,6 +100,13 @@ export class FreeGamesCollectionService extends CollectionService<IFreeGame> {
         };
     }
 
+    protected queryDeletionSuccessMessage(): Message {
+        return {
+            title: "Free games deleted",
+            body: "All corresponding free games successfully deleted!",
+        };
+    }
+
     protected get idFieldName(): string {
         return GAME_NAME_FIELD;
     }

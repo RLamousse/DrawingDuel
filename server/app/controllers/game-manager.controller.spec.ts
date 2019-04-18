@@ -3,7 +3,7 @@
 import {expect} from "chai";
 import * as HttpStatus from "http-status-codes";
 import * as request from "supertest";
-import {anything, instance, mock, when} from "ts-mockito";
+import {anything, instance, mock, verify, when} from "ts-mockito";
 import {Message} from "../../../common/communication/messages/message";
 import {
     GAME_MANAGER_FREE,
@@ -36,10 +36,12 @@ describe("Data-base controller", () => {
 
         when(mockSimpleGames.delete(anything())).thenResolve(SUCCESS_MESSAGE);
         when(mockSimpleGames.getAll()).thenResolve([]);
+        when(mockSimpleGames.getAllWithQuery(anything())).thenResolve([]);
         when(mockSimpleGames.getFromId(anything())).thenResolve();
 
         when(mockFreeGames.delete(anything())).thenResolve(SUCCESS_MESSAGE);
         when(mockFreeGames.getAll()).thenResolve([]);
+        when(mockFreeGames.getAllWithQuery(anything())).thenResolve([]);
         when(mockFreeGames.getFromId(anything())).thenResolve();
 
         container.rebind(types.DataBaseService).toConstantValue(instance(mockDataBaseService));
@@ -47,11 +49,22 @@ describe("Data-base controller", () => {
     });
 
     describe("Simple Games", () => {
-        it("should send a success message on get all", async () => {
+        it("should send empty array get all", async () => {
             return request(app)
                 .get(GAME_MANAGER_SIMPLE)
                 .expect(HttpStatus.OK)
                 .then((response) => {
+                    verify(mockSimpleGames.getAll()).once();
+                    expect(response.body).to.eql([]);
+                });
+        });
+        it("should send a empty array on get not deleted", async () => {
+            return request(app)
+                .get(GAME_MANAGER_SIMPLE)
+                .query({filterDeleted: true})
+                .expect(HttpStatus.OK)
+                .then((response) => {
+                    verify(mockSimpleGames.getAllWithQuery(anything())).once();
                     expect(response.body).to.eql([]);
                 });
         });
@@ -77,11 +90,22 @@ describe("Data-base controller", () => {
     });
 
     describe("Free Games", () => {
-        it("should send a success message on get all", async () => {
+        it("should send a empty array on get all", async () => {
             return request(app)
                 .get(GAME_MANAGER_FREE)
                 .expect(HttpStatus.OK)
                 .then((response) => {
+                    verify(mockFreeGames.getAll()).once();
+                    expect(response.body).to.eql([]);
+                });
+        });
+        it("should send a empty array on get all", async () => {
+            return request(app)
+                .get(GAME_MANAGER_FREE)
+                .query({filterDeleted: true})
+                .expect(HttpStatus.OK)
+                .then((response) => {
+                    verify(mockFreeGames.getAllWithQuery(anything())).once();
                     expect(response.body).to.eql([]);
                 });
         });

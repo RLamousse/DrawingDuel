@@ -61,9 +61,7 @@ export class GameService {
     this.simpleGames = [];
     this.convertScoresObject(simpleGamesToModify);
     for (const game of simpleGamesToModify) {
-      if (!game.toBeDeleted) {
-        this.simpleGames.push(game);
-      }
+      this.simpleGames.push(game);
     }
   }
 
@@ -72,30 +70,26 @@ export class GameService {
     this.extendedFreeGames = [];
     this.convertScoresObject(freeGamesToModify);
     for (const game of freeGamesToModify) {
-      if (!game.toBeDeleted) {
-        this.freeGames.push(game);
-      }
+      this.freeGames.push(game);
     }
     for (const game of this.freeGames) {
-      if (!game.toBeDeleted) {
-        const img: string = "";
-        const extendedFreeGame: IExtendedFreeGame = {
-          thumbnail: img,
-          scenes: game.scenes,
-          gameName: game.gameName,
-          bestSoloTimes: game.bestSoloTimes,
-          bestMultiTimes: game.bestMultiTimes,
-          toBeDeleted: game.toBeDeleted,
-        };
-        this.extendedFreeGames.push(extendedFreeGame);
-      }
+      const img: string = "";
+      const extendedFreeGame: IExtendedFreeGame = {
+        thumbnail: img,
+        scenes: game.scenes,
+        gameName: game.gameName,
+        bestSoloTimes: game.bestSoloTimes,
+        bestMultiTimes: game.bestMultiTimes,
+        toBeDeleted: game.toBeDeleted,
+      };
+      this.extendedFreeGames.push(extendedFreeGame);
     }
 
   }
 
   public getSimpleGames(): Observable<ISimpleGame[]> {
     return from(
-      Axios.get<ISimpleGame[]>(this.SIMPLE_GAME_BASE_URL)
+      Axios.get<ISimpleGame[]>(this.SIMPLE_GAME_BASE_URL, {params: {filterDeleted: true}})
         .then((value: AxiosResponse<ISimpleGame[]>) => value.data)
         .catch((error) => { throw error; }),
     );
@@ -103,7 +97,7 @@ export class GameService {
 
   public getFreeGames(): Observable<IFreeGame[]> {
     return from(
-      Axios.get<IFreeGame[]>(this.FREE_GAME_BASE_URL)
+      Axios.get<IFreeGame[]>(this.FREE_GAME_BASE_URL, {params: {filterDeleted: true}})
         .then((value: AxiosResponse<IFreeGame[]>) => value.data)
         .catch((error) => { throw error; }),
     );

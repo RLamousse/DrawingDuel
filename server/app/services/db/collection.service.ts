@@ -23,6 +23,7 @@ export abstract class CollectionService<T> {
     protected abstract creationSuccessMessage(data: T): Message;
     protected abstract updateSuccessMessage(id: string): Message;
     protected abstract deletionSuccessMessage(id: string): Message;
+    protected abstract queryDeletionSuccessMessage(): Message;
 
     public async contains(id: string): Promise<boolean> {
         return await this.documentCount(id) !== 0;
@@ -30,6 +31,22 @@ export abstract class CollectionService<T> {
 
     public async getAll(): Promise<T[]> {
         return this._collection.find().toArray()
+            .then((items: T[]) => {
+                items.forEach((item: T) => {
+                    // @ts-ignore even thought item is read as a T type(IFreeGame or ISimpleGame),
+                    // mongo generates an _id attribute, and we want it removed!
+                    delete item._id;
+                });
+
+                return items;
+            })
+            .catch(() => {
+                throw new DatabaseError();
+            });
+    }
+
+    public async getAllWithQuery(query: FilterQuery<T>): Promise<T[]> {
+        return this._collection.find(query).toArray()
             .then((items: T[]) => {
                 items.forEach((item: T) => {
                     // @ts-ignore even thought item is read as a T type(IFreeGame or ISimpleGame),
