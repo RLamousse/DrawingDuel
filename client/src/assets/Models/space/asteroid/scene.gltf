@@ -3,74 +3,74 @@
     {
       "bufferView": 2,
       "componentType": 5126,
-      "count": 163,
+      "count": 777,
       "max": [
-        1.2704999446868896,
-        1.0900000333786011,
-        2.2973999977111816
+        1.0619039535522461,
+        1.1907310485839844,
+        1.9056810140609741
       ],
       "min": [
-        -1.3134000301361084,
-        -1.1687999963760376,
-        -0.32490000128746033
+        -1.4308309555053711,
+        -1.0272610187530518,
+        -0.99914497137069702
       ],
       "type": "VEC3"
     },
     {
       "bufferView": 2,
-      "byteOffset": 1956,
+      "byteOffset": 9324,
       "componentType": 5126,
-      "count": 163,
+      "count": 777,
       "max": [
-        0.99572068452835083,
-        0.97550719976425171,
-        0.96413588523864746
+        0.99999099969863892,
+        0.99915814399719238,
+        0.99986684322357178
       ],
       "min": [
-        -0.98273760080337524,
-        -0.99188715219497681,
-        -0.97775989770889282
+        -0.99942857027053833,
+        -0.99993079900741577,
+        -0.99950432777404785
       ],
       "type": "VEC3"
     },
     {
       "bufferView": 3,
       "componentType": 5126,
-      "count": 163,
+      "count": 777,
       "max": [
-        0.99147683382034302,
-        0.98592847585678101,
-        0.55870217084884644,
+        0.90079182386398315,
+        0.9267725944519043,
+        0.99999713897705078,
         1
       ],
       "min": [
-        -0.99790304899215698,
-        -0.99471056461334229,
-        -0.66728723049163818,
-        1
+        -0.99793154001235962,
+        -0.99718111753463745,
+        -0.79271668195724487,
+        -1
       ],
       "type": "VEC4"
     },
     {
       "bufferView": 1,
       "componentType": 5126,
-      "count": 163,
+      "count": 777,
       "max": [
-        0.99180001020431519,
-        0.95099997520446777
+        0.99000000953674316,
+        0.99000000953674316
       ],
       "min": [
-        0.0065000001341104507,
-        0.04830000177025795
+        0.0099999997764825821,
+        0.041549000889062881
       ],
       "type": "VEC2"
     },
     {
       "bufferView": 0,
       "componentType": 5125,
-      "count": 900,
+      "count": 3750,
       "max": [
-        162
+        776
       ],
       "min": [
         0
@@ -80,42 +80,42 @@
   ],
   "asset": {
     "extras": {
-      "author": "AkinD (https://sketchfab.com/akin67)",
+      "author": "Organization (https://sketchfab.com/organization)",
       "license": "CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)",
-      "source": "https://sketchfab.com/models/c9e06fdad0374345b5c516b89a57d1ec",
-      "title": "Astéroïde Low Poly"
+      "source": "https://sketchfab.com/models/6b371e87b78f49e487447eec3098c45a",
+      "title": "Stylized Rock Lp"
     },
-    "generator": "Sketchfab-3.29.3",
+    "generator": "Sketchfab-3.54.8-rc1",
     "version": "2.0"
   },
   "bufferViews": [
     {
       "buffer": 0,
-      "byteLength": 3600,
+      "byteLength": 15000,
       "byteOffset": 0,
       "name": "floatBufferViews",
       "target": 34963
     },
     {
       "buffer": 0,
-      "byteLength": 1304,
-      "byteOffset": 3600,
+      "byteLength": 6216,
+      "byteOffset": 15000,
       "byteStride": 8,
       "name": "floatBufferViews",
       "target": 34962
     },
     {
       "buffer": 0,
-      "byteLength": 3912,
-      "byteOffset": 4904,
+      "byteLength": 18648,
+      "byteOffset": 21216,
       "byteStride": 12,
       "name": "floatBufferViews",
       "target": 34962
     },
     {
       "buffer": 0,
-      "byteLength": 2608,
-      "byteOffset": 8816,
+      "byteLength": 12432,
+      "byteOffset": 39864,
       "byteStride": 16,
       "name": "floatBufferViews",
       "target": 34962
@@ -123,25 +123,25 @@
   ],
   "buffers": [
     {
-      "byteLength": 11424,
+      "byteLength": 52296,
       "uri": "scene.bin"
     }
   ],
   "images": [
     {
-      "uri": "textures/Scene_-_Root_normal.jpg"
+      "uri": "textures/Default_baseColor.png"
     },
     {
-      "uri": "textures/Scene_-_Root_baseColor.jpg"
+      "uri": "textures/Default_normal.png"
     }
   ],
   "materials": [
     {
-      "doubleSided": false,
-      "name": "Scene_-_Root",
+      "doubleSided": true,
+      "name": "Default",
       "normalTexture": {
-        "index": 0,
-        "scale": 0.65000000000000002,
+        "index": 1,
+        "scale": 1,
         "texCoord": 0
       },
       "pbrMetallicRoughness": {
@@ -152,7 +152,7 @@
           1
         ],
         "baseColorTexture": {
-          "index": 1,
+          "index": 0,
           "texCoord": 0
         },
         "metallicFactor": 0,
@@ -200,7 +200,7 @@
       "children": [
         3
       ],
-      "name": "2eaa4f30d4994a96b8964612f0d88797.obj.cleaner"
+      "name": "rock_lp_002.obj.cleaner.materialmerger.gles"
     },
     {
       "mesh": 0,

@@ -19,7 +19,7 @@ export interface IIndexObj {
 
 export const spaceObjects: IThematicObject[] = [
     {type: ObjectGeometry.comet, scale: 1.1, probability: 0.2, maxRotation: Math.PI * 2},
-    {type: ObjectGeometry.asteroid, scale: 0.01, probability: 0.2, maxRotation: Math.PI * 2},
+    {type: ObjectGeometry.asteroid, scale: 12, probability: 0.2, maxRotation: Math.PI * 2},
     {type: ObjectGeometry.astronaut, scale: 4, probability: 0.15, maxRotation: Math.PI / 4},
     {type: ObjectGeometry.low_poly_ship, scale: 6, probability: 0.14, maxRotation: Math.PI / 4},
     {type: ObjectGeometry.rocket, scale: 8, probability: 0.01, maxRotation: Math.PI / 4},
