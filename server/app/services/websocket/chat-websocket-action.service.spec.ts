@@ -79,7 +79,7 @@ describe("ChatWebsocketActionService", () => {
             playerCount: OnlineType.SOLO,
             playerName: "Maxime",
             position: ChatMessagePosition.NA,
-            timestamp: new Date("April 4 2069 04:20:00"),
+            timestamp: new Date("April 20 2069 04:20:00"),
             type: ChatMessageType.CONNECTION,
         };
         service.sendChat(message);
@@ -93,7 +93,7 @@ describe("ChatWebsocketActionService", () => {
             playerCount: OnlineType.SOLO,
             playerName: "Maxime",
             position: ChatMessagePosition.NA,
-            timestamp: new Date("April 4 2069 04:20:00"),
+            timestamp: new Date("April 20 2069 04:20:00"),
             type: ChatMessageType.DISCONNECTION,
         };
         service.sendChat(message);
@@ -107,7 +107,7 @@ describe("ChatWebsocketActionService", () => {
             playerCount: OnlineType.SOLO,
             playerName: "Maxime",
             position: ChatMessagePosition.NA,
-            timestamp: new Date("April 4 2069 04:20:00"),
+            timestamp: new Date("April 20 2069 04:20:00"),
             type: ChatMessageType.DIFF_FOUND,
         };
         service.sendChat(message, "id");
@@ -125,7 +125,7 @@ describe("ChatWebsocketActionService", () => {
             playerCount: OnlineType.SOLO,
             playerName: "Maxime",
             position: ChatMessagePosition.NA,
-            timestamp: new Date("April 4 2069 04:20:00"),
+            timestamp: new Date("April 20 2069 04:20:00"),
             type: ChatMessageType.DIFF_ERROR,
         };
         service.sendChat(message, "id");
@@ -143,7 +143,7 @@ describe("ChatWebsocketActionService", () => {
             playerCount: OnlineType.SOLO,
             playerName: "Maxime",
             position: ChatMessagePosition.FIRST,
-            timestamp: new Date("April 4 2069 04:20:00"),
+            timestamp: new Date("April 20 2069 04:20:00"),
             type: ChatMessageType.BEST_TIME,
         };
         service.sendChat(message);
@@ -160,7 +160,7 @@ describe("ChatWebsocketActionService", () => {
             playerCount: OnlineType.SOLO,
             playerName: "Maxime",
             position: ChatMessagePosition.FIRST,
-            timestamp: new Date("April 4 2069 04:20:00"),
+            timestamp: new Date("April 20 2069 04:20:00"),
         };
         service.sendChat(message);
         expect(server.eventValue).to.equal(SocketEvent.CHAT);
@@ -173,7 +173,7 @@ describe("ChatWebsocketActionService", () => {
             playerCount: OnlineType.SOLO,
             playerName: "Maxime",
             position: ChatMessagePosition.NA,
-            timestamp: new Date("April 4 2069 04:20:00"),
+            timestamp: new Date("April 20 2069 04:20:00"),
             type: ChatMessageType.DIFF_FOUND,
         };
         try {
