@@ -175,7 +175,7 @@ describe("SceneRendererService", () => {
           done();
         });
 
-      const callback: (error: Error) => void = sceneDiffValidatorSpy.registerDifferenceErrorCallback.calls.first().args[0];
+      const callback: (error: Error) => void = sceneDiffValidatorSpy.registerDifferenceErrorCallback.calls.mostRecent().args[0];
       callback(new NoDifferenceAtPointError());
     });
 
@@ -195,7 +195,7 @@ describe("SceneRendererService", () => {
           done();
         });
 
-      const callback: (error: Error) => void = sceneDiffValidatorSpy.registerDifferenceErrorCallback.calls.first().args[0];
+      const callback: (error: Error) => void = sceneDiffValidatorSpy.registerDifferenceErrorCallback.calls.mostRecent().args[0];
       callback(new NoDifferenceAtPointError());
     });
 
@@ -221,7 +221,7 @@ describe("SceneRendererService", () => {
           done();
         });
 
-      const callback: (error: Error) => void = sceneDiffValidatorSpy.registerDifferenceErrorCallback.calls.first().args[0];
+      const callback: (error: Error) => void = sceneDiffValidatorSpy.registerDifferenceErrorCallback.calls.mostRecent().args[0];
       callback(new NoDifferenceAtPointError());
     });
   });
