@@ -16,6 +16,7 @@ import {OnlineType} from "../../../../../common/model/game/game";
 import {ISimpleGame} from "../../../../../common/model/game/simple-game";
 import {getOrigin} from "../../../../../common/model/point";
 import {ISimpleGameInteractionData, ISimpleGameInteractionResponse} from "../../../../../common/model/rooms/interaction";
+import {ReadyInfo} from "../../../../../common/model/rooms/ready-info";
 import {IRoomInfo} from "../../../../../common/model/rooms/room-info";
 import {IGameRoom} from "../../../model/room/game-room";
 import {DataBaseService} from "../../data-base.service";
@@ -159,15 +160,17 @@ describe("A service to manage game rooms", () => {
         async (hotelRoomService: HotelRoomService, gameName: string, gameType: OnlineType = OnlineType.SOLO) => {
             const hotelRoomServiceSpy: HotelRoomService = spy(hotelRoomService);
 
-            // TODO check room assert.isNotEmpty(serverSocket.rooms);
             return new Promise((resolve: (gameRoom: IGameRoom) => void) => {
+
                 hotelRoomService.createGameRoom(serverSocket, gameName, gameType)
                     .then(() => {
+
                         const createdRoom: IGameRoom | undefined = Array.from(hotelRoomService["_rooms"].values())
                             .find((room: IGameRoom) => room.gameName === gameName);
                         assert.exists(createdRoom);
                         assertCheckin(hotelRoomService, hotelRoomServiceSpy);
                         resolve(createdRoom as IGameRoom);
+
                     })
                     .catch(() => fail());
             });
@@ -319,7 +322,7 @@ describe("A service to manage game rooms", () => {
                 });
 
                 hotelRoomService["registerGameRoomHandlers"](serverSocket, simpleGameRoom);
-                simpleGameRoom["_onReady"]();
+                simpleGameRoom["_onReady"]({} as ReadyInfo);
             });
         });
 

@@ -12,9 +12,8 @@ export abstract class AbstractGameRoom<T extends IGame, U extends IGameState> im
     protected readonly _playerCapacity: number;
 
     protected readonly _gameState: U;
-    private _onReady: () => void;
+    private _onReady: (roomInfo: ReadyInfo) => void;
     protected _connectedPlayers: Map<string, boolean>;
-
     protected _ongoing: boolean;
 
     protected constructor(id: string, game: T, playerCapacity: number = 1, gameState: U) {
@@ -47,11 +46,11 @@ export abstract class AbstractGameRoom<T extends IGame, U extends IGameState> im
 
         if (this._connectedPlayers.size === this._playerCapacity && this.isEveryClientReady()) {
             this._ongoing = true;
-            this._onReady();
+            this._onReady(this.roomReadyEmitInformation);
         }
     }
 
-    public setOnReadyCallBack(callback: () => void): void {
+    public setOnReadyCallBack(callback: (roomInfo: ReadyInfo) => void): void {
         this._onReady = callback;
     }
 
@@ -84,7 +83,7 @@ export abstract class AbstractGameRoom<T extends IGame, U extends IGameState> im
         return this._playerCapacity;
     }
 
-    public get roomReadyEmitInformation(): ReadyInfo {
+    protected get roomReadyEmitInformation(): ReadyInfo {
         return {};
     }
 }

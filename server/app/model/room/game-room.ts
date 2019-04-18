@@ -8,13 +8,12 @@ export interface IGameRoom {
     vacant: boolean;
     empty: boolean;
     ongoing: boolean;
-    roomReadyEmitInformation: ReadyInfo;
 
     checkIn(clientId: string): void;
 
     handleReady(clientId: string): void;
 
-    setOnReadyCallBack(callback: () => void): void;
+    setOnReadyCallBack(callback: (roomInfo: ReadyInfo) => void): void;
 
     interact(interactionData: IInteractionData): Promise<IInteractionResponse>;
 
