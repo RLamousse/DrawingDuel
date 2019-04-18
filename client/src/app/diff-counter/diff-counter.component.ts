@@ -65,8 +65,14 @@ export class DiffCounterComponent implements OnInit, OnDestroy {
   private endGame(): void {
     this.stopTime.next();
     this.simpleGameService.resetDifferenceCount();
-    this.postTime();
+    if (this.isWinner()) {
+      this.postTime();
+    }
     this.openCongratulationDialog();
+  }
+
+  private isWinner(): boolean {
+    return this.diffNumber > this.advDiffNumber;
   }
 
   private countDiff(isMe: boolean): void {
@@ -102,7 +108,7 @@ export class DiffCounterComponent implements OnInit, OnDestroy {
               throw new ComponentNavigationError();
             });
         },
-        data: {isWinner: this.diffNumber > this.advDiffNumber} as EndGameInformation,
+        data: {isWinner: this.isWinner()} as EndGameInformation,
       },
     );
   }
