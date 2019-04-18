@@ -5,7 +5,7 @@ import {GAMES_ROUTE} from "../../../../common/communication/routes";
 import {SocketEvent} from "../../../../common/communication/socket-events";
 import {ComponentNavigationError, FreeViewGamesRenderingError} from "../../../../common/errors/component.errors";
 import {IFreeGame} from "../../../../common/model/game/free-game";
-import {GameType} from "../../../../common/model/game/game";
+import {getDifferenceThreshold, OnlineType} from "../../../../common/model/game/game";
 import {IPoint} from "../../../../common/model/point";
 import {X_FACTOR, Y_FACTOR} from "../../../../common/util/util";
 import {openDialog} from "../dialog-utils";
@@ -35,8 +35,8 @@ export class SceneCreatorComponent implements OnInit, OnDestroy {
   private modifiedCanvasContext: CanvasRenderingContext2D;
 
   protected gameName: string;
-  protected FREE_GAME_TYPE: GameType = GameType.FREE;
   protected cursorEnabled: boolean = true;
+  private onlineType: OnlineType;
 
   public constructor(private renderService: SceneRendererService,
                      private route: ActivatedRoute,
@@ -67,6 +67,7 @@ export class SceneCreatorComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.route.queryParams.subscribe((params) => {
       this.gameName = params["gameName"];
+      this.onlineType = params["onlineType"];
     });
     this.renderService.init(this.originalView.nativeElement, this.modifiedView.nativeElement);
 
@@ -109,8 +110,8 @@ export class SceneCreatorComponent implements OnInit, OnDestroy {
       const clickPosition: IPoint = {x: clickEvent.clientX, y: clickEvent.clientY};
       this.clickEnabled = false;
       this.renderService.objDiffValidation(clickPosition)
-        .then(() => {
-          this.clickEnabled = true; // TODO Diff counter sempai, plz disable me niehhh
+        .then((diffCount: number) => {
+          this.clickEnabled = diffCount < getDifferenceThreshold(this.onlineType);
         })
         .catch(() => {
           this.cursorEnabled = false;

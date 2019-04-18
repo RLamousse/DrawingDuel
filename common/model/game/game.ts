@@ -19,3 +19,9 @@ export const instanceOfGame = (object: any): object is IGame =>
     'gameName' in object &&
     'bestSoloTimes' in object &&
     'bestMultiTimes' in object;
+
+export const getDifferenceThreshold:
+    (online: OnlineType) => number =
+    (online: OnlineType) => {
+        return online === OnlineType.MULTI ? MULTIPLAYER_GAME_DIFF_THRESHOLD : SINGLEPLAYER_GAME_DIFF_THRESHOLD;
+    };
