@@ -16,8 +16,9 @@ export class DataBaseService {
     private readonly DB_EXIT_CODE: number = -42;
     private readonly DB_USER: string = config.get("mongo.user");
     private readonly DB_PASSWORD: string = config.get("mongo.password");
+    private readonly DB_HOST: string = config.get("mongo.host");
+    private readonly DB_URL: string = `mongodb+srv://${this.DB_USER}:${this.DB_PASSWORD}@${this.DB_HOST}`;
     private readonly DB_DB: string = config.get("mongo.database");
-    private readonly DB_URL: string = `mongodb+srv://${this.DB_USER}:${this.DB_PASSWORD}@cluster0-ijbac.mongodb.net/test?retryWrites=true`;
 
     private _dataBase: Db;
     private _simpleGames: SimpleGamesCollectionService;
@@ -25,7 +26,7 @@ export class DataBaseService {
 
     public constructor() {
         MongoClient.connect(this.DB_URL, {useNewUrlParser: true})
-            .then(async (client: MongoClient) => {
+            .then((client: MongoClient) => {
                 this._dataBase = client.db(this.DB_DB);
                 this._simpleGames = new SimpleGamesCollectionService(this._dataBase.collection(SIMPLE_GAMES_COLLECTION));
                 this._freeGames = new FreeGamesCollectionService(this._dataBase.collection(FREE_GAMES_COLLECTION));

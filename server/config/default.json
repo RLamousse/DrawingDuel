@@ -6,6 +6,7 @@
   "mongo": {
     "user": "server",
     "password": "awvXOBD3idhnWFY5",
-    "database": "projet"
+    "database": "projet",
+    "host": "cluster0-ijbac.mongodb.net/test?retryWrites=true"
   }
 }
