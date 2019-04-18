@@ -21,6 +21,6 @@ export class VueAdminComponent {
   }
 
   protected create3DGame(): void {
-    openDialog(this.dialog, SimpleGameCreatorFormComponent, {callback: window.location.reload.bind(window.location)});
+    openDialog(this.dialog, Create3DGameComponent, {callback: window.location.reload.bind(window.location)});
   }
 }
