@@ -2,7 +2,6 @@ import Axios from "axios";
 import {inject, injectable} from "inversify";
 import * as io from "socket.io";
 import {
-    createWebsocketMessage,
     ChatMessage,
     ChatMessagePosition,
     ChatMessageType,
@@ -48,6 +47,6 @@ export class UpdateGameScoresWebsocketActionService implements WebsocketActionSe
                                       position: this.POSITION_TRANSLATE_TABLE[position],
                                       timestamp: new Date(),
         };
-        this.chatAction.execute(createWebsocketMessage(resBody), socket);
+        this.chatAction.sendChat(resBody);
     }
 }

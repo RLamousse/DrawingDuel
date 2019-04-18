@@ -2,7 +2,7 @@ import {format} from "date-and-time";
 import {inject, injectable} from "inversify";
 import {Socket} from "socket.io";
 import {
-    createWebsocketMessage, ChatMessage, RoomCheckInMessage,
+    createWebsocketMessage, RoomCheckInMessage,
     RoomCreationMessage,
     UpdateScoreMessage, WebsocketMessage
 } from "../../../common/communication/messages/message";
@@ -48,9 +48,6 @@ export class WebsocketController {
         });
         socket.on(SocketEvent.UPDATE_SCORE, async (message: WebsocketMessage<UpdateScoreMessage>) => {
             await this.scoreUpdateAction.execute(message, socket);
-        });
-        socket.on(SocketEvent.CHAT, (message: WebsocketMessage<ChatMessage>) => {
-            this.chatAction.execute(message, socket);
         });
         socket.on(SocketEvent.DISCONNECT, () => {
             this.userDisconnectionRoutine(socket);
