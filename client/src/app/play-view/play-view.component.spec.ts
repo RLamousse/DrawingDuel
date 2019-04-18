@@ -4,7 +4,6 @@ import {MatIconModule, MatListModule} from "@angular/material";
 import {MatDialogModule, MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
 import {ActivatedRoute, Router, RouterModule} from "@angular/router";
 import {MessageBoxComponent} from "../message-box/message-box.component";
-import {SceneDiffValidatorService} from "../scene-creator/scene-diff-validator.service";
 import {SimpleGameCanvasComponent} from "../simple-game/simple-game-canvas/simple-game-canvas.component";
 import {SimpleGameContainerComponent} from "../simple-game/simple-game-container/simple-game-container.component";
 import {SocketService} from "../socket.service";
@@ -57,7 +56,6 @@ describe("PlayViewComponent", () => {
           },
           {provide: MatDialogRef, useValue: {}},
           {provide: MAT_DIALOG_DATA, useValue: {}},
-          {provide: SceneDiffValidatorService, useValue: {}},
         ],
       });
   });
