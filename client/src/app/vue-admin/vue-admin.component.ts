@@ -12,6 +12,7 @@ import {SimpleGameCreatorFormComponent} from "../simple-game-creator-form/simple
 })
 export class VueAdminComponent {
 
+  // @ts-ignore variable used in html
   private readonly HOME_BUTTON_ROUTE: string = HOME_ROUTE;
 
   public constructor(private dialog: MatDialog) { }

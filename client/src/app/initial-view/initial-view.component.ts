@@ -19,6 +19,7 @@ export class InitialViewComponent implements OnInit {
   private readonly BACKGROUND_COLOR: string = "#272731";
   private readonly BUTTON_ID: string = "#stars";
   private readonly BACKGROUND_CENTERED: string = "center";
+  // @ts-ignore variable used in html
   private readonly ADMIN_BUTTON_ROUTE: string = ADMIN_ROUTE;
 
   public constructor(
