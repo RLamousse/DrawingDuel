@@ -8,7 +8,6 @@ import { SimpleGamesCollectionService } from "./db/simple-games.collection.servi
 
 export const SIMPLE_GAMES_COLLECTION: string = "simpleGames";
 export const FREE_GAMES_COLLECTION: string = "freeGames";
-export const TO_BE_DELETED_FILTER_QUERY: FilterQuery<IGame> = {["toBeDeleted"]: {$eq: true}};
 export const NOT_TO_BE_DELETED_FILTER_QUERY: FilterQuery<IGame> = {["toBeDeleted"]: {$eq: false}};
 
 @injectable()
@@ -30,7 +29,6 @@ export class DataBaseService {
                 this._dataBase = client.db(this.DB_DB);
                 this._simpleGames = new SimpleGamesCollectionService(this._dataBase.collection(SIMPLE_GAMES_COLLECTION));
                 this._freeGames = new FreeGamesCollectionService(this._dataBase.collection(FREE_GAMES_COLLECTION));
-                await this.cleanGamesToBeDeleted();
             })
             .catch(() => {
                 console.error("Unable to connect to the database!");
@@ -47,10 +45,5 @@ export class DataBaseService {
 
     public get freeGames(): FreeGamesCollectionService {
         return this._freeGames;
-    }
-
-    private async cleanGamesToBeDeleted(): Promise<void> {
-        await this.simpleGames.deleteDocumentWithQuery(TO_BE_DELETED_FILTER_QUERY);
-        await this.freeGames.deleteDocumentWithQuery(TO_BE_DELETED_FILTER_QUERY);
     }
 }

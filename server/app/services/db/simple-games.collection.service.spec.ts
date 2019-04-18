@@ -13,7 +13,6 @@ import {
 } from "../../../../common/errors/database.errors";
 import {IFreeGame} from "../../../../common/model/game/free-game";
 import {ISimpleGame} from "../../../../common/model/game/simple-game";
-import {TO_BE_DELETED_FILTER_QUERY} from "../data-base.service";
 import {GAME_NAME_FIELD, SimpleGamesCollectionService} from "./simple-games.collection.service";
 
 describe("A db service for simple games", () => {
@@ -207,24 +206,6 @@ describe("A db service for simple games", () => {
                 .then((message: Message) => {
                     expect(message)
                         .to.eql(simpleGamesCollectionService["deletionSuccessMessage"]("gameToDelete"));
-                });
-        });
-    });
-
-    describe("Query game deletion", () => {
-
-        it("should delete only games that are supposed to be deleted", async () => {
-
-            mockedCollection.setup(async (collection: Collection<ISimpleGame>) => collection.deleteMany(TO_BE_DELETED_FILTER_QUERY))
-            // @ts-ignore Spoof DeleteWriteOpResultObject for DB delete promise
-                .returns(async () => Promise.resolve({}));
-
-            simpleGamesCollectionService = new SimpleGamesCollectionService(mockedCollection.object);
-
-            return simpleGamesCollectionService.deleteDocumentWithQuery(TO_BE_DELETED_FILTER_QUERY)
-                .then((message: Message) => {
-                    expect(message)
-                        .to.eql(simpleGamesCollectionService["queryDeletionSuccessMessage"]());
                 });
         });
     });
