@@ -17,7 +17,6 @@ import {ISimpleGame} from "../../../common/model/game/simple-game";
             })
 export class GameService {
 
-  public constructor() {/*empty*/}
   public simpleGames: ISimpleGame[] = [];
   public freeGames: IFreeGame[] = [];
   public readonly SIMPLE_GAME_BASE_URL: string = SERVER_BASE_URL + GAME_MANAGER_SIMPLE;
@@ -52,9 +51,7 @@ export class GameService {
     this.simpleGames = [];
     this.convertScoresObject(simpleGamesToModify);
     for (const game of simpleGamesToModify) {
-      if (!game.toBeDeleted) {
-        this.simpleGames.push(game);
-      }
+      this.simpleGames.push(game);
     }
   }
 
@@ -62,15 +59,13 @@ export class GameService {
     this.freeGames = [];
     this.convertScoresObject(freeGamesToModify);
     for (const game of freeGamesToModify) {
-      if (!game.toBeDeleted) {
-        this.freeGames.push(game);
-      }
+      this.freeGames.push(game);
     }
   }
 
   public getSimpleGames(): Observable<ISimpleGame[]> {
     return from(
-      Axios.get<ISimpleGame[]>(this.SIMPLE_GAME_BASE_URL)
+      Axios.get<ISimpleGame[]>(this.SIMPLE_GAME_BASE_URL, {params: {filterDeleted: true}})
         .then((value: AxiosResponse<ISimpleGame[]>) => value.data)
         .catch((error) => { throw error; }),
     );
@@ -78,7 +73,7 @@ export class GameService {
 
   public getFreeGames(): Observable<IFreeGame[]> {
     return from(
-      Axios.get<IFreeGame[]>(this.FREE_GAME_BASE_URL)
+      Axios.get<IFreeGame[]>(this.FREE_GAME_BASE_URL, {params: {filterDeleted: true}})
         .then((value: AxiosResponse<IFreeGame[]>) => value.data)
         .catch((error) => { throw error; }),
     );
