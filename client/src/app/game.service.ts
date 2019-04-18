@@ -106,15 +106,12 @@ export class GameService {
   public getFreeGameByName(gameName: string): Observable<IFreeGame> {
     return from(
       Axios.get<IFreeGame>(this.FREE_GAME_BASE_URL + GAME_MANAGER_GET_REQUEST + encodeURIComponent(gameName))
-      Axios.get<IFreeGame>(this.FREE_GAME_BASE_URL + GAME_MANAGER_GET_REQUEST + encodeURIComponent(gameName))
-      Axios.get<IFreeGame>(this.FREE_GAME_BASE_URL + GAME_MANAGER_GET_REQUEST + encodeURIComponent(gameName))
         .then((value: AxiosResponse<IFreeGame>) => value.data)
         .catch((error) => { throw error; }),
     );
   }
 
   public hideSimpleByName(gameName: string): void {
-    Axios.put(this.SIMPLE_GAME_BASE_URL + GAME_MANAGER_UPDATE_REQUEST + encodeURIComponent(gameName), {toBeDeleted: true})
     Axios.put(this.SIMPLE_GAME_BASE_URL + GAME_MANAGER_UPDATE_REQUEST + encodeURIComponent(gameName), {toBeDeleted: true})
       .catch((error) => { throw error; });
   }
