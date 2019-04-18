@@ -65,7 +65,7 @@ export interface RoomInteractionMessage<T extends IInteractionData> extends Room
 }
 
 export interface RoomInteractionErrorMessage extends RoomMessage {
-    error: Error;
+    errorMessage: string;
 }
 
 export const isAWebsocketMessage: (object: any) => boolean =

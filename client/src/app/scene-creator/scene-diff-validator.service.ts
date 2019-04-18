@@ -57,7 +57,7 @@ export class SceneDiffValidatorService implements OnDestroy {
       SocketEvent.INTERACT_ERROR,
       createWebsocketMessage<RoomInteractionErrorMessage>(
         {
-          error: error,
+          errorMessage: error.message,
         }),
     );
   }

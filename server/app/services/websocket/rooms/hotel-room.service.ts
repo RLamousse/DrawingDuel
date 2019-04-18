@@ -144,7 +144,7 @@ export class HotelRoomService {
         });
 
         socket.in(room.id).on(SocketEvent.INTERACT_ERROR, <T>(message: WebsocketMessage<RoomInteractionErrorMessage>) => {
-            this.handleInteractionError(message.body.error, socket, room);
+            this.handleInteractionError(message.body.errorMessage, socket, room);
         });
 
         socket.in(room.id).on(SocketEvent.CHECK_OUT, () => {
@@ -165,7 +165,7 @@ export class HotelRoomService {
                 this.radioTower.sendToRoom(SocketEvent.INTERACT, createWebsocketMessage(interactionResponse), room.id);
             })
             .catch((error: Error) => {
-                this.handleInteractionError(error, socket, room);
+                this.handleInteractionError(error.message, socket, room);
             });
     }
 
@@ -180,8 +180,8 @@ export class HotelRoomService {
         };
     }
 
-    private handleInteractionError(error: Error, socket: Socket, room: IGameRoom): void {
-        this.radioTower.privateSend(SocketEvent.INTERACT_ERROR, createWebsocketMessage(error.message), socket.id);
+    private handleInteractionError(errorMessage: string, socket: Socket, room: IGameRoom): void {
+        this.radioTower.privateSend(SocketEvent.INTERACT_ERROR, createWebsocketMessage(errorMessage), socket.id);
         const chatMessage: ChatMessage = this.createInteractionChatMessage(room, socket);
         chatMessage.type = ChatMessageType.DIFF_ERROR;
         this.chatAction.sendChat(chatMessage, room.id);
