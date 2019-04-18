@@ -1,6 +1,8 @@
 import {ComponentFixture, TestBed } from "@angular/core/testing";
 import {MatDialogModule} from "@angular/material";
 import {ActivatedRoute, Router} from "@angular/router";
+import {createWebsocketMessage} from "../../../../common/communication/messages/message";
+import {RoomService} from "../room.service";
 import {SocketService} from "../socket.service";
 import { AwaitViewComponent } from "./await-view.component";
 import {GameDeletionNotifComponent} from "./game-deletion-notif/game-deletion-notif.component";
@@ -29,7 +31,7 @@ describe("AwaitViewComponent", () => {
             ),
         }, } , },
         SocketService,
-
+        RoomService,
       ],
     });
     done();
@@ -44,6 +46,19 @@ describe("AwaitViewComponent", () => {
 
   it("should create", () => {
     expect(component).toBeTruthy();
+  });
+
+  it("should notify this game deletion", () => {
+    spyOn(component["dialog"], "open");
+    component["gameName"] = "numbers";
+    component["notifyGameDeletion"](createWebsocketMessage<[string, boolean]>(["numbers", true]));
+    expect(component["dialog"].open).toHaveBeenCalled();
+  });
+
+  it("should not notify of other game deletion", () => {
+    spyOn(component["dialog"], "open");
+    component["notifyGameDeletion"](createWebsocketMessage<[string, boolean]>(["maxime", false]));
+    expect(component["dialog"].open).not.toHaveBeenCalled();
   });
 });
 

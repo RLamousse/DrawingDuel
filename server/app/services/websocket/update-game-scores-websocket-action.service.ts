@@ -9,7 +9,6 @@ import {
     WebsocketMessage
 } from "../../../../common/communication/messages/message";
 import {MODIFY_SCORES, SERVER_BASE_URL} from "../../../../common/communication/routes";
-import {SocketEvent} from "../../../../common/communication/socket-events";
 import {ScoreNotGoodEnough} from "../../../../common/errors/services.errors";
 import types from "../../types";
 import {ChatWebsocketActionService} from "./chat-websocket-action.service";
@@ -48,6 +47,6 @@ export class UpdateGameScoresWebsocketActionService implements WebsocketActionSe
                                       position: this.POSITION_TRANSLATE_TABLE[position],
                                       timestamp: new Date(),
         };
-        this.chatAction.execute({title: SocketEvent.CHAT, body: resBody}, socket);
+        this.chatAction.sendChat(resBody);
     }
 }

@@ -1,0 +1,15 @@
+#content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+button{
+  margin-top: 2%;
+  font-size: large;
+}
+
+.text {
+  color: #FFF;
+}

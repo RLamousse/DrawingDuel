@@ -2,6 +2,8 @@ import { Component, Input, OnInit } from "@angular/core";
 import { forkJoin } from "rxjs";
 import {GameType} from "../../../../common/model/game/game";
 import { GameService } from "../game.service";
+import {RoomService} from "../room.service";
+import {GameButtonOptions} from "./game/game-button-enum";
 
 @Component({
   selector: "app-game-list",
@@ -11,13 +13,15 @@ import { GameService } from "../game.service";
 
 export class GameListComponent implements OnInit {
 
+  @Input() protected readonly rightButton: string = GameButtonOptions.JOIN;
+  @Input() protected readonly leftButton: string = GameButtonOptions.PLAY;
   @Input() protected  readonly simpleGameTag: GameType = GameType.SIMPLE;
   @Input() protected  readonly freeGameTag: GameType = GameType.FREE;
-  @Input() protected readonly rightButton: string = "Joindre";
-  @Input() protected readonly leftButton: string = "Jouer";
+
   protected pushedGames: boolean;
 
-  public constructor(private gameService: GameService) {
+  public constructor(private gameService: GameService,
+                     private roomService: RoomService) {
     this.pushedGames = false;
   }
 
@@ -27,6 +31,7 @@ export class GameListComponent implements OnInit {
       this.gameService.pushFreeGames(freeGames);
       this.pushedGames = true;
     });
+    this.roomService.checkOutRoom();
   }
 
 }

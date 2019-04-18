@@ -26,4 +26,6 @@ export default  {
         DiffValidator3DService: Symbol("DiffValidator3DService"),
         DeleteWebsocketActionService: Symbol("DeleteWebsocketActionService"),
         UpdateGameScoresWebsocketActionService: Symbol("UpdateGameScoresWebsocketActionService"),
+        HotelRoomService: Symbol("HotelRoomService"),
+        RadioTowerService: Symbol("RadioTowerService"),
 };

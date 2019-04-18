@@ -1,12 +1,15 @@
-import {Component, Input} from "@angular/core";
+import {Component, Input, OnDestroy, OnInit} from "@angular/core";
 import {MatDialog} from "@angular/material";
 import {Router} from "@angular/router";
 import {LOADING_ROUTE, PLAY_3D_ROUTE, PLAY_ROUTE} from "../../../../../common/communication/routes";
 import {ComponentNavigationError} from "../../../../../common/errors/component.errors";
-import {GameType} from "../../../../../common/model/game/game";
+import {GameType, OnlineType} from "../../../../../common/model/game/game";
 import {IRecordTime} from "../../../../../common/model/game/record-time";
+import {IRoomInfo} from "../../../../../common/model/rooms/room-info";
 import {openDialog} from "../../dialog-utils";
+import {RoomService} from "../../room.service";
 import {DeleteGameFormComponent} from "./delete-game-form/delete-game-form.component";
+import {GameButtonOptions} from "./game-button-enum";
 import {ResetGameFormComponent} from "./reset-game-form/reset-game-form.component";
 
 @Component({
@@ -15,9 +18,13 @@ import {ResetGameFormComponent} from "./reset-game-form/reset-game-form.componen
   styleUrls: ["./game.component.css"],
 })
 
-export class GameComponent {
+export class GameComponent implements OnInit, OnDestroy {
 
-  public constructor(private router: Router, private dialog: MatDialog) {}
+  public constructor(private router: Router,
+                     private dialog: MatDialog,
+                     private roomService: RoomService) {
+    this.handleRoomAvailability = this.handleRoomAvailability.bind(this);
+  }
 
   @Input() public gameName: string = "test";
   @Input() public bestSoloTimes: IRecordTime[];
@@ -30,33 +37,63 @@ export class GameComponent {
   @Input() public gameType: GameType;
   @Input() public simpleGameTag: GameType = GameType.SIMPLE;
 
+  public ngOnInit(): void {
+    this.roomService.subscribeToFetchRooms(this.handleRoomAvailability);
+    this.handleRoomAvailability = this.handleRoomAvailability.bind(this);
+  }
+
+  public ngOnDestroy(): void {
+    this.roomService.unsubscribe();
+  }
+
   protected leftButtonClick(): void {
-    if (this.leftButton === "Jouer") {
+    if (this.leftButton === GameButtonOptions.PLAY) {
+      this.roomService.createRoom(this.gameName, OnlineType.SOLO);
       this.gameType === GameType.SIMPLE ? this.navigatePlayView() : this.navigateFreeView();
-    } else if (this.leftButton === "Supprimer") {
+    } else if (this.leftButton === GameButtonOptions.DELETE) {
       openDialog(this.dialog, DeleteGameFormComponent, {callback: window.location.reload.bind(window.location),
                                                         data: {gameName: this.gameName, gameType: this.gameType}});
     }
   }
 
   protected rightButtonClick(): void {
-    if (this.rightButton === "Joindre") {
-      this.navigateAwait();
-    } else if (this.rightButton === "Reinitialiser") {
+    if (this.rightButton === GameButtonOptions.REINITIALIZE) {
       openDialog(this.dialog, ResetGameFormComponent, {callback: window.location.reload.bind(window.location),
                                                        data: {gameName: this.gameName, gameType: this.gameType}});
+    } else {
+      this.handleGameJoin();
+    }
+  }
+
+  private handleGameJoin(): void {
+    if (this.rightButton === GameButtonOptions.CREATE) {
+      this.roomService.createRoom(this.gameName, OnlineType.MULTI);
+    } else if (this.rightButton === GameButtonOptions.JOIN) {
+      this.roomService.checkInRoom(this.gameName);
+    }
+    this.navigateAwait();
+  }
+
+  private handleRoomAvailability(rooms: IRoomInfo[]): void {
+    const availableRoom: IRoomInfo | undefined = rooms.find((x) => x.gameName === this.gameName && x.vacant);
+    if (this.rightButton !== GameButtonOptions.REINITIALIZE) {
+      this.rightButton = availableRoom ? GameButtonOptions.JOIN : GameButtonOptions.CREATE;
     }
   }
 
   private navigatePlayView(): void {
 
-   this.router.navigate([PLAY_ROUTE], {queryParams: {
-      gameName: this.gameName, originalImage: this.originalImage, modifiedImage: this.modifiedImage, gameType: this.gameType },
+   this.router.navigate([PLAY_ROUTE], {
+     queryParams: {
+       gameName: this.gameName,
+       originalImage: this.originalImage,
+       modifiedImage: this.modifiedImage,
+       gameType: this.gameType,
+     },
     })
-      // tslint:disable-next-line:no-any Generic error response
-     .catch((reason: any) => {
-       throw new ComponentNavigationError();
-     });
+      .catch(() => {
+        throw new ComponentNavigationError();
+      });
   }
 
   private navigateFreeView(): void {
@@ -66,8 +103,7 @@ export class GameComponent {
         gameType: this.gameType,
       },
     })
-      // tslint:disable-next-line:no-any Generic error response
-      .catch((reason: any) => {
+      .catch(() => {
         throw new ComponentNavigationError();
       });
   }
@@ -76,10 +112,9 @@ export class GameComponent {
     this.router.navigate([LOADING_ROUTE], {queryParams: {
       gameName: this.gameName, gameType: this.gameType},
     })
-      // tslint:disable-next-line:no-any Generic error response
-     .catch((reason: any) => {
-       throw new ComponentNavigationError();
-     });
+      .catch(() => {
+        throw new ComponentNavigationError();
+      });
   }
 
   protected formatTime(time: number): string {

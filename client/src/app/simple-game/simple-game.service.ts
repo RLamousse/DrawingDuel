@@ -1,53 +1,23 @@
 import {Injectable} from "@angular/core";
-import Axios, {AxiosResponse} from "axios";
-import * as Httpstatus from "http-status-codes";
-import {Observable, Subject} from "rxjs";
-import {IDiffValidatorControllerRequest} from "../../../../common/communication/requests/diff-validator-controller.request";
+import {Observable, Subject, Subscription} from "rxjs";
 import {
-  DIFF_VALIDATOR_BASE,
-  GAME_MANAGER_SIMPLE,
-  SERVER_BASE_URL
-} from "../../../../common/communication/routes";
-import {NonExistentGameError} from "../../../../common/errors/database.errors";
-import {AbstractServiceError, AlreadyFoundDifferenceError, NoDifferenceAtPointError} from "../../../../common/errors/services.errors";
-import {DifferenceCluster, DIFFERENCE_CLUSTER_POINTS_INDEX, ISimpleGame} from "../../../../common/model/game/simple-game";
-import ISimpleGameState from "../../../../common/model/game/simple-game-state";
+  createWebsocketMessage,
+  RoomInteractionMessage,
+  WebsocketMessage
+} from "../../../../common/communication/messages/message";
+import {SocketEvent} from "../../../../common/communication/socket-events";
 import {IPoint} from "../../../../common/model/point";
-import {playRandomSound, FOUND_DIFFERENCE_SOUNDS} from "./game-sounds";
+import {ISimpleGameInteractionData, ISimpleGameInteractionResponse} from "../../../../common/model/rooms/interaction";
+import {SocketService} from "../socket.service";
 
-@Injectable({
-              providedIn: "root",
-            })
+@Injectable({providedIn: "root"})
 export class SimpleGameService {
 
-  private _game: ISimpleGame;
-  private _gameState: ISimpleGameState;
-  private _gameName: string;
-  private _differenceCountSubject: Subject<number> = new Subject();
+  private _differenceCountSubject: Subject<boolean> = new Subject();
 
-  public constructor() {
-    this._gameState = {
-      foundDifferenceClusters: [],
-    };
-  }
+  public constructor(private socket: SocketService) {}
 
-  public set gameName(value: string) {
-    this._gameName = value;
-
-    this.getGame()
-      .then((game: ISimpleGame) => {
-        this._game = game;
-      })
-      .catch((error: Error) => {
-        throw error;
-      });
-
-    this._gameState = {
-      foundDifferenceClusters: [],
-    };
-  }
-
-  public get foundDifferencesCount(): Observable<number> {
+  public get foundDifferencesCount(): Observable<boolean> {
     return this._differenceCountSubject;
   }
 
@@ -55,69 +25,26 @@ export class SimpleGameService {
     this._differenceCountSubject = new Subject();
   }
 
-  public async validateDifferenceAtPoint(point: IPoint): Promise<DifferenceCluster> {
-    this.assertAlreadyFoundDifference(point);
-
-    return Axios.get(
-      SERVER_BASE_URL + DIFF_VALIDATOR_BASE,
-      {
-        params: {
-          coordX: point.x,
-          coordY: point.y,
-          gameName: this._gameName,
-        } as IDiffValidatorControllerRequest,
-      })
-      .then(() => {
-        playRandomSound(FOUND_DIFFERENCE_SOUNDS);
-
-        return this.updateGameState(point);
-      })
-      // tslint:disable-next-line:no-any Generic error response
-      .catch((reason: any) => {
-        if (reason.response && reason.response.status === Httpstatus.NOT_FOUND) {
-          throw new NoDifferenceAtPointError();
-        }
-
-        throw new AbstractServiceError(reason.message);
-      });
+  public registerDifferenceSuccessCallback(callback: (message: ISimpleGameInteractionResponse) => void): Subscription {
+    return this.socket.onEvent<ISimpleGameInteractionResponse>(SocketEvent.INTERACT)
+      .subscribe((message: WebsocketMessage<ISimpleGameInteractionResponse>) => callback(message.body));
   }
 
-  private assertAlreadyFoundDifference(point: IPoint): void {
-    if (this.wasDifferenceFound(point)) {
-      throw new AlreadyFoundDifferenceError();
-    }
+  public registerDifferenceErrorCallback(callback: (message: string) => void): Subscription {
+    return this.socket.onEvent<string>(SocketEvent.INTERACT_ERROR)
+      .subscribe((message: WebsocketMessage<string>) => callback(message.body));
   }
 
-  private wasDifferenceFound(point: IPoint): boolean {
-    return this._gameState.foundDifferenceClusters
-      .some((cluster: DifferenceCluster) =>
-              cluster[DIFFERENCE_CLUSTER_POINTS_INDEX]
-                .some((p: IPoint) => p.x === point.x && p.y === point.y));
+  public validateDifferenceAtPoint(point: IPoint): void {
+    const interactionMessage: RoomInteractionMessage<ISimpleGameInteractionData> = {
+      interactionData: {
+        coord: point,
+      },
+    };
+    this.socket.send(SocketEvent.INTERACT, createWebsocketMessage<RoomInteractionMessage<ISimpleGameInteractionData>>(interactionMessage));
   }
 
-  private async getGame(): Promise<ISimpleGame> {
-    return Axios.get<ISimpleGame>(SERVER_BASE_URL + GAME_MANAGER_SIMPLE + encodeURIComponent(this._gameName))
-      .then((value: AxiosResponse<ISimpleGame>) => value.data)
-      // tslint:disable-next-line:no-any Since Axios defines reason as `any`
-      .catch(() => {
-        throw new NonExistentGameError();
-      });
+  public updateCounter(isMe: boolean): void {
+    this._differenceCountSubject.next(isMe);
   }
-
-  private updateGameState(clickedPoint: IPoint): DifferenceCluster {
-    const differenceCluster: DifferenceCluster | undefined = this._game.diffData
-      .find((cluster: DifferenceCluster) =>
-              cluster[DIFFERENCE_CLUSTER_POINTS_INDEX]
-                .some((point: IPoint) => point.x === clickedPoint.x && point.y === clickedPoint.y));
-
-    if (differenceCluster === undefined) {
-      throw new NoDifferenceAtPointError();
-    }
-
-    this._gameState.foundDifferenceClusters.push(differenceCluster);
-    this._differenceCountSubject.next(this._gameState.foundDifferenceClusters.length);
-
-    return differenceCluster;
-  }
-
 }

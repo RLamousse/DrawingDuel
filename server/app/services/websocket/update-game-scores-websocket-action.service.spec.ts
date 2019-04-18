@@ -9,14 +9,13 @@ import * as HttpStatus from "http-status-codes";
 import {Socket} from "socket.io";
 import {anything, instance, mock, when} from "ts-mockito";
 import {
-    ChatMessage,
-    ChatMessagePosition,
+    createWebsocketMessage,
+    ChatMessage, ChatMessagePosition,
     ChatMessageType,
     UpdateScoreMessage,
     WebsocketMessage
 } from "../../../../common/communication/messages/message";
 import {MODIFY_SCORES, SERVER_BASE_URL} from "../../../../common/communication/routes";
-import {SocketEvent} from "../../../../common/communication/socket-events";
 import {IllegalArgumentError, ScoreNotGoodEnough} from "../../../../common/errors/services.errors";
 import {OnlineType} from "../../../../common/model/game/game";
 import {ChatWebsocketActionService} from "./chat-websocket-action.service";
@@ -37,18 +36,21 @@ describe("Update Game Scores Websocket Action Service", () => {
         axiosMock = new AxiosAdapter(Axios);
 
         mockedChatWebsocketActionService = mock(ChatWebsocketActionService);
-        when(mockedChatWebsocketActionService.execute(anything(), anything())).thenReturn();
+        when(mockedChatWebsocketActionService.sendChat(anything(), anything())).thenReturn();
     });
 
     it("should do nothing if the micro service throws a ScoreNotGoodEnough error", async () => {
 
         axiosMock.onPut(SERVER_BASE_URL + MODIFY_SCORES)
             .reply(HttpStatus.INTERNAL_SERVER_ERROR, new ScoreNotGoodEnough());
-        when(mockedChatWebsocketActionService.execute(anything(), anything())).thenThrow();
-        const message: WebsocketMessage<UpdateScoreMessage> = {title: SocketEvent.UPDATE_SCORE,
-                                                               body: {onlineType: OnlineType.SOLO,
-                                                                      gameName: "someGame",
-                                                                      newTime: {name: "someGuy", time: 123}}};
+        when(mockedChatWebsocketActionService.sendChat(anything(), anything())).thenThrow();
+        const message: WebsocketMessage<UpdateScoreMessage> = createWebsocketMessage<UpdateScoreMessage>({
+            onlineType: OnlineType.SOLO,
+            gameName: "someGame",
+            newTime: {
+                name: "someGuy", time: 123,
+            },
+        });
 
         return getMockedService().execute(message, {} as Socket).catch(() => {
             expect.fail();
@@ -59,11 +61,14 @@ describe("Update Game Scores Websocket Action Service", () => {
 
         axiosMock.onPut(SERVER_BASE_URL + MODIFY_SCORES)
             .reply(HttpStatus.INTERNAL_SERVER_ERROR, new IllegalArgumentError());
-        when(mockedChatWebsocketActionService.execute(anything(), anything())).thenReturn();
-        const message: WebsocketMessage<UpdateScoreMessage> = {title: SocketEvent.UPDATE_SCORE,
-                                                               body: {onlineType: OnlineType.SOLO,
-                                                                      gameName: "someGame",
-                                                                      newTime: {name: "someGuy", time: 123}}};
+        when(mockedChatWebsocketActionService.sendChat(anything(), anything())).thenReturn();
+        const message: WebsocketMessage<UpdateScoreMessage> = createWebsocketMessage<UpdateScoreMessage>({
+            onlineType: OnlineType.SOLO,
+            gameName: "someGame",
+            newTime: {
+                name: "someGuy", time: 123,
+            },
+        });
 
         return getMockedService().execute(message, {} as Socket).catch((error: Error) => {
             expect(error.message).to.eql(IllegalArgumentError.ARGUMENT_ERROR_MESSAGE );
@@ -74,7 +79,7 @@ describe("Update Game Scores Websocket Action Service", () => {
 
         axiosMock.onPut(SERVER_BASE_URL + MODIFY_SCORES)
             .reply(HttpStatus.OK, 1);
-        when(mockedChatWebsocketActionService.execute(anything(), anything())).thenCall(
+        when(mockedChatWebsocketActionService.sendChat(anything(), anything())).thenCall(
             (data: WebsocketMessage<ChatMessage>, socket: Socket) => {
                 expect(data.body).to.contain({type: ChatMessageType.BEST_TIME,
                                               gameName: "someGame",
@@ -83,10 +88,13 @@ describe("Update Game Scores Websocket Action Service", () => {
                                               position: ChatMessagePosition.FIRST,
                 });
             });
-        const message: WebsocketMessage<UpdateScoreMessage> = {title: SocketEvent.UPDATE_SCORE,
-                                                               body: {onlineType: OnlineType.SOLO,
-                                                                      gameName: "someGame",
-                                                                      newTime: {name: "someGuy", time: 123}}};
+        const message: WebsocketMessage<UpdateScoreMessage> = createWebsocketMessage<UpdateScoreMessage>({
+                onlineType: OnlineType.SOLO,
+                gameName: "someGame",
+                newTime: {
+                    name: "someGuy", time: 123,
+                },
+        });
         await getMockedService().execute(message, {} as Socket);
     });
 });

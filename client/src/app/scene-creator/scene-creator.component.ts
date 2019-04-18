@@ -1,21 +1,23 @@
 import {Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild} from "@angular/core";
-import {ActivatedRoute} from "@angular/router";
+import {MatDialog} from "@angular/material";
+import {ActivatedRoute, Router} from "@angular/router";
+import {Subscription} from "rxjs";
 import {GAMES_ROUTE} from "../../../../common/communication/routes";
-import {FreeViewGamesRenderingError} from "../../../../common/errors/component.errors";
+import {SocketEvent} from "../../../../common/communication/socket-events";
+import {ComponentNavigationError, FreeViewGamesRenderingError} from "../../../../common/errors/component.errors";
 import {IFreeGame} from "../../../../common/model/game/free-game";
-import {GameType} from "../../../../common/model/game/game";
 import {IPoint} from "../../../../common/model/point";
 import {X_FACTOR, Y_FACTOR} from "../../../../common/util/util";
+import {openDialog} from "../dialog-utils";
 import {GameService} from "../game.service";
+import {KickDialogComponent} from "../kick-dialog/kick-dialog.component";
 import {IScene} from "../scene-interface";
+import {SocketService} from "../socket.service";
 import {drawTextOnCanvas, getCanvasRenderingContext, CanvasTextType} from "../util/canvas-utils";
 import {FreeGameCreatorService} from "./FreeGameCreator/free-game-creator.service";
 import {SceneRendererService} from "./scene-renderer.service";
 
 export const TEXT_FONT: string = "20px Comic Sans MS";
-export const ERROR_TEXT_COLOR: string = "#ff0000";
-export const VICTORY_TEXT_COLOR: string = "#008000";
-export const DEFAULT_TEXT_COLOR: string = "#000000";
 export const IDENTIFICATION_ERROR_TEXT: string = "Erreur";
 
 @Component({
@@ -33,13 +35,16 @@ export class SceneCreatorComponent implements OnInit, OnDestroy {
   private modifiedCanvasContext: CanvasRenderingContext2D;
 
   protected gameName: string;
-  protected FREE_GAME_TYPE: GameType = GameType.FREE;
   protected cursorEnabled: boolean = true;
+  private onKickSubscription: Subscription;
 
   public constructor(private renderService: SceneRendererService,
                      private route: ActivatedRoute,
                      private freeGameCreator: FreeGameCreatorService,
-                     private gameService: GameService) {
+                     private gameService: GameService,
+                     private socketService: SocketService,
+                     private router: Router,
+                     private dialog: MatDialog) {
     this.clickEnabled = true;
   }
 
@@ -57,6 +62,7 @@ export class SceneCreatorComponent implements OnInit, OnDestroy {
 
   public async ngOnDestroy(): Promise<void> {
     await this.renderService.deactivateCheatMode();
+    this.onKickSubscription.unsubscribe();
   }
 
   public ngOnInit(): void {
@@ -69,10 +75,13 @@ export class SceneCreatorComponent implements OnInit, OnDestroy {
     this.modifiedCanvasContext = getCanvasRenderingContext(this.modifiedCanvas);
 
     this.verifyGame()
-      .then((scene: IScene) => this.renderService.loadScenes(scene.scene, scene.modifiedScene, this.gameName))
+      .then((scene: IScene) => this.renderService.loadScenes(scene.scene, scene.modifiedScene))
       .catch(() => {
         throw new FreeViewGamesRenderingError();
     });
+
+    this.onKickSubscription = this.socketService.onEvent(SocketEvent.KICK)
+      .subscribe(async () => this.onKick());
   }
 
   private async verifyGame(): Promise<IScene> {
@@ -101,9 +110,8 @@ export class SceneCreatorComponent implements OnInit, OnDestroy {
       const clickPosition: IPoint = {x: clickEvent.clientX, y: clickEvent.clientY};
       this.clickEnabled = false;
       this.renderService.objDiffValidation(clickPosition)
-        .then((foundDifferences: number) => {
-          const VICTORY_COUNT: number = 7;
-          this.clickEnabled = foundDifferences !== VICTORY_COUNT;
+        .then(() => {
+          this.clickEnabled = true;
         })
         .catch(() => {
           this.cursorEnabled = false;
@@ -140,5 +148,19 @@ export class SceneCreatorComponent implements OnInit, OnDestroy {
     drawTextOnCanvas(IDENTIFICATION_ERROR_TEXT, point, canvasContext, CanvasTextType.ERROR);
 
     return canvasContext;
+  }
+
+  protected onKick(): void {
+    openDialog(
+      this.dialog,
+      KickDialogComponent,
+      {
+        callback: () => {
+          this.router.navigate([GAMES_ROUTE])
+            .catch(() => {
+              throw new ComponentNavigationError();
+            });
+        },
+      });
   }
 }

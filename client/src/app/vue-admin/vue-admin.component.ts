@@ -3,6 +3,7 @@ import {MatDialog} from "@angular/material";
 import {HOME_ROUTE} from "../../../../common/communication/routes";
 import {Create3DGameComponent} from "../create3-dgame/create3-dgame.component";
 import {openDialog} from "../dialog-utils";
+import {GameButtonOptions} from "../game-list/game/game-button-enum";
 import {SimpleGameCreatorFormComponent} from "../simple-game-creator-form/simple-game-creator-form.component";
 
 @Component({
@@ -17,8 +18,8 @@ export class VueAdminComponent {
 
   public constructor(private dialog: MatDialog) { }
 
-  protected readonly rightButton: string = "Reinitialiser";
-  protected readonly leftButton: string = "Supprimer";
+  protected readonly rightButton: string = GameButtonOptions.REINITIALIZE;
+  protected readonly leftButton: string = GameButtonOptions.DELETE;
 
   protected createSimpleGame(): void {
     openDialog(this.dialog, SimpleGameCreatorFormComponent, {callback: window.location.reload.bind(window.location)});

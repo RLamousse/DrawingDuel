@@ -11,7 +11,6 @@ import {
     GAME_CREATOR_BASE,
     GAME_MANAGER_BASE,
     SCORE_TABLE_UPDATE,
-    USERNAME_BASE
 } from "../../common/communication/routes";
 import {BitmapDiffController} from "./controllers/bitmap-diff.controller";
 import {DiffValidator3DController} from "./controllers/diff-validator-3D.controller";
@@ -19,7 +18,6 @@ import {DiffValidatorController} from "./controllers/diff-validator.controller";
 import {GameCreatorController} from "./controllers/game-creator.controller";
 import {GameManagerController} from "./controllers/game-manager.controller";
 import {ScoreTableController} from "./controllers/score-table.controller";
-import {UserController} from "./controllers/username.controller";
 import Types from "./types";
 
 @injectable()
@@ -30,7 +28,6 @@ export class Application {
 
     public constructor(@inject(Types.GameCreatorController) private gameCreatorController: GameCreatorController,
                        @inject(Types.GameManagerController) private gameManagerController: GameManagerController,
-                       @inject(Types.UserNameController) private userController: UserController,
                        @inject(Types.ScoreTableController) private scoreTableController: ScoreTableController,
                        @inject(Types.BitmapDiffController) private bitmapDiffController: BitmapDiffController,
                        @inject(Types.DiffValidatorController) private diffValidatorController: DiffValidatorController,
@@ -54,7 +51,6 @@ export class Application {
     }
 
     public bindRoutes(): void {
-        this.app.use(USERNAME_BASE, this.userController.router);
         this.app.use(SCORE_TABLE_UPDATE, this.scoreTableController.router);
         this.app.use(DIFF_CREATOR_BASE, this.bitmapDiffController.router);
         this.app.use(GAME_CREATOR_BASE, this.gameCreatorController.router);

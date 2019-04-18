@@ -70,7 +70,7 @@ export class ScoreNotGoodEnough extends Error {
     }
 }
 
-export class Object3DIsNotADifference extends  Error {
+export class Object3DIsNotADifference extends Error {
     public static readonly OBJ_3D_NOT_A_DIFFERENCE_ERROR_MESSAGE: string = "ERREUR: Cet objet n'est pas une différence!";
 
     constructor(){
@@ -83,5 +83,53 @@ export class AbstractServiceError extends Error {
 
     constructor(reason: string) {
         super(AbstractServiceError.PREFIX + reason);
+    }
+}
+
+export class GameRoomCreationError extends Error {
+    public static readonly GAME_ROOM_CREATION_ERROR_MESSAGE: string = "There was a problem with the creation of the room!";
+
+    constructor() {
+        super(GameRoomCreationError.GAME_ROOM_CREATION_ERROR_MESSAGE);
+    }
+}
+
+export class NoVacancyGameRoomError extends Error {
+    public static readonly NO_VACANCY_GAME_ROOM_ERROR_MESSAGE: string = "The room is full!";
+
+    constructor() {
+        super(NoVacancyGameRoomError.NO_VACANCY_GAME_ROOM_ERROR_MESSAGE);
+    }
+}
+
+export class GameRoomError extends Error {
+    public static readonly GAME_ROOM_ERROR_MESSAGE: string = "There was a problem with the room!";
+
+    constructor() {
+        super(GameRoomError.GAME_ROOM_ERROR_MESSAGE);
+    }
+}
+
+export class NonExistentRoomError extends Error {
+    public static readonly NON_EXISTENT_GAME_ROOM_ERROR_MESSAGE: string = "There are no rooms available for this game!";
+
+    constructor() {
+        super(NonExistentRoomError.NON_EXISTENT_GAME_ROOM_ERROR_MESSAGE);
+    }
+}
+
+export class ObjectNotFoundError extends Error {
+    public static readonly OBJECT_NOT_FOUND_ERROR_MESSAGE: string = "There are no objects at the specified position!";
+
+    constructor() {
+        super(ObjectNotFoundError.OBJECT_NOT_FOUND_ERROR_MESSAGE);
+    }
+}
+
+export class RoomNotDefinedError extends Error {
+    public static readonly ROOM_NOT_DEFINED_ERROR_MESSAGE: string = "Room ID was not specified in the sendChat call!";
+
+    constructor() {
+        super(RoomNotDefinedError.ROOM_NOT_DEFINED_ERROR_MESSAGE);
     }
 }

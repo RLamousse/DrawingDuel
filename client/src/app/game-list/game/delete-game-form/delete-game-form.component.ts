@@ -1,7 +1,7 @@
 import {Component, Inject} from "@angular/core";
 import {MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
 import {Router} from "@angular/router";
-import {WebsocketMessage} from "../../../../../../common/communication/messages/message";
+import {createWebsocketMessage, WebsocketMessage} from "../../../../../../common/communication/messages/message";
 import {ADMIN_ROUTE} from "../../../../../../common/communication/routes";
 import {SocketEvent} from "../../../../../../common/communication/socket-events";
 import {IDialogData} from "../../../../../../common/dialog-data-interface/IDialogData";
@@ -17,8 +17,6 @@ import {SocketService} from "../../../socket.service";
 })
 
 export class DeleteGameFormComponent  {
-  private socketMessage: WebsocketMessage<[string, GameType]>;
-
   public constructor( protected dialogRef: MatDialogRef<DeleteGameFormComponent>,
                       protected router: Router,
                       protected socket: SocketService,
@@ -41,11 +39,13 @@ export class DeleteGameFormComponent  {
   }
 
   private sendDeleteMessage(): void {
-    this.socketMessage = {
-      title: SocketEvent.DELETE,
-      body: [this.data.gameName, this.data.gameType],
-    };
-    this.socket.send(SocketEvent.DELETE, this.socketMessage);
+    const socketMessage: WebsocketMessage<[string, GameType]> = createWebsocketMessage<[string, GameType]>(
+      [
+        this.data.gameName,
+        this.data.gameType,
+      ],
+    );
+    this.socket.send(SocketEvent.DELETE, socketMessage);
   }
 
   private deleteGameByType(gameName: string, gameType: GameType ): void {

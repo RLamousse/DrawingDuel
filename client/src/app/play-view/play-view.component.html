@@ -9,11 +9,12 @@
         <h1 class = "gameName">{{gameName}}</h1>
       </div>
       <div class="centered">
-        <app-timer class="timer" [gameName] = "gameName"
-                   [gameType]= "gameType"></app-timer>
+        <app-timer class="timer" [gameName]="gameName"></app-timer>
       </div>
-      <app-simple-game-container [originalImage]="originalImage"
-      [modifiedImage]="modifiedImage"></app-simple-game-container>
+      <app-simple-game-container
+        [originalImage]="originalImage"
+        [modifiedImage]="modifiedImage">
+      </app-simple-game-container>
     </div>
     <div class="chat">
       <app-message-box></app-message-box>

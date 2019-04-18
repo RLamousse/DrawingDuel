@@ -1,7 +1,10 @@
 import {ElementRef} from "@angular/core";
 import {ComponentCanvasError} from "../../../../common/errors/component.errors";
 import {IPoint} from "../../../../common/model/point";
-import {DEFAULT_TEXT_COLOR, ERROR_TEXT_COLOR, VICTORY_TEXT_COLOR} from "../scene-creator/scene-creator.component";
+
+export const ERROR_TEXT_COLOR: string = "#ff0000";
+export const VICTORY_TEXT_COLOR: string = "#008000";
+export const DEFAULT_TEXT_COLOR: string = "#000000";
 
 export enum CanvasTextType {
   ERROR,
