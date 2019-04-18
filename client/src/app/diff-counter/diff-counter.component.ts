@@ -12,7 +12,7 @@ import {SocketEvent} from "../../../../common/communication/socket-events";
 import {ComponentNavigationError} from "../../../../common/errors/component.errors";
 import {GameType, MULTIPLAYER_GAME_DIFF_THRESHOLD, OnlineType, SINGLEPLAYER_GAME_DIFF_THRESHOLD} from "../../../../common/model/game/game";
 import {openDialog} from "../dialog-utils";
-import {SceneRendererService} from "../scene-creator/scene-renderer.service";
+import {SceneDiffValidatorService} from "../scene-creator/scene-diff-validator.service";
 import {SimpleGameService} from "../simple-game/simple-game.service";
 import {SocketService} from "../socket.service";
 import {UNListService} from "../username.service";
@@ -46,7 +46,7 @@ export class DiffCounterComponent implements OnInit, OnDestroy {
                      private dialog: MatDialog,
                      protected socket: SocketService,
                      private router: Router,
-                     private sceneRendererService: SceneRendererService,
+                     private sceneValidator: SceneDiffValidatorService,
                      private route: ActivatedRoute) {
     this.subscriptions = [];
     this.diffNumber = 0;
@@ -87,7 +87,7 @@ export class DiffCounterComponent implements OnInit, OnDestroy {
   private checkDiff(): void {
     const sub: Subscription = this.gameType === GameType.SIMPLE
       ? this.simpleGameService.foundDifferencesCount.subscribe(this.countDiff)
-      : this.sceneRendererService.foundDifferenceCount.subscribe(this.countDiff);
+      : this.sceneValidator.foundDifferenceCount.subscribe(this.countDiff);
     this.subscriptions.push(sub);
   }
 
