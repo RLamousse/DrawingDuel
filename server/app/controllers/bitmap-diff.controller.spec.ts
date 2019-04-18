@@ -87,7 +87,7 @@ describe("Bitmap diff controller", () => {
             .attach("modifiedImage", "./test/test_bitmaps/white10x10.bmp")
             .expect(HttpStatus.INTERNAL_SERVER_ERROR)
             .then((response) => {
-                expect(response.body.message).to.match(/Error: .+\.bmp bitmap file is not the right size\./);
+                expect(response.body.message).to.match(/ERREUR: le bitmap .+\.bmp n'a pas la bonne taille\./);
             });
     });
 

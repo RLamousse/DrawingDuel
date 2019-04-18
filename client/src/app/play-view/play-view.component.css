@@ -1,48 +1,54 @@
 @import "~@angular/material/prebuilt-themes/indigo-pink.css";
 
-body {
-  font-family: Orbitron, serif;
-  background-color: rgb(65, 62, 62);
+.general {
   color: white;
 }
 
-.window {
-  width: 30%;
-  border: 1px black solid;
-  min-height: 30%;
+.chat{
+  width: 10%;
+  font-family: Orbitron, serif;
+  padding: 10px;
+  max-height: 100%;
+}
+
+.gameName{
+  margin-top: 1%;
+  font-size: xx-large;
+  text-transform: uppercase;
+}
+
+.leftWindow{
+  max-width: 90%;
 }
 
 app-simple-game-container {
-  margin: auto;
-  width: 1350px;
+  width: 1300px;
   padding: 10px;
   font: 25px arial serif;
   display: block;
+}
+
+.separation{
+  display: flex;
+  flex-direction: row;
 }
 
 h1 {
   text-align: center;
   font-size: 30px;
   margin-top: 0;
-  padding-top: 20px;
+}
+
+.back-button {
+  position: absolute;
+  margin-left: 5px;
+  padding-left: 5px;
 }
 
 .timer {
-  color: rgb(243, 44, 44);
-  font-size: 60px;
-}
-
-.compteur {
-  margin: 10px;
-  font: 20px arial serif;
-}
-
-.eventNotif {
-  margin: auto;
-  width: 1320px;
-  border: 5px rgb(194, 185, 185) solid;
-  padding: 10px;
-  min-height: 100px;
+  color: #FF3C82;
+  font-size: 45px;
+  font-family: Orbitron, serif;
 }
 
 .centered {

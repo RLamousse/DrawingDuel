@@ -1,18 +1,27 @@
 // tslint:disable: no-floating-promises
 import {async, TestBed} from "@angular/core/testing";
+import {Router} from "@angular/router";
 import {WebsocketMessage} from "../../../common/communication/messages/message";
+import {HOME_ROUTE} from "../../../common/communication/routes";
 import {SocketEvent} from "../../../common/communication/socket-events";
 import {SocketService} from "./socket.service";
 import {UNListService} from "./username.service";
 
 describe("UNListService", () => {
 
+  let mockRouter: Router;
   let service: UNListService;
   let spyService: jasmine.SpyObj<UNListService>;
   beforeEach(() => {
-    spyService = jasmine.createSpyObj("UNListService", ["checkAvailability", "sendUserRequest", "isTooShort", "isAlphanumeric"]);
+    // @ts-ignore
+    mockRouter = { navigate: null };
+    spyService = jasmine.createSpyObj("UNListService", ["checkAvailability",
+                                                        "sendUserRequest",
+                                                        "isTooShort",
+                                                        "isAlphanumeric",
+                                                        "canActivate"]);
     TestBed.configureTestingModule({
-      providers: [{provide: UNListService, useValue: spyService}, SocketService],
+      providers: [{provide: UNListService, useValue: spyService}, SocketService, {provide: Router, useValue: mockRouter}],
     });
   });
   beforeEach(async(() => {
@@ -32,7 +41,7 @@ describe("UNListService", () => {
     service = TestBed.get(UNListService);
     spyService.isAlphanumeric.and.callThrough();
     expect(service.isAlphanumeric("-Bubbles-")).toBe(false);
-    expect(service.message).toBe("Tu dois utiliser seulement des caractères alphanumériques!");
+    expect(service.message).toBe("Caractères alphanumériques seulement!");
   });
 
   it("should return true if a valid username is enter", async () => {
@@ -125,5 +134,31 @@ describe("UNListService", () => {
     });
     expect(called).toBeTruthy();
     expect(returnVal).toBeTruthy();
+  });
+
+  describe("canActivate", () => {
+
+    it("it should return true and not navigate to home if username is defined", () => {
+      mockRouter.navigate = jasmine.createSpy("navigate").and.returnValue(Promise.resolve());
+      service = TestBed.get(UNListService);
+      UNListService.username = "someUser";
+      expect(service.canActivate()).toBe(true);
+      expect(mockRouter.navigate).not.toHaveBeenCalled();
+    });
+
+    it("it should return false and navigate to home on canActivate if username is empty", () => {
+      mockRouter.navigate = jasmine.createSpy("navigate").and.returnValue(Promise.resolve());
+      service = TestBed.get(UNListService);
+      UNListService.username = "";
+      expect(service.canActivate()).toBe(false);
+      expect(mockRouter.navigate).toHaveBeenCalledWith([HOME_ROUTE]);
+    });
+
+    it("it should throw if there is a userName error", () => {
+      mockRouter.navigate = jasmine.createSpy("navigate").and.throwError("error");
+      service = TestBed.get(UNListService);
+      UNListService.username = "";
+      expect(service.canActivate).toThrow();
+    });
   });
 });

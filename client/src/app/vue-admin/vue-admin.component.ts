@@ -1,6 +1,7 @@
 import {Component} from "@angular/core";
-import {MatDialog, MatDialogConfig} from "@angular/material";
+import {MatDialog} from "@angular/material";
 import {Create3DGameComponent} from "../create3-dgame/create3-dgame.component";
+import {openDialog} from "../dialog-utils";
 import {SimpleGameCreatorFormComponent} from "../simple-game-creator-form/simple-game-creator-form.component";
 
 @Component({
@@ -12,18 +13,14 @@ export class VueAdminComponent {
 
   public constructor(private dialog: MatDialog) { }
 
-  protected readonly rightButton: string = "reinitialiser";
-  protected readonly leftButton: string = "supprimer";
+  protected readonly rightButton: string = "Reinitialiser";
+  protected readonly leftButton: string = "Supprimer";
 
   protected createSimpleGame(): void {
-    const dialogConfig: MatDialogConfig = new MatDialogConfig();
-    dialogConfig.autoFocus = true;
-    this.dialog.open(SimpleGameCreatorFormComponent, dialogConfig);
+    openDialog(this.dialog, SimpleGameCreatorFormComponent, {});
   }
 
   protected create3DGame(): void {
-    const dialogConfig: MatDialogConfig = new MatDialogConfig();
-    dialogConfig.autoFocus = true;
-    this.dialog.open(Create3DGameComponent, dialogConfig);
+    openDialog(this.dialog, Create3DGameComponent, {});
   }
 }

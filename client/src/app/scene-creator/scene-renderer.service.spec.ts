@@ -77,8 +77,8 @@ describe("SceneRendererService", () => {
     const modCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
     service.init(oriCont, modCont);
     service.loadScenes(original, modified, "gameName");
-    expect(service.scene).toBe(original);
-    expect(service.modifiedScene).toBe(modified);
+    expect(service["scene"]).toBe(original);
+    expect(service["modifiedScene"]).toBe(modified);
   });
 
   // disabling the max function length for this test because it is complex thus long
@@ -126,8 +126,8 @@ describe("SceneRendererService", () => {
     service.init(oriCont, modCont);
     service.loadScenes(original1, modified1, "gameName");
     service.loadScenes(original2, modified2, "gameName");
-    expect(service.scene).toBe(original2);
-    expect(service.modifiedScene).toBe(modified2);
+    expect(service["scene"]).toBe(original2);
+    expect(service["modifiedScene"]).toBe(modified2);
   });
 
   it("should have called updateCamera and velocity after loadScenes is called", () => {
@@ -150,7 +150,7 @@ describe("SceneRendererService", () => {
     const modCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
     service.init(oriCont, modCont);
     service.loadScenes(original, modified, "gameNameExpected");
-    expect(service.gameName).toEqual("gameNameExpected");
+    expect(service["gameName"]).toEqual("gameNameExpected");
   });
 
   // Test objDiffValidation
@@ -166,7 +166,7 @@ describe("SceneRendererService", () => {
     service.init(oriCont, modCont);
     service.loadScenes(original, modified, "gameName");
 
-    return service.objDiffValidation(325, 430)
+    return service.objDiffValidation({x: 325, y: 430})
       .catch((reason: Error) => {
         expect(reason.message).toEqual(NoDifferenceAtPointError.NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE);
       });
@@ -183,7 +183,7 @@ describe("SceneRendererService", () => {
     service.init(oriCont, modCont);
     service.loadScenes(original, modified, "gameName");
 
-    return service.objDiffValidation(1120, 430)
+    return service.objDiffValidation({x: 1120, y: 430})
       .catch((reason: Error) => {
         expect(reason.message).toEqual(NoDifferenceAtPointError.NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE);
       });
@@ -208,26 +208,23 @@ describe("SceneRendererService", () => {
     service.init(oriCont, modCont);
     service.loadScenes(original, modified, "gameName");
 
-    return service.objDiffValidation(325, 430)
+    return service.objDiffValidation({x: 325, y: 430})
       .catch((reason: Error) => {
         expect(reason.message).toEqual(NoDifferenceAtPointError.NO_DIFFERENCE_AT_POINT_ERROR_MESSAGE);
       });
   });
 
-  it("should throw an unexpected server response", async() => {
+  it("should throw an unexpected server response on diff validator call", async () => {
     const service: SceneRendererService = TestBed.get(SceneRendererService);
 
     axiosMock.onGet(ALL_GET_CALLS_REGEX)
       .reply(HttpStatus.INTERNAL_SERVER_ERROR);
 
-    const original: Scene = new Scene();
-    const modified: Scene = new Scene();
-    const oriCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
-    const modCont: HTMLDivElement = (document.createElement("div")) as HTMLDivElement;
-    service.init(oriCont, modCont);
-    service.loadScenes(original, modified, "gameName");
+    const material: MeshPhongMaterial = new MeshPhongMaterial();
+    const geo: BoxGeometry = new BoxGeometry();
+    const mesh: Mesh = new Mesh(geo, material);
 
-    return service.objDiffValidation(325, 430)
+    return service["differenceValidationAtPoint"](mesh)
       .catch((reason: Error) => {
         expect(reason.message).toContain("Request failed with status code 500");
       });

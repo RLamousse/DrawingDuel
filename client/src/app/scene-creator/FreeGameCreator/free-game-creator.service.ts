@@ -30,6 +30,8 @@ import {
 import {IScene} from "../../scene-interface";
 import {Form3DService} from "../3DFormService/3-dform.service";
 
+export const SKY_BOX_NAME: string = "skyBox";
+
 @Injectable()
 export class FreeGameCreatorService {
 
@@ -39,8 +41,6 @@ export class FreeGameCreatorService {
 
   private objects: Mesh[];
   private modifiedObjects: Mesh[];
-
-  private readonly SKY_BOX_NAME: string = "skyBox";
 
   public constructor() {
     this.formService = new Form3DService();
@@ -94,7 +94,7 @@ export class FreeGameCreatorService {
   private generateThematicObject(object: IJson3DObject, isOriginalObject: boolean): void {
     const loader: GLTFLoader = new GLTFLoader();
     loader.load(this.buildObjectPath(ObjectGeometry[object.type]), (gltf: GLTF) => {
-      if (object.texture) {
+      if (object.texture !== undefined) {
         this.traverseChildren(gltf.scene.children[0], object.texture);
       }
       this.formService.setUpThematicParameters(object, gltf);
@@ -144,7 +144,7 @@ export class FreeGameCreatorService {
       }));
     }
     const skyBox: Mesh = new Mesh(geometry, materials);
-    skyBox.name = this.SKY_BOX_NAME;
+    skyBox.name = SKY_BOX_NAME;
     this.scene.add(skyBox.clone());
     this.modifiedScene.add(skyBox.clone());
   }
@@ -155,7 +155,7 @@ export class FreeGameCreatorService {
     const material: MeshBasicMaterial = new MeshBasicMaterial({side: DoubleSide});
     material.visible = false;
     const skyBox: Mesh = new Mesh(geometry, material);
-    skyBox.name = this.SKY_BOX_NAME;
+    skyBox.name = SKY_BOX_NAME;
     this.scene.add(skyBox.clone());
     this.modifiedScene.add(skyBox.clone());
   }

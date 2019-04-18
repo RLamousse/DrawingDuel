@@ -1,18 +1,28 @@
 .eventNotif {
-  margin: auto;
-  width: 1320px;
-  border: 5px rgb(194, 185, 185) solid;
-  padding: 10px;
-  min-height: 100px;
+  min-width: 100%;
+  width: 100%;
+  height: 615px;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  background-color: #373745;
+  border: 1px rgb(194, 185, 185) solid;
+  border-radius: 15px;
+  padding: 5px;
 }
 
 .chatContainer {
-  height: 100px;
+  max-height: 575px;
   overflow: auto;
+  padding: 10px;
+}
+
+.messageTitle{
+  text-align: center;
+  font-family: Roboto, sans-serif;
+  font-size: large;
+  font-weight: normal;
 }
 
 .chat-message {
-  font-family: Orbitron, serif;
   color: white;
 }
 

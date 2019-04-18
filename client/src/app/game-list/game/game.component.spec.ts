@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { MatDialog, } from "@angular/material";
+import { MatCardModule, MatDialog } from "@angular/material";
 import { Router } from "@angular/router";
 import { GameComponent } from "./game.component";
 
@@ -13,9 +13,10 @@ describe("GameComponent", () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [ GameComponent ],
+      imports: [MatCardModule],
       providers: [
          { provide: Router, useClass: class { public navigate: jasmine.Spy = jasmine.createSpy("navigate"); } },
-         { provide: MatDialog, useValue: {}},
+         { provide: MatDialog, useValue: {}, },
        ],
     });
     fixture = TestBed.createComponent(GameComponent);

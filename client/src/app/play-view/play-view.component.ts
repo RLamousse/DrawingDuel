@@ -1,5 +1,6 @@
 import {Component, OnInit} from "@angular/core";
 import {ActivatedRoute} from "@angular/router";
+import {GAMES_ROUTE} from "../../../../common/communication/routes";
 import {GameType} from "../../../../common/model/game/game";
 import {SimpleGameService} from "../simple-game/simple-game.service";
 
@@ -10,6 +11,8 @@ import {SimpleGameService} from "../simple-game/simple-game.service";
            })
 export class PlayViewComponent implements OnInit {
 
+  // @ts-ignore variable used in html
+  private readonly BACK_BUTTON_ROUTE: string = GAMES_ROUTE;
   protected gameName: string;
   protected originalImage: string;
   protected modifiedImage: string;

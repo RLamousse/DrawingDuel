@@ -1,24 +1,41 @@
-body {
+.general {
   font-family: Orbitron, serif;
-  background-color: rgb(65, 62, 62);
   color:white;
 }
 
-.centered {
+.separation{
+  display: flex;
+  flex-direction: row;
+}
+
+.chat{
+  width: 10%;
+  padding: 10px;
+  max-height: 100%;
+}
+
+.leftWindow{
+  max-width: 90%;
+}
+
+.gameName {
   text-align: center;
-  font-size: 50px;
-  margin-top: 0;
+  margin-top: 1%;
+  font-size: xx-large;
+  font-family: Roboto;
+  text-transform: uppercase;
 }
 
 .row {
   display: flex;
   flex-direction: row;
+  padding:10px;
 }
 
 .scene {
   height: 480px;
   width: 640px;
-  border: 5px rgb(194, 185, 185) solid;
+  border: 5px dashed transparent;
 }
 
 .middleText {
@@ -28,25 +45,30 @@ body {
 }
 
 .timer {
-  color: rgb(243, 44, 44);
-  font-size: 60px;
-  padding-left: 22%;
+  text-align: center;
+  color: #FF3C82;
+  font-size: 45px;
+  font-family: Orbitron, serif;
 }
+
 .disabled {
   cursor: not-allowed;
 }
+
+.back-button {
+  position: absolute;
+  margin-left: 5px;
+  padding-left: 5px;
+}
+
 #originalCanvasMessage {
   position: absolute;
   width: 640px;
   height: 480px;
 }
+
 #modifiedCanvasMessage {
   position: absolute;
   width: 640px;
   height: 480px;
-}
-#endGameMessage {
-  position: absolute;
-  width: 1920px;
-  height: 1080px;
 }

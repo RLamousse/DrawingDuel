@@ -1,6 +1,7 @@
 import { Component, Inject } from "@angular/core";
 import {MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
 import {Router} from "@angular/router";
+import {ADMIN_ROUTE} from "../../../../../../common/communication/routes";
 import {IDialogData} from "../../../../../../common/dialog-data-interface/IDialogData";
 import {ComponentNavigationError} from "../../../../../../common/errors/component.errors";
 import {GameService} from "../../../game.service";
@@ -24,7 +25,7 @@ export class ResetGameFormComponent {
   public resetGame(): void {
     this.gameService.resetGameTime(this.data.gameName);
     this.dialogRef.close();
-    this.router.navigate(["/admin/"])
+    this.router.navigate([ADMIN_ROUTE])
       .catch(() => {
         throw new ComponentNavigationError();
     });
