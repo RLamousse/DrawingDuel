@@ -5,7 +5,7 @@ import MockAdapter from "axios-mock-adapter";
 import AxiosAdapter from "axios-mock-adapter";
 import * as HttpStatus from "http-status-codes";
 import {
-  DIFF_VALIDATOR_BASE, GAME_MANAGER_GET_REQUEST,
+  DIFF_VALIDATOR_BASE,
   GAME_MANAGER_SIMPLE,
   SERVER_BASE_URL
 } from "../../../../common/communication/routes";
