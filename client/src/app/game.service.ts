@@ -12,9 +12,7 @@ import {IFreeGame} from "../../../common/model/game/free-game";
 import {IGame} from "../../../common/model/game/game";
 import {ISimpleGame} from "../../../common/model/game/simple-game";
 
-@Injectable({
-              providedIn: "root",
-            })
+@Injectable({providedIn: "root"})
 export class GameService {
 
   public simpleGames: ISimpleGame[] = [];
