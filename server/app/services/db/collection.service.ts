@@ -89,15 +89,17 @@ export abstract class CollectionService<T> {
     }
 
     protected async getDocument(id: string): Promise<T> {
-        return this._collection.findOne({[this.idFieldName]: {$eq: id}})
+        return this._collection.findOne(
+            {
+                [this.idFieldName]: {$eq: id},
+            },
+            {
+                projection: REMOVE_ID_PROJECTION_QUERY,
+            })
             .then((value: T) => {
                 if (value === null) {
                     throw new NoElementFoundError();
                 }
-
-                // @ts-ignore even thought item is read as a T type(IFreeGame or ISimpleGame),
-                // mongo generates an _id attribute, and we want it removed!
-                delete value._id;
 
                 return value;
             })
