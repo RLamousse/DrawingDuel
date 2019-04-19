@@ -22,14 +22,14 @@ describe("GameListComponent", () => {
     private mockedSimpleGames: ISimpleGame[] = [];
     private mockedFreeGames: IFreeGame[] = [];
 
-    public getSimpleGames(): Observable<ISimpleGame[]> {
+    public getSimpleGamesLite(): Observable<ISimpleGame[]> {
       return new Observable((subscriber) => {
         subscriber.next(this.mockedSimpleGames);
         subscriber.complete();
       });
     }
 
-    public getFreeGames(): Observable<IFreeGame[]> {
+    public getFreeGamesLite(): Observable<IFreeGame[]> {
       return new Observable((subscriber) => {
         subscriber.next(this.mockedFreeGames);
         subscriber.complete();

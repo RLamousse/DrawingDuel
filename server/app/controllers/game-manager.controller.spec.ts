@@ -37,13 +37,11 @@ describe("Data-base controller", () => {
         when(mockDataBaseService.freeGames).thenReturn(instance(mockFreeGames));
 
         when(mockSimpleGames.delete(anything())).thenResolve(SUCCESS_MESSAGE);
-        when(mockSimpleGames.getAll()).thenResolve([]);
-        when(mockSimpleGames.getAllWithQuery(anything())).thenResolve([]);
+        when(mockSimpleGames.getAll(anything())).thenResolve([]);
         when(mockSimpleGames.getFromId(anything())).thenResolve();
 
         when(mockFreeGames.delete(anything())).thenResolve(SUCCESS_MESSAGE);
-        when(mockFreeGames.getAll()).thenResolve([]);
-        when(mockFreeGames.getAllWithQuery(anything())).thenResolve([]);
+        when(mockFreeGames.getAll(anything())).thenResolve([]);
         when(mockFreeGames.getFromId(anything())).thenResolve();
 
         mockHotelRoomService = mock(HotelRoomService);
@@ -59,7 +57,7 @@ describe("Data-base controller", () => {
                 .get(GAME_MANAGER_SIMPLE)
                 .expect(HttpStatus.OK)
                 .then((response) => {
-                    verify(mockSimpleGames.getAll()).once();
+                    verify(mockSimpleGames.getAll(anything())).once();
                     expect(response.body).to.eql([]);
                 });
         });
@@ -69,7 +67,7 @@ describe("Data-base controller", () => {
                 .query({filterDeleted: true})
                 .expect(HttpStatus.OK)
                 .then((response) => {
-                    verify(mockSimpleGames.getAllWithQuery(anything())).once();
+                    verify(mockSimpleGames.getAll(anything())).once();
                     expect(response.body).to.eql([]);
                 });
         });
@@ -139,7 +137,7 @@ describe("Data-base controller", () => {
                 .get(GAME_MANAGER_FREE)
                 .expect(HttpStatus.OK)
                 .then((response) => {
-                    verify(mockFreeGames.getAll()).once();
+                    verify(mockFreeGames.getAll(anything())).once();
                     expect(response.body).to.eql([]);
                 });
         });
@@ -149,7 +147,7 @@ describe("Data-base controller", () => {
                 .query({filterDeleted: true})
                 .expect(HttpStatus.OK)
                 .then((response) => {
-                    verify(mockFreeGames.getAllWithQuery(anything())).once();
+                    verify(mockFreeGames.getAll(anything())).once();
                     expect(response.body).to.eql([]);
                 });
         });

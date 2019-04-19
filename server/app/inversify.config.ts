@@ -39,7 +39,7 @@ container.bind(Types.GameCreatorService).to(GameCreatorService);
 container.bind(Types.ImageUploadService).to(ImageUploadService);
 
 container.bind(Types.GameManagerController).to(GameManagerController);
-container.bind(Types.DataBaseService).to(DataBaseService);
+container.bind(Types.DataBaseService).to(DataBaseService).inSingletonScope();
 
 container.bind(Types.DifferenceEvaluatorService).to(DifferenceEvaluatorService);
 container.bind(Types.DiffValidatorService).to(DiffValidatorService);

@@ -5,7 +5,11 @@ import {NonExistentGameError} from "../../../common/errors/database.errors";
 import {IFreeGame} from "../../../common/model/game/free-game";
 import {ISimpleGame} from "../../../common/model/game/simple-game";
 import {IRoomInfo} from "../../../common/model/rooms/room-info";
-import {DataBaseService, NOT_TO_BE_DELETED_FILTER_QUERY} from "../services/data-base.service";
+import {
+    DataBaseService, FindQuery,
+    NOT_TO_BE_DELETED_FILTER_QUERY,
+    REMOVE_DIFF_DATA_PROJECTION_QUERY
+} from "../services/data-base.service";
 import {HotelRoomService} from "../services/websocket/rooms/hotel-room.service";
 import Types from "../types";
 import {executePromiseSafely} from "./controller-utils";
@@ -26,11 +30,11 @@ export class GameManagerController {
 
         router.get("/simple", async (req: Request, res: Response, next: NextFunction) => {
             executePromiseSafely(res, next, async () => {
-                const filterDeleted: string = req.query["filterDeleted"];
-                const body: ISimpleGame[] = filterDeleted === "true"
-                    ? await this.dataBaseService.simpleGames.getAllWithQuery(NOT_TO_BE_DELETED_FILTER_QUERY)
-                    : await this.dataBaseService.simpleGames.getAll();
-
+                const body: ISimpleGame[] = await this.dataBaseService.simpleGames.getAll(
+                    {
+                        filterQuery: req.query["filterDeleted"] === "true" ? NOT_TO_BE_DELETED_FILTER_QUERY : undefined,
+                        projectQuery: req.query["filterDiffData"] === "true" ? REMOVE_DIFF_DATA_PROJECTION_QUERY : {},
+                    } as FindQuery);
                 res.json(body);
             });
         });
@@ -78,10 +82,11 @@ export class GameManagerController {
 
         router.get("/free", async (req: Request, res: Response, next: NextFunction) => {
             executePromiseSafely(res, next, async () => {
-                const filterDeleted: string = req.query["filterDeleted"];
-                const body: IFreeGame[] = filterDeleted === "true"
-                    ? await this.dataBaseService.freeGames.getAllWithQuery(NOT_TO_BE_DELETED_FILTER_QUERY)
-                    : await this.dataBaseService.freeGames.getAll();
+                const body: IFreeGame[] = await this.dataBaseService.freeGames.getAll(
+                    {
+                        filterQuery: req.query["filterDeleted"] === "true" ? NOT_TO_BE_DELETED_FILTER_QUERY : undefined,
+                        projectQuery: {},
+                    } as FindQuery);
 
                 res.json(body);
             });

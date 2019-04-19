@@ -9,6 +9,17 @@ import { SimpleGamesCollectionService } from "./db/simple-games.collection.servi
 export const SIMPLE_GAMES_COLLECTION: string = "simpleGames";
 export const FREE_GAMES_COLLECTION: string = "freeGames";
 export const NOT_TO_BE_DELETED_FILTER_QUERY: FilterQuery<IGame> = {["toBeDeleted"]: {$eq: false}};
+export const REMOVE_ID_PROJECTION_QUERY: Object = {_id: 0};
+export const REMOVE_DIFF_DATA_PROJECTION_QUERY: Object = {diffData: 0};
+export interface FindQuery {
+    filterQuery?: FilterQuery<IGame>;
+    projectQuery: Object;
+}
+
+export const EMPTY_QUERY: FindQuery = {
+    filterQuery: undefined,
+    projectQuery: {},
+};
 
 @injectable()
 export class DataBaseService {

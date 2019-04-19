@@ -86,7 +86,7 @@ describe("GameService", () => {
 
   it("should be created", () => {
     serviceGame = TestBed.get(GameService);
-    spyOn(serviceGame, "getSimpleGames").and.returnValue(emptyMockedGameList);
+    spyOn(serviceGame, "getSimpleGamesLite").and.returnValue(emptyMockedGameList);
     expect(serviceGame).toBeTruthy();
   });
 
