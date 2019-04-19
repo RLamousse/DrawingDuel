@@ -94,7 +94,7 @@ describe("Data-base controller", () => {
         });
 
         describe("Delete", () => {
-            it("should delete a game immediately if there are no ongoing games", () => {
+            it("should delete a game immediately if there are no ongoing games", async () => {
                 when(mockHotelRoomService.fetchGameRooms())
                     .thenReturn([]);
 
@@ -106,7 +106,7 @@ describe("Data-base controller", () => {
                     });
             });
 
-            it("should delete a game immediately if there are no ongoing games with the same name", () => {
+            it("should delete a game immediately if there are no ongoing games with the same name", async () => {
                 when(mockHotelRoomService.fetchGameRooms())
                     .thenReturn([{gameName: "anotherGame", vacant: false}]);
 
@@ -118,7 +118,7 @@ describe("Data-base controller", () => {
                     });
             });
 
-            it("should mark a game for deletion if they're ongoing games", () => {
+            it("should mark a game for deletion if they're ongoing games", async () => {
                 when(mockHotelRoomService.fetchGameRooms())
                     .thenReturn([{gameName: "aGame", vacant: false}]);
 
@@ -173,7 +173,7 @@ describe("Data-base controller", () => {
                 .expect(HttpStatus.INTERNAL_SERVER_ERROR);
         });
         describe("Delete", () => {
-            it("should delete a game immediately if there are no ongoing games", () => {
+            it("should delete a game immediately if there are no ongoing games", async () => {
                 when(mockHotelRoomService.fetchGameRooms())
                     .thenReturn([]);
 
@@ -185,7 +185,7 @@ describe("Data-base controller", () => {
                     });
             });
 
-            it("should delete a game immediately if there are no ongoing games with the same name", () => {
+            it("should delete a game immediately if there are no ongoing games with the same name", async () => {
                 when(mockHotelRoomService.fetchGameRooms())
                     .thenReturn([{gameName: "anotherGame", vacant: false}]);
 
@@ -197,7 +197,7 @@ describe("Data-base controller", () => {
                     });
             });
 
-            it("should mark a game for deletion if they're ongoing games", () => {
+            it("should mark a game for deletion if they're ongoing games", async () => {
                 when(mockHotelRoomService.fetchGameRooms())
                     .thenReturn([{gameName: "aGame", vacant: false}]);
 
