@@ -3,6 +3,7 @@ import {MatDialog} from "@angular/material";
 import {Router} from "@angular/router";
 import {LOADING_ROUTE} from "../../../../../common/communication/routes";
 import {ComponentNavigationError} from "../../../../../common/errors/component.errors";
+import {GameRoomCreationError} from "../../../../../common/errors/services.errors";
 import {GameType, OnlineType} from "../../../../../common/model/game/game";
 import {IRecordTime} from "../../../../../common/model/game/record-time";
 import {IRoomInfo} from "../../../../../common/model/rooms/room-info";
@@ -48,8 +49,13 @@ export class GameComponent implements OnInit, OnDestroy {
 
   protected leftButtonClick(): void {
     if (this.leftButton === GameButtonOptions.PLAY) {
-      this.roomService.createRoom(this.gameName, OnlineType.SOLO);
-      this.navigateAwait(OnlineType.SOLO);
+      this.roomService.createRoom(this.gameName, OnlineType.SOLO)
+        .then(() => {
+          this.navigateAwait(OnlineType.SOLO);
+        })
+        .catch(() => {
+          throw new GameRoomCreationError();
+        });
     } else if (this.leftButton === GameButtonOptions.DELETE) {
       openDialog(this.dialog, DeleteGameFormComponent, {callback: window.location.reload.bind(window.location),
                                                         data: {gameName: this.gameName, gameType: this.gameType}});
@@ -66,12 +72,22 @@ export class GameComponent implements OnInit, OnDestroy {
   }
 
   private handleGameJoin(): void {
+    let roomPromise: Promise<void>;
     if (this.rightButton === GameButtonOptions.CREATE) {
-      this.roomService.createRoom(this.gameName, OnlineType.MULTI);
+      roomPromise = this.roomService.createRoom(this.gameName, OnlineType.MULTI);
     } else if (this.rightButton === GameButtonOptions.JOIN) {
-      this.roomService.checkInRoom(this.gameName);
+      roomPromise = this.roomService.checkInRoom(this.gameName);
+    } else {
+      return;
     }
-    this.navigateAwait(OnlineType.MULTI);
+
+    roomPromise
+      .then(() => {
+        this.navigateAwait(OnlineType.MULTI);
+      })
+      .catch(() => {
+        throw new GameRoomCreationError();
+      });
   }
 
   private handleRoomAvailability(rooms: IRoomInfo[]): void {

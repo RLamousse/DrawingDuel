@@ -114,6 +114,7 @@ export class HotelRoomService {
         this._sockets.set(socket, room.id);
         this.registerGameRoomHandlers(socket, room);
         this.pushRoomsToClients();
+        this.radioTower.privateSend(SocketEvent.CHECK_IN, undefined, socket.id);
     }
 
     private deleteRoom(room: IGameRoom): void {

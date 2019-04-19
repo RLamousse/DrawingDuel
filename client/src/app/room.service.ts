@@ -54,19 +54,39 @@ export class RoomService implements OnDestroy {
     this.roomPushSub = this.socket.onEvent<IRoomInfo[]>(SocketEvent.PUSH_ROOMS).subscribe(this.handleFetchRooms);
   }
 
-  public createRoom(gameName: string, playerCount: OnlineType): void {
+  public async createRoom(gameName: string, playerCount: OnlineType): Promise<void> {
+    const checkInPromise: Promise<void> = new Promise<void>((resolve) => {
+      const subscription: Subscription = this.socket.onEvent(SocketEvent.CHECK_IN)
+        .subscribe(() => {
+          subscription.unsubscribe();
+          resolve();
+        });
+    });
+
     this.socket.send(SocketEvent.CREATE, createWebsocketMessage<RoomCreationMessage>({
       gameName,
       playerCount,
       username: UNListService.username,
     }));
+
+    return checkInPromise;
   }
 
-  public checkInRoom(gameName: string): void {
+  public async checkInRoom(gameName: string): Promise<void> {
+    const checkInPromise: Promise<void> = new Promise<void>((resolve) => {
+      const subscription: Subscription = this.socket.onEvent(SocketEvent.CHECK_IN)
+        .subscribe(() => {
+          subscription.unsubscribe();
+          resolve();
+        });
+    });
+
     this.socket.send(SocketEvent.CHECK_IN, createWebsocketMessage<RoomCheckInMessage>({
       gameName,
       username: UNListService.username,
     }));
+
+    return checkInPromise;
   }
 
   public checkOutRoom(): void {

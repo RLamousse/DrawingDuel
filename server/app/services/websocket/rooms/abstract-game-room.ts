@@ -37,7 +37,7 @@ export abstract class AbstractGameRoom<T extends IGame, U extends IGameState> im
             throw new NoVacancyGameRoomError();
         }
 
-        this._connectedPlayers.set(clientId, true);
+        this._connectedPlayers.set(clientId, false);
     }
 
     public checkOut(clientId: string): void {
