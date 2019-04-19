@@ -40,7 +40,7 @@ export class GameListComponent implements OnInit {
   }
 
   public joinLiteGames(): void {
-    forkJoin(this.gameService.getSimpleGames(), this.gameService.getFreeGames()).subscribe(([simpleGames, freeGames]) => {
+    forkJoin(this.gameService.getSimpleGamesLite(), this.gameService.getFreeGamesLite()).subscribe(([simpleGames, freeGames]) => {
       this.gameService.pushSimpleGames(simpleGames);
       this.gameService.pushFreeGames(freeGames);
       this.pushedGames = true;
