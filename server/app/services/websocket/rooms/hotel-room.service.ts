@@ -117,8 +117,22 @@ export class HotelRoomService {
         this.radioTower.privateSend(SocketEvent.CHECK_IN, undefined, socket.id);
     }
 
-    private deleteRoom(room: IGameRoom): void {
-        this._rooms.delete(room.id);
+    private async deleteRoom(roomToDelete: IGameRoom): Promise<void> {
+        this._rooms.delete(roomToDelete.id);
+        const gameName: string = roomToDelete.gameName;
+        const hasSimilarRoomsOngoing: boolean = Array.from(this._rooms.values())
+            .map((room: IGameRoom) => room.gameName)
+            .some((roomName: string) => roomName === gameName);
+
+        if (hasSimilarRoomsOngoing) {
+            return;
+        }
+
+        if (await this.databaseService.simpleGames.contains(gameName)) {
+            await this.databaseService.simpleGames.delete(gameName);
+        } else if (await this.databaseService.freeGames.contains(gameName)) {
+            await this.databaseService.freeGames.delete(gameName);
+        }
     }
 
     private pushRoomsToClients(): void {
@@ -154,12 +168,12 @@ export class HotelRoomService {
             this.handleInteractionError(message.body.errorMessage, socket, room);
         });
 
-        socket.in(room.id).on(SocketEvent.CHECK_OUT, () => {
-            this.handleCheckout(room, socket);
+        socket.in(room.id).on(SocketEvent.CHECK_OUT, async () => {
+            await this.handleCheckout(room, socket);
         });
 
-        socket.in(room.id).on(SocketEvent.DISCONNECT, () => {
-            this.handleCheckout(room, socket);
+        socket.in(room.id).on(SocketEvent.DISCONNECT, async () => {
+            await this.handleCheckout(room, socket);
         });
     }
 
@@ -194,7 +208,7 @@ export class HotelRoomService {
         this.chatAction.sendChat(chatMessage, room.id);
     }
 
-    private handleCheckout(room: IGameRoom, socket: Socket): void {
+    private async handleCheckout(room: IGameRoom, socket: Socket): Promise<void> {
         socket.leave(room.id);
         socket.removeAllListeners(SocketEvent.INTERACT);
         socket.removeAllListeners(SocketEvent.READY);
@@ -203,7 +217,7 @@ export class HotelRoomService {
         if (room.vacant && room.ongoing) {
             this.kickClients(room.id);
         }
-        this.deleteRoom(room);
+        await this.deleteRoom(room);
         this.pushRoomsToClients();
     }
 }
