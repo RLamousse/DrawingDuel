@@ -1,15 +1,17 @@
-import { Component, OnInit} from "@angular/core";
-import { FormBuilder, Validators } from "@angular/forms";
-import { MatCheckboxChange, MatDialogRef, MatSliderChange } from "@angular/material";
+import {Component, OnInit} from "@angular/core";
+import {FormBuilder, Validators} from "@angular/forms";
+import {MatCheckboxChange, MatDialogRef, MatSliderChange} from "@angular/material";
 import {ICreateFreeGameRequest} from "../../../../common/communication/requests/game-creator.controller.request";
 import {FREE_GAME_CREATION_ROUTE} from "../../../../common/communication/routes";
 import {
-  ModificationType, Themes
+  ModificationType,
+  Themes
 } from "../../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
-import { AbstractForm } from "../abstract-form";
-import { FormPostService } from "../form-post.service";
+import {AbstractForm} from "../abstract-form";
+import {DialogStatus} from "../dialog-utils";
+import {FormPostService} from "../form-post.service";
 import {FreeGamePhotoService} from "../scene-creator/free-game-photo-service/free-game-photo.service";
-import { AVAILABLE_MODIF_TYPES, AVAILABLE_THEMES, SelectType } from "./selectType";
+import {AVAILABLE_MODIF_TYPES, AVAILABLE_THEMES, SelectType} from "./selectType";
 @Component({
   selector: "app-create3-dgame",
   templateUrl: "./create3-dgame.component.html",
@@ -93,10 +95,10 @@ export class Create3DGameComponent extends AbstractForm implements OnInit {
       modificationTypes : modificationTypes,
     };
     this.formPost.submitForm(FREE_GAME_CREATION_ROUTE, requestData).subscribe(
-      async (data) => {
+      async () => {
         await this.photoService.takePhoto(gameName)
           .then(() => {
-            this.exit(data);
+            this.exit(DialogStatus.DONE);
           })
           .catch((reason: Error) => {
             throw reason;
@@ -106,6 +108,7 @@ export class Create3DGameComponent extends AbstractForm implements OnInit {
         console.error(`${error.name} : ${error.message}`);
         alert(error.message);
         this.disableButton = false;
+        this.exit();
       });
   }
 }
