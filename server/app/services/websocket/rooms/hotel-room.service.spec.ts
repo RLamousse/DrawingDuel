@@ -389,8 +389,6 @@ describe("A service to manage game rooms", () => {
                 const roomSpy: SimpleGameRoom = spy(simpleGameRoom);
 
                 hotelRoomService["checkInClient"](serverSocket, simpleGameRoom);
-                hotelRoomService["registerGameRoomHandlers"](serverSocket, simpleGameRoom);
-
                 when(serviceSpy["pushRoomsToClients"]())
                     .thenCall(() => {
                         verify(roomSpy.checkOut(serverSocket.id)).once();

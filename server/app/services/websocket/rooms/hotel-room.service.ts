@@ -32,6 +32,7 @@ export class HotelRoomService {
 
     private readonly _rooms: Map<string, IGameRoom>;
     private readonly _sockets: Map<Socket, string>;
+    private readonly _disconnectListeners: Map<string, () => Promise<void>>;
 
     public constructor(@inject(types.DataBaseService) private databaseService: DataBaseService,
                        @inject(types.RadioTowerService) private radioTower: RadioTowerService,
@@ -39,6 +40,7 @@ export class HotelRoomService {
                        @inject(types.UserNameService) protected userNameService: UsernameService) {
         this._rooms = new Map<string, IGameRoom>();
         this._sockets = new Map<Socket, string>();
+        this._disconnectListeners = new Map<string, () => Promise<void>>();
     }
 
     private static playerCountFromMessage(playerCountMessage: OnlineType): number {
@@ -172,9 +174,7 @@ export class HotelRoomService {
             await this.handleCheckout(room, socket);
         });
 
-        socket.in(room.id).on(SocketEvent.DISCONNECT, async () => {
-            await this.handleCheckout(room, socket);
-        });
+        this.bindDisconnectListener(room, socket);
     }
 
     private handleInteraction<T>(room: IGameRoom, socket: Socket, message: WebsocketMessage<RoomInteractionMessage<T>>): void {
@@ -209,15 +209,30 @@ export class HotelRoomService {
     }
 
     private async handleCheckout(room: IGameRoom, socket: Socket): Promise<void> {
-        socket.leave(room.id);
+        this.removeDisconnectListener(socket);
         socket.removeAllListeners(SocketEvent.INTERACT);
         socket.removeAllListeners(SocketEvent.READY);
         socket.removeAllListeners(SocketEvent.CHECK_OUT);
+        socket.leave(room.id);
         room.checkOut(socket.id);
         if (room.vacant && room.ongoing) {
             this.kickClients(room.id);
         }
         await this.deleteRoom(room);
         this.pushRoomsToClients();
+    }
+
+    private bindDisconnectListener(room: IGameRoom, socket: Socket): void {
+        const disconnectListener: () => Promise<void> = async () => this.handleCheckout(room, socket);
+        this._disconnectListeners.set(socket.id, disconnectListener);
+        socket.in(room.id).on(SocketEvent.DISCONNECT, disconnectListener);
+    }
+
+    private removeDisconnectListener(socket: Socket): void {
+        const disconnectListenerCandidate: (() => Promise<void>) | undefined = this._disconnectListeners.get(socket.id);
+        if (disconnectListenerCandidate) {
+            socket.removeListener(SocketEvent.DISCONNECT, disconnectListenerCandidate);
+            this._disconnectListeners.delete(socket.id);
+        }
     }
 }
