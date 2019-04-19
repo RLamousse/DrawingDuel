@@ -14,5 +14,6 @@
 
 ## Multijoueur
 
-Pour pouvoir jouer en multijouer sur deux machines différentes,
-il suffit de changer la valeur de la variable `SERVER_BASE_URL` dans le fichier `common/communication/routes.ts`.
+Pour pouvoir jouer en multijoueur sur deux machines différentes,
+il suffit de changer la valeur de la variable `SERVER_BASE_URL` dans 
+le fichier `common/communication/routes.ts`.
