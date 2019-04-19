@@ -61,7 +61,7 @@ describe("FreeGamePhotoService", () => {
     const service: FreeGamePhotoService = TestBed.get(FreeGamePhotoService);
     spyOn(service as any, "putThumbnail").and.returnValue(true);
     spyOn(service as any, "getFreeGameScene").and.returnValue(new Scene());
-    // @ts-ignore
+    // @ts-ignore Overwrite readonly property
     service["WAIT_TIME"] = 0;
 
     return service.takePhoto("").then(() => {
