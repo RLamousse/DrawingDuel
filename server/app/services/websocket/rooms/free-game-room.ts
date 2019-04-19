@@ -17,8 +17,8 @@ import {AbstractGameRoom} from "./abstract-game-room";
 
 export class FreeGameRoom extends AbstractGameRoom<IFreeGame, IFreeGameState> {
 
-    public constructor(id: string, game: IFreeGame, playerCount: number = 1) {
-        super(id, game, playerCount, {
+    public constructor(id: string, gameName: string, gameLoader: () => Promise<IFreeGame>, playerCount: number = 1) {
+        super(id, gameName, gameLoader, playerCount, {
             foundObjects: [],
         });
     }

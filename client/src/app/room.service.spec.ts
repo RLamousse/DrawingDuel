@@ -1,6 +1,6 @@
 import {TestBed} from "@angular/core/testing";
 
-import {Subscription} from "rxjs";
+import {Subject, Subscription} from "rxjs";
 import {createWebsocketMessage} from "../../../common/communication/messages/message";
 import {SocketEvent} from "../../../common/communication/socket-events";
 import {OnlineType} from "../../../common/model/game/game";
@@ -11,12 +11,19 @@ import {SocketService} from "./socket.service";
 describe("RoomService", () => {
 
   const rooms: IRoomInfo[] = [{gameName: "max", vacant: true}];
+  let socketServiceSpy: jasmine.SpyObj<SocketService>;
 
-  beforeEach(() => TestBed.configureTestingModule({
-    providers: [
-      SocketService,
-    ],
-  }));
+  beforeEach(() => {
+    socketServiceSpy = jasmine.createSpyObj("SocketService", ["onEvent", "send"]);
+    socketServiceSpy.onEvent.and.returnValue(new Subject());
+
+    return TestBed.configureTestingModule(
+      {
+        providers: [
+          {provide: SocketService, useValue: socketServiceSpy},
+        ],
+      });
+  });
 
   it("should be created", () => {
     const service: RoomService = TestBed.get(RoomService);
@@ -48,46 +55,42 @@ describe("RoomService", () => {
 
   it("should make the socket call to create the room", () => {
     const service: RoomService = TestBed.get(RoomService);
-    const spy: jasmine.Spy = spyOn(service["socket"], "send");
+    // tslint:disable-next-line:no-floating-promises We just want to test the emit and not the response
     service.createRoom("max", OnlineType.MULTI);
-    expect(spy).toHaveBeenCalled();
-    expect(spy.calls.mostRecent().args[0]).toEqual(SocketEvent.CREATE);
+    expect(socketServiceSpy.send).toHaveBeenCalled();
+    expect(socketServiceSpy.send.calls.mostRecent().args[0]).toEqual(SocketEvent.CREATE);
   });
 
   it("should make the socket call to check-in the room", () => {
     const service: RoomService = TestBed.get(RoomService);
-    const spy: jasmine.Spy = spyOn(service["socket"], "send");
+    // tslint:disable-next-line:no-floating-promises We just want to test the emit and not the response
     service.checkInRoom("max");
-    expect(spy).toHaveBeenCalled();
-    expect(spy.calls.mostRecent().args[0]).toEqual(SocketEvent.CHECK_IN);
+    expect(socketServiceSpy.send).toHaveBeenCalled();
+    expect(socketServiceSpy.send.calls.mostRecent().args[0]).toEqual(SocketEvent.CHECK_IN);
   });
 
   it("should make the socket call to check-out the room", () => {
     const service: RoomService = TestBed.get(RoomService);
-    const spy: jasmine.Spy = spyOn(service["socket"], "send");
     service.checkOutRoom();
-    expect(spy).toHaveBeenCalled();
-    expect(spy.calls.mostRecent().args[0]).toEqual(SocketEvent.CHECK_OUT);
+    expect(socketServiceSpy.send).toHaveBeenCalled();
+    expect(socketServiceSpy.send.calls.mostRecent().args[0]).toEqual(SocketEvent.CHECK_OUT);
   });
 
   it("should make the socket call to signal ready to the room", () => {
     const service: RoomService = TestBed.get(RoomService);
-    const spy: jasmine.Spy = spyOn(service["socket"], "send");
     service.signalReady();
-    expect(spy).toHaveBeenCalled();
-    expect(spy.calls.mostRecent().args[0]).toEqual(SocketEvent.READY);
+    expect(socketServiceSpy.send).toHaveBeenCalled();
+    expect(socketServiceSpy.send.calls.mostRecent().args[0]).toEqual(SocketEvent.READY);
   });
 
   it("should return a subscription to game start", () => {
     const service: RoomService = TestBed.get(RoomService);
-    const spy: jasmine.Spy = spyOn(service["socket"], "onEvent");
-    spy.and.callThrough();
     const fakeCallback: () => void = () => {
       //
     };
     const sub: Subscription = service.subscribeToGameStart(fakeCallback);
-    expect(spy).toHaveBeenCalled();
-    expect(spy.calls.mostRecent().args[0]).toEqual(SocketEvent.READY);
+    expect(socketServiceSpy.onEvent).toHaveBeenCalled();
+    expect(socketServiceSpy.onEvent.calls.mostRecent().args[0]).toEqual(SocketEvent.READY);
     expect(sub.unsubscribe).toBeDefined();
   });
 });

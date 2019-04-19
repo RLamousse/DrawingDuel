@@ -22,6 +22,7 @@ export class AwaitViewComponent implements OnInit, OnDestroy {
 
   protected gameName: string;
   protected gameType: GameType;
+  private onlineType: OnlineType;
   protected readonly indexString: number = 0;
 
   private gameStartSub: Subscription;
@@ -37,13 +38,13 @@ export class AwaitViewComponent implements OnInit, OnDestroy {
   public ngOnDestroy(): void {
     this.gameStartSub.unsubscribe();
     this.gameDeletionSub.unsubscribe();
-    // this.roomService.checkOutRoom();
   }
 
   public ngOnInit(): void {
     this.activatedRoute.queryParams.subscribe((params) => {
       this.gameName = params["gameName"];
       this.gameType = parseInt(params["gameType"], 10);
+      this.onlineType = params["onlineType"];
     });
     this.roomService.signalReady();
     this.gameStartSub = this.roomService.subscribeToGameStart(this.handleGameStart);
@@ -72,7 +73,7 @@ export class AwaitViewComponent implements OnInit, OnDestroy {
         gameName: this.gameName,
         originalImage: readyInfo.originalImage,
         modifiedImage: readyInfo.modifiedImage,
-        onlineType: OnlineType.MULTI,
+        onlineType: this.onlineType,
       },
     }).catch(() => {
       throw new ComponentNavigationError();
@@ -83,7 +84,7 @@ export class AwaitViewComponent implements OnInit, OnDestroy {
     this.route.navigate([PLAY_3D_ROUTE], {
       queryParams: {
         gameName: this.gameName,
-        onlineType: OnlineType.MULTI,
+        onlineType: this.onlineType,
       },
     }).catch(() => {
       throw new ComponentNavigationError();
