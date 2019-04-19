@@ -49,6 +49,7 @@ describe("RoomService", () => {
   it("should make the socket call to create the room", () => {
     const service: RoomService = TestBed.get(RoomService);
     const spy: jasmine.Spy = spyOn(service["socket"], "send");
+    // tslint:disable-next-line:no-floating-promises We just want to test the emit and not the response
     service.createRoom("max", OnlineType.MULTI);
     expect(spy).toHaveBeenCalled();
     expect(spy.calls.mostRecent().args[0]).toEqual(SocketEvent.CREATE);
@@ -57,6 +58,7 @@ describe("RoomService", () => {
   it("should make the socket call to check-in the room", () => {
     const service: RoomService = TestBed.get(RoomService);
     const spy: jasmine.Spy = spyOn(service["socket"], "send");
+    // tslint:disable-next-line:no-floating-promises We just want to test the emit and not the response
     service.checkInRoom("max");
     expect(spy).toHaveBeenCalled();
     expect(spy.calls.mostRecent().args[0]).toEqual(SocketEvent.CHECK_IN);
