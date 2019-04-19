@@ -56,7 +56,6 @@ export class SimpleGameCreatorFormComponent extends AbstractForm implements OnIn
       (error: Error) => {
         console.error(`${error.name} : ${error.message}`);
         alert(error.message);
-        this.exit();
         this.disableButton = false;
       });
   }
