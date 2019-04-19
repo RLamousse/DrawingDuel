@@ -23,8 +23,8 @@ export class UNListService implements CanActivate {
   public message: string;
   public username: string;
   public response: UserValidationMessage;
-  private readonly NAVIGATION_MESSAGE: string = "Un comportement de navigation suspect a été détecté," +
-    "vous serez ramené à la page d'acceuil pour des raisons de sécurité!";
+  private readonly NAVIGATION_MESSAGE: string = "Un comportement de navigation suspect a été détecté, " +
+    "vous serez ramené à la page d'accueil pour des raisons de sécurité!";
 
   public constructor(private websocket: SocketService, private router: Router) {
     this.minLength = this.USERNAME_MIN_LENGTH;
