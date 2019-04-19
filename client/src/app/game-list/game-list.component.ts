@@ -23,7 +23,8 @@ export class GameListComponent implements OnInit {
   protected pushedGames: boolean;
 
   public constructor(private gameService: GameService,
-                     private roomService: RoomService) {
+                     private roomService: RoomService,
+                     public router: Router) {
     this.pushedGames = false;
   }
 
