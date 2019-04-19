@@ -27,12 +27,13 @@ export class GameListComponent implements OnInit {
   }
 
   public ngOnInit(): void {
+  public joinGames(): void {
     forkJoin(this.gameService.getSimpleGames(), this.gameService.getFreeGames()).subscribe(([simpleGames, freeGames]) => {
       this.gameService.pushSimpleGames(simpleGames);
       this.gameService.pushFreeGames(freeGames);
       this.pushedGames = true;
     });
-    this.roomService.checkOutRoom();
+  }
   }
 
 }
