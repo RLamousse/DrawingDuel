@@ -1,5 +1,7 @@
 import { Component, Input, OnInit } from "@angular/core";
+import {Router} from "@angular/router";
 import { forkJoin } from "rxjs";
+import {GAMES_ROUTE, HOME_ROUTE} from "../../../../common/communication/routes";
 import {GameType} from "../../../../common/model/game/game";
 import { GameService } from "../game.service";
 import {RoomService} from "../room.service";
