@@ -3,6 +3,7 @@
 import {CUSTOM_ELEMENTS_SCHEMA} from "@angular/core";
 import {ComponentFixture, TestBed} from "@angular/core/testing";
 import {FormsModule} from "@angular/forms";
+import {Router, RouterModule} from "@angular/router";
 import {Observable} from "rxjs";
 import {Scene} from "three";
 import {IFreeGame} from "../../../../common/model/game/free-game";
@@ -64,10 +65,11 @@ describe("GameListComponent", () => {
     TestBed.configureTestingModule(
       {
         declarations: [GameListComponent],
-        imports: [FormsModule],
+        imports: [FormsModule, RouterModule],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
           {provide: GameService, useValue: mockedGameService},
+          {provide: Router, useValue: {} },
           FreeGamePhotoService,
           {provide: FreeGameCreatorService, useValue: mockedFreeGameCreator},
           SocketService,
