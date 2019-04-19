@@ -1,3 +1,16 @@
+<div *ngIf="router.url === '/' + GAME_LIST_ROUTE">
+  <nav class = "reloadButton">
+    <button mat-raised-button color="accent" class="button back-button" routerLink="/{{HOME_BUTTON_ROUTE}}">
+      <mat-icon>home</mat-icon>
+      Accueil
+    </button>
+    <button mat-raised-button color="accent" class="button back-button" (click) = "reloadGameList()">
+            <mat-icon>cached</mat-icon>
+            Recharger
+    </button>
+  </nav>
+    <div class="titleFont">Liste de Jeux</div>
+</div>
 <ng-container
   *ngIf="pushedGames; then listView; else loading">
 </ng-container>

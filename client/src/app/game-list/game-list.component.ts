@@ -15,6 +15,9 @@ import {GameButtonOptions} from "./game/game-button-enum";
 
 export class GameListComponent implements OnInit {
 
+  protected readonly HOME_BUTTON_ROUTE: string = HOME_ROUTE;
+  protected readonly GAME_LIST_ROUTE: string = GAMES_ROUTE;
+
   @Input() protected readonly rightButton: string = GameButtonOptions.JOIN;
   @Input() protected readonly leftButton: string = GameButtonOptions.PLAY;
   @Input() protected  readonly simpleGameTag: GameType = GameType.SIMPLE;
