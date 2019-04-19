@@ -64,14 +64,14 @@ export class HotelRoomService {
                 room = new SimpleGameRoom(
                     roomId,
                     gameName,
-                    () => this.databaseService.simpleGames.getFromId(gameName),
+                    async () => this.databaseService.simpleGames.getFromId(gameName),
                     HotelRoomService.playerCountFromMessage(playerCount),
                 );
             } else if (await this.databaseService.freeGames.contains(gameName)) {
                 room = new FreeGameRoom(
                     roomId,
                     gameName,
-                    () => this.databaseService.freeGames.getFromId(gameName),
+                    async () => this.databaseService.freeGames.getFromId(gameName),
                     HotelRoomService.playerCountFromMessage(playerCount),
                 );
             } else {

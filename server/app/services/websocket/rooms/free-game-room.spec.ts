@@ -35,8 +35,17 @@ describe("A free game room", () => {
             if (freeGameMockConfigurator !== undefined) {
                 freeGameMockConfigurator(mockedFreeGame);
             }
+            mockedFreeGame.setup((game: IFreeGame) => game.gameName)
+                .returns(() => "gameName");
 
-            return new FreeGameRoom(roomId, mockedFreeGame.object, playerCount);
+            const room: FreeGameRoom = new FreeGameRoom(
+                roomId,
+                "gameName",
+                async () => Promise.resolve(mockedFreeGame.object),
+                playerCount);
+            room["_game"] = mockedFreeGame.object;
+
+            return room;
         };
 
     describe("Interact", () => {
