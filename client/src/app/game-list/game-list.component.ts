@@ -1,6 +1,6 @@
-import { Component, Input, OnInit } from "@angular/core";
+import {Component, Input, OnDestroy, OnInit} from "@angular/core";
 import {Router} from "@angular/router";
-import { forkJoin } from "rxjs";
+import {forkJoin, Subscription} from "rxjs";
 import {GAMES_ROUTE, HOME_ROUTE} from "../../../../common/communication/routes";
 import {GameType} from "../../../../common/model/game/game";
 import { GameService } from "../game.service";
@@ -13,7 +13,7 @@ import {GameButtonOptions} from "./game/game-button-enum";
   styleUrls: ["./game-list.component.css"],
 })
 
-export class GameListComponent implements OnInit {
+export class GameListComponent implements OnInit, OnDestroy {
 
   protected readonly HOME_BUTTON_ROUTE: string = HOME_ROUTE;
   protected readonly GAME_LIST_ROUTE: string = GAMES_ROUTE;
@@ -24,6 +24,7 @@ export class GameListComponent implements OnInit {
   @Input() protected  readonly freeGameTag: GameType = GameType.FREE;
 
   protected pushedGames: boolean;
+  private gameSub: Subscription;
 
   public constructor(private gameService: GameService,
                      private roomService: RoomService,
@@ -37,7 +38,8 @@ export class GameListComponent implements OnInit {
   }
 
   public joinGames(): void {
-    forkJoin(this.gameService.getSimpleGamesLite(), this.gameService.getFreeGamesLite()).subscribe(([simpleGames, freeGames]) => {
+    this.gameSub = forkJoin(this.gameService.getSimpleGamesLite(), this.gameService.getFreeGamesLite())
+      .subscribe(([simpleGames, freeGames]) => {
       this.gameService.pushSimpleGames(simpleGames);
       this.gameService.pushFreeGames(freeGames);
       this.pushedGames = true;
@@ -48,4 +50,7 @@ export class GameListComponent implements OnInit {
    this.ngOnInit();
   }
 
+  public ngOnDestroy(): void {
+    this.gameSub.unsubscribe();
+  }
 }
