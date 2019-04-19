@@ -20,6 +20,7 @@ export class VueAdminComponent {
 
   protected readonly rightButton: string = GameButtonOptions.REINITIALIZE;
   protected readonly leftButton: string = GameButtonOptions.DELETE;
+  protected readonly isLiteGame: boolean = true;
 
   protected createSimpleGame(): void {
     openDialog(this.dialog, SimpleGameCreatorFormComponent, {callback: window.location.reload.bind(window.location)});
