@@ -16,6 +16,11 @@ export interface FindQuery {
     projectQuery: Object;
 }
 
+export const EMPTY_QUERY: FindQuery = {
+    filterQuery: undefined,
+    projectQuery: {},
+};
+
 @injectable()
 export class DataBaseService {
 

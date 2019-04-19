@@ -1,7 +1,7 @@
 import {Collection, FilterQuery} from "mongodb";
 import {Message} from "../../../../common/communication/messages/message";
 import {DatabaseError, EmptyIdError, NoElementFoundError} from "../../../../common/errors/database.errors";
-import {FindQuery, REMOVE_ID_PROJECTION_QUERY} from "../data-base.service";
+import {EMPTY_QUERY, FindQuery, REMOVE_ID_PROJECTION_QUERY} from "../data-base.service";
 
 export abstract class CollectionService<T> {
 
@@ -30,14 +30,13 @@ export abstract class CollectionService<T> {
         return await this.documentCount(id) !== 0;
     }
 
-    public async getAll(findQuery: FindQuery): Promise<T[]> {
-        return this._collection.find(findQuery.filterQuery)
-            .project({...REMOVE_ID_PROJECTION_QUERY, ...findQuery.projectQuery})
-            .toArray()
-            .then((items: T[]) => {
+    public async getAll(findQuery?: FindQuery): Promise<T[]> {
+        const query: FindQuery = findQuery ? findQuery : EMPTY_QUERY;
 
-                return items;
-            })
+        return this._collection.find(query.filterQuery)
+            .project({...REMOVE_ID_PROJECTION_QUERY, ...query.projectQuery})
+            .toArray()
+            .then((items: T[]) => items)
             .catch(() => {
                 throw new DatabaseError();
             });
