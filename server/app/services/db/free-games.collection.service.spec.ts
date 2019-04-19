@@ -10,6 +10,7 @@ import {
     NonExistentGameError
 } from "../../../../common/errors/database.errors";
 import {IFreeGame} from "../../../../common/model/game/free-game";
+import {DEFAULT_FIND_OPTIONS} from "./collection.service";
 import {FreeGamesCollectionService} from "./free-games.collection.service";
 import {GAME_NAME_FIELD} from "./simple-games.collection.service";
 
@@ -227,7 +228,7 @@ describe("A db service for free games", () => {
 
         it("should throw an NonExistentGameError when no results where found", async () => {
             const query: FilterQuery<IFreeGame> = createGameQueryForId("unavailableGame");
-            mockedCollection.setup(async (collection: Collection<IFreeGame>) => collection.findOne(query))
+            mockedCollection.setup(async (collection: Collection<IFreeGame>) => collection.findOne(query, DEFAULT_FIND_OPTIONS))
                 .returns(async () => Promise.resolve(null));
 
             freeGamesCollectionService = new FreeGamesCollectionService(mockedCollection.object);
@@ -241,7 +242,7 @@ describe("A db service for free games", () => {
 
         it("should throw a database error on unexpected behaviour", async () => {
             const query: FilterQuery<IFreeGame> = createGameQueryForId("errorGame");
-            mockedCollection.setup(async (collection: Collection<IFreeGame>) => collection.findOne(query))
+            mockedCollection.setup(async (collection: Collection<IFreeGame>) => collection.findOne(query, DEFAULT_FIND_OPTIONS))
                 .returns(async () => Promise.reject(new Error("Unexpected error")));
 
             freeGamesCollectionService = new FreeGamesCollectionService(mockedCollection.object);
@@ -255,7 +256,7 @@ describe("A db service for free games", () => {
 
         it("should get a game from an ID", async () => {
             const query: FilterQuery<IFreeGame> = createGameQueryForId("sampleGame");
-            mockedCollection.setup(async (collection: Collection<IFreeGame>) => collection.findOne(query))
+            mockedCollection.setup(async (collection: Collection<IFreeGame>) => collection.findOne(query, DEFAULT_FIND_OPTIONS))
                 .returns(async () => Promise.resolve(sampleGame));
 
             freeGamesCollectionService = new FreeGamesCollectionService(mockedCollection.object);

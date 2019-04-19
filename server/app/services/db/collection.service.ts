@@ -1,7 +1,9 @@
-import {Collection, FilterQuery} from "mongodb";
+import {Collection, FilterQuery, FindOneOptions} from "mongodb";
 import {Message} from "../../../../common/communication/messages/message";
 import {DatabaseError, EmptyIdError, NoElementFoundError} from "../../../../common/errors/database.errors";
 import {EMPTY_QUERY, FindQuery, REMOVE_ID_PROJECTION_QUERY} from "../data-base.service";
+
+export const DEFAULT_FIND_OPTIONS: FindOneOptions = {projection: REMOVE_ID_PROJECTION_QUERY};
 
 export abstract class CollectionService<T> {
 
@@ -93,23 +95,20 @@ export abstract class CollectionService<T> {
             {
                 [this.idFieldName]: {$eq: id},
             },
-            {
-                projection: REMOVE_ID_PROJECTION_QUERY,
-            })
-            .then((value: T) => {
-                if (value === null) {
-                    throw new NoElementFoundError();
-                }
+            DEFAULT_FIND_OPTIONS,
+        ).then((value: T) => {
+            if (value === null) {
+                throw new NoElementFoundError();
+            }
 
-                return value;
-            })
-            .catch((error: Error) => {
-                if (error.message === NoElementFoundError.NO_ELEMENT_FOUND_ERROR_MESSAGE) {
-                    throw error;
-                }
+            return value;
+        }).catch((error: Error) => {
+            if (error.message === NoElementFoundError.NO_ELEMENT_FOUND_ERROR_MESSAGE) {
+                throw error;
+            }
 
-                throw new DatabaseError();
-            });
+            throw new DatabaseError();
+        });
     }
 
 }
