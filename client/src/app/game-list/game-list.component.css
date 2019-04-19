@@ -40,6 +40,7 @@ img{
 }
 
 .title{
+  
   width: 50%;
   height: 80px;
   color: white;
@@ -49,6 +50,12 @@ img{
   white-space: nowrap;
   font-family: Roboto, "Helvetica Neue", sans-serif;
   font-weight: 500;
+}
+
+.reloadButton{
+  margin-right: 5px;
+  z-index: 200000;
+  position: absolute;
 }
 
 .write{
@@ -62,11 +69,24 @@ img{
 }
 
 .popup{
-  position: fixed;
+  position: absolute;
   width: 100%;
   height: 200px;
   z-index: 10;
   display: flex;
   flex-direction: row;
+}
+.titleFont{
+  font-size: 25px;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  height: 35px;
+  color: white;
+  background-color: black;
+  padding-left: 10px;
+  text-align : center;
+}
+
+.back-button {
+  margin-right: 5px;
 }
 
