@@ -35,10 +35,20 @@ describe("A simple game room", () => {
         (simpleGameMockConfigurator?: (mockedSimpleGame: IMock<ISimpleGame>) => void, playerCount: number = 1, roomId: string = "room") => {
             const mockedSimpleGame: IMock<ISimpleGame> = Mock.ofType<ISimpleGame>();
             if (simpleGameMockConfigurator !== undefined) {
-            simpleGameMockConfigurator(mockedSimpleGame);
-        }
+                simpleGameMockConfigurator(mockedSimpleGame);
+            }
 
-            return new SimpleGameRoom(roomId, mockedSimpleGame.object, playerCount);
+            mockedSimpleGame.setup((game: ISimpleGame) => game.gameName)
+                .returns(() => "gameName");
+
+            const room: SimpleGameRoom = new SimpleGameRoom(
+                roomId,
+                "gameName",
+                async () => Promise.resolve(mockedSimpleGame.object),
+                playerCount);
+            room["_game"] = mockedSimpleGame.object;
+
+            return room;
     };
 
     describe("Check-in", () => {

@@ -63,13 +63,15 @@ export class HotelRoomService {
             if (await this.databaseService.simpleGames.contains(gameName)) {
                 room = new SimpleGameRoom(
                     roomId,
-                    await this.databaseService.simpleGames.getFromId(gameName),
+                    gameName,
+                    async () => this.databaseService.simpleGames.getFromId(gameName),
                     HotelRoomService.playerCountFromMessage(playerCount),
                 );
             } else if (await this.databaseService.freeGames.contains(gameName)) {
                 room = new FreeGameRoom(
                     roomId,
-                    await this.databaseService.freeGames.getFromId(gameName),
+                    gameName,
+                    async () => this.databaseService.freeGames.getFromId(gameName),
                     HotelRoomService.playerCountFromMessage(playerCount),
                 );
             } else {
@@ -112,6 +114,7 @@ export class HotelRoomService {
         this._sockets.set(socket, room.id);
         this.registerGameRoomHandlers(socket, room);
         this.pushRoomsToClients();
+        this.radioTower.privateSend(SocketEvent.CHECK_IN, undefined, socket.id);
     }
 
     private deleteRoom(room: IGameRoom): void {
@@ -123,6 +126,7 @@ export class HotelRoomService {
     }
 
     private kickClients(roomId: string): void {
+        this.radioTower.sendToRoom(SocketEvent.KICK, undefined, roomId);
         Array.from(this._sockets.entries())
             .filter((entry: [Socket, string]) => entry[1] === roomId)
             .map((entry: [Socket, string]) => entry[0])
@@ -135,7 +139,11 @@ export class HotelRoomService {
         });
 
         socket.in(room.id).on(SocketEvent.READY, () => {
-            room.handleReady(socket.id);
+            try {
+                room.handleReady(socket.id);
+            } catch (e) {
+                this.kickClients(room.id);
+            }
         });
 
         socket.in(room.id).on(SocketEvent.INTERACT, <T>(message: WebsocketMessage<RoomInteractionMessage<T>>) => {
@@ -189,9 +197,10 @@ export class HotelRoomService {
     private handleCheckout(room: IGameRoom, socket: Socket): void {
         socket.leave(room.id);
         socket.removeAllListeners(SocketEvent.INTERACT);
+        socket.removeAllListeners(SocketEvent.READY);
+        socket.removeAllListeners(SocketEvent.CHECK_OUT);
         room.checkOut(socket.id);
         if (room.vacant && room.ongoing) {
-            this.radioTower.sendToRoom(SocketEvent.KICK, undefined, room.id);
             this.kickClients(room.id);
         }
         this.deleteRoom(room);

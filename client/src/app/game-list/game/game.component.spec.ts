@@ -1,15 +1,16 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { MatCardModule, MatDialog } from "@angular/material";
-import { Router } from "@angular/router";
-import {SocketService} from "../../socket.service";
+import {ComponentFixture, TestBed} from "@angular/core/testing";
+import {MatCardModule, MatDialog} from "@angular/material";
+import {Router} from "@angular/router";
+import {RoomService} from "../../room.service";
 import {GameButtonOptions} from "./game-button-enum";
-import { GameComponent } from "./game.component";
+import {GameComponent} from "./game.component";
 
 const navigateMock: Function = () => {
   return {catch: (fn: () => void) => fn()};
 };
 
 describe("GameComponent", () => {
+  let roomServiceSpy: jasmine.SpyObj<RoomService>;
   let component: GameComponent;
   let fixture: ComponentFixture<GameComponent>;
   const mockTime1: number = 0.01;
@@ -17,22 +18,32 @@ describe("GameComponent", () => {
   const mockTime3: number = 3.53;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({
-      declarations: [ GameComponent ],
-      imports: [MatCardModule],
-      providers: [
-         { provide: Router, useClass: class { public navigate: Function = navigateMock; } },
-         { provide: MatDialog, useValue: {
-           open: () => {/**/},
-         },
-         },
-         SocketService,
-       ],
+    roomServiceSpy = jasmine.createSpyObj("RoomService", ["createRoom", "checkInRoom", "unsubscribe"]);
+    roomServiceSpy.createRoom.and.returnValue(Promise.resolve());
+    roomServiceSpy.checkInRoom.and.returnValue(Promise.resolve());
+    TestBed.configureTestingModule(
+      {
+        declarations: [GameComponent],
+        imports: [MatCardModule],
+        providers: [
+          {
+            provide: Router, useClass: class {
+              public navigate: Function = navigateMock;
+            },
+          },
+          {
+            provide: MatDialog, useValue: {
+              open: () => {/**/
+              },
+            },
+          },
+          {
+            provide: RoomService, useValue: roomServiceSpy,
+          },
+        ],
     });
     fixture = TestBed.createComponent(GameComponent);
     component = fixture.componentInstance;
-    component["navigatePlayView"] = () => {/**/};
-    component["navigateFreeView"] = () => {/**/};
     component["navigateAwait"] = () => {/**/};
   });
 
@@ -42,9 +53,8 @@ describe("GameComponent", () => {
 
   it("should play in a new gameroom", () => {
     component.leftButton = GameButtonOptions.PLAY;
-    const spy: jasmine.Spy = spyOn(component["roomService"], "createRoom");
     component["leftButtonClick"]();
-    expect(spy).toHaveBeenCalled();
+    expect(roomServiceSpy.createRoom).toHaveBeenCalled();
   });
 
   it("should open reinitialize dialog", () => {
@@ -66,16 +76,14 @@ describe("GameComponent", () => {
 
   it("should create a new gameroom", () => {
     component.rightButton = GameButtonOptions.CREATE;
-    const spy: jasmine.Spy = spyOn(component["roomService"], "createRoom");
     component["rightButtonClick"]();
-    expect(spy).toHaveBeenCalled();
+    expect(roomServiceSpy.createRoom).toHaveBeenCalled();
   });
 
   it("should joni a gameroom", () => {
     component.rightButton = GameButtonOptions.JOIN;
-    const spy: jasmine.Spy = spyOn(component["roomService"], "checkInRoom");
     component["rightButtonClick"]();
-    expect(spy).toHaveBeenCalled();
+    expect(roomServiceSpy.checkInRoom).toHaveBeenCalled();
   });
 
   it("should have the right time format for the game view", () => {

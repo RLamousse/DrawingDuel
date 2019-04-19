@@ -303,7 +303,9 @@ describe("A service to manage game rooms", () => {
             it("should notify the room on client ready", (done: Callback) => {
                 const gameName: string = "It's going down, I'm yelling timber!";
                 const hotelRoomService: HotelRoomService = initHotelRoomService();
-                const simpleGameRoom: SimpleGameRoom = new SimpleGameRoom("room", createSimpleGameMock(gameName));
+                const simpleGameRoom: SimpleGameRoom = new SimpleGameRoom("room",
+                                                                          gameName,
+                                                                          async () => Promise.resolve(createSimpleGameMock(gameName)));
                 const roomSpy: SimpleGameRoom = spy(simpleGameRoom);
 
                 hotelRoomService["registerGameRoomHandlers"](serverSocket, simpleGameRoom);
@@ -316,7 +318,9 @@ describe("A service to manage game rooms", () => {
 
             it("should notify the (socket) room on (game) room ready", (done: Callback) => {
                 const gameName: string = "It's going down, I'm yelling timber!";
-                const simpleGameRoom: SimpleGameRoom = new SimpleGameRoom("room", createSimpleGameMock(gameName));
+                const simpleGameRoom: SimpleGameRoom = new SimpleGameRoom("room",
+                                                                          gameName,
+                                                                          async () => Promise.resolve(createSimpleGameMock(gameName)));
                 const hotelRoomService: HotelRoomService = initHotelRoomService(() => {
                     when(radioTowerService.sendToRoom(SocketEvent.READY, anything(), simpleGameRoom.id))
                         .thenCall(() => done());
@@ -333,7 +337,9 @@ describe("A service to manage game rooms", () => {
                 const roomId: string = "room";
                 const hotelRoomService: HotelRoomService = initHotelRoomService();
                 const serviceSpy: HotelRoomService = spy(hotelRoomService);
-                const simpleGameRoom: SimpleGameRoom = new SimpleGameRoom(roomId, createSimpleGameMock(gameName));
+                const simpleGameRoom: SimpleGameRoom = new SimpleGameRoom(roomId,
+                                                                          gameName,
+                                                                          async () => Promise.resolve(createSimpleGameMock(gameName)));
                 const roomSpy: SimpleGameRoom = spy(simpleGameRoom);
 
                 hotelRoomService["registerGameRoomHandlers"](serverSocket, simpleGameRoom);
@@ -353,7 +359,9 @@ describe("A service to manage game rooms", () => {
                 const gameName: string = "Let it rain over me";
                 const hotelRoomService: HotelRoomService = initHotelRoomService();
                 const serviceSpy: HotelRoomService = spy(hotelRoomService);
-                const simpleGameRoom: SimpleGameRoom = new SimpleGameRoom("room", createSimpleGameMock(gameName));
+                const simpleGameRoom: SimpleGameRoom = new SimpleGameRoom("room",
+                                                                          gameName,
+                                                                          async () => Promise.resolve(createSimpleGameMock(gameName)));
                 const roomSpy: SimpleGameRoom = spy(simpleGameRoom);
 
                 hotelRoomService["registerGameRoomHandlers"](serverSocket, simpleGameRoom);
@@ -373,7 +381,10 @@ describe("A service to manage game rooms", () => {
                 const roomId: string = "room";
                 const hotelRoomService: HotelRoomService = initHotelRoomService();
                 const serviceSpy: HotelRoomService = spy(hotelRoomService);
-                const simpleGameRoom: SimpleGameRoom = new SimpleGameRoom(roomId, createSimpleGameMock(gameName), 2);
+                const simpleGameRoom: SimpleGameRoom = new SimpleGameRoom(roomId,
+                                                                          gameName,
+                                                                          async () => Promise.resolve(createSimpleGameMock(gameName)),
+                                                                          2);
                 simpleGameRoom["_ongoing"] = true;
                 const roomSpy: SimpleGameRoom = spy(simpleGameRoom);
 
