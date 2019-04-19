@@ -1,5 +1,6 @@
 <link href="https://fonts.googleapis.com/css?family=Orbitron" rel="stylesheet">
-<div class="general" appFPControlEvent (contextmenu)="onRightClick($event)">
+<img *ngIf="isLoading" class="bottomright" src="assets/images/loading_no_bkg2.gif">
+<div [hidden]="isLoading" class="general" appFPControlEvent (contextmenu)="onRightClick($event)">
   <div class="separation">
     <div class="leftWindow">
       <div>
@@ -10,7 +11,7 @@
         <h1 class = "gameName">{{gameName}}</h1>
       </div>
       <div class="timer">
-        <app-timer [gameName]="gameName"></app-timer>
+        <app-timer *ngIf="!isLoading" [gameName]="gameName"></app-timer>
       </div>
       <div class = "row" [class.disabled]="!cursorEnabled">
         <div class= "scene" (click)="onDivContClick($event)" #originalView>
