@@ -86,12 +86,12 @@ export class GameService {
   }
 
   public hideSimpleByName(gameName: string): AxiosPromise<void> {
-    return Axios.put<void>(this.SIMPLE_GAME_BASE_URL + encodeURIComponent(gameName), {toBeDeleted: true})
+    return Axios.delete(this.SIMPLE_GAME_BASE_URL + encodeURIComponent(gameName))
       .catch((error) => { throw error; });
   }
 
   public hideFreeByName(gameName: string): AxiosPromise<void> {
-    return Axios.put(this.FREE_GAME_BASE_URL + encodeURIComponent(gameName), {toBeDeleted: true})
+    return Axios.delete(this.FREE_GAME_BASE_URL + encodeURIComponent(gameName))
       .catch((error) => { throw error; });
   }
 
