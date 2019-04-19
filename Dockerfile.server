@@ -1,4 +1,4 @@
-FROM node:slim as builder
+FROM node as builder
 
 WORKDIR /build
 
@@ -6,11 +6,24 @@ WORKDIR /build
 COPY server/package*.json server/
 
 # Install node_modules
-RUN npm i --prod --prefix server
+RUN npm i --prefix server
 
 # More prone to changes
 COPY common/ common/
 COPY server/ server/
 
+RUN npm run tsc --prefix server
+
+FROM node as runner
+
+WORKDIR /app
+
+COPY server/config config
+COPY server/package*.json ./
+
+RUN npm i --prod
+
+COPY --from=builder /build/server/out/ /app/out
+
 EXPOSE 3000
-CMD [ "npm", "run", "start-prod" ]
+CMD [ "node", "out/server/app/www.js"]
