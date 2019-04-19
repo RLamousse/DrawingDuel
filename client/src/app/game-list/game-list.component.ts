@@ -34,6 +34,13 @@ export class GameListComponent implements OnInit {
       this.pushedGames = true;
     });
   }
+
+  public joinLiteGames(): void {
+    forkJoin(this.gameService.getSimpleGames(), this.gameService.getFreeGames()).subscribe(([simpleGames, freeGames]) => {
+      this.gameService.pushSimpleGames(simpleGames);
+      this.gameService.pushFreeGames(freeGames);
+      this.pushedGames = true;
+    });
   }
 
 }
