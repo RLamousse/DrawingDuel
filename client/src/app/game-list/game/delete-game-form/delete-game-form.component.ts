@@ -24,17 +24,16 @@ export class DeleteGameFormComponent  {
                       private gameService: GameService,
                      ) {}
 
-  public exit(message: Object = { status: "cancelled" }): void {
+  public exit(message: DialogStatus = DialogStatus.CANCEL): void {
     this.dialogRef.close(message);
   }
 
   public deleteGame(): void {
     this.sendDeleteMessage();
-    this.deleteGameByType(this.data.gameName, this.data.gameType);
-    this.dialogRef.close();
-    this.router.navigate([ADMIN_ROUTE])
-      .catch(() => {
-        throw new ComponentNavigationError();
+    this.deleteGameByType(this.data.gameName, this.data.gameType).then(() => {
+      this.dialogRef.close(DialogStatus.DONE);
+    }).catch((error: Error) => {
+      throw error;
     });
   }
 
