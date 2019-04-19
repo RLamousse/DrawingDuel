@@ -10,7 +10,7 @@
 * Philippe Ballandras _1895038_
 * Philippe Rivest _1895062_
 * Robin Canton Lamousse _1833489_
-* Wen Bo Li _189281_
+* Wen Bo Li _1899281_
 
 ## Multijoueur
 
