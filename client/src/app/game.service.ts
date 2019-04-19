@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import Axios, {AxiosResponse} from "axios";
+import Axios, {AxiosPromise, AxiosResponse} from "axios";
 import {from, Observable} from "rxjs";
 import {
   GAME_MANAGER_FREE,
@@ -85,18 +85,18 @@ export class GameService {
     );
   }
 
-  public hideSimpleByName(gameName: string): void {
-    Axios.put(this.SIMPLE_GAME_BASE_URL + encodeURIComponent(gameName), {toBeDeleted: true})
+  public hideSimpleByName(gameName: string): AxiosPromise<void> {
+    return Axios.delete(this.SIMPLE_GAME_BASE_URL + encodeURIComponent(gameName))
       .catch((error) => { throw error; });
   }
 
-  public hideFreeByName(gameName: string): void {
-    Axios.put(this.FREE_GAME_BASE_URL + encodeURIComponent(gameName), {toBeDeleted: true})
+  public hideFreeByName(gameName: string): AxiosPromise<void> {
+    return Axios.delete(this.FREE_GAME_BASE_URL + encodeURIComponent(gameName))
       .catch((error) => { throw error; });
   }
 
-  public resetGameTime(gameName: string): void {
-    Axios.put(this.RESET_SCORES_URL + encodeURIComponent(gameName), null)
+  public resetGameTime(gameName: string): AxiosPromise<void> {
+    return Axios.put<void>(this.RESET_SCORES_URL + encodeURIComponent(gameName), null)
       .catch((error) => { throw error; });
   }
   public async loadCheatData(gameName: string): Promise<IJson3DObject[]> {

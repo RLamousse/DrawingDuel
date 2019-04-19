@@ -3,7 +3,12 @@ import {MatDialog, MatDialogConfig} from "@angular/material";
 
 export interface OpenDialogOptionalParameters {
   data?: Object;
-  callback?(): void;
+  callback?(value?: Object): void;
+}
+
+export enum DialogStatus {
+  DONE = "done",
+  CANCEL = "cancel",
 }
 
 export const openDialog:

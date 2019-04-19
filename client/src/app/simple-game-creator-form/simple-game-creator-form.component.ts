@@ -3,6 +3,7 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {MatDialogRef} from "@angular/material/dialog";
 import {SIMPLE_GAME_CREATION_ROUTE} from "../../../../common/communication/routes";
 import {AbstractForm} from "../abstract-form";
+import {DialogStatus} from "../dialog-utils";
 import FileValidator from "../file.validator";
 import {FormPostService} from "../form-post.service";
 
@@ -49,14 +50,13 @@ export class SimpleGameCreatorFormComponent extends AbstractForm implements OnIn
     fd.append("originalImage", this.formDoc.value.originalImage.files[0]);
     fd.append("modifiedImage", this.formDoc.value.modifiedImage.files[0]);
     this.formPost.submitForm(SIMPLE_GAME_CREATION_ROUTE, fd).subscribe(
-      (data) => {
-        this.exit(data);
+      () => {
+        this.exit(DialogStatus.DONE);
       },
       (error: Error) => {
         console.error(`${error.name} : ${error.message}`);
         alert(error.message);
         this.disableButton = false;
       });
-    this.exit();
   }
 }

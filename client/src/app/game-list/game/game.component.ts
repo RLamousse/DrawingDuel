@@ -7,7 +7,7 @@ import {GameRoomCreationError} from "../../../../../common/errors/services.error
 import {GameType, OnlineType} from "../../../../../common/model/game/game";
 import {IRecordTime} from "../../../../../common/model/game/record-time";
 import {IRoomInfo} from "../../../../../common/model/rooms/room-info";
-import {openDialog} from "../../dialog-utils";
+import {openDialog, DialogStatus} from "../../dialog-utils";
 import {RoomService} from "../../room.service";
 import {DeleteGameFormComponent} from "./delete-game-form/delete-game-form.component";
 import {GameButtonOptions} from "./game-button-enum";
@@ -57,14 +57,20 @@ export class GameComponent implements OnInit, OnDestroy {
           throw new GameRoomCreationError();
         });
     } else if (this.leftButton === GameButtonOptions.DELETE) {
-      openDialog(this.dialog, DeleteGameFormComponent, {callback: window.location.reload.bind(window.location),
+      openDialog(this.dialog, DeleteGameFormComponent, {callback: (status: DialogStatus) => {
+                                                        if (status && status === DialogStatus.DONE) {
+                                                          window.location.reload.bind(window.location)();
+                                                        }},
                                                         data: {gameName: this.gameName, gameType: this.gameType}});
     }
   }
 
   protected rightButtonClick(): void {
     if (this.rightButton === GameButtonOptions.REINITIALIZE) {
-      openDialog(this.dialog, ResetGameFormComponent, {callback: window.location.reload.bind(window.location),
+      openDialog(this.dialog, ResetGameFormComponent, {callback: (status: DialogStatus) => {
+                                                       if (status && status === DialogStatus.DONE) {
+                                                         window.location.reload.bind(window.location)();
+                                                       }},
                                                        data: {gameName: this.gameName, gameType: this.gameType}});
     } else {
       this.handleGameJoin();

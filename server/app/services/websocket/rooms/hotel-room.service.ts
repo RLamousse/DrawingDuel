@@ -32,6 +32,7 @@ export class HotelRoomService {
 
     private readonly _rooms: Map<string, IGameRoom>;
     private readonly _sockets: Map<Socket, string>;
+    private readonly _disconnectListeners: Map<string, () => Promise<void>>;
 
     public constructor(@inject(types.DataBaseService) private databaseService: DataBaseService,
                        @inject(types.RadioTowerService) private radioTower: RadioTowerService,
@@ -39,6 +40,7 @@ export class HotelRoomService {
                        @inject(types.UserNameService) protected userNameService: UsernameService) {
         this._rooms = new Map<string, IGameRoom>();
         this._sockets = new Map<Socket, string>();
+        this._disconnectListeners = new Map<string, () => Promise<void>>();
     }
 
     private static playerCountFromMessage(playerCountMessage: OnlineType): number {
@@ -117,8 +119,22 @@ export class HotelRoomService {
         this.radioTower.privateSend(SocketEvent.CHECK_IN, undefined, socket.id);
     }
 
-    private deleteRoom(room: IGameRoom): void {
-        this._rooms.delete(room.id);
+    private async deleteRoom(roomToDelete: IGameRoom): Promise<void> {
+        this._rooms.delete(roomToDelete.id);
+        const gameName: string = roomToDelete.gameName;
+        const hasSimilarRoomsOngoing: boolean = Array.from(this._rooms.values())
+            .map((room: IGameRoom) => room.gameName)
+            .some((roomName: string) => roomName === gameName);
+
+        if (hasSimilarRoomsOngoing) {
+            return;
+        }
+
+        if (await this.databaseService.simpleGames.contains(gameName)) {
+            await this.databaseService.simpleGames.delete(gameName);
+        } else if (await this.databaseService.freeGames.contains(gameName)) {
+            await this.databaseService.freeGames.delete(gameName);
+        }
     }
 
     private pushRoomsToClients(): void {
@@ -154,13 +170,11 @@ export class HotelRoomService {
             this.handleInteractionError(message.body.errorMessage, socket, room);
         });
 
-        socket.in(room.id).on(SocketEvent.CHECK_OUT, () => {
-            this.handleCheckout(room, socket);
+        socket.in(room.id).on(SocketEvent.CHECK_OUT, async () => {
+            await this.handleCheckout(room, socket);
         });
 
-        socket.in(room.id).on(SocketEvent.DISCONNECT, () => {
-            this.handleCheckout(room, socket);
-        });
+        this.bindDisconnectListener(room, socket);
     }
 
     private handleInteraction<T>(room: IGameRoom, socket: Socket, message: WebsocketMessage<RoomInteractionMessage<T>>): void {
@@ -194,16 +208,31 @@ export class HotelRoomService {
         this.chatAction.sendChat(chatMessage, room.id);
     }
 
-    private handleCheckout(room: IGameRoom, socket: Socket): void {
-        socket.leave(room.id);
+    private async handleCheckout(room: IGameRoom, socket: Socket): Promise<void> {
+        this.removeDisconnectListener(socket);
         socket.removeAllListeners(SocketEvent.INTERACT);
         socket.removeAllListeners(SocketEvent.READY);
         socket.removeAllListeners(SocketEvent.CHECK_OUT);
+        socket.leave(room.id);
         room.checkOut(socket.id);
         if (room.vacant && room.ongoing) {
             this.kickClients(room.id);
         }
-        this.deleteRoom(room);
+        await this.deleteRoom(room);
         this.pushRoomsToClients();
+    }
+
+    private bindDisconnectListener(room: IGameRoom, socket: Socket): void {
+        const disconnectListener: () => Promise<void> = async () => this.handleCheckout(room, socket);
+        this._disconnectListeners.set(socket.id, disconnectListener);
+        socket.in(room.id).on(SocketEvent.DISCONNECT, disconnectListener);
+    }
+
+    private removeDisconnectListener(socket: Socket): void {
+        const disconnectListenerCandidate: (() => Promise<void>) | undefined = this._disconnectListeners.get(socket.id);
+        if (disconnectListenerCandidate) {
+            socket.removeListener(SocketEvent.DISCONNECT, disconnectListenerCandidate);
+            this._disconnectListeners.delete(socket.id);
+        }
     }
 }

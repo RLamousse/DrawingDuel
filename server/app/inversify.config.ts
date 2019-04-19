@@ -63,7 +63,7 @@ container.bind(Types.ChatWebsocketActionService).to(ChatWebsocketActionService);
 container.bind(Types.CheckUserWebsocketActionService).to(CheckUserWebsocketActionService);
 container.bind(Types.UpdateGameScoresWebsocketActionService).to(UpdateGameScoresWebsocketActionService);
 container.bind(Types.DeleteWebsocketActionService).to(DeleteWebsocketActionService);
-container.bind(Types.HotelRoomService).to(HotelRoomService);
+container.bind(Types.HotelRoomService).to(HotelRoomService).inSingletonScope();
 container.bind(Types.RadioTowerService).to(RadioTowerService).inSingletonScope();
 
 container.bind(Types.DiffValidator3DController).to(DiffValidator3DController);
