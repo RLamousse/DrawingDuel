@@ -30,11 +30,13 @@ export class DeleteGameFormComponent  {
 
   public deleteGame(): void {
     this.sendDeleteMessage();
-    this.deleteGameByType(this.data.gameName, this.data.gameType).then(() => {
-      this.dialogRef.close(DialogStatus.DONE);
-    }).catch((error: Error) => {
-      this.dialogRef.close();
-      throw error;
+    this.deleteGameByType(this.data.gameName, this.data.gameType)
+      .then(() => {
+        this.dialogRef.close(DialogStatus.DONE);
+      })
+      .catch((error: Error) => {
+        this.dialogRef.close();
+        throw error;
     });
   }
 
