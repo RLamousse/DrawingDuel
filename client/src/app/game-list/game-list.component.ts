@@ -17,6 +17,7 @@ export class GameListComponent implements OnInit {
   @Input() protected readonly leftButton: string = GameButtonOptions.PLAY;
   @Input() protected  readonly simpleGameTag: GameType = GameType.SIMPLE;
   @Input() protected  readonly freeGameTag: GameType = GameType.FREE;
+  @Input() private isLiteGame: boolean = false;
 
   protected pushedGames: boolean;
 
