@@ -61,6 +61,8 @@ describe("FreeGamePhotoService", () => {
     const service: FreeGamePhotoService = TestBed.get(FreeGamePhotoService);
     spyOn(service as any, "putThumbnail").and.returnValue(true);
     spyOn(service as any, "getFreeGameScene").and.returnValue(new Scene());
+    // @ts-ignore Overwrite readonly property
+    service["WAIT_TIME"] = 0;
 
     return service.takePhoto("").then(() => {
       expect(service["camera"].position).toEqual(new Vector3(0, 0, service["cameraZ"]));
