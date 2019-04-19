@@ -63,7 +63,6 @@
     "multer": "^1.4.1",
     "nodemon": "^1.18.9",
     "reflect-metadata": "^0.1.10",
-    "serve-favicon": "~2.5.0",
     "socket.io": "^2.2.0",
     "ts-node": "^7.0.1",
     "uuid": "^3.3.2"
@@ -97,7 +96,7 @@
     "mocha": "~5.2.0",
     "mock-fs": "^4.7.0",
     "mock-socket": "^8.0.5",
-    "nyc": "^13.3.0",
+    "nyc": "^14.0.0",
     "rimraf": "2.6.2",
     "sinon": "^7.2.2",
     "socket.io-client": "^2.2.0",
