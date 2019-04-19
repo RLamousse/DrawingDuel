@@ -97,33 +97,6 @@ export class GameComponent implements OnInit, OnDestroy {
     }
   }
 
-  // private navigatePlayView(): void {
-  //
-  //  this.router.navigate([PLAY_ROUTE], {
-  //    queryParams: {
-  //      gameName: this.gameName,
-  //      originalImage: this.originalImage,
-  //      modifiedImage: this.modifiedImage,
-  //      gameType: this.gameType,
-  //    },
-  //   })
-  //     .catch(() => {
-  //       throw new ComponentNavigationError();
-  //     });
-  // }
-  //
-  // private navigateFreeView(): void {
-  //   this.router.navigate([PLAY_3D_ROUTE], {
-  //     queryParams: {
-  //       gameName: this.gameName,
-  //       gameType: this.gameType,
-  //     },
-  //   })
-  //     .catch(() => {
-  //       throw new ComponentNavigationError();
-  //     });
-  // }
-
   private navigateAwait(onlineType: OnlineType): void {
     this.router.navigate([LOADING_ROUTE], {queryParams: {
         gameName: this.gameName,
