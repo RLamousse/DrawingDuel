@@ -1,12 +1,12 @@
 import {Component, Inject} from "@angular/core";
 import {MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
 import {Router} from "@angular/router";
+import {AxiosPromise} from "axios";
 import {createWebsocketMessage, WebsocketMessage} from "../../../../../../common/communication/messages/message";
-import {ADMIN_ROUTE} from "../../../../../../common/communication/routes";
 import {SocketEvent} from "../../../../../../common/communication/socket-events";
 import {IDialogData} from "../../../../../../common/dialog-data-interface/IDialogData";
-import {ComponentNavigationError} from "../../../../../../common/errors/component.errors";
 import {GameType} from "../../../../../../common/model/game/game";
+import {DialogStatus} from "../../../dialog-utils";
 import {GameService} from "../../../game.service";
 import {SocketService} from "../../../socket.service";
 
@@ -47,8 +47,7 @@ export class DeleteGameFormComponent  {
     this.socket.send(SocketEvent.DELETE, socketMessage);
   }
 
-  private deleteGameByType(gameName: string, gameType: GameType ): void {
-    gameType === GameType.SIMPLE ? this.gameService.hideSimpleByName(gameName) : this.gameService.hideFreeByName(gameName);
-    window.location.reload();
+  private deleteGameByType(gameName: string, gameType: GameType ): AxiosPromise<void> {
+    return gameType === GameType.SIMPLE ? this.gameService.hideSimpleByName(gameName) : this.gameService.hideFreeByName(gameName);
   }
 }
