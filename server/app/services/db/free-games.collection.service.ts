@@ -68,9 +68,7 @@ export class FreeGamesCollectionService extends CollectionService<IFreeGame> {
         CollectionService.assertId(id);
 
         return this.getDocument(id)
-            .then((game: IFreeGame) => {
-                return game;
-            })
+            .then((game: IFreeGame) => game)
             .catch((error: Error) => {
                 if (error.message === NoElementFoundError.NO_ELEMENT_FOUND_ERROR_MESSAGE) {
                     throw new NonExistentGameError();

@@ -400,6 +400,56 @@ describe("A service to manage game rooms", () => {
 
                 socketClient.close();
             });
+
+            it("should not delete the game if the latter is not marked for deletion", (done: Callback) => {
+                const gameName: string = "Let it rain over me";
+                const roomId: string = "room";
+                const hotelRoomService: HotelRoomService = initHotelRoomService();
+                const serviceSpy: HotelRoomService = spy(hotelRoomService);
+                const simpleGameRoom: SimpleGameRoom = new SimpleGameRoom(roomId,
+                                                                          gameName,
+                                                                          async () => Promise.resolve(createSimpleGameMock(gameName)));
+                const roomSpy: SimpleGameRoom = spy(simpleGameRoom);
+                when(simpleGamesCollectionService.documentCountWithQuery(anything()))
+                    .thenResolve(0);
+                hotelRoomService["registerGameRoomHandlers"](serverSocket, simpleGameRoom);
+
+                when(serviceSpy["pushRoomsToClients"]())
+                    .thenCall(() => {
+                        verify(roomSpy.checkOut(serverSocket.id)).once();
+                        verify(serviceSpy["deleteRoom"](simpleGameRoom)).once();
+                        verify(simpleGamesCollectionService.delete(gameName)).never();
+                        reset(serviceSpy);
+                        done();
+                    });
+
+                socketClient.emit(SocketEvent.CHECK_OUT);
+            });
+
+            it("should delete the game if the latter is marked for deletion", (done: Callback) => {
+                const gameName: string = "Let it rain over me";
+                const roomId: string = "room";
+                const hotelRoomService: HotelRoomService = initHotelRoomService();
+                const serviceSpy: HotelRoomService = spy(hotelRoomService);
+                const simpleGameRoom: SimpleGameRoom = new SimpleGameRoom(roomId,
+                                                                          gameName,
+                                                                          async () => Promise.resolve(createSimpleGameMock(gameName)));
+                const roomSpy: SimpleGameRoom = spy(simpleGameRoom);
+                when(simpleGamesCollectionService.documentCountWithQuery(anything()))
+                    .thenResolve(1);
+                hotelRoomService["registerGameRoomHandlers"](serverSocket, simpleGameRoom);
+
+                when(serviceSpy["pushRoomsToClients"]())
+                    .thenCall(() => {
+                        verify(roomSpy.checkOut(serverSocket.id)).once();
+                        verify(serviceSpy["deleteRoom"](simpleGameRoom)).once();
+                        verify(simpleGamesCollectionService.delete(gameName)).once();
+                        reset(serviceSpy);
+                        done();
+                    });
+
+                socketClient.emit(SocketEvent.CHECK_OUT);
+            });
         });
 
         describe("Socket interact handler", () => {

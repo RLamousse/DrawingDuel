@@ -130,9 +130,9 @@ export class HotelRoomService {
             return;
         }
 
-        if (await this.databaseService.simpleGames.contains(gameName)) {
+        if (await this.databaseService.simpleGames.documentCountWithQuery({gameName: gameName, toBeDeleted: true})) {
             await this.databaseService.simpleGames.delete(gameName);
-        } else if (await this.databaseService.freeGames.contains(gameName)) {
+        } else if (await this.databaseService.freeGames.documentCountWithQuery({gameName: gameName, toBeDeleted: true})) {
             await this.databaseService.freeGames.delete(gameName);
         }
     }
