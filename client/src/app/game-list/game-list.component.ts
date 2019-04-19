@@ -41,4 +41,8 @@ export class GameListComponent implements OnInit {
     });
   }
 
+  public reloadGameList(): void {
+   this.ngOnInit();
+  }
+
 }
