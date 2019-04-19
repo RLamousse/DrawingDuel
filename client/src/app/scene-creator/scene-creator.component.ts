@@ -29,6 +29,7 @@ export class SceneCreatorComponent implements OnInit, OnDestroy {
   // @ts-ignore variable used in html
   private readonly BACK_BUTTON_ROUTE: string = GAMES_ROUTE;
   private readonly CHEAT_KEY_CODE: string = "KeyT";
+  private readonly LOADING_TIME: number = 2000;
 
   private clickEnabled: boolean;
   private originalCanvasContext: CanvasRenderingContext2D;
@@ -38,6 +39,8 @@ export class SceneCreatorComponent implements OnInit, OnDestroy {
   protected cursorEnabled: boolean = true;
   private onKickSubscription: Subscription;
 
+  protected isLoading: boolean;
+
   public constructor(private renderService: SceneRendererService,
                      private route: ActivatedRoute,
                      private freeGameCreator: FreeGameCreatorService,
@@ -46,6 +49,8 @@ export class SceneCreatorComponent implements OnInit, OnDestroy {
                      private router: Router,
                      private dialog: MatDialog) {
     this.clickEnabled = true;
+    this.isLoading = true;
+    this.handleLoadTime = this.handleLoadTime.bind(this);
   }
 
   @ViewChild("originalView")
@@ -82,6 +87,12 @@ export class SceneCreatorComponent implements OnInit, OnDestroy {
 
     this.onKickSubscription = this.socketService.onEvent(SocketEvent.KICK)
       .subscribe(async () => this.onKick());
+
+    setTimeout(this.handleLoadTime, this.LOADING_TIME);
+  }
+
+  private handleLoadTime(): void {
+    this.isLoading = false;
   }
 
   private async verifyGame(): Promise<IScene> {
