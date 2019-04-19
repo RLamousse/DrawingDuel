@@ -196,6 +196,8 @@ export class HotelRoomService {
     private handleCheckout(room: IGameRoom, socket: Socket): void {
         socket.leave(room.id);
         socket.removeAllListeners(SocketEvent.INTERACT);
+        socket.removeAllListeners(SocketEvent.READY);
+        socket.removeAllListeners(SocketEvent.CHECK_OUT);
         room.checkOut(socket.id);
         if (room.vacant && room.ongoing) {
             this.kickClients(room.id);
