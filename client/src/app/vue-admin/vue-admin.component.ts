@@ -2,7 +2,7 @@ import {Component} from "@angular/core";
 import {MatDialog} from "@angular/material";
 import {HOME_ROUTE} from "../../../../common/communication/routes";
 import {Create3DGameComponent} from "../create3-dgame/create3-dgame.component";
-import {openDialog} from "../dialog-utils";
+import {openDialog, DialogStatus} from "../dialog-utils";
 import {GameButtonOptions} from "../game-list/game/game-button-enum";
 import {SimpleGameCreatorFormComponent} from "../simple-game-creator-form/simple-game-creator-form.component";
 
@@ -22,10 +22,16 @@ export class VueAdminComponent {
   protected readonly leftButton: string = GameButtonOptions.DELETE;
 
   protected createSimpleGame(): void {
-    openDialog(this.dialog, SimpleGameCreatorFormComponent, {callback: window.location.reload.bind(window.location)});
+    openDialog(this.dialog, SimpleGameCreatorFormComponent, {callback: (status: DialogStatus) => {
+        if (status && status === DialogStatus.DONE) {
+          window.location.reload.bind(window.location)();
+        }}, });
   }
 
   protected create3DGame(): void {
-    openDialog(this.dialog, Create3DGameComponent, {callback: window.location.reload.bind(window.location)});
+    openDialog(this.dialog, Create3DGameComponent, {callback: (status: DialogStatus) => {
+      if (status && status === DialogStatus.DONE) {
+        window.location.reload.bind(window.location)();
+      }}, });
   }
 }
