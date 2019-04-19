@@ -17,7 +17,6 @@ export class GameListComponent implements OnInit {
   @Input() protected readonly leftButton: string = GameButtonOptions.PLAY;
   @Input() protected  readonly simpleGameTag: GameType = GameType.SIMPLE;
   @Input() protected  readonly freeGameTag: GameType = GameType.FREE;
-  @Input() private isLiteGame: boolean = false;
 
   protected pushedGames: boolean;
 
@@ -27,19 +26,11 @@ export class GameListComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.isLiteGame ? this.joinLiteGames() : this.joinGames();
+    this.joinGames();
     this.roomService.checkOutRoom();
   }
 
   public joinGames(): void {
-    forkJoin(this.gameService.getSimpleGames(), this.gameService.getFreeGames()).subscribe(([simpleGames, freeGames]) => {
-      this.gameService.pushSimpleGames(simpleGames);
-      this.gameService.pushFreeGames(freeGames);
-      this.pushedGames = true;
-    });
-  }
-
-  public joinLiteGames(): void {
     forkJoin(this.gameService.getSimpleGamesLite(), this.gameService.getFreeGamesLite()).subscribe(([simpleGames, freeGames]) => {
       this.gameService.pushSimpleGames(simpleGames);
       this.gameService.pushFreeGames(freeGames);

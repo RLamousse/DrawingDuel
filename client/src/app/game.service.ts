@@ -61,26 +61,10 @@ export class GameService {
     }
   }
 
-  public getSimpleGames(): Observable<ISimpleGame[]> {
-    return from(
-      Axios.get<ISimpleGame[]>(this.SIMPLE_GAME_BASE_URL, {params: {filterDeleted: true}})
-        .then((value: AxiosResponse<ISimpleGame[]>) => value.data)
-        .catch((error) => { throw error; }),
-    );
-  }
-
   public getSimpleGamesLite(): Observable<ISimpleGame[]> {
     return from(
       Axios.get<ISimpleGame[]>(this.SIMPLE_GAME_BASE_URL, {params: {filterDeleted: true, filterDiffData: true}})
         .then((value: AxiosResponse<ISimpleGame[]>) => value.data)
-        .catch((error) => { throw error; }),
-    );
-  }
-
-  public getFreeGames(): Observable<IFreeGame[]> {
-    return from(
-      Axios.get<IFreeGame[]>(this.FREE_GAME_BASE_URL, {params: {filterDeleted: true}})
-        .then((value: AxiosResponse<IFreeGame[]>) => value.data)
         .catch((error) => { throw error; }),
     );
   }
