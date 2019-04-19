@@ -15,6 +15,7 @@ import {container} from "../inversify.config";
 import {DataBaseService} from "../services/data-base.service";
 import {FreeGamesCollectionService} from "../services/db/free-games.collection.service";
 import {SimpleGamesCollectionService} from "../services/db/simple-games.collection.service";
+import {HotelRoomService} from "../services/websocket/rooms/hotel-room.service";
 import types from "../types";
 
 const SUCCESS_MESSAGE: Message = {title: "success", body: "success"};
@@ -24,6 +25,7 @@ describe("Data-base controller", () => {
     let mockDataBaseService: DataBaseService;
     let mockSimpleGames: SimpleGamesCollectionService;
     let mockFreeGames: FreeGamesCollectionService;
+    let mockHotelRoomService: HotelRoomService;
 
     beforeEach(() => {
         mockDataBaseService = mock(DataBaseService);
@@ -44,7 +46,10 @@ describe("Data-base controller", () => {
         when(mockFreeGames.getAllWithQuery(anything())).thenResolve([]);
         when(mockFreeGames.getFromId(anything())).thenResolve();
 
+        mockHotelRoomService = mock(HotelRoomService);
+
         container.rebind(types.DataBaseService).toConstantValue(instance(mockDataBaseService));
+        container.rebind(types.HotelRoomService).toConstantValue(instance(mockHotelRoomService));
         app = container.get<Application>(types.Application).app;
     });
 
@@ -87,6 +92,45 @@ describe("Data-base controller", () => {
                 .get(GAME_MANAGER_SIMPLE + "/notExistingGame")
                 .expect(HttpStatus.INTERNAL_SERVER_ERROR);
         });
+
+        describe("Delete", () => {
+            it("should delete a game immediately if there are no ongoing games", () => {
+                when(mockHotelRoomService.fetchGameRooms())
+                    .thenReturn([]);
+
+                return request(app)
+                    .delete(GAME_MANAGER_SIMPLE + "aGame")
+                    .expect(HttpStatus.OK)
+                    .then(() => {
+                        verify(mockSimpleGames.delete("aGame")).once();
+                    });
+            });
+
+            it("should delete a game immediately if there are no ongoing games with the same name", () => {
+                when(mockHotelRoomService.fetchGameRooms())
+                    .thenReturn([{gameName: "anotherGame", vacant: false}]);
+
+                return request(app)
+                    .delete(GAME_MANAGER_SIMPLE + "aGame")
+                    .expect(HttpStatus.OK)
+                    .then(() => {
+                        verify(mockSimpleGames.delete("aGame")).once();
+                    });
+            });
+
+            it("should mark a game for deletion if they're ongoing games", () => {
+                when(mockHotelRoomService.fetchGameRooms())
+                    .thenReturn([{gameName: "aGame", vacant: false}]);
+
+                return request(app)
+                    .delete(GAME_MANAGER_SIMPLE + "aGame")
+                    .expect(HttpStatus.ACCEPTED)
+                    .then(() => {
+                        verify(mockSimpleGames.delete("aGame")).never();
+                        verify(mockSimpleGames.update("aGame", anything())).once();
+                    });
+            });
+        });
     });
 
     describe("Free Games", () => {
@@ -127,6 +171,44 @@ describe("Data-base controller", () => {
             return request(app)
                 .get(GAME_MANAGER_FREE + "notExistingGame")
                 .expect(HttpStatus.INTERNAL_SERVER_ERROR);
+        });
+        describe("Delete", () => {
+            it("should delete a game immediately if there are no ongoing games", () => {
+                when(mockHotelRoomService.fetchGameRooms())
+                    .thenReturn([]);
+
+                return request(app)
+                    .delete(GAME_MANAGER_FREE + "aGame")
+                    .expect(HttpStatus.OK)
+                    .then(() => {
+                        verify(mockFreeGames.delete("aGame")).once();
+                    });
+            });
+
+            it("should delete a game immediately if there are no ongoing games with the same name", () => {
+                when(mockHotelRoomService.fetchGameRooms())
+                    .thenReturn([{gameName: "anotherGame", vacant: false}]);
+
+                return request(app)
+                    .delete(GAME_MANAGER_FREE + "aGame")
+                    .expect(HttpStatus.OK)
+                    .then(() => {
+                        verify(mockFreeGames.delete("aGame")).once();
+                    });
+            });
+
+            it("should mark a game for deletion if they're ongoing games", () => {
+                when(mockHotelRoomService.fetchGameRooms())
+                    .thenReturn([{gameName: "aGame", vacant: false}]);
+
+                return request(app)
+                    .delete(GAME_MANAGER_FREE + "aGame")
+                    .expect(HttpStatus.ACCEPTED)
+                    .then(() => {
+                        verify(mockFreeGames.delete("aGame")).never();
+                        verify(mockFreeGames.update("aGame", anything())).once();
+                    });
+            });
         });
     });
 });
