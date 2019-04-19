@@ -1,7 +1,7 @@
 import {Component, Input, OnDestroy, OnInit} from "@angular/core";
 import {MatDialog} from "@angular/material";
 import {Router} from "@angular/router";
-import {LOADING_ROUTE, PLAY_3D_ROUTE, PLAY_ROUTE} from "../../../../../common/communication/routes";
+import {LOADING_ROUTE} from "../../../../../common/communication/routes";
 import {ComponentNavigationError} from "../../../../../common/errors/component.errors";
 import {GameType, OnlineType} from "../../../../../common/model/game/game";
 import {IRecordTime} from "../../../../../common/model/game/record-time";
@@ -49,7 +49,7 @@ export class GameComponent implements OnInit, OnDestroy {
   protected leftButtonClick(): void {
     if (this.leftButton === GameButtonOptions.PLAY) {
       this.roomService.createRoom(this.gameName, OnlineType.SOLO);
-      this.gameType === GameType.SIMPLE ? this.navigatePlayView() : this.navigateFreeView();
+      this.navigateAwait(OnlineType.SOLO);
     } else if (this.leftButton === GameButtonOptions.DELETE) {
       openDialog(this.dialog, DeleteGameFormComponent, {callback: window.location.reload.bind(window.location),
                                                         data: {gameName: this.gameName, gameType: this.gameType}});
@@ -71,7 +71,7 @@ export class GameComponent implements OnInit, OnDestroy {
     } else if (this.rightButton === GameButtonOptions.JOIN) {
       this.roomService.checkInRoom(this.gameName);
     }
-    this.navigateAwait();
+    this.navigateAwait(OnlineType.MULTI);
   }
 
   private handleRoomAvailability(rooms: IRoomInfo[]): void {
@@ -81,36 +81,39 @@ export class GameComponent implements OnInit, OnDestroy {
     }
   }
 
-  private navigatePlayView(): void {
+  // private navigatePlayView(): void {
+  //
+  //  this.router.navigate([PLAY_ROUTE], {
+  //    queryParams: {
+  //      gameName: this.gameName,
+  //      originalImage: this.originalImage,
+  //      modifiedImage: this.modifiedImage,
+  //      gameType: this.gameType,
+  //    },
+  //   })
+  //     .catch(() => {
+  //       throw new ComponentNavigationError();
+  //     });
+  // }
+  //
+  // private navigateFreeView(): void {
+  //   this.router.navigate([PLAY_3D_ROUTE], {
+  //     queryParams: {
+  //       gameName: this.gameName,
+  //       gameType: this.gameType,
+  //     },
+  //   })
+  //     .catch(() => {
+  //       throw new ComponentNavigationError();
+  //     });
+  // }
 
-   this.router.navigate([PLAY_ROUTE], {
-     queryParams: {
-       gameName: this.gameName,
-       originalImage: this.originalImage,
-       modifiedImage: this.modifiedImage,
-       gameType: this.gameType,
-     },
-    })
-      .catch(() => {
-        throw new ComponentNavigationError();
-      });
-  }
-
-  private navigateFreeView(): void {
-    this.router.navigate([PLAY_3D_ROUTE], {
-      queryParams: {
+  private navigateAwait(onlineType: OnlineType): void {
+    this.router.navigate([LOADING_ROUTE], {queryParams: {
         gameName: this.gameName,
         gameType: this.gameType,
+        onlineType: onlineType,
       },
-    })
-      .catch(() => {
-        throw new ComponentNavigationError();
-      });
-  }
-
-  private navigateAwait(): void {
-    this.router.navigate([LOADING_ROUTE], {queryParams: {
-      gameName: this.gameName, gameType: this.gameType},
     })
       .catch(() => {
         throw new ComponentNavigationError();
