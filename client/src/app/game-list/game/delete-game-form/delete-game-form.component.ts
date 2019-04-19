@@ -33,6 +33,7 @@ export class DeleteGameFormComponent  {
     this.deleteGameByType(this.data.gameName, this.data.gameType).then(() => {
       this.dialogRef.close(DialogStatus.DONE);
     }).catch((error: Error) => {
+      this.dialogRef.close();
       throw error;
     });
   }
