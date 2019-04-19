@@ -34,6 +34,7 @@ export class GameListComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.joinGames();
+    this.roomService.fetchRoomsStatus();
     this.roomService.checkOutRoom();
   }
 

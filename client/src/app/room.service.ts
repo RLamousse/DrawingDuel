@@ -27,7 +27,8 @@ export class RoomService implements OnDestroy {
     this.roomWatchers = [];
     this._rooms = [];
     this.handleFetchRooms = this.handleFetchRooms.bind(this);
-    this.triggerFetchRooms();
+    this.roomFetchSub = this.socket.onEvent<IRoomInfo[]>(SocketEvent.FETCH).subscribe(this.handleFetchRooms);
+    this.fetchRoomsStatus();
     this.listenToRoomPush();
   }
 
@@ -45,8 +46,7 @@ export class RoomService implements OnDestroy {
     callback(this._rooms);
   }
 
-  private triggerFetchRooms (): void {
-    this.roomFetchSub = this.socket.onEvent<IRoomInfo[]>(SocketEvent.FETCH).subscribe(this.handleFetchRooms);
+  public fetchRoomsStatus(): void {
     this.socket.send(SocketEvent.FETCH, createWebsocketMessage());
   }
 
