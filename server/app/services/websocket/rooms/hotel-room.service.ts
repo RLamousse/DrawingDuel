@@ -63,13 +63,15 @@ export class HotelRoomService {
             if (await this.databaseService.simpleGames.contains(gameName)) {
                 room = new SimpleGameRoom(
                     roomId,
-                    await this.databaseService.simpleGames.getFromId(gameName),
+                    gameName,
+                    () => this.databaseService.simpleGames.getFromId(gameName),
                     HotelRoomService.playerCountFromMessage(playerCount),
                 );
             } else if (await this.databaseService.freeGames.contains(gameName)) {
                 room = new FreeGameRoom(
                     roomId,
-                    await this.databaseService.freeGames.getFromId(gameName),
+                    gameName,
+                    () => this.databaseService.freeGames.getFromId(gameName),
                     HotelRoomService.playerCountFromMessage(playerCount),
                 );
             } else {
@@ -123,6 +125,7 @@ export class HotelRoomService {
     }
 
     private kickClients(roomId: string): void {
+        this.radioTower.sendToRoom(SocketEvent.KICK, undefined, roomId);
         Array.from(this._sockets.entries())
             .filter((entry: [Socket, string]) => entry[1] === roomId)
             .map((entry: [Socket, string]) => entry[0])
@@ -135,7 +138,11 @@ export class HotelRoomService {
         });
 
         socket.in(room.id).on(SocketEvent.READY, () => {
-            room.handleReady(socket.id);
+            try {
+                room.handleReady(socket.id);
+            } catch (e) {
+                this.kickClients(room.id);
+            }
         });
 
         socket.in(room.id).on(SocketEvent.INTERACT, <T>(message: WebsocketMessage<RoomInteractionMessage<T>>) => {
@@ -191,7 +198,6 @@ export class HotelRoomService {
         socket.removeAllListeners(SocketEvent.INTERACT);
         room.checkOut(socket.id);
         if (room.vacant && room.ongoing) {
-            this.radioTower.sendToRoom(SocketEvent.KICK, undefined, room.id);
             this.kickClients(room.id);
         }
         this.deleteRoom(room);

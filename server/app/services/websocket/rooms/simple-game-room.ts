@@ -23,8 +23,8 @@ import {AbstractGameRoom} from "./abstract-game-room";
 
 export class SimpleGameRoom extends AbstractGameRoom<ISimpleGame, ISimpleGameState> {
 
-    public constructor(id: string, game: ISimpleGame, playerCount: number = 1) {
-        super(id, game, playerCount, {
+    public constructor(id: string, gameName: string, gameLoader: () => Promise<ISimpleGame>, playerCount: number = 1) {
+        super(id, gameName, gameLoader, playerCount, {
             foundDifferenceClusters: [],
         });
     }

@@ -1,4 +1,4 @@
-import {NoVacancyGameRoomError} from "../../../../../common/errors/services.errors";
+import {GameRoomCreationError, NoVacancyGameRoomError} from "../../../../../common/errors/services.errors";
 import {IGame, MULTIPLAYER_GAME_DIFF_THRESHOLD, SINGLEPLAYER_GAME_DIFF_THRESHOLD} from "../../../../../common/model/game/game";
 import {IGameState} from "../../../../../common/model/game/game-state";
 import {IInteractionData, IInteractionResponse} from "../../../../../common/model/rooms/interaction";
@@ -8,17 +8,22 @@ import {IGameRoom} from "../../../model/room/game-room";
 export abstract class AbstractGameRoom<T extends IGame, U extends IGameState> implements IGameRoom {
 
     private readonly _id: string;
-    protected readonly _game: T;
+    private readonly _gameName: string;
+    private readonly _gameLoader: () => Promise<T>;
     protected readonly _playerCapacity: number;
-
     protected readonly _gameState: U;
-    private _onReady: (roomInfo: ReadyInfo) => void;
+
     protected _connectedPlayers: Map<string, boolean>;
     protected _ongoing: boolean;
+    protected _game: T;
 
-    protected constructor(id: string, game: T, playerCapacity: number = 1, gameState: U) {
+    private _onReady: (roomInfo: ReadyInfo) => void;
+    private _gameLoaderWasCalled: boolean = false;
+
+    protected constructor(id: string, gameName: string, gameLoader: () => Promise<T>, playerCapacity: number = 1, gameState: U) {
         this._id = id;
-        this._game = game;
+        this._gameName = gameName;
+        this._gameLoader = gameLoader;
         this._playerCapacity = playerCapacity;
         this._gameState = gameState;
         this._connectedPlayers = new Map();
@@ -44,7 +49,28 @@ export abstract class AbstractGameRoom<T extends IGame, U extends IGameState> im
             this._connectedPlayers.set(clientId, true);
         }
 
-        if (this._connectedPlayers.size === this._playerCapacity && this.isEveryClientReady()) {
+        this.loadGame();
+        this.notifyReady();
+    }
+
+    private loadGame(): void {
+        if (this._gameLoaderWasCalled) {
+            return;
+        }
+
+        this._gameLoaderWasCalled = true;
+        this._gameLoader()
+            .then((game: T) => {
+                this._game = game;
+                this.notifyReady();
+            })
+            .catch(() => {
+                throw new GameRoomCreationError();
+            });
+    }
+
+    private notifyReady(): void {
+        if (this._game !== undefined && this._connectedPlayers.size === this._playerCapacity && this.isEveryClientReady()) {
             this._ongoing = true;
             this._onReady(this.roomReadyEmitInformation);
         }
@@ -64,7 +90,7 @@ export abstract class AbstractGameRoom<T extends IGame, U extends IGameState> im
     }
 
     public get gameName(): string {
-        return this._game.gameName;
+        return this._gameName;
     }
 
     public get vacant(): boolean {
