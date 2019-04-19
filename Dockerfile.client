@@ -1,4 +1,4 @@
-FROM node:slim as builder
+FROM node as builder
 
 WORKDIR /build
 
