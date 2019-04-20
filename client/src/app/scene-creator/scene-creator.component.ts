@@ -29,7 +29,7 @@ export class SceneCreatorComponent implements OnInit, OnDestroy {
   // @ts-ignore variable used in html
   private readonly BACK_BUTTON_ROUTE: string = GAMES_ROUTE;
   private readonly CHEAT_KEY_CODE: string = "KeyT";
-  private readonly LOADING_TIME: number = 2000;
+  private readonly LOADING_TIME: number = 1500;
 
   private clickEnabled: boolean;
   private originalCanvasContext: CanvasRenderingContext2D;
