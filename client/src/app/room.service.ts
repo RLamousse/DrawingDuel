@@ -94,7 +94,7 @@ export class RoomService implements OnDestroy {
   }
 
   public unsubscribe(): void {
-    this._rooms.length = 0;
+    this.roomWatchers.length = 0;
   }
 
   public signalReady(): void {
