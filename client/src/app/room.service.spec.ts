@@ -93,4 +93,17 @@ describe("RoomService", () => {
     expect(socketServiceSpy.onEvent.calls.mostRecent().args[0]).toEqual(SocketEvent.READY);
     expect(sub.unsubscribe).toBeDefined();
   });
+
+  it("should return a subscription to game start", () => {
+    const service: RoomService = TestBed.get(RoomService);
+    service.unsubscribe();
+    expect(service["roomWatchers"].length).toEqual(0);
+  });
+
+  it("should unsubscribe on delete", () => {
+    const service: RoomService = TestBed.get(RoomService);
+    service.ngOnDestroy();
+    expect(service["roomFetchSub"].closed).toBeTruthy();
+    expect(service["roomPushSub"].closed).toBeTruthy();
+  });
 });
