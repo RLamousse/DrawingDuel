@@ -1,12 +1,12 @@
 import {async, ComponentFixture, TestBed} from "@angular/core/testing";
 import {MatDialogModule, MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
+import {NoopAnimationsModule} from "@angular/platform-browser/animations";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Observable, Subject} from "rxjs";
 import {OnlineType} from "../../../../common/model/game/game";
 import {SceneDiffValidatorService} from "../scene-creator/scene-diff-validator.service";
 import {SocketService} from "../socket.service";
 import {DiffCounterComponent} from "./diff-counter.component";
-import {NoopAnimationsModule} from "@angular/platform-browser/animations";
 
 describe("DiffCounterComponent", () => {
   let component: DiffCounterComponent;
