@@ -60,6 +60,10 @@ describe("AwaitViewComponent", () => {
     component["notifyGameDeletion"](createWebsocketMessage<[string, boolean]>(["maxime", false]));
     expect(component["dialog"].open).not.toHaveBeenCalled();
   });
+
+  it("should have a on game start subscription", () => {
+    expect(component["gameStartSub"].closed).toBeFalsy();
+  });
 });
 
 afterEach(() => {
