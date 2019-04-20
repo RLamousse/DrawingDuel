@@ -6,6 +6,7 @@ import {OnlineType} from "../../../../common/model/game/game";
 import {SceneDiffValidatorService} from "../scene-creator/scene-diff-validator.service";
 import {SocketService} from "../socket.service";
 import {DiffCounterComponent} from "./diff-counter.component";
+import {NoopAnimationsModule} from "@angular/platform-browser/animations";
 
 describe("DiffCounterComponent", () => {
   let component: DiffCounterComponent;
@@ -24,7 +25,7 @@ describe("DiffCounterComponent", () => {
     return TestBed.configureTestingModule(
       {
         declarations: [DiffCounterComponent, ],
-        imports: [MatDialogModule],
+        imports: [MatDialogModule, NoopAnimationsModule],
         providers: [
           {provide: MatDialogRef, useValue: {}},
           {provide: MAT_DIALOG_DATA, useValue: {}},
@@ -54,10 +55,56 @@ describe("DiffCounterComponent", () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(DiffCounterComponent);
     component = fixture.componentInstance;
+    component["openCongratulationDialog"] = () => {/**/
+    };
     fixture.detectChanges();
   });
 
   it("should create", async () => {
     return expect(component).toBeTruthy();
+  });
+
+  it("should increment right diff counter", async () => {
+    component["countDiff"](true);
+    component["countDiff"](true);
+    component["countDiff"](true);
+    component["countDiff"](true);
+    component["countDiff"](true);
+    component["countDiff"](true);
+    component["countDiff"](true);
+    expect(component["diffNumber"]).toBeGreaterThan(0);
+    expect(component["advDiffNumber"]).toEqual(0);
+    component["countDiff"](false);
+    expect(component["advDiffNumber"]).toBeGreaterThan(0);
+  });
+
+  it("should declare player is winner if he has bigger diff count", async () => {
+    component["countDiff"](true);
+    component["countDiff"](true);
+    component["countDiff"](true);
+    component["countDiff"](false);
+    expect(component["isWinner"]()).toBeTruthy();
+  });
+
+  it("should have only the winner post time", async () => {
+    component["countDiff"](true);
+    component["countDiff"](true);
+    component["countDiff"](true);
+    component["countDiff"](false);
+    let bool: boolean = false;
+    component["postTime"] = () => bool = true;
+    component["endGame"]();
+    expect(bool).toBeTruthy();
+  });
+
+  it("should not let looser post time", async () => {
+    component["countDiff"](false);
+    component["countDiff"](false);
+    component["countDiff"](false);
+    component["countDiff"](false);
+    component["endGame"]();
+    // @ts-ignore
+    const spy: jasmine.Spy = spyOn(component, "postTime");
+    expect(spy).not.toHaveBeenCalled();
   });
 });
