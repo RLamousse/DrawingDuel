@@ -1,14 +1,17 @@
-import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
-import { FormBuilder, Validators } from "@angular/forms";
-import { MatCheckboxChange, MatDialogRef, MatSliderChange } from "@angular/material";
+import {Component, OnInit} from "@angular/core";
+import {FormBuilder, Validators} from "@angular/forms";
+import {MatCheckboxChange, MatDialogRef, MatSliderChange} from "@angular/material";
 import {ICreateFreeGameRequest} from "../../../../common/communication/requests/game-creator.controller.request";
-import { FREE_GAME_CREATION_ROUTE } from "../../../../common/communication/routes";
+import {FREE_GAME_CREATION_ROUTE} from "../../../../common/communication/routes";
 import {
-  ModificationType, Themes
+  ModificationType,
+  Themes
 } from "../../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
-import { AbstractForm } from "../abstract-form";
-import { FormPostService } from "../form-post.service";
-import { AVAILABLE_MODIF_TYPES, AVAILABLE_THEMES, SelectType } from "./selectType";
+import {AbstractForm} from "../abstract-form";
+import {DialogStatus} from "../dialog-utils";
+import {FormPostService} from "../form-post.service";
+import {FreeGamePhotoService} from "../scene-creator/free-game-photo-service/free-game-photo.service";
+import {AVAILABLE_MODIF_TYPES, AVAILABLE_THEMES, SelectType} from "./selectType";
 @Component({
   selector: "app-create3-dgame",
   templateUrl: "./create3-dgame.component.html",
@@ -17,10 +20,10 @@ import { AVAILABLE_MODIF_TYPES, AVAILABLE_THEMES, SelectType } from "./selectTyp
 export class Create3DGameComponent extends AbstractForm implements OnInit {
 
   private readonly MIN_NAME_LENGTH: number = 5;
-  @ViewChild("photoContainer") public divElemt: ElementRef;
   protected modTypes: SelectType<ModificationType>[] = AVAILABLE_MODIF_TYPES;
   protected themes: SelectType<Themes>[] = AVAILABLE_THEMES;
   protected sliderValue: number = 50;
+  protected submissionPending: boolean = false;
 
   public checkboxes: {
     modificationTypes: Set<ModificationType>,
@@ -30,6 +33,7 @@ export class Create3DGameComponent extends AbstractForm implements OnInit {
     _fb: FormBuilder,
     dialogRef: MatDialogRef<Create3DGameComponent>,
     formPost: FormPostService,
+    private photoService: FreeGamePhotoService,
   ) {
     super(_fb, dialogRef, formPost);
     this.checkboxes = {
@@ -81,21 +85,30 @@ export class Create3DGameComponent extends AbstractForm implements OnInit {
 
   public onSubmit(): void {
     this.disableButton = true;
+    this.submissionPending = true;
     const modificationTypes: ModificationType[] = Array.from(this.checkboxes.modificationTypes);
+    const gameName: string = this.formDoc.value.name;
     const requestData: ICreateFreeGameRequest = {
-      gameName : this.formDoc.value.name,
+      gameName : gameName,
       objectQuantity : this.sliderValue,
       theme : this.formDoc.value.theme,
       modificationTypes : modificationTypes,
     };
     this.formPost.submitForm(FREE_GAME_CREATION_ROUTE, requestData).subscribe(
-      (data) => {
-        this.exit(data);
+      async () => {
+        await this.photoService.takePhoto(gameName)
+          .then(() => {
+            this.exit(DialogStatus.DONE);
+          })
+          .catch((reason: Error) => {
+            throw reason;
+          });
       },
       (error: Error) => {
         console.error(`${error.name} : ${error.message}`);
         alert(error.message);
         this.disableButton = false;
+        this.exit();
       });
   }
 }

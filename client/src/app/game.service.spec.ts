@@ -1,6 +1,4 @@
-import { HttpClientModule } from "@angular/common/http";
 import { async, TestBed } from "@angular/core/testing";
-import { IExtendedFreeGame } from "../../../common/model/game/extended-free-game";
 import { IFreeGame } from "../../../common/model/game/free-game";
 import { IGame } from "../../../common/model/game/game";
 import { ISimpleGame } from "../../../common/model/game/simple-game";
@@ -53,7 +51,7 @@ describe("GameService", () => {
     },
   ];
 
-  const mockExtendedFreeGameList: IExtendedFreeGame[] = [
+  const mockFreeGameList: IFreeGame[] = [
     {
       gameName: "mockedSimpleName",
       thumbnail: "",
@@ -74,7 +72,6 @@ describe("GameService", () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientModule],
       providers: [GameService],
     });
   }));
@@ -82,7 +79,6 @@ describe("GameService", () => {
   beforeEach(() => {
     spyService = jasmine.createSpyObj("GameService", ["getGames"]);
     TestBed.configureTestingModule({
-      imports: [HttpClientModule],
       providers: [
         { provide: GameService, useValue: spyService }, GameService, FreeGamePhotoService, FreeGameCreatorService],
     });
@@ -90,7 +86,7 @@ describe("GameService", () => {
 
   it("should be created", () => {
     serviceGame = TestBed.get(GameService);
-    spyOn(serviceGame, "getSimpleGames").and.returnValue(emptyMockedGameList);
+    spyOn(serviceGame, "getSimpleGamesLite").and.returnValue(emptyMockedGameList);
     expect(serviceGame).toBeTruthy();
   });
 
@@ -131,10 +127,10 @@ describe("GameService", () => {
     expect(incompleteList[0].toBeDeleted).toBe(false);
   });
 
-  it ("pushFreeGames should push in extendedFreeGames", () => {
-    serviceGame.pushFreeGames(mockExtendedFreeGameList).catch((valeur: Error) => {throw valeur; });
+  it("pushFreeGames should push in freeGames", () => {
+    serviceGame.pushFreeGames(mockFreeGameList);
 
-    return expect(serviceGame.extendedFreeGames).not.toBeNull;
+    return expect(serviceGame.freeGames).not.toBeNull;
   });
 
   it ("pushSimpleGames should push in simpleGames", () => {

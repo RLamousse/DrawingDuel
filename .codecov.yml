@@ -1,0 +1,17 @@
+codecov:
+  bot: coverage-bot
+  branch: dev
+
+comment:
+  behavior: new
+  require_changes: true
+
+coverage:
+  status:
+    project: no
+    patch: no
+    changes: no
+
+parsers:
+  javascript:
+    enable_partials: yes

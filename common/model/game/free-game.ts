@@ -3,6 +3,7 @@ import {IScenesDB} from "../../free-game-json-interface/JSONInterface/IScenesJSO
 
 export interface IFreeGame extends IGame {
     scenes: IScenesDB;
+    thumbnail: string;
 }
 
 export const instanceOfFreeGame = (object: any): object is IFreeGame =>

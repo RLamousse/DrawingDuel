@@ -1,4 +1,3 @@
-import { HttpClientModule } from "@angular/common/http";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { AbstractControl, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import {
@@ -11,7 +10,15 @@ import "hammerjs";
 import { Observable } from "rxjs";
 import { ModificationType } from "../../.././../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
 import { FormPostService } from "../form-post.service";
+import { FreeGamePhotoService } from "../scene-creator/free-game-photo-service/free-game-photo.service";
 import { Create3DGameComponent } from "./create3-dgame.component";
+
+class MockPhotoService {
+  public async takePhoto(): Promise<void> {
+    return Promise.resolve();
+  }
+}
+const mockPhotoService: MockPhotoService = new MockPhotoService();
 
 // tslint:disable-next-line:typedef
 const fakeFormPost = {
@@ -41,7 +48,6 @@ describe("Create3DGameComponent", () => {
         BrowserModule,
         ReactiveFormsModule,
         FormsModule,
-        HttpClientModule,
         MatFormFieldModule,
         MatButtonModule,
         MatInputModule,
@@ -52,6 +58,7 @@ describe("Create3DGameComponent", () => {
         MatSelectModule,
       ],
       providers: [
+        { provide: FreeGamePhotoService, useValue: mockPhotoService },
         { provide: FormPostService, useValue: fakeFormPost },
         {
           provide: MatDialogRef, useValue: {

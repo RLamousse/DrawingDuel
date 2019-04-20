@@ -1,7 +1,11 @@
-import { Component, Input, OnInit } from "@angular/core";
-import { IFreeGame } from "../../../../common/model/game/free-game";
-import { ISimpleGame } from "../../../../common/model/game/simple-game";
+import {Component, Input, OnDestroy, OnInit} from "@angular/core";
+import {Router} from "@angular/router";
+import {forkJoin, Subscription} from "rxjs";
+import {GAMES_ROUTE, HOME_ROUTE} from "../../../../common/communication/routes";
+import {GameType} from "../../../../common/model/game/game";
 import { GameService } from "../game.service";
+import {RoomService} from "../room.service";
+import {GameButtonOptions} from "./game/game-button-enum";
 
 @Component({
   selector: "app-game-list",
@@ -9,23 +13,45 @@ import { GameService } from "../game.service";
   styleUrls: ["./game-list.component.css"],
 })
 
-export class GameListComponent implements OnInit {
+export class GameListComponent implements OnInit, OnDestroy {
 
-  @Input() protected readonly rightButton: string = "joindre";
-  @Input() protected readonly leftButton: string = "jouer";
+  protected readonly HOME_BUTTON_ROUTE: string = HOME_ROUTE;
+  protected readonly GAME_LIST_ROUTE: string = GAMES_ROUTE;
 
-  public constructor(private gameService: GameService) {
+  @Input() protected readonly rightButton: string = GameButtonOptions.JOIN;
+  @Input() protected readonly leftButton: string = GameButtonOptions.PLAY;
+  @Input() protected  readonly simpleGameTag: GameType = GameType.SIMPLE;
+  @Input() protected  readonly freeGameTag: GameType = GameType.FREE;
+
+  protected pushedGames: boolean;
+  private gameSub: Subscription;
+
+  public constructor(private gameService: GameService,
+                     private roomService: RoomService,
+                     public router: Router) {
+    this.pushedGames = false;
   }
 
   public ngOnInit(): void {
-    this.gameService.getSimpleGames().subscribe((simpleGamesToPush: ISimpleGame[]) => {
-      this.gameService.pushSimpleGames(simpleGamesToPush);
-    });
+    this.joinGames();
+    this.roomService.fetchRoomsStatus();
+    this.roomService.checkOutRoom();
+  }
 
-    this.gameService.getFreeGames().subscribe((freeGamesToPush: IFreeGame[]) => {
-      this.gameService.pushFreeGames(freeGamesToPush).catch((value: Error) => {throw value; });
-      this.gameService.updateFreeGameImages().catch((value: Error) => {throw value; });
+  public joinGames(): void {
+    this.gameSub = forkJoin(this.gameService.getSimpleGamesLite(), this.gameService.getFreeGamesLite())
+      .subscribe(([simpleGames, freeGames]) => {
+      this.gameService.pushSimpleGames(simpleGames);
+      this.gameService.pushFreeGames(freeGames);
+      this.pushedGames = true;
     });
   }
 
+  public reloadGameList(): void {
+   this.ngOnInit();
+  }
+
+  public ngOnDestroy(): void {
+    this.gameSub.unsubscribe();
+  }
 }

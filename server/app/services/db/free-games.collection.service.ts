@@ -27,6 +27,7 @@ export class FreeGamesCollectionService extends CollectionService<IFreeGame> {
         !!(game || ({} as Partial<IFreeGame>)).bestSoloTimes ||
         !!(game || ({} as Partial<IFreeGame>)).bestMultiTimes ||
         !!(game || ({} as Partial<IFreeGame>)).scenes ||
+        !!(game || ({} as Partial<IFreeGame>)).thumbnail ||
         typeof (game || ({} as Partial<IFreeGame>)).toBeDeleted !== "undefined";
     }
 
@@ -67,9 +68,7 @@ export class FreeGamesCollectionService extends CollectionService<IFreeGame> {
         CollectionService.assertId(id);
 
         return this.getDocument(id)
-            .then((game: IFreeGame) => {
-                return game;
-            })
+            .then((game: IFreeGame) => game)
             .catch((error: Error) => {
                 if (error.message === NoElementFoundError.NO_ELEMENT_FOUND_ERROR_MESSAGE) {
                     throw new NonExistentGameError();
@@ -97,6 +96,13 @@ export class FreeGamesCollectionService extends CollectionService<IFreeGame> {
         return {
             title: "Free game deleted",
             body: "Free game " + id + " successfully deleted!",
+        };
+    }
+
+    protected queryDeletionSuccessMessage(): Message {
+        return {
+            title: "Free games deleted",
+            body: "All corresponding free games successfully deleted!",
         };
     }
 

@@ -1,5 +1,6 @@
 <div mat-dialog-content>
- Le jeu {{data.gameName}} va être supprimé
+  <h1>Attention ⚠️</h1>
+  Le jeu {{data.gameName}} va être supprimé lorsque toutes les parties en cours seront terminées!
   <div id = "confirmationButtons">
     <button id="submit" mat-button (click)="deleteGame()">Confirmer</button>
     <button id="reset"  mat-button (click)="exit()">Annuler</button>

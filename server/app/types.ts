@@ -3,7 +3,7 @@ export default  {
         Application: Symbol("Application"),
         GameCreatorController: Symbol("GameCreatorController"),
         GameCreatorService: Symbol("GameCreatorService"),
-        DataBaseController: Symbol("DataBaseController"),
+        GameManagerController: Symbol("GameManagerController"),
         DataBaseService: Symbol("DataBaseService"),
         DifferenceEvaluatorService: Symbol("DifferenceEvaluatorService"),
         UserNameService: Symbol("UserNameService"),
@@ -26,4 +26,6 @@ export default  {
         DiffValidator3DService: Symbol("DiffValidator3DService"),
         DeleteWebsocketActionService: Symbol("DeleteWebsocketActionService"),
         UpdateGameScoresWebsocketActionService: Symbol("UpdateGameScoresWebsocketActionService"),
+        HotelRoomService: Symbol("HotelRoomService"),
+        RadioTowerService: Symbol("RadioTowerService"),
 };

@@ -1,7 +1,7 @@
 // tslint:disable: no-floating-promises
 import {TestBed} from "@angular/core/testing";
 import {Observable} from "rxjs";
-import {WebsocketMessage} from "../../../common/communication/messages/message";
+import {createWebsocketMessage, WebsocketMessage} from "../../../common/communication/messages/message";
 import {SocketEvent} from "../../../common/communication/socket-events";
 import {SocketService} from "./socket.service";
 
@@ -22,10 +22,7 @@ describe("Socket service", () => {
   it("should get a message from an event", async (done) => {
     socketSpy.onEvent.and.callFake((event: SocketEvent): Observable<WebsocketMessage> => {
       return new Observable<WebsocketMessage>((observer) => {
-        observer.next({
-          title: SocketEvent.DUMMY,
-          body: "Thank you Kanye, very cool 👍",
-        });
+        observer.next(createWebsocketMessage("Thank you Kanye, very cool 👍"));
       });
     });
     socketSpy.onEvent(SocketEvent.DUMMY).subscribe((message: WebsocketMessage) => {
@@ -46,10 +43,7 @@ describe("Socket service", () => {
 
     return expect(service.send(
       SocketEvent.DUMMY,
-      {
-        title: SocketEvent.DUMMY,
-        body: "Thank you Kanye, very cool 👍",
-      },
+      createWebsocketMessage("Thank you Kanye, very cool 👍"),
     )).toBeFalsy();
   });
 
@@ -59,10 +53,7 @@ describe("Socket service", () => {
 
     return expect(service.send(
       SocketEvent.DUMMY,
-      {
-        title: SocketEvent.DUMMY,
-        body: "Thank you Kanye, very cool 👍",
-      },
+      createWebsocketMessage("Thank you Kanye, very cool 👍"),
     )).toBeTruthy();
   });
 
@@ -71,10 +62,7 @@ describe("Socket service", () => {
     service.isSocketConnected = () => true;
     let called: boolean = false;
     let e: SocketEvent = SocketEvent.WELCOME;
-    let m: WebsocketMessage = {
-      body: "",
-      title: SocketEvent.WELCOME,
-    };
+    let m: WebsocketMessage = createWebsocketMessage("");
     // We are accessing a private member
     // tslint:disable-next-line: no-any
     (service as any).socket = {
@@ -84,7 +72,7 @@ describe("Socket service", () => {
         m = message;
       },
     };
-    service.send(SocketEvent.DUMMY, {title: SocketEvent.DUMMY, body: "test"});
+    service.send(SocketEvent.DUMMY, createWebsocketMessage("test"));
     expect(called).toBeTruthy();
     expect(e).toEqual(SocketEvent.DUMMY);
     expect(m.body).toEqual("test");

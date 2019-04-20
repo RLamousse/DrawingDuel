@@ -1,15 +1,12 @@
 import Axios, {AxiosResponse} from "axios";
 import * as FormData from "form-data";
-import * as Httpstatus from "http-status-codes";
 import {inject, injectable} from "inversify";
 import "reflect-metadata";
 import {Message} from "../../../common/communication/messages/message";
-import {DB_FREE_GAME, DB_SIMPLE_GAME, DIFF_CREATOR_BASE, SERVER_BASE_URL} from "../../../common/communication/routes";
+import {DIFF_CREATOR_BASE, SERVER_BASE_URL} from "../../../common/communication/routes";
 import {
     AbstractDataBaseError,
-    AlreadyExistentGameError,
-    NonExistentGameError,
-    NonExistentThemeError
+    AlreadyExistentGameError
 } from "../../../common/errors/database.errors";
 import {AbstractServiceError, DifferenceCountError} from "../../../common/errors/services.errors";
 import {
@@ -29,6 +26,7 @@ import {
 } from "../controllers/controller-utils";
 import {BitmapFactory} from "../images/bitmap/bitmap-factory";
 import Types from "../types";
+import {DataBaseService} from "./data-base.service";
 import {DifferenceEvaluatorService} from "./difference-evaluator.service";
 import {FreeGameCreatorService} from "./free-game-creator.service";
 import {ImageUploadService} from "./image-upload.service";
@@ -41,28 +39,9 @@ export class GameCreatorService {
 
     public constructor(
         @inject(Types.DifferenceEvaluatorService) private differenceEvaluatorService: DifferenceEvaluatorService,
+        @inject(Types.DataBaseService) private dataBaseService: DataBaseService,
         @inject(Types.ImageUploadService) private imageUploadService: ImageUploadService,
         @inject(Types.FreeGameCreatorService) private freeGameCreatorService: FreeGameCreatorService) {
-    }
-
-    private static async testNameExistence(gameName: string): Promise<void> {
-        try {
-            await Axios.get<ISimpleGame>(SERVER_BASE_URL + DB_SIMPLE_GAME + gameName);
-        } catch (error) {
-            if (error.response.status !== Httpstatus.NOT_FOUND) {
-                throw new AbstractDataBaseError(error.response.data.message);
-            }
-            try {
-                await Axios.get<IFreeGame>(SERVER_BASE_URL + DB_FREE_GAME + gameName);
-            } catch (error) {
-                if (error.response.status !== Httpstatus.NOT_FOUND) {
-                    throw new AbstractDataBaseError(error.response.data.message);
-                }
-
-                return;
-            }
-        }
-        throw new AlreadyExistentGameError();
     }
 
     private static async getDiffImage(originalImageFile: Buffer, modifiedImageFile: Buffer): Promise<Buffer> {
@@ -86,9 +65,23 @@ export class GameCreatorService {
         }
     }
 
+    private async testNameExistence(gameName: string): Promise<void> {
+        let containsGame: boolean;
+        try {
+            containsGame = await this.dataBaseService.simpleGames.contains(gameName) ||
+                await this.dataBaseService.freeGames.contains(gameName);
+        } catch (error) {
+            throw new AbstractDataBaseError(error.message);
+        }
+
+        if (containsGame) {
+            throw new AlreadyExistentGameError();
+        }
+    }
+
     public async createFreeGame(gameName: string, numberOfObjects: number, theme: Themes, modTypes: ModificationType[]): Promise<Message> {
 
-        await GameCreatorService.testNameExistence(gameName);
+        await this.testNameExistence(gameName);
 
         const scenes: IScenesDB = this.generateScene(numberOfObjects, theme, modTypes);
 
@@ -98,7 +91,7 @@ export class GameCreatorService {
     public async createSimpleGame(gameName: string, originalImageFile: Buffer, modifiedImageFile: Buffer): Promise<Message> {
 
         try {
-            await GameCreatorService.testNameExistence(gameName);
+            await this.testNameExistence(gameName);
 
             const bitmapDiffImageBuffer: Buffer = await GameCreatorService.getDiffImage(originalImageFile, modifiedImageFile);
             const differenceData: ISimpleDifferenceData = this.testSimpleGameNumberOfDifference(bitmapDiffImageBuffer);
@@ -113,14 +106,13 @@ export class GameCreatorService {
                                      originalImage: Buffer,
                                      modifiedImage: Buffer,
                                      differenceData: ISimpleDifferenceData): Promise<Message> {
+        let imagesUrls: string[];
         try {
-            const imagesUrls: string[] = await this.uploadImages(originalImage, modifiedImage);
-            await this.uploadSimpleGame(gameName, imagesUrls, differenceData);
+            imagesUrls = await this.uploadImages(originalImage, modifiedImage);
         } catch (error) {
-            if (error.message !== NonExistentGameError.NON_EXISTENT_GAME_ERROR_MESSAGE) {
-                throw new AbstractDataBaseError(error.message);
-            }
+            throw new AbstractServiceError(error.message);
         }
+        await this.uploadSimpleGame(gameName, imagesUrls, differenceData);
 
         return GAME_CREATION_SUCCESS_MESSAGE;
     }
@@ -135,11 +127,11 @@ export class GameCreatorService {
             diffData: differenceData,
             toBeDeleted: false,
         };
-        await Axios.post<Message>(SERVER_BASE_URL + DB_SIMPLE_GAME, game)
-        // tslint:disable-next-line:no-any Generic error response
-            .catch((reason: any) => {
-                throw new AbstractServiceError("Unable to create game: " + reason.response.data.message);
-            });
+        try {
+            await this.dataBaseService.simpleGames.create(game);
+        } catch (error) {
+            throw new AbstractDataBaseError(error.message);
+        }
     }
 
     private async uploadFreeGame(gameName: string, scenes: IScenesDB): Promise<void> {
@@ -149,13 +141,13 @@ export class GameCreatorService {
             bestMultiTimes: createRandomScores(),
             scenes: scenes,
             toBeDeleted: false,
+            thumbnail: "",
         };
-        await Axios.post<Message>(SERVER_BASE_URL + DB_FREE_GAME, game)
-            // any is the default type of the required callback function
-            // tslint:disable-next-line:no-any Generic error response
-            .catch((reason: any) => {
-                throw new AbstractDataBaseError("Unable to create game: " + reason.response.data.message);
-            });
+        try {
+            await this.dataBaseService.freeGames.create(game);
+        } catch (error) {
+            throw new AbstractDataBaseError(error.message);
+        }
     }
 
     private async uploadImages(...imageBuffers: Buffer[]): Promise<string[]> {
@@ -193,10 +185,9 @@ export class GameCreatorService {
         if (theme === Themes.Geometry) {
 
             return this.freeGameCreatorService.generateIScenes(numberOfObjects, modTypes, Themes.Geometry);
-        } else if (theme === Themes.Space) {
+        } else {
 
             return this.freeGameCreatorService.generateIScenes(numberOfObjects, modTypes, Themes.Space);
         }
-        throw new NonExistentThemeError();
     }
 }

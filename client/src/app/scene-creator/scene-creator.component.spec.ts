@@ -1,8 +1,9 @@
 import {ComponentFixture, TestBed} from "@angular/core/testing";
+import {MatIconModule} from "@angular/material";
 import {MatDialogModule, MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
-import { ActivatedRoute, Router } from "@angular/router";
+import {ActivatedRoute, Router, RouterModule} from "@angular/router";
 import {of, Observable, Subject} from "rxjs";
-import * as THREE from "three";
+import {Scene} from "three";
 import {IFreeGame} from "../../../../common/model/game/free-game";
 import { DiffCounterComponent } from "../diff-counter/diff-counter.component";
 import { EndGameNotifComponent } from "../diff-counter/end-game-notif/end-game-notif.component";
@@ -56,7 +57,7 @@ describe("SceneCreatorComponent", () => {
     public createScenes(): IScene {
       this.isCalled = true;
 
-      return {scene: new THREE.Scene(), modifiedScene: new THREE.Scene()};
+      return {scene: new Scene(), modifiedScene: new Scene()};
     }
   }
 
@@ -72,6 +73,7 @@ describe("SceneCreatorComponent", () => {
       gameName: "TEST",
       scenes: {modifiedObjects: [], originalObjects: [], differentObjects: []},
       toBeDeleted: false,
+      thumbnail: "",
     };
 
     public getFreeGameByName(): Observable<IFreeGame> {
@@ -113,7 +115,7 @@ describe("SceneCreatorComponent", () => {
           SocketService,
 
         ],
-        imports: [MatDialogModule],
+        imports: [MatDialogModule,  RouterModule, MatIconModule],
         declarations: [SceneCreatorComponent, TimerComponent, DiffCounterComponent, EndGameNotifComponent, MessageBoxComponent],
 
       });

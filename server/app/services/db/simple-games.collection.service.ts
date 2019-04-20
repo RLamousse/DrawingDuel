@@ -72,9 +72,7 @@ export class SimpleGamesCollectionService extends CollectionService<ISimpleGame>
         CollectionService.assertId(id);
 
         return this.getDocument(id)
-            .then((game: ISimpleGame) => {
-                return game;
-            })
+            .then((game: ISimpleGame) => game)
             .catch((error: Error) => {
                 if (error.message === NoElementFoundError.NO_ELEMENT_FOUND_ERROR_MESSAGE) {
                     throw new NonExistentGameError();
@@ -102,6 +100,13 @@ export class SimpleGamesCollectionService extends CollectionService<ISimpleGame>
         return {
             title: "Simple game deleted",
             body: "Simple game " + id + " successfully deleted!",
+        };
+    }
+
+    protected queryDeletionSuccessMessage(): Message {
+        return {
+            title: "Simple games deleted",
+            body: "All corresponding simple games successfully deleted!",
         };
     }
 

@@ -14,10 +14,6 @@
         {{theme.viewValue}}
       </mat-option>
     </mat-select>
-    <mat-hint align="end">Les thèmes ne sont pas encore implémentés</mat-hint>
-    <mat-error *ngIf="formDoc.value.theme !== 'geometry'">
-      Les thèmes autres que Geométrie ne sont pas implémenté
-    </mat-error>
   </mat-form-field>
 
   <section class="example-section">
@@ -25,25 +21,38 @@
     <span> Valeur : {{ matslider.value }} </span>
     <mat-slider #matslider thumbLabel min="10" max="200" step="1" value="30" (change)="onSliderChange($event)">
     </mat-slider>
+    <div *ngIf="matslider.value>99">
+      <mat-hint align="end">
+        Ralentissement possible pour certains systèmes
+      </mat-hint>
+    </div>
   </section>
 
   <section class="example-section">
     <h3>Types de modifications dans la scène</h3>
+    <mat-error *ngIf="checkboxes['modificationTypes'].size === 0">
+      Choisir au minimum une option
+    </mat-error>
     <mat-checkbox *ngFor="let modType of modTypes" class="example-margin"
       ng-required="checkboxes['modificationTypes'].size===0"
       (change)="onCheckboxChange($event, modType.value)">
       {{modType.viewValue}}
     </mat-checkbox>
-    <mat-error *ngIf="checkboxes['modificationTypes'].size === 0">
-      Choisir minimum 1 option
-    </mat-error>
   </section>
 
-
+  <section>
+    <div *ngIf="submissionPending">
+      <mat-hint align="end">
+        Envoi en cours...
+      </mat-hint>
+    </div>
+  </section>
 
   <div>
-    <button id="form-submit" type="form-submit" name="submit" mat-button
-      [disabled]="isFormInvalid()">Envoyer</button>
-    <button id="form-reset" type="reset" mat-button color="warn" (click)="exit()">Annuler</button>
+    <button mat-raised-button id="form-submit" type="form-submit" name="submit" color="primary"
+            class="button" [disabled]="isFormInvalid()">Envoyer</button>
+    <button mat-raised-button id="form-reset" type="reset" color="accent" class="button"
+            [disabled]="submissionPending" (click)="exit()">Annuler
+    </button>
   </div>
 </form>

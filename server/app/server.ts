@@ -5,6 +5,7 @@ import * as io from "socket.io";
 import { SocketEvent } from "../../common/communication/socket-events";
 import { Application } from "./app";
 import { WebsocketController } from "./controllers/websocket.controller";
+import {RadioTowerService} from "./services/websocket/radio-tower.service";
 import Types from "./types";
 
 @injectable()
@@ -16,7 +17,9 @@ export class Server {
     private websocket: io.Server;
 
     public constructor(@inject(Types.Application) private application: Application,
-                       @inject(Types.WebsocketController) private webSocketController: WebsocketController) { }
+                       @inject(Types.WebsocketController) private webSocketController: WebsocketController,
+                       @inject(Types.RadioTowerService) private radioTower: RadioTowerService) {
+    }
 
     public init(): void {
         this.application.app.set("port", this.appPort);
@@ -24,6 +27,7 @@ export class Server {
         this.server = http.createServer(this.application.app);
 
         this.websocket = io(this.server);
+        this.radioTower.server = this.websocket;
         this.websocket.on(SocketEvent.CONNECTION, this.webSocketController.registerSocket);
 
         this.server.listen(this.appPort);

@@ -1,5 +1,8 @@
 <link href="https://fonts.googleapis.com/css?family=Orbitron" rel="stylesheet">
-<div class="compteur">Vous avez trouvé
+<div class="count">Vous avez trouvé
   <span class="differences">{{diffNumber}}</span>
   {{diffNumber > 1 ? "différences" : "différence"}}
+</div>
+<div *ngIf="isMulti" class="count">Votre adversaire en a trouvé
+  <span class="differences">{{advDiffNumber}}</span>
 </div>

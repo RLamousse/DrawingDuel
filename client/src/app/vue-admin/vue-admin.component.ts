@@ -1,6 +1,9 @@
 import {Component} from "@angular/core";
-import {MatDialog, MatDialogConfig} from "@angular/material";
+import {MatDialog} from "@angular/material";
+import {HOME_ROUTE} from "../../../../common/communication/routes";
 import {Create3DGameComponent} from "../create3-dgame/create3-dgame.component";
+import {openDialog, DialogStatus} from "../dialog-utils";
+import {GameButtonOptions} from "../game-list/game/game-button-enum";
 import {SimpleGameCreatorFormComponent} from "../simple-game-creator-form/simple-game-creator-form.component";
 
 @Component({
@@ -10,20 +13,25 @@ import {SimpleGameCreatorFormComponent} from "../simple-game-creator-form/simple
 })
 export class VueAdminComponent {
 
+  // @ts-ignore variable used in html
+  private readonly HOME_BUTTON_ROUTE: string = HOME_ROUTE;
+
   public constructor(private dialog: MatDialog) { }
 
-  protected readonly rightButton: string = "reinitialiser";
-  protected readonly leftButton: string = "supprimer";
+  protected readonly rightButton: string = GameButtonOptions.REINITIALIZE;
+  protected readonly leftButton: string = GameButtonOptions.DELETE;
 
   protected createSimpleGame(): void {
-    const dialogConfig: MatDialogConfig = new MatDialogConfig();
-    dialogConfig.autoFocus = true;
-    this.dialog.open(SimpleGameCreatorFormComponent, dialogConfig);
+    openDialog(this.dialog, SimpleGameCreatorFormComponent, {callback: (status: DialogStatus) => {
+        if (status && status === DialogStatus.DONE) {
+          window.location.reload.bind(window.location)();
+        }}, });
   }
 
   protected create3DGame(): void {
-    const dialogConfig: MatDialogConfig = new MatDialogConfig();
-    dialogConfig.autoFocus = true;
-    this.dialog.open(Create3DGameComponent, dialogConfig);
+    openDialog(this.dialog, Create3DGameComponent, {callback: (status: DialogStatus) => {
+      if (status && status === DialogStatus.DONE) {
+        window.location.reload.bind(window.location)();
+      }}, });
   }
 }

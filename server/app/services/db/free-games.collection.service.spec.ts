@@ -1,8 +1,6 @@
 import {expect} from "chai";
 import {Collection, FilterQuery, UpdateQuery} from "mongodb";
-import * as TypeMoq from "typemoq";
-// tslint:disable-next-line:no-duplicate-imports Weird interaction between singletons and interface (olivier st-o approved)
-import {IMock} from "typemoq";
+import {IMock, Mock} from "typemoq";
 import {Message} from "../../../../common/communication/messages/message";
 import {
     AlreadyExistentGameError,
@@ -12,6 +10,7 @@ import {
     NonExistentGameError
 } from "../../../../common/errors/database.errors";
 import {IFreeGame} from "../../../../common/model/game/free-game";
+import {DEFAULT_FIND_OPTIONS} from "./collection.service";
 import {FreeGamesCollectionService} from "./free-games.collection.service";
 import {GAME_NAME_FIELD} from "./simple-games.collection.service";
 
@@ -27,6 +26,7 @@ describe("A db service for free games", () => {
         bestSoloTimes: [],
         gameName: "sampleGame",
         toBeDeleted: false,
+        thumbnail: "",
     };
 
     let freeGamesCollectionService: FreeGamesCollectionService;
@@ -39,7 +39,7 @@ describe("A db service for free games", () => {
         (data: Partial<IFreeGame>): UpdateQuery<IFreeGame> => ({$set: data});
 
     beforeEach(() => {
-        mockedCollection = TypeMoq.Mock.ofType<Collection<IFreeGame>>();
+        mockedCollection = Mock.ofType<Collection<IFreeGame>>();
     });
 
     describe("Game creation", () => {
@@ -55,6 +55,7 @@ describe("A db service for free games", () => {
                 bestSoloTimes: [],
                 gameName: "",
                 toBeDeleted: false,
+                thumbnail: "",
             };
 
             freeGamesCollectionService = new FreeGamesCollectionService(mockedCollection.object);
@@ -227,7 +228,7 @@ describe("A db service for free games", () => {
 
         it("should throw an NonExistentGameError when no results where found", async () => {
             const query: FilterQuery<IFreeGame> = createGameQueryForId("unavailableGame");
-            mockedCollection.setup(async (collection: Collection<IFreeGame>) => collection.findOne(query))
+            mockedCollection.setup(async (collection: Collection<IFreeGame>) => collection.findOne(query, DEFAULT_FIND_OPTIONS))
                 .returns(async () => Promise.resolve(null));
 
             freeGamesCollectionService = new FreeGamesCollectionService(mockedCollection.object);
@@ -241,7 +242,7 @@ describe("A db service for free games", () => {
 
         it("should throw a database error on unexpected behaviour", async () => {
             const query: FilterQuery<IFreeGame> = createGameQueryForId("errorGame");
-            mockedCollection.setup(async (collection: Collection<IFreeGame>) => collection.findOne(query))
+            mockedCollection.setup(async (collection: Collection<IFreeGame>) => collection.findOne(query, DEFAULT_FIND_OPTIONS))
                 .returns(async () => Promise.reject(new Error("Unexpected error")));
 
             freeGamesCollectionService = new FreeGamesCollectionService(mockedCollection.object);
@@ -255,7 +256,7 @@ describe("A db service for free games", () => {
 
         it("should get a game from an ID", async () => {
             const query: FilterQuery<IFreeGame> = createGameQueryForId("sampleGame");
-            mockedCollection.setup(async (collection: Collection<IFreeGame>) => collection.findOne(query))
+            mockedCollection.setup(async (collection: Collection<IFreeGame>) => collection.findOne(query, DEFAULT_FIND_OPTIONS))
                 .returns(async () => Promise.resolve(sampleGame));
 
             freeGamesCollectionService = new FreeGamesCollectionService(mockedCollection.object);

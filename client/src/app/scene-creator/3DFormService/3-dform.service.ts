@@ -1,79 +1,116 @@
 import { Injectable } from "@angular/core";
-import * as THREE from "three";
-import { Coordinate } from "../../../../../common/free-game-json-interface/FreeGameCreatorInterface/free-game-enum";
-import * as IObject from "../../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
+import {
+  BoxGeometry,
+  ConeGeometry,
+  CylinderGeometry,
+  GLTF,
+  Mesh,
+  MeshPhongMaterial,
+  Object3D,
+  SphereGeometry,
+  Vector3
+} from "three";
+import {
+  ICone,
+  ICube,
+  ICylinder,
+  IJson3DObject,
+  IPyramid,
+  ISphere
+} from "../../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
+import {IPoint3D, IVector3} from "../../../../../common/model/point";
 @Injectable()
 export class Form3DService {
 
-  public createCube(obj: IObject.ICube): THREE.Mesh {
-    const geometry: THREE.BoxGeometry = new THREE.BoxGeometry(obj.sideLenght, obj.sideLenght, obj.sideLenght);
-    const material: THREE.MeshPhongMaterial = new THREE.MeshPhongMaterial({ color: obj.color });
-    const cube: THREE.Mesh = new THREE.Mesh(geometry, material);
-    this.setUpParameters(cube, obj);
+  private static toThreeVector3(vec: IVector3): Vector3 {
+    const {x, y, z}: IPoint3D = vec;
+
+    return new Vector3(x, y, z);
+  }
+
+  private static setUpParameters(mesh: Mesh, obj: IJson3DObject): void {
+    mesh.position.copy(Form3DService.toThreeVector3(obj.position));
+    mesh.rotateX(obj.rotation.x);
+    mesh.rotateY(obj.rotation.y);
+    mesh.rotateZ(obj.rotation.z);
+  }
+
+  public createCube(obj: ICube): Mesh {
+    const geometry: BoxGeometry = new BoxGeometry(obj.sideLength, obj.sideLength, obj.sideLength);
+    const material: MeshPhongMaterial = new MeshPhongMaterial({color: obj.color});
+    const cube: Mesh = new Mesh(geometry, material);
+    Form3DService.setUpParameters(cube, obj);
 
     return cube;
   }
 
-  public createSphere(obj: IObject.ISphere): THREE.Mesh {
-    const geometry: THREE.SphereGeometry = new THREE.SphereGeometry(obj.radius, obj.widthSegments, obj.heightSegments);
-    const material: THREE.MeshPhongMaterial = new THREE.MeshPhongMaterial({ color: obj.color });
-    const sphere: THREE.Mesh = new THREE.Mesh(geometry, material);
-    this.setUpParameters(sphere, obj);
+  public createSphere(obj: ISphere): Mesh {
+    const geometry: SphereGeometry = new SphereGeometry(obj.radius, obj.widthSegments, obj.heightSegments);
+    const material: MeshPhongMaterial = new MeshPhongMaterial({color: obj.color});
+    const sphere: Mesh = new Mesh(geometry, material);
+    Form3DService.setUpParameters(sphere, obj);
 
     return sphere;
   }
 
-  public createCone(obj: IObject.ICone): THREE.Mesh {
-    const geometry: THREE.ConeGeometry = new THREE.ConeGeometry(obj.radius, obj.height, obj.radialSegment);
-    const material: THREE.MeshPhongMaterial = new THREE.MeshPhongMaterial({ color: obj.color });
-    const cone: THREE.Mesh = new THREE.Mesh(geometry, material);
-    this.setUpParameters(cone, obj);
+  public createCone(obj: ICone): Mesh {
+    const geometry: ConeGeometry = new ConeGeometry(obj.radius, obj.height, obj.radialSegment);
+    const material: MeshPhongMaterial = new MeshPhongMaterial({color: obj.color});
+    const cone: Mesh = new Mesh(geometry, material);
+    Form3DService.setUpParameters(cone, obj);
 
     return cone;
   }
 
-  public createCylinder(obj: IObject.ICylinder): THREE.Mesh {
-    const geometry: THREE.CylinderGeometry = new THREE.CylinderGeometry(
+  public createCylinder(obj: ICylinder): Mesh {
+    const geometry: CylinderGeometry = new CylinderGeometry(
       obj.topRadius,
       obj.botRadius,
       obj.height,
       obj.radiusSegment,
     );
-    const material: THREE.MeshPhongMaterial = new THREE.MeshPhongMaterial({ color: obj.color });
-    const cylinder: THREE.Mesh = new THREE.Mesh(geometry, material);
-    this.setUpParameters(cylinder, obj);
+    const material: MeshPhongMaterial = new MeshPhongMaterial({color: obj.color});
+    const cylinder: Mesh = new Mesh(geometry, material);
+    Form3DService.setUpParameters(cylinder, obj);
 
     return cylinder;
   }
 
-  public createPyramid(obj: IObject.IPyramid): THREE.Mesh {
-    const geometry: THREE.CylinderGeometry = new THREE.CylinderGeometry(
+  public createPyramid(obj: IPyramid): Mesh {
+    const geometry: CylinderGeometry = new CylinderGeometry(
       obj.topRadius,
       obj.botRadius,
       obj.height,
       obj.radiusSegment,
       obj.heightSegment,
     );
-    const material: THREE.MeshPhongMaterial = new THREE.MeshPhongMaterial({ color: obj.color });
-    const pyramid: THREE.Mesh = new THREE.Mesh(geometry, material);
-    this.setUpParameters(pyramid, obj);
+    const material: MeshPhongMaterial = new MeshPhongMaterial({color: obj.color});
+    const pyramid: Mesh = new Mesh(geometry, material);
+    Form3DService.setUpParameters(pyramid, obj);
 
     return pyramid;
   }
 
-  private setUpParameters(mesh: THREE.Mesh, obj: IObject.IJson3DObject): void {
-    mesh.position.set(obj.position[Coordinate.X], obj.position[Coordinate.Y], obj.position[Coordinate.Z]);
-    mesh.rotateX(obj.rotation[Coordinate.X]);
-    mesh.rotateY(obj.rotation[Coordinate.Y]);
-    mesh.rotateZ(obj.rotation[Coordinate.Z]);
-  }
-
-  public setUpThematicParameters(object: IObject.IJson3DObject, gltf: THREE.GLTF): void {
+  public setUpThematicParameters(object: IJson3DObject, gltf: GLTF): void {
     const scaleFactor: number = object.scale;
     gltf.scene.scale.set(scaleFactor, scaleFactor, scaleFactor);
-    gltf.scene.rotateX(object.rotation[Coordinate.X]);
-    gltf.scene.rotateY(object.rotation[Coordinate.Y]);
-    gltf.scene.rotateZ(object.rotation[Coordinate.Z]);
-    gltf.scene.position.set(object.position[Coordinate.X], object.position[Coordinate.Y], object.position[Coordinate.Z]);
+    gltf.scene.rotateX(object.rotation.x);
+    gltf.scene.rotateY(object.rotation.y);
+    gltf.scene.rotateZ(object.rotation.z);
+    gltf.scene.position.copy(Form3DService.toThreeVector3(object.position));
+    this.disableChildren(gltf.scene.children);
+  }
+
+  private disableChildren(objs: Object3D[]): void {
+    for (const obj of objs) {
+      obj.castShadow = false;
+      obj.receiveShadow = false;
+      obj.matrixAutoUpdate = false;
+      obj.updateMatrix();
+      obj.updateWorldMatrix(true, true);
+      if (obj.children.length !== 0) {
+        this.disableChildren(obj.children);
+      }
+    }
   }
 }

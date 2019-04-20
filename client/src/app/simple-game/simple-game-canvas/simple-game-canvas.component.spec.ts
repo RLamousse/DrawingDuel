@@ -1,15 +1,16 @@
 import {async, ComponentFixture, TestBed} from "@angular/core/testing";
 import {By} from "@angular/platform-browser";
 import {ComponentCanvasError} from "../../../../../common/errors/component.errors";
-import {tansformOrigin, IPoint, ORIGIN} from "../../../../../common/model/point";
+import {getOrigin, inverseY, IPoint} from "../../../../../common/model/point";
 import {createArray} from "../../../../../common/util/util";
+import {CanvasTextType} from "../../util/canvas-utils";
 
 import {
   DEFAULT_CANVAS_HEIGHT, DEFAULT_TEXT_COLOR, ERROR_TEXT_COLOR,
   IMAGE_DATA_PIXEL_LENGTH,
   PixelData,
   SimpleGameCanvasComponent,
-  TextType, VICTORY_TEXT_COLOR
+  VICTORY_TEXT_COLOR
 } from "./simple-game-canvas.component";
 
 describe("SimpleGameCanvasComponent", () => {
@@ -71,12 +72,12 @@ describe("SimpleGameCanvasComponent", () => {
     component["_height"] = 1;
     component["_canvasContext"] = context;
 
-    const actualPixels: PixelData[] = component.getPixels([ORIGIN]);
+    const actualPixels: PixelData[] = component.getPixels([getOrigin()]);
     expect(actualPixels)
       .toEqual(
         [
           {
-            coords: ORIGIN,
+            coords: getOrigin(),
             data: new Uint8ClampedArray(RED_PIXEL),
           },
         ]);
@@ -123,7 +124,7 @@ describe("SimpleGameCanvasComponent", () => {
     component.drawPixels(
       [
         {
-          coords: ORIGIN,
+          coords: getOrigin(),
           data: new Uint8ClampedArray(RED_PIXEL),
         },
       ]);
@@ -132,14 +133,14 @@ describe("SimpleGameCanvasComponent", () => {
   });
 
   it("should emit a click event on click", () => {
-    const point: IPoint = ORIGIN;
+    const point: IPoint = getOrigin();
 
     component["_height"] = DEFAULT_CANVAS_HEIGHT;
 
     component.pointClick
       .subscribe((event: IPoint) => {
         expect(event)
-          .toEqual(tansformOrigin(point, DEFAULT_CANVAS_HEIGHT));
+          .toEqual(inverseY(point, DEFAULT_CANVAS_HEIGHT));
       });
 
     fixture.debugElement.query(By.css("canvas"))
@@ -174,11 +175,11 @@ describe("SimpleGameCanvasComponent", () => {
     spyOn(component["_canvasContext"], "strokeText");
     spyOn(component["_canvasContext"], "fillText");
 
-    component.drawText(expectedText, ORIGIN, TextType.ERROR);
+    component.drawText(expectedText, getOrigin(), CanvasTextType.ERROR);
 
     expect(component["_canvasContext"].fillStyle).toEqual(ERROR_TEXT_COLOR);
-    expect(component["_canvasContext"].strokeText).toHaveBeenCalledWith(expectedText, ORIGIN.x, ORIGIN.y);
-    expect(component["_canvasContext"].fillText).toHaveBeenCalledWith(expectedText, ORIGIN.x, ORIGIN.y);
+    expect(component["_canvasContext"].strokeText).toHaveBeenCalledWith(expectedText, getOrigin().x, getOrigin().y);
+    expect(component["_canvasContext"].fillText).toHaveBeenCalledWith(expectedText, getOrigin().x, getOrigin().y);
   });
 
   it("should draw victory text on canvas", () => {
@@ -193,13 +194,13 @@ describe("SimpleGameCanvasComponent", () => {
     component["_canvasContext"] = context;
     spyOn(context, "fillText");
 
-    component.drawText(expectedText, ORIGIN, TextType.VICTORY);
+    component.drawText(expectedText, getOrigin(), CanvasTextType.VICTORY);
 
     expect(context.fillStyle).toEqual(VICTORY_TEXT_COLOR);
-    expect(context.fillText).toHaveBeenCalledWith(expectedText, ORIGIN.x, ORIGIN.y);
+    expect(context.fillText).toHaveBeenCalledWith(expectedText, getOrigin().x, getOrigin().y);
   });
 
-  it("should draw black text when textType is not defined", () => {
+  it("should draw black text when CanvasTextType is not defined", () => {
     const sideLength: number = 10;
     const expectedText: string = "epic victory royale";
     const context: CanvasRenderingContext2D = getCanvasContext();
@@ -211,9 +212,9 @@ describe("SimpleGameCanvasComponent", () => {
     component["_canvasContext"] = context;
     spyOn(context, "fillText");
 
-    component.drawText(expectedText, ORIGIN);
+    component.drawText(expectedText, getOrigin());
 
     expect(context.fillStyle).toEqual(DEFAULT_TEXT_COLOR);
-    expect(context.fillText).toHaveBeenCalledWith(expectedText, ORIGIN.x, ORIGIN.y);
+    expect(context.fillText).toHaveBeenCalledWith(expectedText, getOrigin().x, getOrigin().y);
   });
 });

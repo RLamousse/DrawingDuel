@@ -1,4 +1,5 @@
-﻿import {ObjectGeometry, ObjectTexture, Themes} from "../FreeGameCreatorInterface/free-game-enum";
+﻿import {getOrigin3D, IPoint3D, IVector3} from "../../model/point";
+import {ObjectGeometry, ObjectTexture, Themes} from "../FreeGameCreatorInterface/free-game-enum";
 
 export interface IScenesJSON{
     originalObjects: IJson3DObject[],
@@ -10,8 +11,8 @@ export interface IScenesDB extends IScenesJSON{
 }
 
 export interface IJson3DObject {
-    position: number[],
-    rotation: number[],
+    position: IPoint3D,
+    rotation: IVector3,
     color: number,
     texture?: ObjectTexture,
     type: ObjectGeometry,
@@ -26,7 +27,7 @@ export interface ISphere extends IJson3DObject {
 }
 
 export interface ICube extends IJson3DObject {
-    sideLenght: number,
+    sideLength: number,
 }
 
 export interface ICone extends IJson3DObject {
@@ -49,5 +50,14 @@ export interface ICylinder extends IJson3DObject {
     height: number,
     radiusSegment: number,
 }
+
+export const DEFAULT_OBJECT: IJson3DObject = {
+    position: getOrigin3D(),
+    rotation: getOrigin3D(),
+    color: 0,
+    type: ObjectGeometry.cube,
+    gameType: Themes.Geometry,
+    scale: 1,
+};
 
 

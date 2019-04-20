@@ -1,16 +1,92 @@
 .gameList {
-    display: flex;
-    flex-direction: row;
-    margin-left: 10%;
+   display: flex;
+   flex-direction: row;
+   padding-top: 79px;
+}
+
+.bottomright {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+img{
+  height: 50%;
+  width: 37.5%;
+  margin: auto;
+  padding-top: 5%;
 }
 
 .window {
-    width: 800px;
-    border: 1px black solid;
-    top: 0;
-    min-height: 600px;
+   width: 50%;
+   padding-left: 0 !important;
+   top: 0;
+   min-height: 480px;
+ }
+
+.centeredCard{
+  width: 500px;
+  height: auto;
+  margin: 0 auto;
+  position: relative;
 }
 
-h1 {
-    margin-left: 40px;
+.blue{
+  background-color: #3F51B5;
 }
+
+.pink{
+  background-color: #FF3C82;
+}
+
+.title{
+  
+  width: 50%;
+  height: 80px;
+  color: white;
+  font-size: 25px;
+  border: 1px #272731 solid;
+  border-radius: 7px;
+  white-space: nowrap;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-weight: 500;
+}
+
+.reloadButton{
+  margin-right: 5px;
+  z-index: 200000;
+  position: absolute;
+}
+
+.write{
+  text-align: center;
+  margin-top: 22px;
+
+}
+
+.game:hover{
+  cursor: default;
+}
+
+.popup{
+  position: absolute;
+  width: 100%;
+  height: 200px;
+  z-index: 10;
+  display: flex;
+  flex-direction: row;
+}
+.titleFont{
+  font-size: 25px;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  height: 35px;
+  color: white;
+  background-color: black;
+  padding-left: 10px;
+  text-align : center;
+}
+
+.back-button {
+  margin-right: 5px;
+}
+

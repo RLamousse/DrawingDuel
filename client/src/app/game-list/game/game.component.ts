@@ -1,9 +1,16 @@
-import {Component, Input} from "@angular/core";
-import {MatDialog, MatDialogConfig} from "@angular/material";
+import {Component, Input, OnDestroy, OnInit} from "@angular/core";
+import {MatDialog} from "@angular/material";
 import {Router} from "@angular/router";
+import {LOADING_ROUTE} from "../../../../../common/communication/routes";
 import {ComponentNavigationError} from "../../../../../common/errors/component.errors";
+import {GameRoomCreationError} from "../../../../../common/errors/services.errors";
+import {GameType, OnlineType} from "../../../../../common/model/game/game";
 import {IRecordTime} from "../../../../../common/model/game/record-time";
+import {IRoomInfo} from "../../../../../common/model/rooms/room-info";
+import {openDialog, DialogStatus} from "../../dialog-utils";
+import {RoomService} from "../../room.service";
 import {DeleteGameFormComponent} from "./delete-game-form/delete-game-form.component";
+import {GameButtonOptions} from "./game-button-enum";
 import {ResetGameFormComponent} from "./reset-game-form/reset-game-form.component";
 
 @Component({
@@ -12,9 +19,14 @@ import {ResetGameFormComponent} from "./reset-game-form/reset-game-form.componen
   styleUrls: ["./game.component.css"],
 })
 
-export class GameComponent {
+export class GameComponent implements OnInit, OnDestroy {
 
-  public constructor(private router: Router, private dialog: MatDialog) {}
+  public constructor(private router: Router,
+                     private dialog: MatDialog,
+                     private roomService: RoomService) {
+    this.handleRoomAvailability = this.handleRoomAvailability.bind(this);
+  }
+
   @Input() public gameName: string = "test";
   @Input() public bestSoloTimes: IRecordTime[];
   @Input() public bestMultiTimes: IRecordTime[];
@@ -23,61 +35,95 @@ export class GameComponent {
   @Input() public thumbnail: string;
   @Input() public rightButton: string;
   @Input() public leftButton: string;
-  @Input() public isSimpleGame: boolean;
+  @Input() public gameType: GameType;
+  @Input() public simpleGameTag: GameType = GameType.SIMPLE;
+
+  public ngOnInit(): void {
+    this.roomService.subscribeToFetchRooms(this.handleRoomAvailability);
+    this.handleRoomAvailability = this.handleRoomAvailability.bind(this);
+  }
+
+  public ngOnDestroy(): void {
+    this.roomService.unsubscribe();
+  }
 
   protected leftButtonClick(): void {
-    if (this.leftButton === "jouer") {
-      this.isSimpleGame ? this.navigatePlayView() : this.navigateFreeView();
-    } else if (this.leftButton === "supprimer") {
-      const dialogConfig: MatDialogConfig = new MatDialogConfig();
-      dialogConfig.autoFocus = true;
-      dialogConfig.data = {gameName: this.gameName, isSimpleGame: this.isSimpleGame};
-      this.dialog.open(DeleteGameFormComponent, dialogConfig);
+    if (this.leftButton === GameButtonOptions.PLAY) {
+      this.roomService.createRoom(this.gameName, OnlineType.SOLO)
+        .then(() => {
+          this.navigateAwait(OnlineType.SOLO);
+        })
+        .catch(() => {
+          throw new GameRoomCreationError();
+        });
+    } else if (this.leftButton === GameButtonOptions.DELETE) {
+      openDialog(this.dialog, DeleteGameFormComponent, {callback: (status: DialogStatus) => {
+                                                        if (status && status === DialogStatus.DONE) {
+                                                          window.location.reload.bind(window.location)();
+                                                        }},
+                                                        data: {gameName: this.gameName, gameType: this.gameType}});
     }
   }
 
   protected rightButtonClick(): void {
-    if (this.rightButton === "joindre") {
-      this.navigateAwait();
-    } else if (this.rightButton === "reinitialiser") {
-      const dialogConfig: MatDialogConfig = new MatDialogConfig();
-      dialogConfig.autoFocus = true;
-      dialogConfig.data = {gameName: this.gameName, isSimpleGame: this.isSimpleGame};
-      this.dialog.open(ResetGameFormComponent, dialogConfig).afterClosed().subscribe(() => window.location.reload());
+    if (this.rightButton === GameButtonOptions.REINITIALIZE) {
+      openDialog(this.dialog, ResetGameFormComponent, {callback: (status: DialogStatus) => {
+                                                       if (status && status === DialogStatus.DONE) {
+                                                         window.location.reload.bind(window.location)();
+                                                       }},
+                                                       data: {gameName: this.gameName, gameType: this.gameType}});
+    } else {
+      this.handleGameJoin();
     }
   }
 
-  private navigatePlayView(): void {
-   this.router.navigate(["/play-view/"], {queryParams: {
-      gameName: this.gameName, originalImage: this.originalImage, modifiedImage: this.modifiedImage, isSimpleGame: this.isSimpleGame },
-    })
-      // tslint:disable-next-line:no-any Generic error response
-     .catch((reason: any) => {
-       throw new ComponentNavigationError();
-     });
+  private handleGameJoin(): void {
+    let roomPromise: Promise<void>;
+    if (this.rightButton === GameButtonOptions.CREATE) {
+      roomPromise = this.roomService.createRoom(this.gameName, OnlineType.MULTI);
+    } else if (this.rightButton === GameButtonOptions.JOIN) {
+      roomPromise = this.roomService.checkInRoom(this.gameName);
+    } else {
+      return;
+    }
+
+    roomPromise
+      .then(() => {
+        this.navigateAwait(OnlineType.MULTI);
+      })
+      .catch(() => {
+        throw new GameRoomCreationError();
+      });
   }
 
-  private navigateFreeView(): void {
-    this.router.navigate(["/3d-view/"], {
-      queryParams: {
+  private handleRoomAvailability(rooms: IRoomInfo[]): void {
+    const availableRoom: IRoomInfo | undefined = rooms.find((x) => x.gameName === this.gameName && x.vacant);
+    if (this.rightButton !== GameButtonOptions.REINITIALIZE) {
+      this.rightButton = availableRoom ? GameButtonOptions.JOIN : GameButtonOptions.CREATE;
+    }
+  }
+
+  private navigateAwait(onlineType: OnlineType): void {
+    this.router.navigate([LOADING_ROUTE], {queryParams: {
         gameName: this.gameName,
-        isSimpleGame: this.isSimpleGame,
+        gameType: this.gameType,
+        onlineType: onlineType,
       },
     })
-      // tslint:disable-next-line:no-any Generic error response
-      .catch((reason: any) => {
+      .catch(() => {
         throw new ComponentNavigationError();
       });
   }
 
-  private navigateAwait(): void {
-    this.router.navigate(["/await-view/"], {queryParams: {
-      gameName: this.gameName, gameType: this.isSimpleGame},
-    })
-      // tslint:disable-next-line:no-any Generic error response
-     .catch((reason: any) => {
-       throw new ComponentNavigationError();
-     });
+  protected formatTime(time: number): string {
+    const DECIMALSTART: number = -2;
+    const DECIMALTOINTEGER: number = 100;
+    const SEPARATOR: string = ":";
+    let timeString: string = Math.floor(time).toString();
+    timeString += SEPARATOR;
+    timeString += ("0" + Math.round(time % 1 * DECIMALTOINTEGER).toString()).slice(DECIMALSTART);
+
+    return timeString;
   }
 
 }

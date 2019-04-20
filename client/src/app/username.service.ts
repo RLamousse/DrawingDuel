@@ -1,16 +1,20 @@
 import { Injectable } from "@angular/core";
+import { CanActivate, Router } from "@angular/router";
 import { Subscription } from "rxjs";
-import { WebsocketMessage } from "../../../common/communication/messages/message";
+import {createWebsocketMessage, WebsocketMessage} from "../../../common/communication/messages/message";
 import { UserValidationMessage } from "../../../common/communication/messages/user-validation-message";
+import {HOME_ROUTE} from "../../../common/communication/routes";
 import { SocketEvent } from "../../../common/communication/socket-events";
+import {ComponentNavigationError} from "../../../common/errors/component.errors";
 import { SocketService } from "./socket.service";
 
 @Injectable()
-export class UNListService {
+export class UNListService implements CanActivate {
 
   public static username: string = "";
-  private readonly NON_ALPHANUMERIC_MESSAGE: string = "Tu dois utiliser seulement des caractères alphanumériques!";
+  private readonly NON_ALPHANUMERIC_MESSAGE: string = "Caractères alphanumériques seulement!";
   private readonly USERNAME_TOO_SHORT_MESSAGE: string = "Ton identifiant est trop court!";
+  private readonly USERNAME_EMPTY: string = "Il faut entrer un identifiant!";
   private readonly USERNAME_TAKEN_MESSAGE: string = "Cet identifiant est deja pris! Essaie un nouvel identifiant";
   private readonly USERNAME_MIN_LENGTH: number = 4;
   private readonly usernameValidationRegex: RegExp = /^[a-zA-Z0-9]+$/i;
@@ -19,8 +23,10 @@ export class UNListService {
   public message: string;
   public username: string;
   public response: UserValidationMessage;
+  private readonly NAVIGATION_MESSAGE: string = "Un comportement de navigation suspect a été détecté, " +
+    "vous serez ramené à la page d'accueil pour des raisons de sécurité!";
 
-  public constructor(private websocket: SocketService) {
+  public constructor(private websocket: SocketService, private router: Router) {
     this.minLength = this.USERNAME_MIN_LENGTH;
     this.message = "";
     this.username = "";
@@ -41,6 +47,11 @@ export class UNListService {
   }
 
   public isTooShort(name: string): boolean {
+    if (!name) {
+      this.message = this.USERNAME_EMPTY;
+
+      return true;
+    }
     if (name.length < this.minLength) {
       this.message = this.USERNAME_TOO_SHORT_MESSAGE;
 
@@ -57,10 +68,7 @@ export class UNListService {
       return false;
     }
 
-    const message: WebsocketMessage<string> = {
-      title: SocketEvent.USERNAME_CHECK,
-      body: username,
-    };
+    const message: WebsocketMessage<string> = createWebsocketMessage(username);
     this.websocket.send(SocketEvent.USERNAME_CHECK, message);
     const sub: Subscription = this.websocket.onEvent<boolean>(SocketEvent.USERNAME_CHECK).subscribe((answer: WebsocketMessage<boolean>) => {
       this.handleUserNameCheck(answer, callback);
@@ -77,5 +85,21 @@ export class UNListService {
     callback(answer.body);
 
     return answer.body;
+  }
+
+  public canActivate(): boolean  {
+    if (UNListService.username) {
+      return true;
+    } else {
+      this.router.navigate([HOME_ROUTE])
+        .then(() => {
+          alert(this.NAVIGATION_MESSAGE);
+        })
+        .catch(() => {
+          throw new ComponentNavigationError();
+        });
+
+      return false;
+    }
   }
 }

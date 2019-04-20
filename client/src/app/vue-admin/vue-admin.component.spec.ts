@@ -1,6 +1,7 @@
 import {HttpClientModule} from "@angular/common/http";
 import {ComponentFixture, TestBed} from "@angular/core/testing";
-import {MatDialogModule} from "@angular/material";
+import {MatCardModule, MatDialogModule, MatIconModule} from "@angular/material";
+import {ActivatedRoute, Router, RouterModule} from "@angular/router";
 import * as THREE from "three";
 import {GameListComponent} from "../game-list/game-list.component";
 import {GameComponent} from "../game-list/game/game.component";
@@ -30,8 +31,11 @@ describe("VueAdminComponent", () => {
     return TestBed.configureTestingModule(
       {
         declarations: [VueAdminComponent, GameListComponent, GameComponent],
-        imports: [MatDialogModule, HttpClientModule],
-        providers: [FreeGamePhotoService, {provide: FreeGameCreatorService, useValue: mockedFreeGameCreator}, SocketService],
+        imports: [MatDialogModule, HttpClientModule, MatCardModule, RouterModule, MatIconModule],
+        providers: [{provide: Router, useValue: {}},
+                    {provide: ActivatedRoute, useValue: {}},
+                    FreeGamePhotoService, {provide: FreeGameCreatorService, useValue: mockedFreeGameCreator},
+                    SocketService],
       }).compileComponents();
   });
 

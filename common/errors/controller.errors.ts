@@ -1,5 +1,5 @@
 export class RequestFormatError extends Error {
-    public static readonly FORMAT_ERROR_MESSAGE: string = "Error: Request sent by the client had the wrong format!";
+    public static readonly FORMAT_ERROR_MESSAGE: string = "ERREUR: La requete du client a le mauvais format!";
 
     constructor() {
         super(RequestFormatError.FORMAT_ERROR_MESSAGE);
@@ -7,7 +7,7 @@ export class RequestFormatError extends Error {
 }
 
 export class NoUsernameInRequestError extends Error {
-    public static readonly NO_USERNAME_IN_REQUEST_ERROR_MESSAGE: string = "Error: no username was included in the request";
+    public static readonly NO_USERNAME_IN_REQUEST_ERROR_MESSAGE: string = "ERREUR: il manque nom d'utilisateur dans la requete";
 
     constructor() {
         super(NoUsernameInRequestError.NO_USERNAME_IN_REQUEST_ERROR_MESSAGE);

@@ -1,8 +1,10 @@
+import {GameType} from "../model/game/game";
 
 export interface IDialogData {
   gameName: string;
-  isSimpleGame: boolean;
+  gameType: GameType;
   minutes: number;
   seconds: number;
   userName: string;
+  isWinner: boolean;
 }

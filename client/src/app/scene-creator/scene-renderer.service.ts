@@ -1,57 +1,39 @@
-import { Injectable } from "@angular/core";
-import Axios, { AxiosResponse } from "axios";
-import * as Httpstatus from "http-status-codes";
-import { Observable, Subject } from "rxjs";
-import * as THREE from "three";
-import {
-  ChatMessage,
-  ChatMessagePlayerCount,
-  ChatMessagePosition, ChatMessageType,
-  WebsocketMessage
-} from "../../../../common/communication/messages/message";
-import {DIFF_VALIDATOR_3D_BASE, SERVER_BASE_URL} from "../../../../common/communication/routes";
-import {SocketEvent} from "../../../../common/communication/socket-events";
-import { ComponentNotLoadedError } from "../../../../common/errors/component.errors";
-import {AbstractServiceError, AlreadyFoundDifferenceError, NoDifferenceAtPointError} from "../../../../common/errors/services.errors";
-import { IJson3DObject } from "../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
-import { deepCompare, sleep, X_FACTOR } from "../../../../common/util/util";
-import {
-  playRandomSound,
-  FOUND_DIFFERENCE_SOUNDS,
-  NO_DIFFERENCE_SOUNDS,
-  STAR_THEME_SOUND
-} from "../simple-game/game-sounds";
-import {SocketService} from "../socket.service";
+import {Injectable} from "@angular/core";
+import {Intersection, Mesh, Object3D, PerspectiveCamera, Raycaster, Scene, Vector2, Vector3, WebGLRenderer} from "three";
+import {ComponentNotLoadedError, FreeViewGamesRenderingError} from "../../../../common/errors/component.errors";
+import {NoDifferenceAtPointError} from "../../../../common/errors/services.errors";
+import {IJson3DObject} from "../../../../common/free-game-json-interface/JSONInterface/IScenesJSON";
+import {IFreeGameState} from "../../../../common/model/game/game-state";
+import {IPoint} from "../../../../common/model/point";
+import {IFreeGameInteractionResponse} from "../../../../common/model/rooms/interaction";
+import {sleep, X_FACTOR} from "../../../../common/util/util";
+import {playRandomSound, FOUND_DIFFERENCE_SOUNDS, NO_DIFFERENCE_SOUNDS, STAR_THEME_SOUND} from "../simple-game/game-sounds";
 import {UNListService} from "../username.service";
-import { RenderUpdateService } from "./render-update.service";
+import {compareToThreeVector3, getObjectFromScenes} from "../util/client-utils";
+import {SKY_BOX_NAME} from "./FreeGameCreator/free-game-creator.service";
+import {ObjectCollisionService} from "./objectCollisionService/object-collision.service";
+import {RenderUpdateService} from "./render-update.service";
+import {changeVisibility, get3DObject} from "./renderer-utils";
+import {SceneDiffValidatorService} from "./scene-diff-validator.service";
 
-interface IFreeGameState {
+interface IFreeGameRendererState extends IFreeGameState {
   isCheatModeActive: boolean;
   isWaitingInThread: boolean;
-  foundDifference: IJson3DObject[];
-  cheatDiffData?: Set<THREE.Object3D>;
+  cheatDiffData?: Set<Object3D>;
   blinkThread?: NodeJS.Timeout;
 }
-export const SCENE_TYPE: string = "Scene";
-@Injectable()
-@Injectable({
-    providedIn: "root",
-  })
+
+@Injectable({providedIn: "root"})
 export class SceneRendererService {
-  public originalContainer: HTMLDivElement;
-  public modifiedContainer: HTMLDivElement;
-  public scene: THREE.Scene;
-  public modifiedScene: THREE.Scene;
-  public gameName: string;
-  private camera: THREE.PerspectiveCamera;
-  private rendererOri: THREE.WebGLRenderer;
-  private rendererMod: THREE.WebGLRenderer;
-  protected time: number;
-  protected prevTime: number;
-  protected velocity: THREE.Vector3;
+  public constructor(private renderUpdateService: RenderUpdateService,
+                     private sceneDiffValidator: SceneDiffValidatorService,
+                     private objectCollisionService: ObjectCollisionService) {
+    this.gameState = {isCheatModeActive: false, isWaitingInThread: false, foundObjects: []};
+  }
+
   private readonly fieldOfView: number = 90;
   private readonly nearClippingPane: number = 1;
-  private readonly farClippingPane: number = 1000;
+  private readonly farClippingPane: number = 2900;
   private readonly backGroundColor: number = 0x001A33;
   private readonly cameraX: number = 0;
   private readonly cameraY: number = 0;
@@ -60,41 +42,37 @@ export class SceneRendererService {
   private readonly BLINK_INTERVAL_MS: number = 250;
   private readonly INVISIBLE_INTERVAL_MS: number = this.BLINK_INTERVAL_MS / X_FACTOR;
   private readonly WATCH_THREAD_FINISH_INTERVAL: number = 30;
-  private differenceCountSubject: Subject<number> = new Subject();
-  public gameState: IFreeGameState;
+  private readonly FPS: number = 30;
 
-  public constructor(private renderUpdateService: RenderUpdateService,
-                     private socket: SocketService) {
-    this.gameState = {isCheatModeActive: false, isWaitingInThread: false, foundDifference: []};
-  }
-  private setRenderer(): void {
-    this.rendererOri = new THREE.WebGLRenderer({preserveDrawingBuffer: true});
-    this.rendererOri.setClearColor(this.backGroundColor);
-    this.rendererOri.setPixelRatio(devicePixelRatio);
-    this.rendererOri.setSize(this.originalContainer.clientWidth, this.originalContainer.clientHeight);
-    this.originalContainer.appendChild(this.rendererOri.domElement);
-    this.rendererMod = new THREE.WebGLRenderer();
-    this.rendererMod.setClearColor(this.backGroundColor);
-    this.rendererMod.setPixelRatio(devicePixelRatio);
-    this.rendererMod.setSize(this.modifiedContainer.clientWidth, this.modifiedContainer.clientHeight);
-    this.modifiedContainer.appendChild(this.rendererMod.domElement);
-  }
-  private renderLoop(): void {
-    requestAnimationFrame(() => this.renderLoop());
-    this.rendererOri.render(this.scene, this.camera);
-    this.rendererMod.render(this.modifiedScene, this.camera);
-    this.time = performance.now();
-    const delta: number = (this.time - this.prevTime) / this.timeFactor;
-    this.renderUpdateService.updateVelocity(this.velocity, delta);
-    this.renderUpdateService.updateCamera(this.camera, delta, this.velocity);
-    this.prevTime = this.time;
-  }
-  private setCamera(): void {
-    const aspectRatio: number = this.getAspectRatio();
+  private time: number;
+  private prevTime: number;
+  private velocity: Vector3;
+  private originalContainer: HTMLDivElement;
+  private modifiedContainer: HTMLDivElement;
+  private scene: Scene;
+  private modifiedScene: Scene;
+  private camera: PerspectiveCamera;
+  private rendererOri: WebGLRenderer;
+  private rendererMod: WebGLRenderer;
+  private gameState: IFreeGameRendererState;
+  private validationPromise: Promise<number>;
 
-    this.camera = new THREE.PerspectiveCamera(
+  // ╔═════════╗
+  // ║ 3D INIT ║
+  // ╚═════════╝
+
+  public init(oriCont: HTMLDivElement, modCont: HTMLDivElement): void {
+    this.originalContainer = oriCont;
+    this.modifiedContainer = modCont;
+    this.initCamera();
+    this.initRenderer();
+    this.validationPromise = this.getValidationPromise();
+  }
+
+  private initCamera(): void {
+    this.camera = new PerspectiveCamera(
       this.fieldOfView,
-      aspectRatio,
+      this.originalContainer.clientWidth / this.originalContainer.clientHeight,
       this.nearClippingPane,
       this.farClippingPane,
     );
@@ -102,71 +80,89 @@ export class SceneRendererService {
     this.camera.position.y = this.cameraY;
     this.camera.position.z = this.cameraZ;
   }
-  private getAspectRatio(): number {
-    return (this.originalContainer.clientWidth) / (this.originalContainer.clientHeight);
+
+  private initRenderer(): void {
+    this.rendererOri = this.createRenderer(this.originalContainer);
+    this.originalContainer.appendChild(this.rendererOri.domElement);
+    this.rendererMod = this.createRenderer(this.modifiedContainer);
+    this.modifiedContainer.appendChild(this.rendererMod.domElement);
   }
-  public init(oriCont: HTMLDivElement, modCont: HTMLDivElement): void {
-    this.originalContainer = oriCont;
-    this.modifiedContainer = modCont;
-    this.setCamera();
-    this.setRenderer();
+
+  private createRenderer(container: HTMLDivElement): WebGLRenderer {
+    const renderer: WebGLRenderer = new WebGLRenderer({
+      precision: "lowp",
+      premultipliedAlpha: false,
+    });
+    renderer.setClearColor(this.backGroundColor);
+    renderer.setPixelRatio(devicePixelRatio);
+    renderer.setSize(container.clientWidth, container.clientHeight);
+
+    return renderer;
   }
-  public loadScenes(original: THREE.Scene, modified: THREE.Scene, gameName: string): void {
+
+  public loadScenes(original: Scene, modified: Scene): void {
     if (this.originalContainer === undefined || this.modifiedContainer === undefined) {
-      throw (new ComponentNotLoadedError());
+      throw new ComponentNotLoadedError();
     }
     this.scene = original;
     this.modifiedScene = modified;
     this.time = 0;
     this.prevTime = performance.now();
-    this.velocity = new THREE.Vector3();
-    this.gameName = gameName;
-    this.gameState.foundDifference = [];
+    this.velocity = new Vector3();
+    this.gameState.foundObjects = [];
     this.renderLoop();
   }
+
+  // ╔════════════╗
+  // ║ CHEAT MODE ║
+  // ╚════════════╝
+
   private async blink(): Promise<void> {
-    (this.gameState.cheatDiffData as Set<THREE.Mesh>).forEach((value: THREE.Mesh) => this.changeVisibility(value));
+    (this.gameState.cheatDiffData as Set<Mesh>).forEach((value: Mesh) => changeVisibility(value));
     this.gameState.isWaitingInThread = true;
     await sleep(this.INVISIBLE_INTERVAL_MS);
     this.gameState.isWaitingInThread = false;
-    (this.gameState.cheatDiffData as Set<THREE.Mesh>).forEach((value: THREE.Mesh) => this.changeVisibility(value));
+    (this.gameState.cheatDiffData as Set<Mesh>).forEach((value: Mesh) => changeVisibility(value));
   }
+
   public async modifyCheatState(loadCheatData: () => Promise<IJson3DObject[]>): Promise<void> {
     this.gameState.isCheatModeActive = !this.gameState.isCheatModeActive;
     if (this.gameState.isCheatModeActive) {
       STAR_THEME_SOUND.play();
       await this.loadCheatData(loadCheatData);
-      await this.updateCheateDiffData(this.gameState.foundDifference);
+      await this.updateCheatDiffData(...this.gameState.foundObjects);
       this.gameState.blinkThread = setInterval(async () => this.blink(),
                                                this.BLINK_INTERVAL_MS);
     } else {
       await this.deactivateCheatMode();
     }
   }
-  private async updateCheateDiffData(newData: IJson3DObject[]): Promise<void> {
+
+  private async updateCheatDiffData(...newData: IJson3DObject[]): Promise<void> {
     await this.threadFinish();
     if (this.gameState.isCheatModeActive) {
-
       newData.forEach((jsonValue: IJson3DObject) => {
-        (this.gameState.cheatDiffData as Set<THREE.Object3D>).forEach((objectValue: THREE.Object3D) => {
-          if (this.isObjectAtSamePlace(jsonValue.position, objectValue.position)) {
-            (this.gameState.cheatDiffData as Set<THREE.Object3D>).delete(objectValue);
+        (this.gameState.cheatDiffData as Set<Object3D>).forEach((objectValue: Object3D) => {
+          if (compareToThreeVector3(jsonValue.position, objectValue.position)) {
+            (this.gameState.cheatDiffData as Set<Object3D>).delete(objectValue);
           }
         });
       });
     }
   }
+
   private async loadCheatData(callBackFunction: () => Promise<IJson3DObject[]>): Promise<void> {
-    this.gameState.cheatDiffData = new Set<THREE.Object3D>();
+    this.gameState.cheatDiffData = new Set<Object3D>();
     (await callBackFunction()).forEach((jsonValue: IJson3DObject) => {
-      this.scene.children.concat(this.modifiedScene.children).forEach((objectValue: THREE.Object3D) => {
-        if (this.isObjectAtSamePlace(jsonValue.position, objectValue.position) &&
-          (objectValue instanceof THREE.Mesh || objectValue instanceof THREE.Scene)) {
-          (this.gameState.cheatDiffData as Set<THREE.Object3D>).add(objectValue);
+      this.scene.children.concat(this.modifiedScene.children).forEach((objectValue: Object3D) => {
+        if (compareToThreeVector3(jsonValue.position, objectValue.position) &&
+          (objectValue instanceof Mesh || objectValue instanceof Scene)) {
+          (this.gameState.cheatDiffData as Set<Object3D>).add(objectValue);
         }
       });
     });
   }
+
   public async deactivateCheatMode(): Promise<void> {
     STAR_THEME_SOUND.stop();
     if (this.gameState.blinkThread) {
@@ -176,123 +172,94 @@ export class SceneRendererService {
     this.gameState.isCheatModeActive = false;
     this.gameState.cheatDiffData = undefined;
   }
-  private isObjectAtSamePlace(jsonPosition: number[], objectPosition: THREE.Vector3): boolean {
-    return deepCompare(jsonPosition, [objectPosition.x, objectPosition.y, objectPosition.z]);
-  }
+
   private async threadFinish(): Promise<void> {
     while (this.gameState.isWaitingInThread) {
       await sleep(this.WATCH_THREAD_FINISH_INTERVAL);
     }
   }
-  public async objDiffValidation(xPos: number, yPos: number): Promise<IJson3DObject> {
-      let x: number = 0;
-      let y: number = 0;
-      const POS_FACT: number = 2;
-      if ( xPos < this.rendererMod.domElement.offsetLeft) {
-        x = ((xPos - this.rendererOri.domElement.offsetLeft) / this.rendererOri.domElement.offsetWidth) * POS_FACT - 1;
-        y = -((yPos - this.rendererOri.domElement.offsetTop) / this.rendererOri.domElement.offsetHeight) * POS_FACT + 1;
-      } else {
-        x = ((xPos - this.rendererMod.domElement.offsetLeft) / this.rendererMod.domElement.offsetWidth) * POS_FACT - 1;
-        y = -((yPos - this.rendererMod.domElement.offsetTop) / this.rendererMod.domElement.offsetHeight) * POS_FACT + 1;
-      }
-      const direction: THREE.Vector2 = new THREE.Vector2(x, y);
-      const rayCast: THREE.Raycaster = new THREE.Raycaster();
-      rayCast.setFromCamera(direction, this.camera);
-      const intersectOri: THREE.Intersection[] = rayCast.intersectObjects(this.scene.children, true);
-      const intersectMod: THREE.Intersection[] = rayCast.intersectObjects(this.modifiedScene.children, true);
-      if (intersectOri.length === 0 && intersectMod.length === 0) {
+
+  // ╔══════════════════╗
+  // ║ CLICK VALIDATION ║
+  // ╚══════════════════╝
+
+  public async objDiffValidation(position: IPoint): Promise<number> {
+    const rendererElem: HTMLCanvasElement = position.x < this.rendererMod.domElement.offsetLeft
+      ? this.rendererOri.domElement
+      : this.rendererMod.domElement;
+
+    const POS_FACT: number = 2;
+    const x: number = ((position.x - rendererElem.offsetLeft) / rendererElem.offsetWidth) * POS_FACT - 1;
+    const y: number = -((position.y - rendererElem.offsetTop) / rendererElem.offsetHeight) * POS_FACT + 1;
+    const direction: Vector2 = new Vector2(x, y);
+    const rayCast: Raycaster = new Raycaster();
+
+    rayCast.setFromCamera(direction, this.camera);
+    const intersectOri: Intersection[] = rayCast.intersectObjects(this.scene.children, true)
+      .filter((intersection: Intersection) => intersection.object.name !== SKY_BOX_NAME);
+    const intersectMod: Intersection[] = rayCast.intersectObjects(this.modifiedScene.children, true)
+      .filter((intersection: Intersection) => intersection.object.name !== SKY_BOX_NAME);
+
+    this.validationPromise = this.getValidationPromise();
+
+    if (intersectOri.length === 0 && intersectMod.length === 0) {
+      playRandomSound(NO_DIFFERENCE_SOUNDS);
+      this.sceneDiffValidator.notifyIdentificationError(new NoDifferenceAtPointError());
+
+      return this.validationPromise;
+    }
+    const object: Object3D = get3DObject(intersectOri.length === 0 && intersectMod.length !== 0 ? intersectMod[0] : intersectOri[0]);
+    this.sceneDiffValidator.validateDiffObject(object.position);
+
+    return this.validationPromise;
+  }
+
+  private async getValidationPromise(): Promise<number> {
+    return new Promise<number>((resolve, reject) => {
+      this.sceneDiffValidator.registerDifferenceSuccessCallback(
+        async (interactionResponse: IFreeGameInteractionResponse) => {
+          resolve(await this.handleValidDifference(interactionResponse));
+        },
+      );
+      this.sceneDiffValidator.registerDifferenceErrorCallback((error: Error) => {
         playRandomSound(NO_DIFFERENCE_SOUNDS);
-
-        return this.differenceValidationAtPoint(undefined);
-      }
-      // Only take the first intersected object by the ray, hence the 0's
-      if (intersectOri.length === 0 && intersectMod.length !== 0) {
-        return this.differenceValidationAtPoint(this.get3DObject(intersectMod[0]));
-      } else {
-        return this.differenceValidationAtPoint(this.get3DObject(intersectOri[0]));
-      }
-  }
-  private get3DObject(obj: THREE.Intersection): THREE.Object3D {
-    if ((obj.object.parent as THREE.Object3D).type === SCENE_TYPE) {
-      return obj.object;
-    } else {
-      return this.getRecursiveParent(obj.object);
-    }
-  }
-  private getRecursiveParent(obj: THREE.Object3D): THREE.Object3D {
-    while ((obj.parent as THREE.Object3D).type !== SCENE_TYPE) {
-      return this.getRecursiveParent(obj.parent as THREE.Object3D);
-    }
-
-    return (obj.parent as THREE.Object3D);
-  }
-  private async differenceValidationAtPoint(object: THREE.Object3D|undefined): Promise<IJson3DObject> {
-    let centerObj: number[] = [];
-    if (object !== undefined) {
-      centerObj = [object.position.x, object.position.y, object.position.z];
-    }
-
-    return Axios.get<IJson3DObject>(
-      SERVER_BASE_URL + DIFF_VALIDATOR_3D_BASE,
-      {
-        params: {center: JSON.stringify(centerObj), gameName: this.gameName},
-      })
-      .then(async (value: AxiosResponse<IJson3DObject>) => {
-        if (this.gameState.foundDifference.length !== 0 || this.gameState.foundDifference !== undefined) {
-          this.checkIfAlreadyFound(value.data);
-        }
-        this.notifyClickToWebsocket(true);
-        this.updateRoutine(value.data, object as THREE.Object3D);
-        await this.updateCheateDiffData([value.data as IJson3DObject]);
-
-        return value.data as IJson3DObject;
-      })
-      // tslint:disable-next-line:no-any Generic error response
-      .catch((reason: any) => {
-        this.notifyClickToWebsocket(false);
-        if (reason.response && reason.response.status === Httpstatus.NOT_FOUND) {
-          playRandomSound(NO_DIFFERENCE_SOUNDS);
-          throw new NoDifferenceAtPointError();
-        }
-        throw new AbstractServiceError(reason.message);
+        reject(error);
       });
+    });
   }
-  private notifyClickToWebsocket(good: boolean): void {
-    const message: WebsocketMessage<ChatMessage> = {
-      title: SocketEvent.CHAT,
-      body: {
-        gameName: "", playerCount: ChatMessagePlayerCount.SOLO,
-        playerName: UNListService.username, position: ChatMessagePosition.NA,
-        timestamp: new Date(), type: good ? ChatMessageType.DIFF_FOUND : ChatMessageType.DIFF_ERROR,
-      },
-    };
-    this.socket.send(SocketEvent.CHAT, message);
-  }
-  private checkIfAlreadyFound(object: IJson3DObject): void {
-    for (const obj of this.gameState.foundDifference) {
-      if (this.renderUpdateService.isSameObject(obj.position, object.position)) {
-        playRandomSound(NO_DIFFERENCE_SOUNDS);
-        throw new AlreadyFoundDifferenceError();
-      }
+
+  private async handleValidDifference(interactionResponse: IFreeGameInteractionResponse): Promise<number> {
+    const diffObject: IJson3DObject = interactionResponse.object;
+    this.gameState.foundObjects.push(diffObject);
+
+    const sceneObjectToUpdate: Object3D = getObjectFromScenes(diffObject, this.scene, this.modifiedScene);
+    this.renderUpdateService.updateDifference(sceneObjectToUpdate, this.scene, this.modifiedScene);
+
+    await this.updateCheatDiffData(diffObject);
+    if (interactionResponse.initiatedBy === UNListService.username) {
+      playRandomSound(FOUND_DIFFERENCE_SOUNDS);
     }
+
+    return this.gameState.foundObjects.length;
   }
-  public get foundDifferenceCount(): Observable<number> {
-    return this.differenceCountSubject;
-  }
-  private updateRoutine(jsonObj: IJson3DObject, obj: THREE.Object3D): void {
-    this.gameState.foundDifference.push(jsonObj);
-    this.renderUpdateService.updateDifference(obj, this.scene, this.modifiedScene);
-    this.differenceCountSubject.next(this.gameState.foundDifference.length);
-    playRandomSound(FOUND_DIFFERENCE_SOUNDS);
-  }
-  private changeVisibility(value: THREE.Mesh|THREE.Scene): void {
-    if (value instanceof  THREE.Mesh) {
-      Array.isArray(value.material) ? value.material.forEach((material) => {material.visible = !material.visible; } ) :
-        value.material.visible = !value.material.visible;
-    } else {
-      value.children.forEach((valueChild: THREE.Object3D) => {
-        this.changeVisibility(valueChild as THREE.Scene);
+
+  // ╔════════╗
+  // ║ RENDER ║
+  // ╚════════╝
+
+  private renderLoop(): void {
+    this.rendererOri.render(this.scene, this.camera);
+    this.rendererMod.render(this.modifiedScene, this.camera);
+    this.time = performance.now();
+    const delta: number = (this.time - this.prevTime) / this.timeFactor;
+    this.renderUpdateService.updateVelocity(this.velocity, delta);
+    this.velocity = this.objectCollisionService.raycastCollision(
+      this.camera, this.scene.children, this.modifiedScene.children, this.velocity);
+    this.renderUpdateService.updateCamera(this.camera, delta, this.velocity);
+    this.prevTime = this.time;
+    sleep(1 / this.FPS).then(() => this.renderLoop())
+      .catch(() => {
+        throw new FreeViewGamesRenderingError();
       });
-    }
   }
 }
