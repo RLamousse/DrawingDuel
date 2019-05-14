@@ -3,7 +3,7 @@
 # ╚══════════╝
 variables:
   CODECOV_TOKEN: "1edf15e3-19b5-420b-a54a-35fac689ef0c"
-image: node
+image: node:11
 
 
 # ╔════════╗
@@ -28,7 +28,7 @@ stages:
 
 test client:
   extends: .test
-  image: trion/ng-cli-karma
+  image: trion/ng-cli-karma:7.3.9
   before_script:
     - cd client
     - npm ci
@@ -65,7 +65,7 @@ test server:
 
 client coverage:
   extends: .coverage
-  image: trion/ng-cli-karma
+  image: trion/ng-cli-karma:7.3.9
   before_script:
     - cd client
     - npm ci
