@@ -7,6 +7,6 @@
     "user": "server",
     "password": "awvXOBD3idhnWFY5",
     "database": "projet",
-    "host": "cluster0-ijbac.mongodb.net/test?retryWrites=true"
+    "host": "cluster1-ijbac.mongodb.net/test?retryWrites=true"
   }
 }
